@@ -5,7 +5,7 @@ module watt.license;
 /**
  * This is the license for the watt libray.
  */
-string license = `
+enum string license = `
 Copyright © 2005-2009, Sean Kelly.  All rights reserved.
 Copyright © 2013, Jakob Bornecrantz.  All rights reserved.
 
