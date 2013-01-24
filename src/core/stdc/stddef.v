@@ -3,9 +3,10 @@
 // File taken from druntime, and modified for Volt.
 module core.stdc.stddef;
 
+
 extern(C):
-//@trusted: // Types only.
-//nothrow:
+@trusted: // Types only.
+nothrow:
 
 // size_t and ptrdiff_t are defined in the object module.
 

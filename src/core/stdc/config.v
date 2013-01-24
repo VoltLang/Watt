@@ -3,9 +3,10 @@
 // File taken from druntime, and modified for Volt.
 module core.stdc.config;
 
-extern (C):
-//@trusted: // Types only.
-//nothrow:
+
+extern(C):
+@trusted: // Types only.
+nothrow:
 
 version( Windows ) {
 
