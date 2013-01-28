@@ -19,7 +19,7 @@ extern(C):
 @system:
 nothrow:
 
-/+version (Windows) {
+version (Windows) {
 
 	enum
 	{
@@ -36,7 +36,7 @@ nothrow:
 	enum wstring _wP_tmpdir = "\\"; // non-standard
 	enum int     L_tmpnam   = _P_tmpdir.length + 12;
 
-} else+/ version (Linux) {
+} else version (Linux) {
 
 	enum {
 		BUFSIZ       = 8192,
@@ -112,7 +112,7 @@ enum
 	SEEK_END
 }
 
-/+version (Windows) {
+version (Windows) {
 
 	struct _iobuf
 	{
@@ -126,7 +126,7 @@ enum
 		char* __tmpnum;
 	}
 
-} else+/ version (Linux) {
+} else version (Linux) {
 
 	align(1) struct _iobuf
 	{
@@ -244,7 +244,7 @@ enum
 	_F_TERM = 0x0200, // non-standard
 }
 
-/+version (Windows) {
+version (Windows) {
 
     enum
     {
@@ -262,17 +262,17 @@ enum
         _IOAPP   = 0x200, // non-standard
     }
 
-    extern shared void function() _fcloseallp;
+    extern global void function() _fcloseallp;
 
-    private extern shared FILE[_NFILE] _iob;
+    private extern global FILE[/+_NFILE+/60] _iob;
 
-    shared stdin  = &_iob[0];
-    shared stdout = &_iob[1];
-    shared stderr = &_iob[2];
-    shared stdaux = &_iob[3];
-    shared stdprn = &_iob[4];
+    @property FILE* stdin()  { return cast(FILE*) &_iob[0]; }
+    @property FILE* stdout() { return cast(FILE*) &_iob[1]; }
+    @property FILE* stderr() { return cast(FILE*) &_iob[2]; }
+    @property FILE* stdaux() { return cast(FILE*) &_iob[3]; }
+    @property FILE* stdprn() { return cast(FILE*) &_iob[4]; }
 
-} else+/ version (Linux) {
+} else version (Linux) {
 
 	enum
 	{
@@ -393,8 +393,9 @@ size_t fwrite(/*in*/ void* ptr, size_t size, size_t nmemb, FILE* stream);
 	c_long ftell(FILE* stream);
 }
 
-/+version( Windows ) {
+version( Windows ) {
 
+	/+
 	// No unsafe pointer manipulation.
 	extern(D) @trusted
 	{
@@ -402,15 +403,15 @@ size_t fwrite(/*in*/ void* ptr, size_t size, size_t nmemb, FILE* stream);
 		pure void clearerr(FILE* stream) { stream._flag &= ~(_IOERR|_IOEOF);                 }
 		pure int  feof(FILE* stream)     { return stream._flag&_IOEOF;                       }
 		pure int  ferror(FILE* stream)   { return stream._flag&_IOERR;                       }
-	}
+	}+/
 
-	int   _snprintf(char* s, size_t n, in char* fmt, ...);
-	alias _snprintf snprintf;
+	int   _snprintf(char* s, size_t n, /+in+/ char* fmt, ...);
+	//alias _snprintf snprintf;
 
-	int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
-	alias _vsnprintf vsnprintf;
+	int   _vsnprintf(char* s, size_t n, /+in+/ char* format, va_list arg);
+	//alias _vsnprintf vsnprintf;
 
-} else+/ version (Linux) {
+} else version (Linux) {
 
 	// No unsafe pointer manipulation.
 	@trusted
