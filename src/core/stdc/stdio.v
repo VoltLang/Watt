@@ -338,24 +338,24 @@ int   fclose(FILE* stream);
 // No unsafe pointer manipulation.
 @trusted int fflush(FILE* stream);
 
-FILE* fopen(/*in*/ char* filename, /*in*/ char* mode);
+FILE* fopen(/*in*/ const(char)* filename, /*in*/ char* mode);
 FILE* freopen(/*in*/ char* filename, /*in*/ char* mode, FILE* stream);
 
 void setbuf(FILE* stream, char* buf);
 int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
 
-int fprintf(FILE* stream, /*in*/ char* format, ...);
-int fscanf(FILE* stream, /*in*/ char* format, ...);
-int sprintf(char* s, /*in*/ char* format, ...);
-int sscanf(/*in*/ char* s, /*in*/ char* format, ...);
-int vfprintf(FILE* stream, /*in*/ char* format, va_list arg);
-int vfscanf(FILE* stream, /*in*/ char* format, va_list arg);
-int vsprintf(char* s, /*in*/ char* format, va_list arg);
-int vsscanf(/*in*/ char* s, /*in*/ char* format, va_list arg);
-int vprintf(/*in*/ char* format, va_list arg);
-int vscanf(/*in*/ char* format, va_list arg);
-int printf(/*in*/ char* format, ...);
-int scanf(/*in*/ char* format, ...);
+int fprintf(FILE* stream, /*in*/ const(char)* format, ...);
+int fscanf(FILE* stream, /*in*/ const(char)* format, ...);
+int sprintf(const(char)* s, /*in*/ const(char)* format, ...);
+int sscanf(/*in*/ const(char)* s, /*in*/ const(char)* format, ...);
+int vfprintf(FILE* stream, /*in*/ const(char)* format, va_list arg);
+int vfscanf(FILE* stream, /*in*/ const(char)* format, va_list arg);
+int vsprintf(const(char)* s, /*in*/ const(char)* format, va_list arg);
+int vsscanf(/*in*/ const(char)* s, /*in*/ const(char)* format, va_list arg);
+int vprintf(/*in*/ const(char)* format, va_list arg);
+int vscanf(/*in*/ const(char)* format, va_list arg);
+int printf(/*in*/ const(char)* format, ...);
+int scanf(/*in*/ const(char)* format, ...);
 
 // No usafe pointer manipulation.
 @trusted
