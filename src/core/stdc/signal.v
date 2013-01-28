@@ -13,7 +13,7 @@ alias sig_atomic_t = int;
 
 private alias sigfn_t = void function(int);
 
-/+version (Windows) {
+version (Windows) {
 
 	enum SIG_ERR    = cast(sigfn_t) -1;
 	enum SIG_DFL    = cast(sigfn_t) 0;
@@ -27,7 +27,7 @@ private alias sigfn_t = void function(int);
 	enum SIGSEGV    = 11; // Invalid memory reference
 	enum SIGTERM    = 15; // Termination
 
-} else+/ version(Posix) {
+} else version(Posix) {
 
 	enum SIG_ERR    = cast(sigfn_t) -1;
 	enum SIG_DFL    = cast(sigfn_t) 0;
