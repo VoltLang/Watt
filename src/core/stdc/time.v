@@ -10,7 +10,7 @@ extern(C):
 @trusted: // There are only a few functions here that use unsafe C strings.
 nothrow:
 
-/+version (Windows) {
+version (Windows) {
 
 	struct tm
 	{
@@ -25,7 +25,7 @@ nothrow:
 		int     tm_isdst;   // Daylight Saving Time flag
 	}
 
-} else+/ version (Posix) {
+} else version (Posix) {
 
 	struct tm
 	{
@@ -80,7 +80,7 @@ tm*     gmtime(/*in*/ time_t* timer);
 tm*     localtime(/*in*/ time_t* timer);
 @system size_t  strftime(char* s, size_t maxsize, /*in*/ char* format, /*in*/ tm* timeptr);
 
-/+version (Windows) {
+version (Windows) {
 
 	void  tzset();                   // non-standard
 	void  _tzset();                  // non-standard
@@ -89,7 +89,7 @@ tm*     localtime(/*in*/ time_t* timer);
 
 	//extern global const(char)*[2] tzname; // non-standard
 
-} else+/ version (Linux) {
+} else version (Linux) {
 
 	void tzset();                         // non-standard
 	//extern global const(char)*[2] tzname; // non-standard
