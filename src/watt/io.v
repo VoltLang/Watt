@@ -1,5 +1,6 @@
 module watt.io;
 
+import watt.conv;
 import core.stdc.stdio;
 
 /**
@@ -34,6 +35,12 @@ class OutputStream
 	{
 		write(s);
 		put('\n');
+		return;
+	}
+
+	void writei(int i)
+	{
+		write(toStringi(i));
 		return;
 	}
 
