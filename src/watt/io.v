@@ -38,9 +38,18 @@ class OutputStream
 		return;
 	}
 
+	// Like conv it self, these type suffixes should go away with function overloading.
+
 	void writei(int i)
 	{
 		write(toStringi(i));
+		return;
+	}
+
+	void writelni(int i)
+	{
+		writei(i);
+		put('\n');
 		return;
 	}
 
