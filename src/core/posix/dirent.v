@@ -63,7 +63,7 @@ version (Linux) {
 	version (all) {
 
 		dirent* readdir64(DIR*);
-		//alias readdir = readdir64;
+		alias readdir = readdir64;
 
 	} else {
 
@@ -154,7 +154,7 @@ version (Linux) {
 	version (all) {
 
 		int   readdir64_r(DIR*, dirent*, dirent**);
-		//alias readdir_r = readdir64_r;
+		alias readdir_r = readdir64_r;
 
 	} else {
 
