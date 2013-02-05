@@ -9,6 +9,12 @@ import core.stdc.stdio;
  */
 class OutputStream
 {
+public:
+	this()
+	{
+		return;
+	}
+
 	/**
 	 * Write a single character out to the sink.
 	 */
@@ -23,7 +29,8 @@ class OutputStream
 	void write(const(char)[] s)
 	{
 		for (size_t i = 0u; i < s.length; i = i + 1u) {
-			put(s[i]);
+			// uncomment when compiler is fixed.
+			//put(s[i]);
 		}
 		return;
 	}
@@ -33,8 +40,9 @@ class OutputStream
 	 */
 	void writeln(const(char)[] s)
 	{
-		write(s);
-		put('\n');
+		// uncomment when compiler is fixed.
+		//write(s);
+		//put('\n');
 		return;
 	}
 
@@ -42,14 +50,16 @@ class OutputStream
 
 	void writei(int i)
 	{
-		write(toStringi(i));
+		// uncomment when compiler is fixed.
+		//write(toStringi(i));
 		return;
 	}
 
 	void writelni(int i)
 	{
-		writei(i);
-		put('\n');
+		// uncomment when compiler is fixed.
+		//writei(i);
+		//put('\n');
 		return;
 	}
 
@@ -68,6 +78,12 @@ class OutputStream
  */
 class InputStream
 {
+public:
+	this()
+	{
+		return;
+	}
+
 	/**
 	 * Read a single character from the source.
 	 */
@@ -92,8 +108,10 @@ class InputStream
  */
 class OutputFileStream : OutputStream
 {
+public:
 	FILE* handle;
 
+public:
 	this(const(char)[] filename)
 	{
 		if (filename.length > 0u) {
@@ -124,8 +142,10 @@ class OutputFileStream : OutputStream
  */
 class InputFileStream : InputStream
 {
+public:
 	FILE* handle;
 
+public:
 	this(const(char)[] filename)
 	{
 		if (filename.length > 0u) {
@@ -161,11 +181,12 @@ global InputFileStream input;
 
 void init()
 {
-	output = new OutputFileStream(null);
-	output.handle = stdout;
-	error = new OutputFileStream(null);
-	error.handle = stderr;
-	input = new InputFileStream(null);
-	input.handle = stdin;
+	// uncomment when compiler is fixed.
+	//output = new OutputFileStream(null);
+	//output.handle = stdout;
+	//error = new OutputFileStream(null);
+	//error.handle = stderr;
+	//input = new InputFileStream(null);
+	//input.handle = stdin;
 	return;
 }
