@@ -55,9 +55,9 @@ version (Posix) private {
 		auto argz = new char*[4096];
 
 		// Remove these when enums work.
+		int STDIN_FILENO = 0;
 		int STDOUT_FILENO = 1;
-		int STDIN_FILENO = 2;
-		int STDERR_FILENO = 3;
+		int STDERR_FILENO = 2;
 
 		toArgz(stack[], argz[], name, args);
 
