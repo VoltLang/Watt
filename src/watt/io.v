@@ -29,8 +29,7 @@ public:
 	void write(const(char)[] s)
 	{
 		for (size_t i = 0u; i < s.length; i = i + 1u) {
-			// uncomment when compiler is fixed.
-			//put(s[i]);
+			put(s[i]);
 		}
 		return;
 	}
@@ -40,9 +39,8 @@ public:
 	 */
 	void writeln(const(char)[] s)
 	{
-		// uncomment when compiler is fixed.
-		//write(s);
-		//put('\n');
+		write(s);
+		put('\n');
 		return;
 	}
 
@@ -50,16 +48,14 @@ public:
 
 	void writei(int i)
 	{
-		// uncomment when compiler is fixed.
-		//write(toStringi(i));
+		write(toStringi(i));
 		return;
 	}
 
 	void writelni(int i)
 	{
-		// uncomment when compiler is fixed.
-		//writei(i);
-		//put('\n');
+		writei(i);
+		put('\n');
 		return;
 	}
 
@@ -132,7 +128,8 @@ public:
 	void close()
 	{
 		fclose(handle);
-		handle = null;
+		// uncomment when compiler is fixed.
+		//handle = null;
 		return;
 	}
 }
@@ -170,7 +167,8 @@ public:
 	void close()
 	{
 		fclose(handle);
-		handle = null;
+		// uncomment when compiler is fixed.
+		//handle = null;
 		return;
 	}
 }
