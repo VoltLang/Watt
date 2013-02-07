@@ -327,8 +327,8 @@ version (Windows) {
 
 alias fpos_t = int;
 
-int remove(/*in*/ char* filename);
-int rename(/*in*/ char* from, /*in*/ char* to);
+int remove(in char* filename);
+int rename(in char* from, in char* to);
 
 @trusted FILE* tmpfile(); // No unsafe pointer manipulation.
 char* tmpnam(char* s);
@@ -338,24 +338,24 @@ int   fclose(FILE* stream);
 // No unsafe pointer manipulation.
 @trusted int fflush(FILE* stream);
 
-FILE* fopen(/*in*/ const(char)* filename, /*in*/ char* mode);
-FILE* freopen(/*in*/ char* filename, /*in*/ char* mode, FILE* stream);
+FILE* fopen(in char* filename, in char* mode);
+FILE* freopen(in char* filename, in char* mode, FILE* stream);
 
 void setbuf(FILE* stream, char* buf);
 int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
 
-int fprintf(FILE* stream, /*in*/ const(char)* format, ...);
-int fscanf(FILE* stream, /*in*/ const(char)* format, ...);
-int sprintf(const(char)* s, /*in*/ const(char)* format, ...);
-int sscanf(/*in*/ const(char)* s, /*in*/ const(char)* format, ...);
-int vfprintf(FILE* stream, /*in*/ const(char)* format, va_list arg);
-int vfscanf(FILE* stream, /*in*/ const(char)* format, va_list arg);
-int vsprintf(const(char)* s, /*in*/ const(char)* format, va_list arg);
-int vsscanf(/*in*/ const(char)* s, /*in*/ const(char)* format, va_list arg);
-int vprintf(/*in*/ const(char)* format, va_list arg);
-int vscanf(/*in*/ const(char)* format, va_list arg);
-int printf(/*in*/ const(char)* format, ...);
-int scanf(/*in*/ const(char)* format, ...);
+int fprintf(FILE* stream, in const(char)* format, ...);
+int fscanf(FILE* stream, in const(char)* format, ...);
+int sprintf(const(char)* s, in const(char)* format, ...);
+int sscanf(in const(char)* s, in const(char)* format, ...);
+int vfprintf(FILE* stream, in const(char)* format, va_list arg);
+int vfscanf(FILE* stream, in const(char)* format, va_list arg);
+int vsprintf(const(char)* s, in const(char)* format, va_list arg);
+int vsscanf(in const(char)* s, in const(char)* format, va_list arg);
+int vprintf(in const(char)* format, va_list arg);
+int vscanf(in const(char)* format, va_list arg);
+int printf(in const(char)* format, ...);
+int scanf(in const(char)* format, ...);
 
 // No usafe pointer manipulation.
 @trusted
@@ -365,9 +365,9 @@ int scanf(/*in*/ const(char)* format, ...);
 }
 
 char* fgets(char* s, int n, FILE* stream);
-int   fputs(/*in*/ char* s, FILE* stream);
+int   fputs(in char* s, FILE* stream);
 char* gets(char* s);
-int   puts(/*in*/ char* s);
+int   puts(in char* s);
 
 // No unsafe pointer manipulation.
 extern(Volt) @trusted
@@ -381,13 +381,13 @@ extern(Volt) @trusted
 @trusted int ungetc(int c, FILE* stream); // No unsafe pointer manipulation.
 
 size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream);
-size_t fwrite(/*in*/ void* ptr, size_t size, size_t nmemb, FILE* stream);
+size_t fwrite(in void* ptr, size_t size, size_t nmemb, FILE* stream);
 
 // No unsafe pointer manipulation.
 @trusted
 {
 	int fgetpos(FILE* stream, fpos_t * pos);
-	int fsetpos(FILE* stream, /*in*/ fpos_t* pos);
+	int fsetpos(FILE* stream, in fpos_t* pos);
 
 	int    fseek(FILE* stream, c_long offset, int whence);
 	c_long ftell(FILE* stream);
@@ -406,10 +406,10 @@ version( Windows ) {
 
 	int feof(FILE* stream);
 
-	int   _snprintf(char* s, size_t n, /+in+/ char* fmt, ...);
+	int   _snprintf(char* s, size_t n, char* fmt, ...);
 	//alias _snprintf snprintf;
 
-	int   _vsnprintf(char* s, size_t n, /+in+/ char* format, va_list arg);
+	int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
 	//alias _vsnprintf vsnprintf;
 
 } else version (Linux) {
@@ -424,8 +424,8 @@ version( Windows ) {
 		int  fileno(FILE *);
 	}
 
-	int  snprintf(char* s, size_t n, /*in*/ char* format, ...);
-	int  vsnprintf(char* s, size_t n, /*in*/ char* format, va_list arg);
+	int  snprintf(char* s, size_t n, in char* format, ...);
+	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 
 } else /+version (OSX) {
 
@@ -463,4 +463,4 @@ version( Windows ) {
 
 }
 
-void perror(/*in*/ char* s);
+void perror(in char* s);

@@ -40,18 +40,18 @@ else version (FreeBSD) enum RAND_MAX = 0x7fffffff;
 else version (Solaris) enum RAND_MAX = 0x7fff;
 else static assert(false, "Unsupported platform");
 
-double  atof(/*in*/ char* nptr);
-int     atoi(/*in*/ char* nptr);
-c_long  atol(/*in*/ char* nptr);
-long    atoll(/*in*/ char* nptr);
+double  atof(in char* nptr);
+int     atoi(in char* nptr);
+c_long  atol(in char* nptr);
+long    atoll(in char* nptr);
 
-double  strtod(/*in*/ char* nptr, char** endptr);
-float   strtof(/*in*/ char* nptr, char** endptr);
-//real  strtold(/*in*/ char* nptr, char** endptr);
-c_long  strtol(/*in*/ char* nptr, char** endptr, int base);
-long    strtoll(/*in*/ char* nptr, char** endptr, int base);
-c_ulong strtoul(/*in*/ char* nptr, char** endptr, int base);
-ulong   strtoull(/*in*/ char* nptr, char** endptr, int base);
+double  strtod(in char* nptr, char** endptr);
+float   strtof(in char* nptr, char** endptr);
+//real  strtold(in char* nptr, char** endptr);
+c_long  strtol(in char* nptr, char** endptr, int base);
+long    strtoll(in char* nptr, char** endptr, int base);
+c_ulong strtoul(in char* nptr, char** endptr, int base);
+ulong   strtoull(in char* nptr, char** endptr, int base);
 
 // No unsafe pointer manipulation.
 @trusted
@@ -74,11 +74,11 @@ void    exit(int status);
 int     atexit(void function() func);
 void    _Exit(int status);
 
-char*   getenv(/*in*/ char* name);
-int     system(/*in*/ char* string);
+char*   getenv(in char* name);
+int     system(in char* string);
 
-void*   bsearch(/*in*/ void* key, /*in*/ void* base, size_t nmemb, size_t size, int function(/*in*/ void*, /*in*/ void*) compar);
-void    qsort(void* base, size_t nmemb, size_t size, int function(/*in*/ void*, /*in*/ void*) compar);
+void*   bsearch(in void* key, in void* base, size_t nmemb, size_t size, int function(in void*, in void*) compar);
+void    qsort(void* base, size_t nmemb, size_t size, int function(in void*, in void*) compar);
 
 // These only operate on integer values.
 @trusted
@@ -92,8 +92,8 @@ void    qsort(void* base, size_t nmemb, size_t size, int function(/*in*/ void*, 
 	lldiv_t lldiv(long numer, long denom);
 }
 
-int     mblen(/*in*/ char* s, size_t n);
-int     mbtowc(wchar_t* pwc, /*in*/ char* s, size_t n);
+int     mblen(in char* s, size_t n);
+int     mbtowc(wchar_t* pwc, in char* s, size_t n);
 int     wctomb(char*s, wchar_t wc);
-size_t  mbstowcs(wchar_t* pwcs, /*in*/ char* s, size_t n);
-size_t  wcstombs(char* s, /*in*/ wchar_t* pwcs, size_t n);
+size_t  mbstowcs(wchar_t* pwcs, in char* s, size_t n);
+size_t  wcstombs(char* s, in wchar_t* pwcs, size_t n);

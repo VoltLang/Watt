@@ -74,11 +74,11 @@ clock_t clock();
 double  difftime(time_t time1, time_t time0);
 time_t  mktime(tm* timeptr);
 time_t  time(time_t* timer);
-char*   asctime(/*in*/ tm* timeptr);
-char*   ctime(/*in*/ time_t* timer);
-tm*     gmtime(/*in*/ time_t* timer);
-tm*     localtime(/*in*/ time_t* timer);
-@system size_t  strftime(char* s, size_t maxsize, /*in*/ char* format, /*in*/ tm* timeptr);
+char*   asctime(in tm* timeptr);
+char*   ctime(in time_t* timer);
+tm*     gmtime(in time_t* timer);
+tm*     localtime(in time_t* timer);
+@system size_t  strftime(char* s, size_t maxsize, in char* format, in tm* timeptr);
 
 version (Windows) {
 
