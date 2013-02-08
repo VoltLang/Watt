@@ -57,6 +57,7 @@ version (Posix) private {
 	extern(C) int dup2(int, int);
 	extern(C) void close(int);
 	extern(C) int waitpid(int, int*, size_t);
+	extern(C) void exit(int);
 
 	int spawnProcessPosix(string name,
 	                      string[] args,
@@ -100,7 +101,7 @@ version (Posix) private {
 			close(stderrFD);
 
 		execvp(argz[0], &argz[0]);
-		return 0;
+		exit(-1);
 	}
 
 	void toArgz(char[] stack, char*[] result, string name, string[] args)
@@ -123,6 +124,9 @@ version (Posix) private {
 			stack = stack[arg.length + 1u .. stack.length];
 		}
 
+		// Zero the last argument.
+		result[resultPos] = null;
+
 		return;
 	}
 
@@ -132,7 +136,7 @@ version (Posix) private {
 
 		// Because stopped processes doesn't count.
 		while(true) {
-			pid = waitpid(-1, &status, 0);
+			pid = waitpid(pid, &status, 0);
 
 			if (exited(status)) {
 				return exitstatus(status);
