@@ -6,11 +6,23 @@ import core.stdc.stdio;
 
 class Pid
 {
+private:
 	int _pid;
+
+public:
 	this(int pid)
 	{
 		this._pid = pid;
 		return;
+	}
+
+	int wait()
+	{
+		version (Linux) {
+			return waitPosix(_pid);
+		} else {
+			return -1;
+		}
 	}
 }
 
@@ -44,6 +56,7 @@ version (Posix) private {
 	extern(C) int dup(int);
 	extern(C) int dup2(int, int);
 	extern(C) void close(int);
+	extern(C) int waitpid(int, int*, size_t);
 
 	int spawnProcessPosix(string name,
 	                      string[] args,
@@ -113,4 +126,30 @@ version (Posix) private {
 		return;
 	}
 
+	int waitPosix(int pid)
+	{
+		int status;
+
+		// Because stopped processes doesn't count.
+		while(true) {
+			pid = waitpid(-1, &status, 0);
+
+			if (exited(status)) {
+				return exitstatus(status);
+			} else if (signaled(status)) {
+				return -termsig(status);
+			} else if (stopped(status)) {
+				continue;
+			} else {
+				return -1;//errno();
+			}
+		}
+	}
+
+	bool stopped(int status)  { return (status & 0xff) == 0x7f; }
+	bool signaled(int status) { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
+	bool exited(int status)   { return (status & 0x7f) == 0; }
+
+	int termsig(int status)    { return status & 0x7f; }
+	int exitstatus(int status) { return (status & 0xff00) >> 8; }
 }
