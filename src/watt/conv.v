@@ -5,7 +5,7 @@ module watt.conv;
 const(char)[] toStringi(int i)
 {
 	size_t index = 0u;
-	auto buf = new char[11];  // 11 == maximum length of an integer, −2147483647
+	auto buf = new char[](11);  // 11 == maximum length of an integer, −2147483647
 	bool negative = i < 0;
 	if (negative) {
 		i = i * -1;
@@ -23,7 +23,7 @@ const(char)[] toStringi(int i)
 	}
 	buf.length = index;
 
-	auto outbuf = new char[11];
+	auto outbuf = new char[](11);
 	size_t bindex = index;
 	size_t oindex = 0u;
 	while (oindex != index) {

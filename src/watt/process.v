@@ -65,8 +65,8 @@ version (Posix) private {
 	                      int stdoutFD,
 	                      int stderrFD)
 	{
-		auto stack = new char[16384];
-		auto argz = new char*[4096];
+		auto stack = new char[](16384);
+		auto argz = new char*[](4096);
 
 		// Remove these when enums work.
 		int STDIN_FILENO = 0;
