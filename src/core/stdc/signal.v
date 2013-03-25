@@ -15,9 +15,9 @@ private alias sigfn_t = void function(int);
 
 version (Windows) {
 
-	enum SIG_ERR    = cast(sigfn_t) -1;
-	enum SIG_DFL    = cast(sigfn_t) 0;
-	enum SIG_IGN    = cast(sigfn_t) 1;
+	//enum SIG_ERR    = cast(sigfn_t) -1;
+	//enum SIG_DFL    = cast(sigfn_t) 0;
+	//enum SIG_IGN    = cast(sigfn_t) 1;
 
 	// standard C signals
 	enum SIGABRT    = 22; // Abnormal termination
@@ -29,9 +29,9 @@ version (Windows) {
 
 } else version(Posix) {
 
-	enum SIG_ERR    = cast(sigfn_t) -1;
-	enum SIG_DFL    = cast(sigfn_t) 0;
-	enum SIG_IGN    = cast(sigfn_t) 1;
+	//enum SIG_ERR    = cast(sigfn_t) -1;
+	//enum SIG_DFL    = cast(sigfn_t) 0;
+	//enum SIG_IGN    = cast(sigfn_t) 1;
 
 	// standard C signals
 	enum SIGABRT    = 6;  // Abnormal termination
