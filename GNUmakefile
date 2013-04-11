@@ -8,12 +8,11 @@ HOST_MACHINE := $(strip $(shell uname -m))
 UNAME ?= $(HOST_UNAME)
 MACHINE ?= $(HOST_MACHINE)
 
-
 ########################################
 # Basic settings.
 #
 
-VFLAGS ?= -I src
+VFLAGS ?= -I src -I %@execdir%/rt -l gc %@execdir%/rt.bc
 TARGET = libwatt.bc
 
 
@@ -33,9 +32,17 @@ all: $(TARGET)
 
 $(TARGET): $(SRC) GNUmakefile
 	@echo "  VOLT   $(TARGET)"
-	@$(VOLT) --emit-bitcode -o $(TARGET) $(SRC)
+	@$(VOLT) $(VFLAGS) --emit-bitcode -o $(TARGET) $(SRC)
 
 clean:
 	@rm -rf $(TARGET) .obj
+	@rm -rf .pkg
+	@rm -rf watt.tar.gz	
+
+package: all
+	@mkdir -p .pkg
+	@cp libwatt.bc .pkg/
+	@cp -r ./src/* .pkg/
+	@tar -czf watt.tar.gz .pkg/*
 
 .PHONY: all clean
