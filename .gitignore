@@ -3,3 +3,5 @@
 *.obj
 *.a
 *.bc
+*.tar.gz
+.pkg
