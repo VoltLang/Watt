@@ -12,7 +12,7 @@ MACHINE ?= $(HOST_MACHINE)
 # Basic settings.
 #
 
-VFLAGS ?= -I src -I %@execdir%/rt -l gc %@execdir%/rt.bc
+VFLAGS ?= --no-stdlib -I %@execdir%/rt
 TARGET = libwatt.bc
 
 
@@ -32,7 +32,7 @@ all: $(TARGET)
 
 $(TARGET): $(SRC) GNUmakefile
 	@echo "  VOLT   $(TARGET)"
-	@$(VOLT) $(VFLAGS) --emit-bitcode -o $(TARGET) $(SRC)
+	@$(VOLT) $(VFLAGS) --emit-bitcode -o $(TARGET) -I src $(SRC)
 
 clean:
 	@rm -rf $(TARGET) .obj
