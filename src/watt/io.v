@@ -16,6 +16,14 @@ public:
 	}
 
 	/**
+	 * Close the stream.
+	 */
+	void close()
+	{
+		return;
+	}
+
+	/**
 	 * Write a single character out to the sink.
 	 */
 	void put(dchar c)
@@ -81,6 +89,14 @@ public:
 	}
 
 	/**
+	 * Close the input stream.
+	 */
+	void close()
+	{
+		return;
+	}
+
+	/**
 	 * Read a single character from the source.
 	 */
 	dchar get()
@@ -116,20 +132,22 @@ public:
 		return;
 	}
 
-	void put(dchar c)
+	override void close()
+	{
+		fclose(handle);
+		handle = null;
+		return;
+	}
+
+	override void put(dchar c)
 	{
 		fputc(cast(int) c, handle);
 		return;
 	}
 
-	/**
-	 * Close the underlying file handle.
-	 */
-	void close()
+	override void flush()
 	{
-		fclose(handle);
-		// uncomment when compiler is fixed.
-		//handle = null;
+		fflush(handle);
 		return;
 	}
 }
@@ -151,25 +169,21 @@ public:
 		return;
 	}
 
-	bool eof()
+	override void close()
+	{
+		fclose(handle);
+		handle = null;
+		return;
+	}
+
+	override bool eof()
 	{
 		return feof(handle) != 0;
 	}
 
-	dchar get()
+	override dchar get()
 	{
 		return cast(dchar) fgetc(handle);
-	}
-
-	/**
-	 * Close the underlying file handle.
-	 */
-	void close()
-	{
-		fclose(handle);
-		// uncomment when compiler is fixed.
-		//handle = null;
-		return;
 	}
 }
 
@@ -179,12 +193,11 @@ global InputFileStream input;
 
 void init()
 {
-	// uncomment when compiler is fixed.
-	//output = new OutputFileStream(null);
-	//output.handle = stdout;
-	//error = new OutputFileStream(null);
-	//error.handle = stderr;
-	//input = new InputFileStream(null);
-	//input.handle = stdin;
+	output = new OutputFileStream(null);
+	output.handle = stdout;
+	error = new OutputFileStream(null);
+	error.handle = stderr;
+	input = new InputFileStream(null);
+	input.handle = stdin;
 	return;
 }
