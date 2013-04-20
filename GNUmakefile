@@ -12,7 +12,7 @@ MACHINE ?= $(HOST_MACHINE)
 # Basic settings.
 #
 
-VFLAGS ?= --no-stdlib -I %@execdir%/rt
+VFLAGS ?= --no-stdlib -I %@execdir%/rt/src
 TARGET = libwatt.bc
 
 
