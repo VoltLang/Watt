@@ -18,7 +18,7 @@ public:
 
 	int wait()
 	{
-		version (Linux) {
+		version (Posix) {
 			return waitPosix(_pid);
 		} else {
 			return -1;

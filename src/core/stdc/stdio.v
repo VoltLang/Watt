@@ -47,7 +47,7 @@ version (Windows) {
 		L_tmpnam     = 20,
 	}
 
-} else /+version (OSX) {
+} else version (OSX) {
 
 	enum
 	{
@@ -73,7 +73,7 @@ version (Windows) {
 		}
 	}
 
-} else+/ /+version (FreeBSD) {
+} else /+version (FreeBSD) {
 
 	enum
 	{
@@ -153,7 +153,7 @@ version (Windows) {
 		void*   _lock;
 	}
 
-} else /+version( OSX ) {
+} else version (OSX) {
 
 	align (1) struct _iobuf
 	{
@@ -183,7 +183,7 @@ version (Windows) {
 		fpos_t    _offset;
 	}
 
-} else+/ /+version (FreeBSD) {
+} else /+version (FreeBSD) {
 
 	align (1) struct _iobuf
 	{
@@ -285,7 +285,7 @@ version (Windows) {
 	extern global FILE* stdout;
 	extern global FILE* stderr;
 
-} else /+version (OSX) {
+} else version (OSX) {
 
 	enum
 	{
@@ -294,15 +294,15 @@ version (Windows) {
 		_IONBF = 2,
 	}
 
-	private extern shared FILE* __stdinp;
-	private extern shared FILE* __stdoutp;
-	private extern shared FILE* __stderrp;
+	private extern global /*shared*/ FILE* __stdinp;
+	private extern global /*shared*/ FILE* __stdoutp;
+	private extern global /*shared*/ FILE* __stderrp;
 
-	alias __stdinp  stdin;
-	alias __stdoutp stdout;
-	alias __stderrp stderr;
+	alias stdin = __stdinp;
+	alias stdout = __stdoutp;
+	alias stderr = __stderrp;
 
-} else+/ /+version (FreeBSD) {
+} else /+version (FreeBSD) {
 
 	enum
 	{
@@ -393,7 +393,7 @@ size_t fwrite(in void* ptr, size_t size, size_t nmemb, FILE* stream);
 	c_long ftell(FILE* stream);
 }
 
-version( Windows ) {
+version (Windows) {
 
 	/+
 	// No unsafe pointer manipulation.
@@ -427,7 +427,7 @@ version( Windows ) {
 	int  snprintf(char* s, size_t n, in char* format, ...);
 	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 
-} else /+version (OSX) {
+} else version (OSX) {
 
 	// No unsafe pointer manipulation.
 	@trusted
@@ -442,7 +442,7 @@ version( Windows ) {
 	int  snprintf(char* s, size_t n, in char* format, ...);
 	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 
-} else+/ /+version(FreeBSD) {
+} else /+version (FreeBSD) {
 
 	// No unsafe pointer manipulation.
 	@trusted

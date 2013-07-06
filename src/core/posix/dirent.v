@@ -71,7 +71,7 @@ version (Linux) {
 
 	}
 
-} else /+version (OSX) {
+} else version (OSX) {
 
 	enum
 	{
@@ -102,7 +102,7 @@ version (Linux) {
 
 	dirent* readdir(DIR*);
 
-} else+/ /+version (FreeBSD) {
+} else /+version (FreeBSD) {
 
 	enum
 	{
@@ -162,11 +162,11 @@ version (Linux) {
 
 	}
 
-} else /+version (OSX) {
+} else version (OSX) {
 
 	int readdir_r(DIR*, dirent*, dirent**);
 
-} else+/ /+version (FreeBSD) {
+} else /+version (FreeBSD) {
 
 	int readdir_r(DIR*, dirent*, dirent**);
 

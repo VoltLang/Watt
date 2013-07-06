@@ -71,7 +71,7 @@ version (Linux) {
 	alias off_t = long;
 	alias pid_t = int;
 	//size_t (defined in core.stdc.stddef)
-	alias c_long = ssize_t;
+	alias c_long = ptrdiff_t;
 	//time_t (defined in core.stdc.time)
 	alias uid_t = uint;
 

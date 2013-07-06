@@ -94,12 +94,12 @@ version (Windows) {
 	void tzset();                         // non-standard
 	//extern global const(char)*[2] tzname; // non-standard
 
-} else /+version (OSX) {
+} else version (OSX) {
 
 	void tzset();                         // non-standard
 	//extern global const(char)*[2] tzname; // non-standard
 
-} else+/ /+version (FreeBSD) {
+} else /+version (FreeBSD) {
 
 	void tzset();                         // non-standard
 	//extern global const(char)*[2] tzname; // non-standard
