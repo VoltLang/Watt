@@ -33,8 +33,8 @@ version (Windows) {
 
 	enum int     _NFILE     = 60;       // non-standard
 	enum string  _P_tmpdir  = "\\"; // non-standard
-	enum wstring _wP_tmpdir = "\\"; // non-standard
-	enum int     L_tmpnam   = _P_tmpdir.length + 12;
+//	enum string _wP_tmpdir = "\\"; // non-standard
+//	enum int     L_tmpnam   = _P_tmpdir.length + 12;
 
 } else version (Linux) {
 
