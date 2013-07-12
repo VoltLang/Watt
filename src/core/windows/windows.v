@@ -4,12 +4,24 @@ import core.stdc.stdarg;
 
 extern (Windows):
 
+alias WORD = int;
 alias DWORD = uint;
 alias BOOL = int;
+alias LPBYTE = byte*;
+alias PVOID = void*;
 alias LPVOID = void*;
 alias LPCVOID = const(void)*;
 alias LPCSTR = const(char)*;
 alias LPCWSTR = const(wchar)*;
+alias LPSTR = char*;
+alias LPWSTR = wchar*;
+alias LPDWORD = DWORD*;
+alias ULONG_PTR = size_t;
+alias HANDLE = PVOID;
+alias PHANDLE = HANDLE*;
+
+enum TRUE = 1;
+enum FALSE = 0;
 
 struct SECURITY_ATTRIBUTES
 {
@@ -21,6 +33,66 @@ struct SECURITY_ATTRIBUTES
 alias PSECURITY_ATTRIBUTES = SECURITY_ATTRIBUTES*;
 alias LPSECURITY_ATTRIBUTES = SECURITY_ATTRIBUTES*;
 
+enum STARTF_USESTDHANDLES = 0x00000100;
+
+struct STARTUPINFOA
+{
+	DWORD cb;
+	LPSTR lpReserved;
+	LPSTR lpDesktop;
+	LPSTR lpTitle;
+	DWORD dwX;
+	DWORD dwY;
+	DWORD dwXSize;
+	DWORD dwYSize;
+	DWORD dwXCountChars;
+	DWORD dwYCountChars;
+	DWORD dwFillFlags;
+	DWORD dwFlags;
+	WORD wShowWindow;
+	WORD cbReserved2;
+	LPBYTE lpReserved2;
+	HANDLE hStdInput;
+	HANDLE hStdOutput;
+	HANDLE hStdError;
+}
+
+alias LPSTARTUPINFOA = STARTUPINFOA*;
+
+struct STARTUPINFOW
+{
+	DWORD cb;
+	LPWSTR lpReserved;
+	LPWSTR lpDesktop;
+	LPWSTR lpTitle;
+	DWORD dwX;
+	DWORD dwY;
+	DWORD dwXSize;
+	DWORD dwYSize;
+	DWORD dwXCountChars;
+	DWORD dwYCountChars;
+	DWORD dwFillFlags;
+	DWORD dwFlags;
+	WORD wShowWindow;
+	WORD cbReserved2;
+	LPBYTE lpReserved2;
+	HANDLE hStdInput;
+	HANDLE hStdOutput;
+	HANDLE hStdError;
+}
+
+alias LPSTARTUPINFOW = STARTUPINFOW*;
+
+struct PROCESS_INFORMATION
+{
+	HANDLE hProcess;
+	HANDLE hThread;
+	DWORD dwProcessId;
+	DWORD dwThreadId;
+}
+
+alias LPPROCESS_INFORMATION = PROCESS_INFORMATION*;
+
 BOOL CreateDirectoryA(LPCSTR, LPSECURITY_ATTRIBUTES);
 BOOL CreateDirectoryW(LPCWSTR, LPSECURITY_ATTRIBUTES);
 
@@ -31,3 +103,48 @@ enum FORMAT_MESSAGE_FROM_SYSTEM = 0x00001000;
 
 DWORD FormatMessageA(DWORD, LPCVOID, DWORD, DWORD, LPCSTR, DWORD, va_list*);
 DWORD FormatMessageW(DWORD, LPCVOID, DWORD, DWORD, LPCWSTR, DWORD, va_list*);
+
+BOOL CreateProcessA(LPCSTR, LPSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, BOOL, DWORD, LPVOID, LPCSTR, LPSTARTUPINFOA, LPPROCESS_INFORMATION);
+BOOL CreateProcessW(LPCWSTR, LPWSTR, LPSECURITY_ATTRIBUTES, LPSECURITY_ATTRIBUTES, BOOL, DWORD, LPVOID, LPCWSTR, LPSTARTUPINFOW, LPPROCESS_INFORMATION);
+
+enum WAIT_OBJECT_0 = 0L;
+@property DWORD INFINITE() { return cast(DWORD) 0xFFFFFFFF; }
+
+DWORD WaitForSingleObject(HANDLE, DWORD);
+DWORD WaitForMultipleObjects(DWORD, HANDLE*, BOOL, DWORD);
+BOOL CloseHandle(HANDLE);
+BOOL GetExitCodeProcess(HANDLE, LPDWORD);
+
+enum HANDLE_FLAG_INHERIT = 0x00000001;
+enum HANDLE_FLAG_PROTECT_FROM_CLOSE = 0x00000002;
+
+BOOL GetHandleInformation(HANDLE, LPDWORD);
+BOOL SetHandleInformation(HANDLE, DWORD, DWORD);
+
+@property DWORD STD_INPUT_HANDLE() { return cast(DWORD) -10; }
+@property DWORD STD_OUTPUT_HANDLE() { return cast(DWORD) -11; }
+@property DWORD STD_ERROR_HANDLE() { return cast(DWORD) -12; }
+
+HANDLE GetStdHandle(DWORD);
+
+BOOL CreatePipe(PHANDLE, PHANDLE, LPSECURITY_ATTRIBUTES, DWORD);
+
+struct OVERLAPPED
+{
+	private struct _s {
+		DWORD Offset;
+		DWORD OffsetHigh;
+	}
+	ULONG_PTR Internal;
+	ULONG_PTR InternalHigh;
+	union _u {
+		_s s;
+		PVOID Pointer;
+	}
+	_u u;
+	HANDLE hEvent;
+}
+
+alias LPOVERLAPPED = OVERLAPPED*;
+
+BOOL ReadFile(HANDLE, LPVOID, DWORD, LPDWORD, LPOVERLAPPED);

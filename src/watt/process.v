@@ -3,38 +3,60 @@
 module watt.process;
 
 import core.stdc.stdio;
+version (Windows) import core.windows.windows;
+
+import watt.conv;
 
 class Pid
 {
 private:
-	int _pid;
+	version (Windows) {
+		HANDLE _handle;
+	} else {
+		pid_t _pid;
+	}
 
 public:
-	this(int pid)
-	{
-		this._pid = pid;
-		return;
+	version (Windows) {
+		this(HANDLE handle)
+		{
+			this._handle = handle;
+			return;
+		}
+	} else {
+		this(int pid)
+		{
+			this._pid = pid;
+			return;
+		}
 	}
 
 	int wait()
 	{
 		version (Posix) {
 			return waitPosix(_pid);
+		} else version (Windows) {
+			return waitWindows(_handle);
 		} else {
 			return -1;
 		}
 	}
 }
 
+class ProcessException : object.Exception
+{
+	this(string msg)
+	{
+		super(msg);
+		return;
+	}
+}
+
 Pid spawnProcess(string name, string[] args)
-{	
+{
 	return spawnProcess(name, args, stdin, stdout, stderr);
 }
 
-/**
- * Rename when overloading works, merge when default
- * arguments work.
- */
 Pid spawnProcess(string name, string[] args,
                  FILE* _stdin,
                  FILE* _stdout,
@@ -42,6 +64,8 @@ Pid spawnProcess(string name, string[] args,
 {
 	version (Posix) {
 		auto pid = spawnProcessPosix(name, args, fileno(_stdin), fileno(_stdout), fileno(_stderr));
+	} else version (Windows) {
+		auto pid = spawnProcessWindows(name, args, _stdin, _stdout, _stderr);
 	} else {
 		int pid;
 	}
@@ -179,4 +203,51 @@ version (Posix) private {
 
 	int termsig(int status)    { return status & 0x7f; }
 	int exitstatus(int status) { return (status & 0xff00) >> 8; }
+} else version (Windows) {
+	extern (C) int _fileno(FILE* stream);
+	extern (C) HANDLE _get_osfhandle(int fd);
+	
+	LPSTR toArgz(string moduleName, string[] args)
+	{
+		char[] buffer;
+		for (size_t i = 0; i < args.length; i++) {
+			buffer ~= ' ';
+			buffer ~= cast(char[]) args[i];
+		}
+		buffer ~= '\0';
+		return buffer.ptr;
+	}
+
+	/// @TODO the FILEs are ignored, and standard handles are always used.
+	HANDLE spawnProcessWindows(string name, string[] args, FILE* stdinFP, FILE* stdoutFP, FILE* stderrFP)
+	{
+		STARTUPINFOA si;
+		si.cb = cast(DWORD) typeid(si).size;
+
+		PROCESS_INFORMATION pi;
+
+		auto moduleName = name ~ '\0';
+		BOOL bRet = CreateProcessA(moduleName.ptr, toArgz(moduleName, args), null, null, FALSE, 0, null, null, &si, &pi);
+		if (bRet == 0) {
+			throw new ProcessException("CreateProcess failed with error code " ~ toStringi(cast(int)GetLastError()));
+		}
+		CloseHandle(pi.hThread);
+		return pi.hProcess;
+	}
+
+	int waitWindows(HANDLE handle)
+	{
+		DWORD waitResult = WaitForSingleObject(handle, cast(uint) 0xFFFFFFFF);
+		if (waitResult == cast(uint) 0xFFFFFFFF) {
+			throw new ProcessException("WaitForSingleObject failed with error code " ~ toStringi(cast(int)GetLastError()));
+		}
+		DWORD retval;
+		BOOL result = GetExitCodeProcess(handle, &retval);
+		if (result == 0) {
+			throw new ProcessException("GetExitCodeProcess failed with error code " ~ toStringi(cast(int)GetLastError()));
+		}
+
+		CloseHandle(handle);
+		return cast(WORD) retval;
+	}
 }
