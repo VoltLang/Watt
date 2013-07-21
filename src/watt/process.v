@@ -28,17 +28,17 @@ public:
 
 Pid spawnProcess(string name, string[] args)
 {	
-	return spawnProcessFiles(name, args, stdin, stdout, stderr);
+	return spawnProcess(name, args, stdin, stdout, stderr);
 }
 
 /**
  * Rename when overloading works, merge when default
  * arguments work.
  */
-Pid spawnProcessFiles(string name, string[] args,
-                      FILE* _stdin,
-                      FILE* _stdout,
-                      FILE* _stderr)
+Pid spawnProcess(string name, string[] args,
+                 FILE* _stdin,
+                 FILE* _stdout,
+                 FILE* _stderr)
 {
 	version (Posix) {
 		auto pid = spawnProcessPosix(name, args, fileno(_stdin), fileno(_stdout), fileno(_stderr));
