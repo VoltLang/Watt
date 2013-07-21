@@ -51,12 +51,13 @@ Pid spawnProcess(string name, string[] args,
 
 version (Posix) private {
 
+	import core.posix.sys.types : pid_t;
 	extern(C) int execvp(char* file, char** argv);
-	extern(C) int fork();
+	extern(C) pid_t fork();
 	extern(C) int dup(int);
 	extern(C) int dup2(int, int);
 	extern(C) void close(int);
-	extern(C) int waitpid(int, int*, size_t);
+	extern(C) pid_t waitpid(pid_t, int*, int);
 	extern(C) void exit(int);
 
 	int spawnProcessPosix(string name,
@@ -130,7 +131,7 @@ version (Posix) private {
 		return;
 	}
 
-	int waitPosix(int pid)
+	int waitPosix(pid_t pid)
 	{
 		int status;
 
@@ -150,7 +151,7 @@ version (Posix) private {
 		}
 	}
 
-	int waitManyPosix(out int pid)
+	int waitManyPosix(out pid_t pid)
 	{
 		int status, result;
 
