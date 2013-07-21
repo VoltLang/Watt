@@ -150,6 +150,28 @@ version (Posix) private {
 		}
 	}
 
+	int waitManyPosix(out int pid)
+	{
+		int status, result;
+
+		// Because stopped processes doesn't count.
+		while(true) {
+			pid = waitpid(-1, &status, 0);
+
+			if (exited(status)) {
+				result = exitstatus(status);
+			} else if (signaled(status)) {
+				result = -termsig(status);
+			} else if (stopped(status)) {
+				continue;
+			} else {
+				result = -1; // TODO errno
+			}
+
+			return result;
+		}
+	}
+
 	bool stopped(int status)  { return (status & 0xff) == 0x7f; }
 	bool signaled(int status) { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
 	bool exited(int status)   { return (status & 0x7f) == 0; }
