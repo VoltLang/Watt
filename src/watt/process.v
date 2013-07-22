@@ -73,6 +73,21 @@ Pid spawnProcess(string name, string[] args,
 	return new Pid(pid);
 }
 
+private {
+	extern(C) char* getenv(in char*);
+	extern(C) size_t strlen(in char*);
+}
+
+string getEnv(string env)
+{
+	auto ptr = getenv(env.ptr);
+	if (ptr is null) {
+		return null;
+	} else {
+		return ptr[0 .. strlen(ptr)];
+	}
+}
+
 version (Posix) private {
 
 	import core.posix.sys.types : pid_t;
