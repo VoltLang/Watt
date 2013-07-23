@@ -20,7 +20,7 @@ TARGET = libwatt.bc
 # Setting up the source.
 #
 
-SRC = $(shell find src -name "*.v")
+SRC = $(shell find src -name "*.volt")
 OBJ = $(patsubst src/%.v, $(OBJ_DIR)/%.bc, $(SRC))
 
 
