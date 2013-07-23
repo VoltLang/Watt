@@ -17,6 +17,7 @@ alias LPSTR = char*;
 alias LPWSTR = wchar*;
 alias LPDWORD = DWORD*;
 alias ULONG_PTR = size_t;
+alias DWORD_PTR = ULONG_PTR;
 alias HANDLE = PVOID;
 alias PHANDLE = HANDLE*;
 
@@ -131,13 +132,15 @@ BOOL CreatePipe(PHANDLE, PHANDLE, LPSECURITY_ATTRIBUTES, DWORD);
 
 struct OVERLAPPED
 {
-	private struct _s {
+	private struct _s 
+	{
 		DWORD Offset;
 		DWORD OffsetHigh;
 	}
 	ULONG_PTR Internal;
 	ULONG_PTR InternalHigh;
-	union _u {
+	union _u 
+	{
 		_s s;
 		PVOID Pointer;
 	}
@@ -148,3 +151,22 @@ struct OVERLAPPED
 alias LPOVERLAPPED = OVERLAPPED*;
 
 BOOL ReadFile(HANDLE, LPVOID, DWORD, LPDWORD, LPOVERLAPPED);
+
+struct SYSTEM_INFO
+{
+	DWORD wReserved;
+	DWORD dwPageSize;
+	LPVOID lpMinimumApplicationAddress;
+	LPVOID lpMaximumApplicationAddress;
+	DWORD_PTR dwActiveProcessorMask;
+	DWORD dwNumberOfProcessors;
+	DWORD dwProcessorType;
+	DWORD dwAllocationGranularity;
+	WORD wProcessorLevel;
+	WORD wProcessorRevision;
+}
+
+alias LPSYSTEM_INFO = SYSTEM_INFO*;
+
+void GetSystemInfo(LPSYSTEM_INFO);
+
