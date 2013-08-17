@@ -13,7 +13,12 @@ MACHINE ?= $(HOST_MACHINE)
 #
 
 VFLAGS ?= --no-stdlib -I %@execdir%/rt/src
-TARGET = libwatt.bc
+TARGETS = \
+	libwatt-x86-mingw.bc \
+	libwatt-x86-linux.bc \
+	libwatt-x86_64-linux.bc \
+	libwatt-x86-osx.bc \
+	libwatt-x86_64-osx.bc
 
 
 ########################################
@@ -28,20 +33,22 @@ OBJ = $(patsubst src/%.v, $(OBJ_DIR)/%.bc, $(SRC))
 # Targets.
 #
 
-all: $(TARGET)
+all: $(TARGETS)
 
-$(TARGET): $(SRC) GNUmakefile
-	@echo "  VOLT   $(TARGET)"
-	@$(VOLT) $(VFLAGS) --emit-bitcode -o $(TARGET) -I src $(SRC)
+$(TARGETS): $(SRC) GNUmakefile
+	@echo "  VOLT   $@"
+	@$(VOLT) $(VFLAGS) --emit-bitcode -o $@ -I src $(SRC) \
+		--arch $(shell echo $@ | sed "s,libwatt-\([^-]*\)-[^.]*.bc,\1,") \
+		--platform $(shell echo $@ | sed "s,libwatt-[^-]*-\([^.]*\).bc,\1,")
 
 clean:
-	@rm -rf $(TARGET) .obj
+	@rm -rf $(TARGETS) .obj
 	@rm -rf .pkg
 	@rm -rf watt.tar.gz	
 
 package: all
 	@mkdir -p .pkg
-	@cp libwatt.bc .pkg/
+	@cp $(TARGETS) .pkg/
 	@cp -r ./src/* .pkg/
 	@tar -czf watt.tar.gz .pkg/*
 
