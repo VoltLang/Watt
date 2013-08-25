@@ -1,4 +1,3 @@
-// Copyright © 2013, Jakob Bornecrantz.  All rights reserved.
 // See copyright just below.
 module watt.license;
 
@@ -8,6 +7,7 @@ module watt.license;
 enum string license = `
 Copyright © 2005-2009, Sean Kelly.  All rights reserved.
 Copyright © 2013, Jakob Bornecrantz.  All rights reserved.
+Copyright © 2013, Bernard Helyer.
 
 Boost Software License - Version 1.0 - August 17th, 2003
 

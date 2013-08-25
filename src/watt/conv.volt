@@ -1,3 +1,5 @@
+// Copyright © 2013, Bernard Helyer.
+// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.conv;
 
 // The type suffixes will go away when we get function overloading.

@@ -1,6 +1,9 @@
+// Copyright © 2013, Bernard Helyer.
+// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module core.windows.windows;
 
 import core.stdc.stdarg;
+
 
 extern (Windows):
 
