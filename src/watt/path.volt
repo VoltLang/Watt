@@ -1,9 +1,16 @@
 module watt.path;
 
 import core.stdc.stdio;
-version (Windows) import core.windows.windows;
-import core.posix.sys.stat : cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
-import core.posix.sys.types;
+version (Windows) {
+	import core.windows.windows;
+} else version (Posix) {
+	import core.posix.sys.stat : cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
+	import core.posix.sys.types;
+} else version (Emscripten) {
+	// Nothing
+} else {
+	static assert(false);
+}
 
 /**
  * mkdir creates a single given directory.
@@ -16,7 +23,7 @@ void mkdir(const(char)[] dir)
 	version (Windows) {
 		// TODO: Unicode and error handling.
 		CreateDirectoryA(cstr.ptr, null);
-	} else {
+	} else version (Posix) {
 		cmkdir(cstr.ptr, cast(mode_t)(S_IRWXU | S_IRWXG | S_IRWXO));
 	}
 	return;

@@ -99,9 +99,20 @@ version (Windows) {
 		long        _mbstateL;
 	}
 
-} else+/ {
+} else+/ version (Emscripten) {
 
-    static assert( false, "Unsupported platform" );
+	enum {
+		BUFSIZ       = 1024,
+		EOF          = -1,
+		FOPEN_MAX    = 20,
+		FILENAME_MAX = 1024,
+		TMP_MAX      = 26,
+		L_tmpnam     = 1024,
+	}
+
+} else {
+
+	static assert( false, "Unsupported platform" );
 
 }
 
@@ -220,9 +231,14 @@ version (Windows) {
 		__mbstate_t     _mbstate;
 	}
 
-} else+/ {
+} else+/ version (Emscripten) {
 
-    static assert( false, "Unsupported platform" );
+	// XXX not correct.
+	struct _iobuf {}
+
+} else {
+
+	static assert( false, "Unsupported platform" );
 
 }
 
@@ -319,9 +335,22 @@ version (Windows) {
 	alias __stdoutp stdout;
 	alias __stderrp stderr;
 
-} else+/ {
+} else+/ version (Emscripten) {
 
-    static assert( false, "Unsupported platform" );
+	enum
+	{
+		_IOFBF = 0,
+		_IOLBF = 1,
+		_IONBF = 2,
+	}
+
+	extern global FILE* stdin;
+	extern global FILE* stdout;
+	extern global FILE* stderr;
+
+} else {
+
+	static assert( false, "Unsupported platform" );
 
 }
 
@@ -457,7 +486,22 @@ version (Windows) {
 	int  snprintf(char* s, size_t n, in char* format, ...);
 	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 
-} else+/ {
+} else+/ version (Emscripten) {
+
+	// No unsafe pointer manipulation.
+	@trusted
+	{
+		void rewind(FILE* stream);
+		pure void clearerr(FILE* stream);
+		pure int  feof(FILE* stream);
+		pure int  ferror(FILE* stream);
+		int  fileno(FILE *);
+	}
+
+	int  snprintf(char* s, size_t n, in char* format, ...);
+	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
+
+} else {
 
     static assert( false, "Unsupported platform" );
 

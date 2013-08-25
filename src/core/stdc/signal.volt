@@ -41,6 +41,15 @@ version (Windows) {
 	enum SIGSEGV    = 11; // Invalid memory reference
 	enum SIGTERM    = 15; // Termination
 
+} else version (Emscripten) {
+
+	enum SIGABRT    = 6;  // Abnormal termination
+	enum SIGFPE     = 8;  // Floating-point error
+	enum SIGILL     = 4;  // Illegal hardware instruction
+	enum SIGINT     = 2;  // Terminal interrupt character
+	enum SIGSEGV    = 11; // Invalid memory reference
+	enum SIGTERM    = 15; // Termination
+
 } else {
 
 	static assert(false, "not a supported platform");

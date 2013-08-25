@@ -3,7 +3,11 @@
 module watt.process;
 
 import core.stdc.stdio;
-version (Windows) import core.windows.windows;
+version (Windows) {
+	import core.windows.windows;
+} else version (Posix) {
+	import core.posix.sys.types : pid_t;
+}
 
 import watt.conv;
 
@@ -12,8 +16,10 @@ class Pid
 private:
 	version (Windows) {
 		HANDLE _handle;
-	} else {
+	} else version (Posix) {
 		pid_t _pid;
+	} else {
+		// Nothing
 	}
 
 public:
@@ -23,10 +29,15 @@ public:
 			this._handle = handle;
 			return;
 		}
+	} else version (Posix) {
+		this(pid_t pid)
+		{
+			this._pid = pid;
+			return;
+		}
 	} else {
 		this(int pid)
 		{
-			this._pid = pid;
 			return;
 		}
 	}
@@ -90,7 +101,6 @@ string getEnv(string env)
 
 version (Posix) private {
 
-	import core.posix.sys.types : pid_t;
 	extern(C) int execvp(char* file, char** argv);
 	extern(C) pid_t fork();
 	extern(C) int dup(int);
