@@ -48,6 +48,12 @@ public:
 		return null;
 	}
 
+	~this()
+	{
+		free();
+		return;
+	}
+
 	version (Windows) {
 
 		global Library load(string filename)
@@ -66,7 +72,7 @@ public:
 			return GetProcAddress(ptr, symbol.ptr);
 		}
 
-		~this()
+		final void free()
 		{
 			if (ptr !is null) {
 				FreeLibrary(ptr);
@@ -76,7 +82,6 @@ public:
 		}
 
 	} else version (Linux) {
-
 
 		global Library load(string filename)
 		{
@@ -94,7 +99,7 @@ public:
 			return dlsym(ptr, symbol.ptr);
 		}
 
-		~this()
+		final void free()
 		{
 			if (ptr !is null) {
 				dlclose(ptr);
@@ -121,7 +126,7 @@ public:
 			return dlsym(ptr, symbol.ptr);
 		}
 
-		~this()
+		final void free()
 		{
 			if (ptr !is null) {
 				dlclose(ptr);
@@ -140,6 +145,11 @@ public:
 		final void* symbol(string symbol)
 		{
 			throw new Exception("Huh oh! no impementation");
+		}
+
+		final void free()
+		{
+			return;
 		}
 
 	} else {
