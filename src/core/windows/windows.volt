@@ -23,6 +23,8 @@ alias ULONG_PTR = size_t;
 alias DWORD_PTR = ULONG_PTR;
 alias HANDLE = PVOID;
 alias PHANDLE = HANDLE*;
+alias HINSTANCE = HANDLE;
+alias HMODULE = HINSTANCE;
 
 enum TRUE = 1;
 enum FALSE = 0;
