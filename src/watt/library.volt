@@ -10,11 +10,11 @@ version(Windows) {
 	import core.windows.windows;
 
 	// XXX Proper way to import this.
-	extern(C)
+	extern(Windows)
 	{
-		HANDLE LoadLibraryA(const(char)* name);
-		void* FreeLibrary(HANDLE lib);
-		void* GetProcAddress(HANDLE lib, const(char)* name);
+		HMODULE LoadLibraryA(const(char)* name);
+		void* FreeLibrary(HMODULE lib);
+		void* GetProcAddress(HMODULE lib, const(char)* name);
 	}
 
 } else {
@@ -63,13 +63,14 @@ public:
 
 		final void* symbol(string symbol)
 		{
-			return GetProcAddress(cast(HANDLE)ptr, symbol.ptr);
+			return GetProcAddress(ptr, symbol.ptr);
 		}
 
 		~this()
 		{
 			if (ptr !is null) {
-				FreeLibrary(cast(HANDLE)ptr);
+				FreeLibrary(ptr);
+				ptr = null;
 			}
 			return;
 		}
@@ -148,6 +149,11 @@ public:
 	}
 
 private:
-	this(void *ptr) { this.ptr = ptr; return; }
-	void *ptr;
+	version (Windows) {
+		this(HMODULE ptr) { this.ptr = ptr; return; }
+		HMODULE ptr;
+	} else {
+		this(void* ptr) { this.ptr = ptr; return; }
+		void* ptr;
+	}
 }
