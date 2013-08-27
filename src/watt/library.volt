@@ -81,34 +81,7 @@ public:
 			return;
 		}
 
-	} else version (Linux) {
-
-		global Library load(string filename)
-		{
-			void *ptr = dlopen(filename.ptr, RTLD_NOW | RTLD_GLOBAL);
-
-			if (ptr is null) {
-				return null;
-			}
-
-			return new Library(ptr);
-		}
-
-		final void* symbol(string symbol)
-		{
-			return dlsym(ptr, symbol.ptr);
-		}
-
-		final void free()
-		{
-			if (ptr !is null) {
-				dlclose(ptr);
-				ptr = null;
-			}
-			return;
-		}
-
-	} else version (OSX) {
+	} else version (Posix) {
 
 		global Library load(string filename)
 		{
