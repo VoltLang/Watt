@@ -96,7 +96,7 @@ string getEnv(string env)
 	if (ptr is null) {
 		return null;
 	} else {
-		return ptr[0 .. strlen(ptr)];
+		return cast(string)ptr[0 .. strlen(ptr)];
 	}
 }
 
