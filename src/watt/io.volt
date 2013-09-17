@@ -2,7 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io;
 
-import watt.conv;
+import watt.text.format;
 import core.stdc.stdio;
 
 /**
@@ -58,7 +58,7 @@ public:
 
 	void writei(int i)
 	{
-		write(toStringi(i));
+		write(format("%s", i));
 		return;
 	}
 

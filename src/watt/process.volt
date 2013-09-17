@@ -258,7 +258,7 @@ version (Posix) private {
 		auto moduleName = name ~ '\0';
 		BOOL bRet = CreateProcessA(moduleName.ptr, toArgz(moduleName, args), null, null, FALSE, 0, null, null, &si, &pi);
 		if (bRet == 0) {
-			throw new ProcessException("CreateProcess failed with error code " ~ toStringi(cast(int)GetLastError()));
+			throw new ProcessException("CreateProcess failed with error code " ~ toString(cast(int)GetLastError()));
 		}
 		CloseHandle(pi.hThread);
 		return pi.hProcess;
@@ -268,12 +268,12 @@ version (Posix) private {
 	{
 		DWORD waitResult = WaitForSingleObject(handle, cast(uint) 0xFFFFFFFF);
 		if (waitResult == cast(uint) 0xFFFFFFFF) {
-			throw new ProcessException("WaitForSingleObject failed with error code " ~ toStringi(cast(int)GetLastError()));
+			throw new ProcessException("WaitForSingleObject failed with error code " ~ toString(cast(int)GetLastError()));
 		}
 		DWORD retval;
 		BOOL result = GetExitCodeProcess(handle, &retval);
 		if (result == 0) {
-			throw new ProcessException("GetExitCodeProcess failed with error code " ~ toStringi(cast(int)GetLastError()));
+			throw new ProcessException("GetExitCodeProcess failed with error code " ~ toString(cast(int)GetLastError()));
 		}
 
 		CloseHandle(handle);
