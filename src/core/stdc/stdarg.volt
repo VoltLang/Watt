@@ -8,3 +8,5 @@ extern(C):
 nothrow:
 
 alias va_list = void*;
+alias va_start = object.__llvm_volt_va_start;
+alias va_end = object.__llvm_volt_va_end;
