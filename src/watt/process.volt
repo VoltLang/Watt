@@ -244,11 +244,14 @@ version (Posix) private {
 		return buffer.ptr;
 	}
 
-	/// @TODO the FILEs are ignored, and standard handles are always used.
 	HANDLE spawnProcessWindows(string name, string[] args, FILE* stdinFP, FILE* stdoutFP, FILE* stderrFP)
 	{
 		STARTUPINFOA si;
 		si.cb = cast(DWORD) typeid(si).size;
+		si.dwFlags = STARTF_USESTDHANDLES;
+		si.hStdInput = _get_osfhandle(_fileno(stdinFP));
+		si.hStdOutput = _get_osfhandle(_fileno(stdoutFP));
+		si.hStdError = _get_osfhandle(_fileno(stderrFP));
 
 		PROCESS_INFORMATION pi;
 
