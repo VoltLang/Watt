@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io;
 
+import watt.conv;
+import watt.varargs;
 import watt.text.format;
 import core.stdc.stdio;
 
@@ -54,18 +56,27 @@ public:
 		return;
 	}
 
-	// Like conv it self, these type suffixes should go away with function overloading.
-
-	void writei(int i)
+	void writef(const(char)[] formatString, ...)
 	{
-		write(format("%s", i));
+		char[] buf;
+		va_list vl;
+
+		va_start(vl);
+		formatImpl(formatString, ref _typeids, ref buf, ref vl);
+		va_end(vl);
+		write(buf);
 		return;
 	}
 
-	void writelni(int i)
+	void writefln(const(char)[] formatString, ...)
 	{
-		writei(i);
-		put('\n');
+		char[] buf;
+		va_list vl;
+
+		va_start(vl);
+		formatImpl(formatString, ref _typeids, ref buf, ref vl);
+		va_end(vl);
+		writeln(buf);
 		return;
 	}
 
@@ -107,9 +118,25 @@ public:
 	}
 
 	/**
+	 * Read input until a newline character is encountered.
+	 *
+	 * The newline is discarded.
+	 */
+	string readln()
+	{
+		char[] buf;
+		char c = cast(char) get();
+		while (c != '\n') {
+			buf ~= c;
+			c = cast(char) get();
+		}
+		return cast(string) buf;
+	}
+
+	/**
 	 * Returns true if the stream indicates that there is no more data.
 	 * This may never be true, depending on the source.
-	 */ 
+	 */
 	bool eof()
 	{
 		return true;
@@ -193,7 +220,7 @@ global OutputFileStream output;
 global OutputFileStream error;
 global InputFileStream input;
 
-void init()
+global this()
 {
 	output = new OutputFileStream(null);
 	output.handle = stdout;
@@ -203,3 +230,4 @@ void init()
 	input.handle = stdin;
 	return;
 }
+
