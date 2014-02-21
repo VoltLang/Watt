@@ -153,6 +153,7 @@ version (Posix) private {
 
 		execvp(argz[0], &argz[0]);
 		exit(-1);
+		assert(false);
 	}
 
 	void toArgz(char[] stack, char*[] result, string name, string[] args)
@@ -199,6 +200,7 @@ version (Posix) private {
 				return -1;//errno();
 			}
 		}
+		assert(false);
 	}
 
 	int waitManyPosix(out pid_t pid)
@@ -221,6 +223,7 @@ version (Posix) private {
 
 			return result;
 		}
+		assert(false);
 	}
 
 	bool stopped(int status)  { return (status & 0xff) == 0x7f; }
