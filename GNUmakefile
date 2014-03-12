@@ -16,6 +16,7 @@ VFLAGS ?= --no-stdlib -I %@execdir%/rt/src
 TARGETS = \
 	libwatt-le32-emscripten.bc \
 	libwatt-x86-mingw.bc \
+	libwatt-x86_64-mingw.bc \
 	libwatt-x86-linux.bc \
 	libwatt-x86_64-linux.bc \
 	libwatt-x86-osx.bc \
