@@ -110,6 +110,14 @@ public:
 	}
 
 	/**
+	 * Returns the character that will be retrieved by get().
+	 */
+	dchar peek()
+	{
+		return cast(dchar) -1;
+	}
+
+	/**
 	 * Read a single character from the source.
 	 */
 	dchar get()
@@ -208,6 +216,13 @@ public:
 	override bool eof()
 	{
 		return feof(handle) != 0;
+	}
+
+	override dchar peek()
+	{
+		int c = fgetc(handle);
+		ungetc(c, handle);
+		return cast(dchar) c;
 	}
 
 	override dchar get()
