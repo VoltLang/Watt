@@ -178,3 +178,5 @@ void GetSystemInfo(LPSYSTEM_INFO);
 extern (C) int _fileno(void*);
 extern (C) HANDLE _get_osfhandle(int);
 
+void Sleep(DWORD);
+
