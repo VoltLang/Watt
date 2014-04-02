@@ -73,6 +73,9 @@ private void formatObject(ref char[] buf, ref va_list vl)
 private void formatString(ref char[] buf, ref va_list vl)
 {
 	auto s = va_arg!char[](vl);
+	if (s.length > 1 && s[s.length - 1] == '\0') {
+		s = s[0 .. s.length - 1];
+	}
 	buf ~= s;
 	return;
 }
