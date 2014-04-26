@@ -91,6 +91,17 @@ dchar decode(string str, ref size_t index)
 	throw new MalformedUTF8Exception("utf-8 decode failure");
 }
 
+/// Return how many codepoints are in a given UTF-8 string.
+size_t count(string s)
+{
+	size_t i, length;
+	while (i < s.length) {
+		decode(s, ref i);
+		length++;
+	}
+	return length;
+}
+
 void validate(string s)
 {
 	size_t i;
