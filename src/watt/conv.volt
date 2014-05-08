@@ -1,4 +1,4 @@
-// Copyright © 2013, Bernard Helyer.
+// Copyright © 2013-2014, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.conv;
 
@@ -180,3 +180,25 @@ private const(char)[] toStringSigned(long i, size_t maxLength)
 	return outbuf;
 }
 
+/**
+ * Given a Volt string s, return a pointer to a nul terminated string.
+ */
+const(char)* toStringz(const(char)[] s)
+{
+	auto cstr = new char[](s.length + 1);
+	cstr[0 .. $-1] = s[0 .. $];
+	cstr[$ - 1] = '\0';
+	return cast(const(char)*) cstr.ptr;
+}
+
+private extern (C) size_t strlen(scope const(char)* s);
+
+/**
+ * Given a nul terminated string s, return a Volt string.
+ */
+string toString(scope const(char)* s)
+{
+	auto str = new char[](strlen(s));
+	str[] = s[0 .. str.length];
+	return cast(string) str;
+}

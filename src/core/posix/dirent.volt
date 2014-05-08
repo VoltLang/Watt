@@ -64,6 +64,8 @@ version (Linux) {
 
 		dirent* readdir64(DIR*);
 		alias readdir = readdir64;
+		DIR* opendir(const(char)*);
+		int     closedir(DIR*);
 
 	} else {
 
@@ -101,6 +103,8 @@ version (Linux) {
 	}
 
 	dirent* readdir(DIR*);
+	DIR* opendir(const(char)*);
+	int     closedir(DIR*);
 
 } else /+version (FreeBSD) {
 

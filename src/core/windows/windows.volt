@@ -1,4 +1,4 @@
-// Copyright © 2013, Bernard Helyer.
+// Copyright © 2013-2014, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module core.windows.windows;
 
@@ -25,9 +25,12 @@ alias HANDLE = PVOID;
 alias PHANDLE = HANDLE*;
 alias HINSTANCE = HANDLE;
 alias HMODULE = HINSTANCE;
+alias TCHAR = char;
 
 enum TRUE = 1;
 enum FALSE = 0;
+enum MAX_PATH = 260;
+enum INVALID_HANDLE_VALUE = -1;
 
 struct SECURITY_ATTRIBUTES
 {
@@ -180,3 +183,35 @@ extern (C) HANDLE _get_osfhandle(int);
 
 void Sleep(DWORD);
 
+struct FILETIME
+{
+	DWORD dwLowDateTime;
+	DWORD dwHighDateTime;
+}
+
+alias PFILETIME = FILETIME*;
+
+struct WIN32_FIND_DATA
+{
+	DWORD    dwFileAttributes;
+	FILETIME ftCreationTime;
+	FILETIME ftLastAccessTime;
+	FILETIME ftLastWriteTime;
+	DWORD    nFileSizeHigh;
+	DWORD    nFileSizeLow;
+	DWORD    dwReserved0;
+	DWORD    dwReserved1;
+	TCHAR[260]    cFileName;
+	TCHAR[14]    cAlternateFileName;
+}
+
+alias LPWIN32_FIND_DATA = WIN32_FIND_DATA*;
+
+enum ERROR_FILE_NOT_FOUND = 2;
+enum ERROR_NO_MORE_FILES = 18;
+
+HANDLE FindFirstFileA(LPCSTR, LPWIN32_FIND_DATA);
+BOOL FindNextFileA(HANDLE, LPWIN32_FIND_DATA);
+
+DWORD GetCurrentDirectoryA(DWORD, LPSTR);
+BOOL SetCurrentDirectoryA(LPCSTR);
