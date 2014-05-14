@@ -7,7 +7,7 @@ import core.stdc.stdarg;
 
 extern (Windows):
 
-alias WORD = int;
+alias WORD = ushort;
 alias DWORD = uint;
 alias BOOL = int;
 alias LPBYTE = byte*;
