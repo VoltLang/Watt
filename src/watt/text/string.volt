@@ -74,3 +74,20 @@ ptrdiff_t indexOf(string s, string sub)
 	return -1;
 }
 
+/**
+ * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
+ */
+string replace(string s, string from, string to)
+{
+	if (from == to) {
+		throw new Exception("replace: from and to cannot match!");
+	}
+	string result = s;
+	auto i = indexOf(result, from);
+	while (i != -1) {
+		auto si = cast(size_t) i;
+		result = result[0 .. si] ~ to ~ result[si + from.length .. $];
+		i = indexOf(result, from);
+	}
+	return result;
+}
