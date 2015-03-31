@@ -33,6 +33,13 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 			case 'd':
 				formatInt(ref buf, ref vl);
 				break;
+			case 'X':
+				formatHex(ref buf, ref vl);
+				break;
+			case 'x':
+				formatHex(ref buf, ref vl);
+				buf = toLower(cast(string) buf);
+				break;
 			case 's':
 				formatType(_typeids[index], ref buf, ref vl);
 				break;
@@ -50,6 +57,7 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 		}
 	}
 	buf ~= '\0';
+	buf.length = buf.length - 1;  // Disregard the nul when it comes to length.
 	return;
 }
 
@@ -140,6 +148,13 @@ private void formatChar(ref char[] buf, ref va_list vl)
 {
 	auto c = va_arg!char(vl);
 	buf ~= c;
+	return;
+}
+
+private void formatHex(ref char[] buf, ref va_list vl)
+{
+	auto l = va_arg!ulong(vl);
+	buf ~= cast(char[]) toStringHex(l);
 	return;
 }
 

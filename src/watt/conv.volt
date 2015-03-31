@@ -2,7 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.conv;
 
-import watt.text.ascii : isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper;
+import watt.text.ascii : isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
 import watt.text.format : format;
 
 class ConvException : Exception
@@ -176,6 +176,32 @@ private const(char)[] toStringSigned(long i, size_t maxLength)
 		oindex++;
 	}
 	outbuf.length = oindex;
+
+	return outbuf;
+}
+
+/// Returns an upper case hex string from the given unsigned long.
+private const(char)[] toStringHex(ulong i)
+{
+	auto buf = new char[](0);
+
+	bool inLoop = true;
+	while (inLoop) {
+		ulong remainder = i % 16;
+		char c = HEX_DIGITS[remainder];
+		i = i / 16;
+		buf ~= c;
+		inLoop = i != 0;
+	}
+
+	auto outbuf = new char[](buf.length);
+	size_t bindex = buf.length;
+	size_t oindex = 0u;
+	while (oindex != buf.length) {
+		bindex--;
+		outbuf[oindex] = buf[bindex];
+		oindex++;
+	}
 
 	return outbuf;
 }
