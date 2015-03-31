@@ -105,6 +105,12 @@ const(char)[] toString(long l)
 	return toStringSigned(l, 20);
 }
 
+const(char)[] toString(void* p)
+{
+	auto u = cast(size_t) p;
+	return "0x" ~ toStringHex(u);
+}
+
 const(char)[] charToString(dchar c)
 {
 	if ((cast(uint) c) >= 255) {
@@ -223,6 +229,13 @@ private extern (C) size_t strlen(scope const(char)* s);
  * Given a nul terminated string s, return a Volt string.
  */
 string toString(scope const(char)* s)
+{
+	auto str = new char[](strlen(s));
+	str[] = s[0 .. str.length];
+	return cast(string) str;
+}
+
+string toString(const(char)* s)
 {
 	auto str = new char[](strlen(s));
 	str[] = s[0 .. str.length];

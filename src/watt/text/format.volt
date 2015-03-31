@@ -40,6 +40,9 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				formatHex(ref buf, ref vl);
 				buf = toLower(cast(string) buf);
 				break;
+			case 'p':
+				formatPointer(ref buf, ref vl);
+				break;
 			case 's':
 				formatType(_typeids[index], ref buf, ref vl);
 				break;
@@ -161,21 +164,8 @@ private void formatHex(ref char[] buf, ref va_list vl)
 private void formatPointer(ref char[] buf, ref va_list vl)
 {
 	auto p = va_arg!void*(vl);
-	if (p is null) {
-		formatNull(ref buf, ref vl);
-		return;
-	}
-	version (V_P32) {
-		uint i = cast(uint) p;
-		buf ~= cast(char[]) toString(i);
-		return;
-	} else version (V_P64) {
-		ulong l = cast(ulong) p;
-		buf ~= cast(char[]) toString(l);
-		return;
-	} else {
-		static assert(false, "unsupported architecture");
-	}
+	buf ~= cast(char[]) toString(p);
+	return;
 }
 
 
