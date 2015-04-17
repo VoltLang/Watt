@@ -187,7 +187,7 @@ private const(char)[] toStringSigned(long i, size_t maxLength)
 }
 
 /// Returns an upper case hex string from the given unsigned long.
-private const(char)[] toStringHex(ulong i)
+const(char)[] toStringHex(ulong i)
 {
 	auto buf = new char[](0);
 
