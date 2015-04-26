@@ -91,3 +91,32 @@ string replace(string s, string from, string to)
 	}
 	return result;
 }
+
+int startsWith(string s, string[] beginnings...)
+{
+	int result;
+	foreach (beginning; beginnings) {
+		if (beginning.length > s.length) {
+			continue;
+		}
+		if (s[0 .. beginning.length] == beginning) {
+			result++;
+		}
+	}
+	return result;
+}
+
+int endsWith(string s, string[] ends...)
+{
+	int result;
+	foreach (end; ends) {
+		if (end.length > s.length) {
+			continue;
+		}
+		if (s[$ - end.length .. $] == end) {
+			result++;
+		}
+	}
+	return result;
+}
+
