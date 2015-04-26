@@ -148,3 +148,16 @@ version (Windows) void searchDir(string dirName, string glob, scope void delegat
 		}
 	} while (true);
 }
+
+/**
+ * Returns true if a given file exists.
+ */
+bool exists(const(char)[] filename)
+{
+	auto fp = fopen(toStringz(filename), "r");
+	if (fp is null) {
+		return false;
+	}
+	fclose(fp);
+	return true;
+}
