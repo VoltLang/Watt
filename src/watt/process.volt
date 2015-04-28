@@ -3,6 +3,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.process;
 
+import core.stdc.stdlib : csystem = system;
 import core.stdc.stdio;
 version (Windows) {
 	import core.windows.windows;
@@ -98,6 +99,11 @@ string getEnv(string env)
 	} else {
 		return cast(string)ptr[0 .. strlen(ptr)];
 	}
+}
+
+int system(string name)
+{
+	return csystem(toStringz(name));
 }
 
 version (Posix) private {
