@@ -508,3 +508,4 @@ version (Windows) {
 }
 
 void perror(in char* s);
+int unlink(const char* s);

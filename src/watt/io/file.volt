@@ -10,6 +10,14 @@ import core.stdc.stdio;
 version (Windows) import core.windows.windows;
 version (Posix) import core.posix.dirent;
 
+class FileException : Exception
+{
+	this(string msg)
+	{
+		super(msg);
+	}
+}
+
 /**
  * Read the contents of the file pointed to by filename into a string with no verification.
  */
@@ -160,4 +168,14 @@ bool exists(const(char)[] filename)
 	}
 	fclose(fp);
 	return true;
+}
+
+/**
+ * Deletes a file.
+ */
+void remove(const(char)[] filename)
+{
+	if (unlink(toStringz(filename)) != 0) {
+		throw new FileException("couldn't delete file");
+	}
 }
