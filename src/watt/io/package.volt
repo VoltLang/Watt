@@ -56,7 +56,7 @@ public:
 		return;
 	}
 
-	void writef(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
+	void vwritef(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
 	{
 		char[] buf;
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
@@ -76,7 +76,7 @@ public:
 		return;
 	}
 
-	void writefln(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
+	void vwritefln(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
 	{
 		char[] buf;
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
@@ -275,7 +275,7 @@ void writef(const(char)[] s, ...)
 {
 	va_list vl;
 	va_start(vl);
-	output.writef(s, ref _typeids, ref vl);
+	output.vwritef(s, ref _typeids, ref vl);
 	va_end(vl);
 }
 
@@ -283,7 +283,7 @@ void writefln(const(char)[] s, ...)
 {
 	va_list vl;
 	va_start(vl);
-	output.writefln(s, ref _typeids, ref vl);
+	output.vwritefln(s, ref _typeids, ref vl);
 	va_end(vl);
 }
 
