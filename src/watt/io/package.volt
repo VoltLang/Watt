@@ -56,6 +56,14 @@ public:
 		return;
 	}
 
+	void writef(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
+	{
+		char[] buf;
+		formatImpl(formatString, ref typeids, ref buf, ref vl);
+		write(buf);
+	}
+
+
 	void writef(const(char)[] formatString, ...)
 	{
 		char[] buf;
@@ -66,6 +74,13 @@ public:
 		va_end(vl);
 		write(buf);
 		return;
+	}
+
+	void writefln(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
+	{
+		char[] buf;
+		formatImpl(formatString, ref typeids, ref buf, ref vl);
+		writeln(buf);
 	}
 
 	void writefln(const(char)[] formatString, ...)
@@ -244,5 +259,36 @@ global this()
 	input = new InputFileStream(null);
 	input.handle = stdin;
 	return;
+}
+
+void write(const(char)[] s)
+{
+	output.write(s);
+}
+
+void writeln(const(char)[] s)
+{
+	output.writeln(s);
+}
+
+void writef(const(char)[] s, ...)
+{
+	va_list vl;
+	va_start(vl);
+	output.writef(s, ref _typeids, ref vl);
+	va_end(vl);
+}
+
+void writefln(const(char)[] s, ...)
+{
+	va_list vl;
+	va_start(vl);
+	output.writefln(s, ref _typeids, ref vl);
+	va_end(vl);
+}
+
+string readln()
+{
+	return input.readln();
 }
 
