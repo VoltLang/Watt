@@ -2,6 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.path;
 
+import watt.text.string : indexOf;
 import core.stdc.stdio;
 version (Windows) {
 	import core.windows.windows;
@@ -50,6 +51,35 @@ void mkdirP(const(char)[] dir)
 	return;
 }
 
+
+private bool isSlash(char c)
+{
+	version (Windows) {
+		return c == '\\' || c == '/';
+	} else {
+		return c == '/';
+	}
+}
+
+private size_t countSlashes(const(char)[] s)
+{
+	size_t count;
+	for (size_t i = 0; i < s.length; ++i) {
+		auto c = s[i];
+		if (isSlash(c)) {
+			count++;
+		}
+	}
+	return count;
+}
+
+private void removeTrailingSlashes(ref string s)
+{
+	while (s.length > 0 && isSlash(s[$-1])) {
+		s = s[0 .. $-1];
+	}
+}
+
 /**
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html,
  * with a few additions when handling drives and multiple path separator types on Windows.
@@ -62,34 +92,6 @@ string dirName(const(char)[] path)
 		path = path[2 .. $];
 	}
 
-	bool isSlash(char c)
-	{
-		version (Windows) {
-			return c == '\\' || c == '/';
-		} else {
-			return c == '/';
-		}
-	}
-
-	size_t countSlashes()
-	{
-		size_t count;
-		for (size_t i = 0; i < path.length; ++i) {
-			auto c = path[i];
-			if (isSlash(c)) {
-				count++;
-			}
-		}
-		return count;
-	}
-
-	void removeTrailingSlashes()
-	{
-		while (path.length > 0 && isSlash(path[$-1])) {
-			path = path[0 .. $-1];
-		}
-	}
-
 	// 1. If the string is //,  skip steps 2 to 5.
 	if (path.length >= 2 && isSlash(path[0]) && isSlash(path[1])) {
 		return drive ~ dirSeparator;
@@ -97,16 +99,16 @@ string dirName(const(char)[] path)
 
 	/* 2. If string consists entirely of <slash> characters, 
 	 * set string to a single <slash> and skip steps 3 to 8. */
-	auto count = countSlashes();
+	auto count = countSlashes(path);
 	if (count == path.length) {
 		return drive ~ dirSeparator;
 	}
 
 	// 3. If there are any trailing <slash> characters, they shall be removed.
-	removeTrailingSlashes();
+	removeTrailingSlashes(ref path);
 
 	// 4. If there are no <slash> characters remaining in string, skip 5 to 8 and set it to ".".
-	count = countSlashes();
+	count = countSlashes(path);
 	if (count == 0) {
 		version (Windows) return drive;
 		else return ".";
@@ -118,7 +120,7 @@ string dirName(const(char)[] path)
 	}
 
 	// 7. If there are any trailing <slash> characters in string, they shall be removed.
-	removeTrailingSlashes();
+	removeTrailingSlashes(ref path);
 
 	// 8. If the remaining string is empty, string shall be set to a single <slash> character.
 	if (path.length == 0) {
@@ -126,4 +128,42 @@ string dirName(const(char)[] path)
 	}
 
 	return drive ~ path;
+}
+
+/**
+ * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html.
+ * with a few additions when handling drives and multiple path separator types on Windows.
+ */
+string baseName(const(char)[] path, const(char)[] suffix="")
+{
+	// Omit drive letters.
+	version (Windows) {
+		if (path.length > 2 && path[1] == ':') {
+			path = path[2 .. $];
+		}
+	}
+
+	if (path.length == 0) {
+		return "";
+	}
+
+	auto slashesCount = countSlashes(path);
+	if (countSlashes(path) == path.length) {
+		return dirSeparator;
+	}
+
+    removeTrailingSlashes(ref path);
+
+	auto slashIndex = path.indexOf(dirSeparator[0]);
+	while (slashIndex >= 0) {
+		path = path[slashIndex+1 .. $];
+		slashIndex = path.indexOf(dirSeparator[0]);
+	}
+
+	if (suffix == path || path.length <= suffix.length || path[($-suffix.length) .. $] != suffix) {
+		return path;
+	}
+
+	path = path[0 .. ($-suffix.length)];
+	return path;
 }
