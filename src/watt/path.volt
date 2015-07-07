@@ -110,8 +110,10 @@ string dirName(const(char)[] path)
 	// 4. If there are no <slash> characters remaining in string, skip 5 to 8 and set it to ".".
 	count = countSlashes(path);
 	if (count == 0) {
-		version (Windows) return drive;
-		else return ".";
+		if (drive.length > 0) {
+			return drive;
+		}
+		return ".";
 	}
 
 	// 5. If there are any non-slash characters trailing, they shall be removed.
