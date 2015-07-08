@@ -232,6 +232,9 @@ private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
 	case object.TYPE_ULONG:
 		formatUlong(ref buf, ref vl);
 		break;
+	case object.TYPE_CHAR:
+		formatChar(ref buf, ref vl);
+		break;
 	case object.TYPE_FUNCTION, object.TYPE_DELEGATE, object.TYPE_POINTER:
 		formatPointer(ref buf, ref vl);
 		break;
