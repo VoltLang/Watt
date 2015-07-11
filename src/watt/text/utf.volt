@@ -118,10 +118,20 @@ void encode(ref char[] buf, dchar c)
 	return;
 }
 
-/// Encode c as UTF-8.
-char[] encode(dchar c)
+/// Encode a unicode array into utf8
+string encode(dchar[] arr)
 {
 	char[] buf;
+	foreach(d; arr) {
+		encode(ref buf, d);
+	}
+	return cast(string)buf;
+}
+
+/// Encode c as UTF-8.
+string encode(dchar c)
+{
+	char[] buf = new char[](6);
 	auto cval = cast(uint) c;
 
 	ubyte readByte(uint a, uint b)
@@ -132,57 +142,38 @@ char[] encode(dchar c)
 	}
 
 	if (cval <= 0x7F) {
-		buf ~= cast(char) c;
-		return buf;
+		buf[0] = cast(char) c;
+		return cast(string)new buf[0 .. 1];
 	} else if (cval >= 0x80 && cval <= 0x7FF) {
-		ubyte b2 = readByte(0x0080, 0x003F);
-		ubyte b1 = readByte(0x00C0, 0x001F);
-		buf ~= cast(char) b1;
-		buf ~= cast(char) b2;
-		return buf;
+		buf[1] = readByte(0x0080, 0x003F);
+		buf[0] = readByte(0x00C0, 0x001F);
+		return cast(string)new buf[0 .. 2];
 	} else if (cval >= 0x800 && cval <= 0xFFFF) {
-		ubyte b3 = readByte(0x0080, 0x003F);
-		ubyte b2 = readByte(0x0080, 0x003F);
-		ubyte b1 = readByte(0x00E0, 0x000F);
-		buf ~= cast(char) b1;
-		buf ~= cast(char) b2;
-		buf ~= cast(char) b3;
-		return buf;
+		buf[2] = readByte(0x0080, 0x003F);
+		buf[1] = readByte(0x0080, 0x003F);
+		buf[0] = readByte(0x00E0, 0x000F);
+		return cast(string)new buf[0 .. 3];
 	} else if (cval >= 0x10000 && cval <= 0x1FFFFF) {
-		ubyte b4 = readByte(0x0080, 0x003F);
-		ubyte b3 = readByte(0x0080, 0x003F);
-		ubyte b2 = readByte(0x0080, 0x003F);
-		ubyte b1 = readByte(0x00F0, 0x000E);
-		buf ~= cast(char) b1;
-		buf ~= cast(char) b2;
-		buf ~= cast(char) b3;
-		buf ~= cast(char) b4;
-		return buf;
+		buf[3] = readByte(0x0080, 0x003F);
+		buf[2] = readByte(0x0080, 0x003F);
+		buf[1] = readByte(0x0080, 0x003F);
+		buf[0] = readByte(0x00F0, 0x000E);
+		return cast(string)new buf[0 .. 4];
 	} else if (cval >= 0x200000 && cval <= 0x3FFFFFF) {
-		ubyte b5 = readByte(0x0080, 0x003F);
-		ubyte b4 = readByte(0x0080, 0x003F);
-		ubyte b3 = readByte(0x0080, 0x003F);
-		ubyte b2 = readByte(0x0080, 0x003F);
-		ubyte b1 = readByte(0x00F8, 0x0007);
-		buf ~= cast(char) b1;
-		buf ~= cast(char) b2;
-		buf ~= cast(char) b3;
-		buf ~= cast(char) b4;
-		buf ~= cast(char) b5;
-		return buf;
+		buf[4] = readByte(0x0080, 0x003F);
+		buf[3] = readByte(0x0080, 0x003F);
+		buf[2] = readByte(0x0080, 0x003F);
+		buf[1] = readByte(0x0080, 0x003F);
+		buf[0] = readByte(0x00F8, 0x0007);
+		return cast(string)new buf[0 .. 5];
 	} else if (cval >= 0x4000000 && cval <= 0x7FFFFFFF) {
-		ubyte b6 = readByte(0x0080, 0x003F);
-		ubyte b5 = readByte(0x0080, 0x003F);
-		ubyte b4 = readByte(0x0080, 0x003F);
-		ubyte b3 = readByte(0x0080, 0x003F);
-		ubyte b2 = readByte(0x0080, 0x003F);
-		ubyte b1 = readByte(0x00FC, 0x0001);
-		buf ~= cast(char) b1;
-		buf ~= cast(char) b2;
-		buf ~= cast(char) b3;
-		buf ~= cast(char) b4;
-		buf ~= cast(char) b5;
-		return buf;
+		buf[5] = readByte(0x0080, 0x003F);
+		buf[4] = readByte(0x0080, 0x003F);
+		buf[3] = readByte(0x0080, 0x003F);
+		buf[2] = readByte(0x0080, 0x003F);
+		buf[1] = readByte(0x0080, 0x003F);
+		buf[0] = readByte(0x00FC, 0x0001);
+		return cast(string)new buf[0 .. 6];
 	} else {
 		throw new Exception("encode: unsupported codepoint range");
 	}
