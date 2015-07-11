@@ -2,6 +2,7 @@
 // String utilities.
 module watt.text.string;
 
+import watt.text.ascii : isWhite;
 import watt.text.utf;
 
 /**
@@ -27,6 +28,29 @@ string[] split(string s, dchar delimiter)
 	}
 	strings ~= s[base .. $];
 	return strings;
+}
+
+/**
+ * Remove whitespace before and after, as defined by watt.ascii.isWhite.
+ * Examples:
+ *   strip("  apple  ") -> "apple"
+ *   strip("  apple  pie  ") -> "apple pie"
+ */
+string strip(string str)
+{
+	size_t start = 0;
+	size_t stop = str.length;
+	for(; start < str.length; start++) {
+		if (!isWhite(str[start])) {
+			break;
+		}
+	}
+	for(; start < stop; stop--) {
+		if (!isWhite(str[stop-1])) {
+			break;
+		}
+	}
+	return start == stop ? null : str[start .. stop];
 }
 
 /**
