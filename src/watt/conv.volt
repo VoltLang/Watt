@@ -32,15 +32,14 @@ string toUpper(string s)
 	return cast(string) ns;
 }
 
-
-int toInt(const(char)[] s, int base = 10)
+ulong toUlong(const(char)[] s, int base = 10)
 {
 	if (base > 10 || base <= 0) {
 		if (base != 16) {
 			throw new ConvException(format("Don't know how to handle base %s.", base));
 		}
 	}
-	int integer;
+	ulong integer;
 	int column = 1;
 	for (size_t i = s.length; i > 0; i--) {
 		char c = s[i - 1];
@@ -49,20 +48,26 @@ int toInt(const(char)[] s, int base = 10)
 		} else if (base == 16 && !isHexDigit(c)) {
 			throw new ConvException(format("Found non hex digit %s.", c));
 		}
-		int digit;
+		uint digit;
 		if (isDigit(c)) {
-			digit = (cast(int)c) - (cast(int)'0');
+			digit = (cast(uint)c) - (cast(uint)'0');
 		} else if (isHexDigit(c)) {
 			auto lowerC = asciiToLower(c);
-			digit = 10 + ((cast(int)lowerC) - (cast(int)'a'));
+			digit = 10 + ((cast(uint)lowerC) - (cast(uint)'a'));
 		}
-		if (digit >= base) {
+		if (digit >= cast(uint)base) {
 			throw new ConvException(format("Invalid digit %s for base %s.", digit, base));
 		}
-		integer += digit * column;
+		integer += digit * cast(uint)column;
 		column *= base;
 	}
 	return integer;
+}
+
+int toInt(const(char)[] s, int base = 10)
+{
+	auto v = toUlong(s, base);
+	return cast(int)v;
 }
 
 const(char)[] toString(ubyte b)
