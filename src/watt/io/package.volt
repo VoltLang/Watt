@@ -2,10 +2,12 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io;
 
+import core.stdc.stdio : FILE, fopen, fclose, fputc,
+                         fflush, feof, fgetc, ungetc;
 import watt.conv;
 import watt.varargs;
 import watt.text.format;
-import core.stdc.stdio;
+
 
 /**
  * OutputStreams write data to some sink (a file, a console, etc)
@@ -245,50 +247,3 @@ public:
 		return cast(dchar) fgetc(handle);
 	}
 }
-
-global OutputFileStream output;
-global OutputFileStream error;
-global InputFileStream input;
-
-global this()
-{
-	output = new OutputFileStream(null);
-	output.handle = stdout;
-	error = new OutputFileStream(null);
-	error.handle = stderr;
-	input = new InputFileStream(null);
-	input.handle = stdin;
-	return;
-}
-
-void write(const(char)[] s)
-{
-	output.write(s);
-}
-
-void writeln(const(char)[] s)
-{
-	output.writeln(s);
-}
-
-void writef(const(char)[] s, ...)
-{
-	va_list vl;
-	va_start(vl);
-	output.vwritef(s, ref _typeids, ref vl);
-	va_end(vl);
-}
-
-void writefln(const(char)[] s, ...)
-{
-	va_list vl;
-	va_start(vl);
-	output.vwritefln(s, ref _typeids, ref vl);
-	va_end(vl);
-}
-
-string readln()
-{
-	return input.readln();
-}
-
