@@ -70,6 +70,22 @@ int toInt(const(char)[] s, int base = 10)
 	return cast(int)v;
 }
 
+/**
+ * @todo actually implement
+ */
+float toFloat(string)
+{
+	return 0.0f;
+}
+
+/**
+ * @todo actually implement
+ */
+double toDouble(string)
+{
+	return 0.0;
+}
+
 const(char)[] toString(ubyte b)
 {
 	return toStringUnsigned(b, 3);
