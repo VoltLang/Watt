@@ -2,8 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.streams;
 
-import core.stdc.stdio : FILE, fopen, fclose, fputc,
-                         fflush, feof, fgetc, ungetc;
+import core.stdc.stdio : FILE, fopen, fclose, fputc, fwrite,
+                         fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
 import watt.varargs;
 import watt.text.format;
@@ -158,6 +158,17 @@ public:
 	}
 
 	/**
+	 * Read as much data as possible into buffer.
+	 * A slice to the input buffer is returned. The returned slice
+	 * will be shorter than buffer if EOF was encountered before the
+	 * buffer was filled.
+	 */
+	ubyte[] read(ubyte[] buffer)
+	{
+		return buffer[0..0];
+	}
+
+	/**
 	 * Returns true if the stream indicates that there is no more data.
 	 * This may never be true, depending on the source.
 	 */
@@ -190,6 +201,11 @@ public:
 		fclose(handle);
 		handle = null;
 		return;
+	}
+
+	override void write(const(char)[] s)
+	{
+		fwrite(s.ptr, 1, s.length, handle);
 	}
 
 	override void put(dchar c)
@@ -244,6 +260,15 @@ public:
 	override dchar get()
 	{
 		return cast(dchar) fgetc(handle);
+	}
+
+	override ubyte[] read(ubyte[] buffer)
+	{
+		size_t num = fread(buffer.ptr, 1, buffer.length, handle);
+		if (num != buffer.length) {
+			return buffer[0..num];
+		}
+		return buffer;
 	}
 }
 
