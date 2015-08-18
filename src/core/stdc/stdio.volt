@@ -436,10 +436,10 @@ version (Windows) {
 	int feof(FILE* stream);
 
 	int   _snprintf(char* s, size_t n, char* fmt, ...);
-	//alias _snprintf snprintf;
+	alias snprintf = _snprintf;
 
 	int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
-	//alias _vsnprintf vsnprintf;
+	alias vsnprintf = _vsnprintf;
 
 } else version (Linux) {
 
