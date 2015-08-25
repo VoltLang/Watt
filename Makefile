@@ -2,7 +2,7 @@
 # Intended for Digital Mars Make and GNU Make.
 
 VOLT=volt
-SRC=src\core\posix\sys\*.volt src\core\posix\*.volt src\core\stdc\*.volt src\core\windows\*.volt src\core\*.volt src\watt\*.volt src\watt\io\*.volt src\watt\text\*.volt
+SRC=src\core\posix\sys\*.volt src\core\posix\*.volt src\core\stdc\*.volt src\core\windows\*.volt src\core\*.volt src\watt\*.volt src\watt\io\*.volt src\watt\text\*.volt src\watt\math\*.volt
 
 all:
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o libwatt-le32-emscripten.bc --arch le32 --platform emscripten $(SRC)
