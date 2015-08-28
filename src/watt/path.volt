@@ -18,6 +18,15 @@ version (Windows) {
 } else {
 	static assert(false);
 }
+version (Windows) {
+	extern(C) DWORD GetModuleFileNameA(HMODULE, const(char)*, DWORD);
+} else version (OSX) {
+	extern(C) int _NSGetExecutablePath(char*, uint*);
+} else version (Linux) {
+	import core.posix.sys.types : ssize_t;
+	extern(C) ssize_t readlink(const(char)* path, char* buf, size_t bufsiz);
+}
+
 
 version (Windows) {
 	enum string dirSeparator = "\\";
@@ -196,4 +205,46 @@ string temporaryFilename(string extension="")
 	} while (exists(filename));
 
 	return filename;
+}
+
+/**
+ * Return the path to the dir that the executable is in.
+ */
+string getExecDir()
+{
+	char[512] stack;
+	version (Windows) {
+
+		auto ret = GetModuleFileNameA(null, stack.ptr, 512);
+
+	} else version (Linux) {
+
+		auto ret = readlink("/proc/self/exe", stack.ptr, 512);
+
+	} else version (OSX) {
+
+		uint size = cast(uint)stack.length;
+		auto ret = _NSGetExecutablePath(stack.ptr, &size);
+
+		if (ret != 0 || size == 0) {
+			ret = -1;
+		} else {
+			ret = cast(int)size;
+		}
+
+	} else version (Emscripten) {
+
+		int ret = 0;
+
+	} else {
+
+		static assert(false);
+
+	}
+
+	if (ret < 1) {
+		throw new Exception("could not get exe path");
+	}
+
+	return new string(dirName(stack[0 .. cast(size_t)ret]));
 }
