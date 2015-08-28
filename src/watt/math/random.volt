@@ -1,6 +1,8 @@
 module watt.math.random;
-/// Mersenne Twister engine, adapted from Phobos's std.random.
 
+import watt.io.seed : getHardwareSeedUint;
+
+/// Mersenne Twister engine, adapted from Phobos's std.random.
 struct MersenneTwisterEngine
 {
 public:
@@ -161,3 +163,9 @@ private:
 
 alias RandomGenerator = MersenneTwisterEngine;
 
+string randomString(size_t n)
+{
+	RandomGenerator rng;
+	rng.seed(getHardwareSeedUint());
+	return rng.randomString(n);
+}
