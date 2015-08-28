@@ -3,6 +3,10 @@
 module watt.path;
 
 import watt.text.string : indexOf;
+import watt.math.random : RandomGenerator;
+import watt.process : getEnv;
+import watt.io.seed: getHardwareSeedUint;
+import watt.io.file : exists;
 import core.stdc.stdio;
 version (Windows) {
 	import core.windows.windows;
@@ -168,4 +172,23 @@ string baseName(const(char)[] path, const(char)[] suffix="")
 
 	path = path[0 .. ($-suffix.length)];
 	return path;
+}
+
+string temporaryFilename(string extension="")
+{
+	RandomGenerator rng;
+	rng.seed(getHardwareSeedUint());
+	version (Windows) {
+		string prefix = getEnv("TEMP") ~ '/';
+	} else {
+		string prefix = "/tmp/";
+	}
+
+	string filename;
+	do {
+		filename = rng.randomString(32);
+		filename = prefix ~ filename ~ extension;
+	} while (exists(filename));
+
+	return filename;
 }
