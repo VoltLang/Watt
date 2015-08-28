@@ -19,8 +19,13 @@ version (Windows) {
 	static assert(false);
 }
 
-version (Windows) global const string dirSeparator = "\\";
-else global const string dirSeparator = "/";
+version (Windows) {
+	enum string dirSeparator = "\\";
+} else version (Posix || Emscripten) {
+	enum string dirSeparator = "/";
+} else {
+	static assert(false, "not a supported platform");
+}
 
 /**
  * mkdir creates a single given directory.
