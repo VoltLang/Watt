@@ -56,6 +56,11 @@ public:
 	}
 }
 
+int wait(Pid p)
+{
+	return p.wait();
+}
+
 class ProcessException : object.Exception
 {
 	this(string msg)
