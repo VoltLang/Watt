@@ -19,7 +19,7 @@ version (Windows) {
 	static assert(false);
 }
 version (Windows) {
-	extern(C) DWORD GetModuleFileNameA(HMODULE, const(char)*, DWORD);
+	extern(Windows) DWORD GetModuleFileNameA(HMODULE, const(char)*, DWORD);
 } else version (OSX) {
 	extern(C) int _NSGetExecutablePath(char*, uint*);
 } else version (Linux) {
