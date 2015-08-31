@@ -1,6 +1,6 @@
 module watt.algorithm;
 
-alias cmpfn = bool delegate(object.Object, object.Object);
+alias cmpfn = scope bool delegate(object.Object, object.Object);
 
 void sort(object.Object[] objects, cmpfn cmp)
 {
