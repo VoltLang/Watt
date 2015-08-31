@@ -11,6 +11,7 @@ all:
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o libwatt-x86-osx.bc --arch x86 --platform osx $(SRC)
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o libwatt-x86_64-linux.bc --arch x86_64 --platform linux $(SRC)
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o libwatt-x86_64-mingw.bc --arch x86_64 --platform mingw $(SRC)
+	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o libwatt-x86_64-msvc.bc --arch x86_64 --platform msvc $(SRC)
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o libwatt-x86_64-osx.bc --arch x86_64 --platform osx $(SRC)
 
 clean:
