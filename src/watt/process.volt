@@ -291,6 +291,6 @@ version (Posix) private {
 		}
 
 		CloseHandle(handle);
-		return cast(WORD) retval;
+		return cast(int) retval;
 	}
 }
