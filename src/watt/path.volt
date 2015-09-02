@@ -172,7 +172,7 @@ string baseName(const(char)[] path, const(char)[] suffix="")
 		return dirSeparator;
 	}
 
-    removeTrailingSlashes(ref path);
+	removeTrailingSlashes(ref path);
 
 	auto slashIndex = path.indexOf(dirSeparator[0]);
 	while (slashIndex >= 0) {
