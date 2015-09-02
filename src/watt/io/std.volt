@@ -11,13 +11,17 @@ global InputFileStream input;
 
 global this()
 {
+	version (MSVC) {
+		object.vrt_gc_init();
+		object.allocDg = object.vrt_gc_get_alloc_dg();
+	}
+
 	output = new OutputFileStream(null);
 	output.handle = stdout;
 	error = new OutputFileStream(null);
 	error.handle = stderr;
 	input = new InputFileStream(null);
 	input.handle = stdin;
-	return;
 }
 
 void write(const(char)[] s)
