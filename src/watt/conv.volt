@@ -4,6 +4,8 @@ module watt.conv;
 
 import watt.text.ascii : isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
 import watt.text.format : format;
+import watt.text.utf : encode;
+import watt.text.sink : StringSink;
 
 class ConvException : Exception
 {
@@ -15,11 +17,18 @@ class ConvException : Exception
 
 string toLower(string s)
 {
-	auto ns = new char[](s.length);
-	for (size_t i = 0; i < s.length; i++) {
-		ns[i] = cast(char) asciiToLower(s[i]);
+	StringSink dst;
+	// @TODO extend to support all lowercase.
+	// https://www-01.ibm.com/support/knowledgecenter/ssw_ibm_i_71/nls/rbagslowtoupmaptable.htm
+	foreach (dchar c; s) {
+		switch (c) {
+		case 'Α': dst.sink("α"); break;
+		case 'Γ': dst.sink("γ"); break;
+		case 'Ω': dst.sink("ω"); break;
+		default: dst.sink(encode(asciiToLower(c))); break;
+		}
 	}
-	return cast(string) ns;
+	return dst.toString();
 }
 
 string toUpper(string s)
@@ -67,6 +76,12 @@ int toInt(const(char)[] s, int base = 10)
 {
 	auto v = toUlong(s, base);
 	return cast(int)v;
+}
+
+uint toUint(const(char)[] s, int base = 10)
+{
+	auto v = toUlong(s, base);
+	return cast(uint)v;
 }
 
 /**
