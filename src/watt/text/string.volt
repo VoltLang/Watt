@@ -58,11 +58,12 @@ string strip(string str)
  */
 string stripLeft(string str)
 {
-	size_t i;
-	while (i < str.length && isWhite(str[i])) {
-		i++;
+	foreach (i, c; str) {
+		if (!isWhite(c)) {
+			return str[i .. $];
+		}
 	}
-	return str[i .. $];
+	return str;
 }
 
 /**
@@ -70,11 +71,12 @@ string stripLeft(string str)
  */
 string stripRight(string str)
 {
-	size_t i = str.length - 1;
-	while (i > 0 && isWhite(str[i])) {
-		i--;
+	foreach_reverse (i, c; str) {
+		if (!isWhite(c)) {
+			return str[0 .. i+1];
+		}
 	}
-	return str[0 .. i+1];
+	return str;
 }
 
 /**
