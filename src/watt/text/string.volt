@@ -54,6 +54,30 @@ string strip(string str)
 }
 
 /**
+ * Remove leading whitespace, as defined by watt.ascii.isWhite.
+ */
+string stripLeft(string str)
+{
+	size_t i;
+	while (i < str.length && isWhite(str[i])) {
+		i++;
+	}
+	return str[i .. $];
+}
+
+/**
+ * Remove trailing whitespace, as defined by watt.ascii.isWhite.
+ */
+string stripRight(string str)
+{
+	size_t i = str.length - 1;
+	while (i > 0 && isWhite(str[i])) {
+		i--;
+	}
+	return str[0 .. i+1];
+}
+
+/**
  * Returns the index of the first place c occurs in str,
  * or -1 if it doesn't occur.
  */
