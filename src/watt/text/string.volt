@@ -31,6 +31,32 @@ string[] split(string s, dchar delimiter)
 }
 
 /**
+ * Split string s by \n, \r, and \r\n.
+ */
+string[] splitLines(string s)
+{
+	if (s.length == 0) {
+		return null;
+	}
+	string[] strings;
+	size_t base, i, oldi;
+	while (i < s.length) {
+		oldi = i;
+		auto c = decode(s, ref i);
+		if (c == '\n' || c == '\r') {
+			strings ~= s[base .. oldi];
+			base = i;
+			if (c == '\r' && base < s.length && s[base] == '\n') {
+				base++;
+				i++;
+			}
+		}
+	}
+	strings ~= s[base .. $];
+	return strings;
+}
+
+/**
  * Remove whitespace before and after, as defined by watt.ascii.isWhite.
  * Examples:
  *   strip("  apple  ") -> "apple"
