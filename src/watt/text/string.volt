@@ -196,3 +196,15 @@ int endsWith(string s, string[] ends...)
 	return result;
 }
 
+/// Join an array of strings into one, separated by sep.
+string join(string[] ss, string sep="")
+{
+	string outs;
+	foreach (i, e; ss) {
+		outs ~= e;
+		if (i < ss.length - 1) {
+			outs ~= sep;
+		}
+	}
+	return outs;
+}
