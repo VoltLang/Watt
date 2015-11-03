@@ -105,6 +105,18 @@ string stripRight(string str)
 	return str;
 }
 
+/// Returns how many times c occurs in s.
+size_t count(string s, dchar c)
+{
+	size_t n, i;
+	while (i < s.length) {
+		if (decode(s, ref i) == c) {
+			n++;
+		}
+	}
+	return n;
+}
+
 /**
  * Returns the index of the first place c occurs in str,
  * or -1 if it doesn't occur.
