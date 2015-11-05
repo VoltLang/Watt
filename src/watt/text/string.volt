@@ -62,7 +62,7 @@ string[] splitLines(string s)
  *   strip("  apple  ") -> "apple"
  *   strip("  apple  pie  ") -> "apple pie"
  */
-string strip(string str)
+string strip(const(char)[] str)
 {
 	size_t start = 0;
 	size_t stop = str.length;
@@ -82,7 +82,7 @@ string strip(string str)
 /**
  * Remove leading whitespace, as defined by watt.ascii.isWhite.
  */
-string stripLeft(string str)
+string stripLeft(const(char)[] str)
 {
 	foreach (i, c; str) {
 		if (!isWhite(c)) {
@@ -121,7 +121,7 @@ size_t count(string s, dchar c)
  * Returns the index of the first place c occurs in str,
  * or -1 if it doesn't occur.
  */
-ptrdiff_t indexOf(string s, dchar c)
+ptrdiff_t indexOf(const(char)[] s, dchar c)
 {
 	size_t i, oldi;
 	while (i < s.length) {
@@ -140,7 +140,7 @@ ptrdiff_t indexOf(string s, dchar c)
  * If the substring sub occurs in s, returns the index where it occurs.
  * Otherwise, it returns -1.
  */
-ptrdiff_t indexOf(string s, string sub)
+ptrdiff_t indexOf(const(char)[] s, const(char)[] sub)
 {
 	if (sub.length == 0) {
 		return -1;
@@ -165,7 +165,7 @@ ptrdiff_t indexOf(string s, string sub)
 /**
  * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
  */
-string replace(string s, string from, string to)
+string replace(const(char)[] s, const(char)[] from, const(char)[] to)
 {
 	if (from == to) {
 		throw new Exception("replace: from and to cannot match!");
@@ -180,7 +180,7 @@ string replace(string s, string from, string to)
 	return result;
 }
 
-int startsWith(string s, string[] beginnings...)
+int startsWith(const(char)[] s, const(char)[][] beginnings...)
 {
 	int result;
 	foreach (beginning; beginnings) {
@@ -194,7 +194,7 @@ int startsWith(string s, string[] beginnings...)
 	return result;
 }
 
-int endsWith(string s, string[] ends...)
+int endsWith(const(char)[] s, const(char)[][] ends...)
 {
 	int result;
 	foreach (end; ends) {
@@ -209,7 +209,7 @@ int endsWith(string s, string[] ends...)
 }
 
 /// Join an array of strings into one, separated by sep.
-string join(string[] ss, string sep="")
+string join(const(char)[][] ss, const(char)[] sep="")
 {
 	string outs;
 	foreach (i, e; ss) {
