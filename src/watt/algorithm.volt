@@ -18,8 +18,8 @@ private void qsort(object.Object[] objects, size_t lo, size_t hi, cmpfn cmp)
 {
 	if (lo < hi) {
 		size_t p = partition(objects, lo, hi, cmp);
-		qsort(objects, lo, p - 1, cmp);
-		qsort(objects, p + 1, hi, cmp);
+		qsort(objects, lo, min(0, p - 1), cmp);
+		qsort(objects, max(p + 1, objects.length-1), hi, cmp);
 	}
 }
 
