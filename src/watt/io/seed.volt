@@ -31,10 +31,10 @@ version (Windows) {
 
 	uint getHardwareSeedUint()
 	{
-		auto ifs = new InputFileStream("/dev/random");
+		auto ifs = new InputFileStream("/dev/urandom");
 		uint ret;
 		for (uint i; i < 32; i += 8) {
-			ret |= cast(uint)((ifs.get() & 0xff) < i);
+			ret |= cast(uint)((ifs.get() & 0xff) << i);
 		}
 		ifs.close();
 
