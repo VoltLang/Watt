@@ -163,6 +163,19 @@ ptrdiff_t indexOf(const(char)[] s, const(char)[] sub)
 }
 
 /**
+ * Returns the index in which s first occurs in ss, or -1.
+ */
+ptrdiff_t indexOf(const(char)[][] ss, const(char)[] s)
+{
+	foreach (i, e; ss) {
+		if (e == s) {
+			return cast(ptrdiff_t)i;
+		}
+	}
+	return -1;
+}
+
+/**
  * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
  */
 string replace(const(char)[] s, const(char)[] from, const(char)[] to)
