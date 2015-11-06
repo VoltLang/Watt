@@ -137,6 +137,20 @@ ptrdiff_t indexOf(const(char)[] s, dchar c)
 }
 
 /**
+ * Returns the index of the last place c occurs in str,
+ * or -1 otherwise.
+ */
+ptrdiff_t lastIndexOf(const(char)[] s, dchar c)
+{
+	foreach_reverse (i, e; s) {
+		if (e == c) {
+			return cast(ptrdiff_t)i;
+		}
+	}
+	return -1;
+}
+
+/**
  * If the substring sub occurs in s, returns the index where it occurs.
  * Otherwise, it returns -1.
  */
