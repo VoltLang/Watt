@@ -84,7 +84,7 @@ string strip(const(char)[] str)
  */
 string stripLeft(const(char)[] str)
 {
-	foreach (i, c; str) {
+	foreach (i, dchar c; str) {
 		if (!isWhite(c)) {
 			return str[i .. $];
 		}
@@ -97,7 +97,7 @@ string stripLeft(const(char)[] str)
  */
 string stripRight(string str)
 {
-	foreach_reverse (i, c; str) {
+	foreach_reverse (i, dchar c; str) {
 		if (!isWhite(c)) {
 			return str[0 .. i+1];
 		}
@@ -142,7 +142,7 @@ ptrdiff_t indexOf(const(char)[] s, dchar c)
  */
 ptrdiff_t lastIndexOf(const(char)[] s, dchar c)
 {
-	foreach_reverse (i, e; s) {
+	foreach_reverse (i, dchar e; s) {
 		if (e == c) {
 			return cast(ptrdiff_t)i;
 		}

@@ -122,7 +122,7 @@ void encode(ref char[] buf, dchar c)
 string encode(dchar[] arr)
 {
 	char[] buf;
-	foreach(d; arr) {
+	foreach (dchar d; arr) {
 		encode(ref buf, d);
 	}
 	return cast(string)buf;
