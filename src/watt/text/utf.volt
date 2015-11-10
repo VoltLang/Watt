@@ -2,14 +2,6 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 module watt.text.utf;
 
-class MalformedUTF8Exception : Exception
-{
-	this(string msg = "malformed UTF-8 stream")
-	{
-		super(msg);
-		return;
-	}
-}
 
 private enum ONE_BYTE_MASK                   = 0x80;
 private enum TWO_BYTE_MASK                   = 0xE0;
@@ -23,7 +15,7 @@ private enum CONTINUING_MASK                 = 0xC0;
 private ubyte readByte(string str, ref size_t index)
 {
 	if (index >= str.length) {
-		throw new MalformedUTF8Exception("unexpected end of stream");
+		throw new object.MalformedUTF8Exception("unexpected end of stream");
 	}
 	ubyte b = str[index];
 	index = index + 1;
@@ -38,57 +30,7 @@ private dchar readChar(string str, ref size_t index)
 
 dchar decode(string str, ref size_t index)
 {
-	ubyte b1 = readByte(str, ref index);
-	if ((b1 & ONE_BYTE_MASK) == 0) {
-		return b1;
-	}
-
-	dchar c2 = readChar(str, ref index);
-	if ((b1 & TWO_BYTE_MASK) == TWO_BYTE_RESULT) {
-		dchar c1 = cast(dchar)((b1 & cast(ubyte)~TWO_BYTE_MASK));
-		c1 = c1 << 6;
-		return c1 | c2;
-	}
-
-	dchar c3 = readChar(str, ref index);
-	if ((b1 & THREE_BYTE_MASK) == TWO_BYTE_MASK) {
-		dchar c1 = cast(dchar)((b1 & cast(ubyte)~THREE_BYTE_MASK));
-		c1 = c1 << 12;
-		c2 = c2 << 6;
-		return c1 | c2 | c3;
-	}
-
-	dchar c4 = readChar(str, ref index);
-	if ((b1 & FOUR_BYTE_MASK) == THREE_BYTE_MASK) {
-		dchar c1 = cast(dchar)((b1 & cast(ubyte)~FOUR_BYTE_MASK));
-		c1 = c1 << 18;
-		c2 = c2 << 12;
-		c3 = c3 << 6;
-		return c1 | c2 | c3 | c4;
-	}
-
-	dchar c5 = readChar(str, ref index);
-	if ((b1 & FIVE_BYTE_MASK) == FOUR_BYTE_MASK) {
-		dchar c1 = cast(dchar)((b1 & cast(ubyte)~FIVE_BYTE_MASK));
-		c1 = c1 << 24;
-		c2 = c2 << 18;
-		c3 = c3 << 12;
-		c4 = c4 << 6;
-		return c1 | c2 | c3 | c4 | c5;
-	}
-
-	dchar c6 = readChar(str, ref index);
-	if ((b1 & SIX_BYTE_MASK) == FIVE_BYTE_MASK) {
-		dchar c1 = cast(dchar)((b1 & cast(ubyte)~SIX_BYTE_MASK));
-		c1 = c1 << 30;
-		c2 = c2 << 24;
-		c3 = c3 << 18;
-		c4 = c4 << 12;
-		c5 = c5 << 6;
-		return c1 | c2 | c3 | c4 | c5 | c6;
-	}
-
-	throw new MalformedUTF8Exception("utf-8 decode failure");
+	return object.vrt_decode_u8_d(str, ref index);
 }
 
 /// Return how many codepoints are in a given UTF-8 string.
@@ -137,7 +79,7 @@ string encode(dchar c)
 	ubyte readByte(uint a, uint b)
 	{
 		ubyte _byte = cast(ubyte) (a | (cval & b));
-		cval = cval >> 8;
+		cval = cval >> 6;
 		return _byte;
 	}
 
@@ -175,7 +117,7 @@ string encode(dchar c)
 		buf[0] = readByte(0x00FC, 0x0001);
 		return cast(string)new buf[0 .. 6];
 	} else {
-		throw new Exception("encode: unsupported codepoint range");
+		throw new object.MalformedUTF8Exception("encode: unsupported codepoint range");
 	}
 }
 
