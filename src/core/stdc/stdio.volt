@@ -435,7 +435,7 @@ version (Windows) {
 
 	int feof(FILE* stream);
 
-	int   _snprintf(char* s, size_t n, char* fmt, ...);
+	int   _snprintf(char* s, size_t n, in char* fmt, ...);
 	alias snprintf = _snprintf;
 
 	int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
