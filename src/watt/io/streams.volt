@@ -150,7 +150,7 @@ public:
 	{
 		char[] buf;
 		char c = cast(char) get();
-		while (c != '\n') {
+		while (c != '\n' && !eof()) {
 			buf ~= c;
 			c = cast(char) get();
 		}
