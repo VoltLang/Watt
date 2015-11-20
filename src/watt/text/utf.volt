@@ -120,4 +120,3 @@ string encode(dchar c)
 		throw new object.MalformedUTF8Exception("encode: unsupported codepoint range");
 	}
 }
-
