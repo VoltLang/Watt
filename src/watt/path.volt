@@ -2,7 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.path;
 
-import watt.text.string : indexOf;
+import watt.text.string : indexOf, lastIndexOf;
 import watt.math.random : RandomGenerator;
 import watt.process : getEnv;
 import watt.io.seed: getHardwareSeedUint;
@@ -186,6 +186,16 @@ string baseName(const(char)[] path, const(char)[] suffix="")
 
 	path = path[0 .. ($-suffix.length)];
 	return path;
+}
+
+string extension(const(char)[] path)
+{
+	auto i = lastIndexOf(path, '.');
+	if (i <= 0) {
+		return null;
+	}
+
+	return new string(path[i .. $]);
 }
 
 string temporaryFilename(string extension="")
