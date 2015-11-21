@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 module watt.text.utf;
 
+import watt.text.sink;
+
 
 private enum ONE_BYTE_MASK                   = 0x80;
 private enum TWO_BYTE_MASK                   = 0xE0;
@@ -73,7 +75,19 @@ string encode(dchar[] arr)
 /// Encode c as UTF-8.
 string encode(dchar c)
 {
-	char[] buf = new char[](6);
+	string ret;
+	void dg(SinkArg s) {
+		ret = new string(s);
+	}
+
+	encode(dg, c);
+	return ret;
+}
+
+/// Encode c as UTF-8.
+void encode(Sink dg, dchar c)
+{
+	char[6] buf;
 	auto cval = cast(uint) c;
 
 	ubyte readByte(uint a, uint b)
@@ -85,29 +99,29 @@ string encode(dchar c)
 
 	if (cval <= 0x7F) {
 		buf[0] = cast(char) c;
-		return cast(string)new buf[0 .. 1];
+		return dg(buf[0 .. 1]);
 	} else if (cval >= 0x80 && cval <= 0x7FF) {
 		buf[1] = readByte(0x0080, 0x003F);
 		buf[0] = readByte(0x00C0, 0x001F);
-		return cast(string)new buf[0 .. 2];
+		return dg(buf[0 .. 2]);
 	} else if (cval >= 0x800 && cval <= 0xFFFF) {
 		buf[2] = readByte(0x0080, 0x003F);
 		buf[1] = readByte(0x0080, 0x003F);
 		buf[0] = readByte(0x00E0, 0x000F);
-		return cast(string)new buf[0 .. 3];
+		return dg(buf[0 .. 3]);
 	} else if (cval >= 0x10000 && cval <= 0x1FFFFF) {
 		buf[3] = readByte(0x0080, 0x003F);
 		buf[2] = readByte(0x0080, 0x003F);
 		buf[1] = readByte(0x0080, 0x003F);
 		buf[0] = readByte(0x00F0, 0x000E);
-		return cast(string)new buf[0 .. 4];
+		return dg(buf[0 .. 4]);
 	} else if (cval >= 0x200000 && cval <= 0x3FFFFFF) {
 		buf[4] = readByte(0x0080, 0x003F);
 		buf[3] = readByte(0x0080, 0x003F);
 		buf[2] = readByte(0x0080, 0x003F);
 		buf[1] = readByte(0x0080, 0x003F);
 		buf[0] = readByte(0x00F8, 0x0007);
-		return cast(string)new buf[0 .. 5];
+		return dg(buf[0 .. 5]);
 	} else if (cval >= 0x4000000 && cval <= 0x7FFFFFFF) {
 		buf[5] = readByte(0x0080, 0x003F);
 		buf[4] = readByte(0x0080, 0x003F);
@@ -115,7 +129,7 @@ string encode(dchar c)
 		buf[2] = readByte(0x0080, 0x003F);
 		buf[1] = readByte(0x0080, 0x003F);
 		buf[0] = readByte(0x00FC, 0x0001);
-		return cast(string)new buf[0 .. 6];
+		return dg(buf[0 .. 6]);
 	} else {
 		throw new object.MalformedUTF8Exception("encode: unsupported codepoint range");
 	}
