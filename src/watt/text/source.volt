@@ -33,11 +33,12 @@ public:
 	 */
 	this(string s, string filename)
 	{
+		// mSrc call its own popFront.
 		mSrc.source = s;
 
-		popFront();
-
+		// Need to properly setup location.
 		loc.filename = filename;
+		loc.column = 1;
 		loc.line = 1;
 	}
 
