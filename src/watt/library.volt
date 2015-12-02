@@ -35,6 +35,13 @@ version(Windows) {
 
 class Library
 {
+private:
+	version (Windows) {
+		HMODULE ptr;
+	} else {
+		void* ptr;
+	}
+
 public:
 	global Library loads(string[] files)
 	{
@@ -51,7 +58,6 @@ public:
 	~this()
 	{
 		free();
-		return;
 	}
 
 	version (Windows) {
@@ -78,7 +84,6 @@ public:
 				FreeLibrary(ptr);
 				ptr = null;
 			}
-			return;
 		}
 
 	} else version (Posix) {
@@ -105,7 +110,6 @@ public:
 				dlclose(ptr);
 				ptr = null;
 			}
-			return;
 		}
 
 	} else version (Emscripten) {
@@ -122,7 +126,6 @@ public:
 
 		final void free()
 		{
-			return;
 		}
 
 	} else {
@@ -133,10 +136,14 @@ public:
 
 private:
 	version (Windows) {
-		this(HMODULE ptr) { this.ptr = ptr; return; }
-		HMODULE ptr;
+		this(HMODULE ptr)
+		{
+			this.ptr = ptr;
+		}
 	} else {
-		this(void* ptr) { this.ptr = ptr; return; }
-		void* ptr;
+		this(void* ptr)
+		{
+			this.ptr = ptr;
+		}
 	}
 }
