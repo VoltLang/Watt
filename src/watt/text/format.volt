@@ -61,13 +61,11 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 	}
 	buf ~= '\0';
 	buf.length = buf.length - 1;  // Disregard the nul when it comes to length.
-	return;
 }
 
 private void formatNull(ref char[] buf, ref va_list vl)
 {
 	buf ~= cast(char[]) "null";
-	return;
 }
 
 private void formatObject(ref char[] buf, ref va_list vl)
@@ -78,7 +76,6 @@ private void formatObject(ref char[] buf, ref va_list vl)
 		return;
 	}
 	buf ~= cast(char[]) obj.toString();
-	return;
 }
 
 private void formatString(ref char[] buf, ref va_list vl)
@@ -88,84 +85,72 @@ private void formatString(ref char[] buf, ref va_list vl)
 		s = s[0 .. s.length - 1];
 	}
 	buf ~= s;
-	return;
 }
 
 private void formatByte(ref char[] buf, ref va_list vl)
 {
 	auto b = va_arg!byte(vl);
 	buf ~= cast(char[]) toString(b);
-	return;
 }
 
 private void formatUbyte(ref char[] buf, ref va_list vl)
 {
 	auto b = va_arg!ubyte(vl);
 	buf ~= cast(char[]) toString(b);
-	return;
 }
 
 private void formatShort(ref char[] buf, ref va_list vl)
 {
 	auto s = va_arg!short(vl);
 	buf ~= cast(char[]) toString(s);
-	return;
 }
 
 private void formatUshort(ref char[] buf, ref va_list vl)
 {
 	auto s = va_arg!ushort(vl);
 	buf ~= cast(char[]) toString(s);
-	return;
 }
 
 private void formatInt(ref char[] buf, ref va_list vl)
 {
 	auto i = va_arg!int(vl);
 	buf ~= cast(char[]) toString(i);
-	return;
 }
 
 private void formatUint(ref char[] buf, ref va_list vl)
 {
 	auto i = va_arg!uint(vl);
 	buf ~= cast(char[]) toString(i);
-	return;
 }
 
 private void formatLong(ref char[] buf, ref va_list vl)
 {
 	auto l = va_arg!long(vl);
 	buf ~= cast(char[]) toString(l);
-	return;
 }
 
 private void formatUlong(ref char[] buf, ref va_list vl)
 {
 	auto l = va_arg!ulong(vl);
 	buf ~= cast(char[]) toString(l);
-	return;
 }
 
 private void formatChar(ref char[] buf, ref va_list vl)
 {
 	auto c = va_arg!char(vl);
 	buf ~= c;
-	return;
 }
 
 private void formatHex(ref char[] buf, ref va_list vl)
 {
 	auto l = va_arg!ulong(vl);
 	buf ~= cast(char[]) toStringHex(l);
-	return;
 }
 
 private void formatPointer(ref char[] buf, ref va_list vl)
 {
 	auto p = va_arg!void*(vl);
 	buf ~= cast(char[]) toString(p);
-	return;
 }
 
 
@@ -193,7 +178,6 @@ private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
 		vl = old;
 		buf ~= cast(char[]) "]";
 	}
-	return;
 }
 
 private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
@@ -241,15 +225,10 @@ private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
 	default:
 		throw new object.Exception(format("Don't know how to print type id %s.", id.type));
 	}
-	return;
 }
 
 private void formatBool(ref char[] buf, ref va_list vl)
 {
 	auto b = va_arg!bool(vl);
 	buf ~= cast(char[]) (b ? "true" : "false");
-	return;
 }
-
-
-

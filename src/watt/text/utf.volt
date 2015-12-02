@@ -52,14 +52,12 @@ void validate(string s)
 	while (i < s.length) {
 		decode(s, ref i);
 	}
-	return;
 }
 
 /// Encode c into a given UTF-8 array.
 void encode(ref char[] buf, dchar c)
 {
 	buf ~= .encode(c);
-	return;
 }
 
 /// Encode a unicode array into utf8
