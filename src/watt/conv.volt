@@ -10,7 +10,6 @@ class ConvException : Exception
 	this(string msg)
 	{
 		super(msg);
-		return;
 	}
 }
 
