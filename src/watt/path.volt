@@ -50,7 +50,6 @@ void mkdir(const(char)[] dir)
 	} else version (Posix) {
 		cmkdir(cstr.ptr, cast(mode_t)(S_IRWXU | S_IRWXG | S_IRWXO));
 	}
-	return;
 }
 
 /**
@@ -66,7 +65,6 @@ void mkdirP(const(char)[] dir)
 		}
 	}
 	mkdir(dir);
-	return;
 }
 
 
