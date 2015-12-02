@@ -29,18 +29,15 @@ public:
 		this(HANDLE handle)
 		{
 			this._handle = handle;
-			return;
 		}
 	} else version (Posix) {
 		this(pid_t pid)
 		{
 			this._pid = pid;
-			return;
 		}
 	} else {
 		this(int pid)
 		{
-			return;
 		}
 	}
 
@@ -66,7 +63,6 @@ class ProcessException : object.Exception
 	this(string msg)
 	{
 		super(msg);
-		return;
 	}
 }
 
@@ -189,8 +185,6 @@ version (Posix) private {
 
 		// Zero the last argument.
 		result[resultPos] = null;
-
-		return;
 	}
 
 	int waitPosix(pid_t pid)
