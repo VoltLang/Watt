@@ -12,29 +12,18 @@ import watt.text.format;
  * OutputStreams write data to some sink (a file, a console, etc)
  * in characters.
  */
-class OutputStream
+abstract class OutputStream
 {
 public:
-	this()
-	{
-		return;
-	}
-
 	/**
 	 * Close the stream.
 	 */
-	void close()
-	{
-		return;
-	}
+	abstract void close();
 
 	/**
 	 * Write a single character out to the sink.
 	 */
-	void put(dchar c)
-	{
-		return;
-	}
+	abstract void put(dchar c);
 
 	/**
 	 * Write a series of characters to the sink.
@@ -44,8 +33,20 @@ public:
 		for (size_t i = 0u; i < s.length; i = i + 1u) {
 			put(s[i]);
 		}
-		return;
 	}
+
+	/**
+	 * After this call has completed, the state of this stream's
+	 * sink should match the data committed to it.
+	 */
+	abstract void flush();
+
+
+	/*
+	 *
+	 * Format helpers.
+	 *
+	 */
 
 	/**
 	 * Write a series of characters then a newline.
@@ -54,7 +55,6 @@ public:
 	{
 		write(s);
 		put('\n');
-		return;
 	}
 
 	void vwritef(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
@@ -74,7 +74,6 @@ public:
 		formatImpl(formatString, ref _typeids, ref buf, ref vl);
 		va_end(vl);
 		write(buf);
-		return;
 	}
 
 	void vwritefln(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
@@ -93,53 +92,50 @@ public:
 		formatImpl(formatString, ref _typeids, ref buf, ref vl);
 		va_end(vl);
 		writeln(buf);
-		return;
-	}
-
-	/**
-	 * After this call has completed, the state of this stream's
-	 * sink should match the data committed to it.
-	 */
-	void flush()
-	{
-		return;
 	}
 }
 
 /**
  * InputStreams read data from some source (a file, a device, etc)
  */
-class InputStream
+abstract class InputStream
 {
 public:
-	this()
-	{
-		return;
-	}
-
 	/**
 	 * Close the input stream.
 	 */
-	void close()
-	{
-		return;
-	}
+	abstract void close();
 
 	/**
 	 * Returns the character that will be retrieved by get().
 	 */
-	dchar peek()
-	{
-		return cast(dchar) -1;
-	}
+	abstract dchar peek();
 
 	/**
 	 * Read a single character from the source.
 	 */
-	dchar get()
-	{
-		return cast(dchar) -1;
-	}
+	abstract dchar get();
+
+	/**
+	 * Read as much data as possible into buffer.
+	 * A slice to the input buffer is returned. The returned slice
+	 * will be shorter than buffer if EOF was encountered before the
+	 * buffer was filled.
+	 */
+	abstract ubyte[] read(ubyte[] buffer);
+
+	/**
+	 * Returns true if the stream indicates that there is no more data.
+	 * This may never be true, depending on the source.
+	 */
+	abstract bool eof();
+
+
+	/*
+	 *
+	 * Helpers.
+	 *
+	 */
 
 	/**
 	 * Read input until a newline character is encountered.
@@ -155,26 +151,6 @@ public:
 			c = cast(char) get();
 		}
 		return cast(string) buf;
-	}
-
-	/**
-	 * Read as much data as possible into buffer.
-	 * A slice to the input buffer is returned. The returned slice
-	 * will be shorter than buffer if EOF was encountered before the
-	 * buffer was filled.
-	 */
-	ubyte[] read(ubyte[] buffer)
-	{
-		return buffer[0..0];
-	}
-
-	/**
-	 * Returns true if the stream indicates that there is no more data.
-	 * This may never be true, depending on the source.
-	 */
-	bool eof()
-	{
-		return true;
 	}
 }
 
@@ -193,14 +169,17 @@ public:
 		if (filename.length > 0u) {
 			handle = fopen(filename.ptr, "w".ptr);
 		}
-		return;
 	}
 
 	override void close()
 	{
 		fclose(handle);
 		handle = null;
-		return;
+	}
+
+	override void put(dchar c)
+	{
+		fputc(cast(int) c, handle);
 	}
 
 	override void write(const(char)[] s)
@@ -208,16 +187,9 @@ public:
 		fwrite(s.ptr, 1, s.length, handle);
 	}
 
-	override void put(dchar c)
-	{
-		fputc(cast(int) c, handle);
-		return;
-	}
-
 	override void flush()
 	{
 		fflush(handle);
-		return;
 	}
 }
 
@@ -235,19 +207,12 @@ public:
 		if (filename.length > 0u) {
 			handle = fopen(filename.ptr, "r".ptr);
 		}
-		return;
 	}
 
 	override void close()
 	{
 		fclose(handle);
 		handle = null;
-		return;
-	}
-
-	override bool eof()
-	{
-		return feof(handle) != 0;
 	}
 
 	override dchar peek()
@@ -270,5 +235,9 @@ public:
 		}
 		return buffer;
 	}
-}
 
+	override bool eof()
+	{
+		return feof(handle) != 0;
+	}
+}
