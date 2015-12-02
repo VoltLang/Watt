@@ -124,8 +124,6 @@ version (Posix) void searchDir(string dirName, string glob, scope void delegate(
 	} while (dp !is null);
 
 	closedir(dirp);
-
-	return;
 }
 
 version (Windows) void searchDir(string dirName, string glob, scope void delegate(string) dg)
