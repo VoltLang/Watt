@@ -240,6 +240,7 @@ version (Posix) private {
 } else version (Windows) {
 	extern (C) int _fileno(FILE* stream);
 	extern (C) HANDLE _get_osfhandle(int fd);
+	extern (C) HANDLE GetStdHandle(const DWORD noStdHandle);
 	
 	LPSTR toArgz(string moduleName, string[] args)
 	{
@@ -256,15 +257,30 @@ version (Posix) private {
 	{
 		STARTUPINFOA si;
 		si.cb = cast(DWORD) typeid(si).size;
-		si.dwFlags = STARTF_USESTDHANDLES;
-		si.hStdInput = _get_osfhandle(_fileno(stdinFP));
-		si.hStdOutput = _get_osfhandle(_fileno(stdoutFP));
-		si.hStdError = _get_osfhandle(_fileno(stderrFP));
+
+		void setStdHandle(FILE* file, DWORD stdNo, out HANDLE handle) {
+			if (file !is null) {
+				handle = _get_osfhandle(_fileno(file));
+			}
+
+			if (handle is null || handle is cast(HANDLE)INVALID_HANDLE_VALUE) {
+				handle = GetStdHandle(stdNo);
+			}
+		}
+
+		setStdHandle(stdinFP, STD_INPUT_HANDLE, out si.hStdInput);
+		setStdHandle(stdoutFP, STD_OUTPUT_HANDLE, out si.hStdOutput);
+		setStdHandle(stderrFP, STD_ERROR_HANDLE, out si.hStdError);
+		if ((si.hStdInput  !is null && si.hStdInput  !is cast(HANDLE)INVALID_HANDLE_VALUE) ||
+		    (si.hStdOutput !is null && si.hStdOutput !is cast(HANDLE)INVALID_HANDLE_VALUE) ||
+		    (si.hStdError  !is null && si.hStdError  !is cast(HANDLE)INVALID_HANDLE_VALUE)) {
+			si.dwFlags = STARTF_USESTDHANDLES;
+		}
 
 		PROCESS_INFORMATION pi;
 
 		auto moduleName = name ~ '\0';
-		BOOL bRet = CreateProcessA(moduleName.ptr, toArgz(moduleName, args), null, null, FALSE, 0, null, null, &si, &pi);
+		BOOL bRet = CreateProcessA(moduleName.ptr, toArgz(moduleName, args), null, null, TRUE, 0, null, null, &si, &pi);
 		if (bRet == 0) {
 			throw new ProcessException("CreateProcess failed with error code " ~ toString(cast(int)GetLastError()));
 		}
