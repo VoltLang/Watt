@@ -258,19 +258,23 @@ version (Posix) private {
 		STARTUPINFOA si;
 		si.cb = cast(DWORD) typeid(si).size;
 
-		void setStdHandle(FILE* file, DWORD stdNo, out HANDLE handle) {
+		HANDLE stdHandle(FILE* file, DWORD stdNo) {
 			if (file !is null) {
-				handle = _get_osfhandle(_fileno(file));
+				HANDLE handle = _get_osfhandle(_fileno(file));
+				if (handle !is cast(HANDLE)INVALID_HANDLE_VALUE) {
+					return handle;
+				}
 			}
-
-			if (handle is null || handle is cast(HANDLE)INVALID_HANDLE_VALUE) {
-				handle = GetStdHandle(stdNo);
+			HANDLE handle = GetStdHandle(stdNo);
+			if (handle is cast(HANDLE)INVALID_HANDLE_VALUE) {
+				throw new Exception("Couldn't get standard handle.");
 			}
+			return handle;
 		}
 
-		setStdHandle(stdinFP, STD_INPUT_HANDLE, out si.hStdInput);
-		setStdHandle(stdoutFP, STD_OUTPUT_HANDLE, out si.hStdOutput);
-		setStdHandle(stderrFP, STD_ERROR_HANDLE, out si.hStdError);
+		si.hStdInput = stdHandle(stdinFP, STD_INPUT_HANDLE);
+		si.hStdOutput = stdHandle(stdoutFP, STD_OUTPUT_HANDLE);
+		si.hStdError = stdHandle(stderrFP, STD_ERROR_HANDLE);
 		if ((si.hStdInput  !is null && si.hStdInput  !is cast(HANDLE)INVALID_HANDLE_VALUE) ||
 		    (si.hStdOutput !is null && si.hStdOutput !is cast(HANDLE)INVALID_HANDLE_VALUE) ||
 		    (si.hStdError  !is null && si.hStdError  !is cast(HANDLE)INVALID_HANDLE_VALUE)) {
