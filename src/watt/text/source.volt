@@ -131,6 +131,21 @@ public:
 	}
 
 	/**
+	 * Skips till character after next end of line or eof.
+	 *
+	 * Side-effects:
+	 *   @arg @see popFront
+	 */
+	void skipEndOfLine()
+	{
+		dchar d;
+		do {
+			d = front;
+			popFront();
+		} while (!eof && d == '\n');
+	}
+
+	/**
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
