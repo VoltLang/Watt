@@ -78,7 +78,8 @@ public:
 	 * Side-effects:
 	 *   @p eof set to true if we have reached the EOF.
 	 *   @p mSrc.mChar is set to the returned character if not at EOF.
-	 *   @p mIndex advanced to the end of the given character.
+	 *   @p mSrc.mNextIndex advanced to the end of the given character.
+	 *   @p mSrc.mLastIndex points to the index of the current character.
 	 *
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
@@ -93,6 +94,26 @@ public:
 		mSrc.popFront();
 
 		loc.column++;
+	}
+
+	/**
+	 * Advance the source n character.
+	 *
+	 * Side-effects:
+	 *   @p eof set to true if we have reached the EOF.
+	 *   @p mSrc.mChar is set to the current character if not at EOF.
+	 *   @p mSrc.mNextIndex advanced to the end of the given character.
+	 *   @p mSrc.mLastIndex points to the index of the current character.
+	 *
+	 * Throws:
+	 *   UtfException if the source is not valid utf8.
+	 */
+	void popFrontN(size_t n)
+	{
+		while (!eof && n != 0) {
+			popFront();
+			n--;
+		}
 	}
 
 	/**
@@ -205,8 +226,9 @@ public:
 	 *
 	 * Side-effects:
 	 *   @p eof set to true if we have reached the EOF.
-	 *   @p mChar is set to the returned character if not at EOF.
-	 *   @p mIndex advanced to the end of the given character.
+	 *   @p mChar is set to the current character if not at EOF.
+	 *   @p mNextIndex advanced to the end of the given character.
+	 *   @p mLastIndex points to the index of the current character.
 	 *
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
@@ -219,6 +241,26 @@ public:
 			empty = true;
 			mNextIndex = source.length;
 			mLastIndex = source.length;
+		}
+	}
+
+	/**
+	 * Advance the source n character.
+	 *
+	 * Side-effects:
+	 *   @p eof set to true if we have reached the EOF.
+	 *   @p mChar is set to the current character if not at EOF.
+	 *   @p mNextIndex advanced to the end of the given character.
+	 *   @p mLastIndex points to the index of the current character.
+	 *
+	 * Throws:
+	 *   UtfException if the source is not valid utf8.
+	 */
+	void popFrontN(size_t n)
+	{
+		while (!empty && n != 0) {
+			popFront();
+			n--;
 		}
 	}
 
