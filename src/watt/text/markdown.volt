@@ -1480,6 +1480,38 @@ private bool parseInlineCode(ref string str, ref string code) {
 	return true;
 }
 
+private string restoreQuotes(string s)
+{
+	StringSink ss;
+	bool foundEscape;
+	StringSink escapess;
+	foreach (dchar c; s) {
+		if (foundEscape) {
+			if (c == ';') {
+				string tag = escapess.toString();
+				if (tag != "quot") {
+					ss.sink("&");
+					ss.sink(tag);
+					ss.sink(";");
+				} else {
+					ss.sink("\"");
+				}
+				foundEscape = false;
+				continue;
+			}
+			escapess.sink(encode(c));
+			continue;
+		}
+		if (c != '&') {
+			ss.sink(encode(c));
+		} else {
+			foundEscape = true;
+			escapess.reset();
+		}
+	}
+	return ss.toString();
+}
+
 private bool parseLink(ref string str, ref Link dst, LinkRefs linkrefs) {
 	string pstr = str;
 	if (pstr.length < 3) return false;
@@ -1498,7 +1530,7 @@ private bool parseLink(ref string str, ref Link dst, LinkRefs linkrefs) {
 	if (pstr.length > 2 && pstr[0] == '(') {
 		cidx = pstr.matchBracket();
 		if (cidx < 1) return false;
-		auto inner = pstr[1 .. cidx];
+		auto inner = pstr[1 .. cidx].restoreQuotes();
 		immutable qidx = inner.indexOf('"');
 		if (qidx > 1 && inner[qidx - 1].isWhite()) {
 			dst.url = inner[0 .. qidx].stripRight();
