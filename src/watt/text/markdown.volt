@@ -845,9 +845,11 @@ private string[] skipText(ref Line[] lines, IndentType[] indent) {
 		ret ~= htmlEscapeIgnoreTags(lines[0].unindent(min(indent.length, lines[0].indent.length)));
 		lines = lines[1 .. $];
 
-		HtmlBlockInfo tag = parseHtmlBlockLine(lines[0].text);
-		if (tag.uniqueBlankTag )
-			continue;
+		if (lines.length > 0) {
+			HtmlBlockInfo tag = parseHtmlBlockLine(lines[0].text);
+			if (tag.uniqueBlankTag )
+				continue;
+		}
 
 		if (lines.length == 0 || (lines[0].type != LineType.Plain && !(lines[0].type == LineType.UList && lines[0].text.countLeading(' ') >= 4)) || (lines[0].indent.length > 0 && lines[0].indent[0] == IndentType.Quote && !wasQuote))
 			return ret;
