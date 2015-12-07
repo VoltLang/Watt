@@ -142,7 +142,7 @@ public:
 		do {
 			d = front;
 			popFront();
-		} while (!eof && d == '\n');
+		} while (!eof && d != '\n');
 	}
 
 	/**
