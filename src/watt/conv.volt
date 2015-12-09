@@ -72,9 +72,20 @@ ulong toUlong(const(char)[] s, int base = 10)
 	return integer;
 }
 
+long toLong(const(char)[] s, int base = 10)
+{
+	long multiply = 1;
+	if (s.length > 0 && s[0] == '-') {
+		s = s[1 .. $];
+		multiply = -1;
+	}
+	auto v = cast(long)toUlong(s, base);
+	return v * multiply;
+}
+
 int toInt(const(char)[] s, int base = 10)
 {
-	auto v = toUlong(s, base);
+	auto v = toLong(s, base);
 	return cast(int)v;
 }
 
