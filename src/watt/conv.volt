@@ -182,7 +182,7 @@ private const(char)[] toStringUnsigned(ulong i, size_t maxLength)
 		buf[index++] = c;
 		inLoop = i != 0;
 	}
-	buf.length = index;
+	buf = buf[0 .. index];
 
 	auto outbuf = new char[](maxLength);
 	size_t bindex = index;
@@ -192,9 +192,8 @@ private const(char)[] toStringUnsigned(ulong i, size_t maxLength)
 		outbuf[oindex] = buf[bindex];
 		oindex++;
 	}
-	outbuf.length = oindex;
 
-	return outbuf;
+	return outbuf[0 .. oindex];
 }
 
 private const(char)[] toStringSigned(long i, size_t maxLength)
@@ -217,7 +216,7 @@ private const(char)[] toStringSigned(long i, size_t maxLength)
 	if (negative) {
 		buf[index++] = '-';
 	}
-	buf.length = index;
+	buf = buf[0 .. index];
 
 	auto outbuf = new char[](maxLength);
 	size_t bindex = index;
@@ -227,9 +226,8 @@ private const(char)[] toStringSigned(long i, size_t maxLength)
 		outbuf[oindex] = buf[bindex];
 		oindex++;
 	}
-	outbuf.length = oindex;
 
-	return outbuf;
+	return outbuf[0 .. oindex];
 }
 
 /// Returns an upper case hex string from the given unsigned long.
