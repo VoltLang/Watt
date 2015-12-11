@@ -48,7 +48,7 @@ ulong toUlong(const(char)[] s, int base = 10)
 		}
 	}
 	ulong integer;
-	int column = 1;
+	ulong column = 1;
 	for (size_t i = s.length; i > 0; i--) {
 		char c = s[i - 1];
 		if (base != 16 && !isDigit(c)) {
@@ -56,18 +56,18 @@ ulong toUlong(const(char)[] s, int base = 10)
 		} else if (base == 16 && !isHexDigit(c)) {
 			throw new ConvException(format("Found non hex digit %s.", c));
 		}
-		uint digit;
+		ulong digit;
 		if (isDigit(c)) {
-			digit = (cast(uint)c) - (cast(uint)'0');
+			digit = (cast(ulong)c) - (cast(ulong)'0');
 		} else if (isHexDigit(c)) {
 			auto lowerC = asciiToLower(c);
-			digit = 10 + ((cast(uint)lowerC) - (cast(uint)'a'));
+			digit = 10 + ((cast(ulong)lowerC) - (cast(ulong)'a'));
 		}
-		if (digit >= cast(uint)base) {
+		if (digit >= cast(ulong)base) {
 			throw new ConvException(format("Invalid digit %s for base %s.", digit, base));
 		}
-		integer += digit * cast(uint)column;
-		column *= base;
+		integer += digit * cast(ulong)column;
+		column *= cast(ulong) base;
 	}
 	return integer;
 }
