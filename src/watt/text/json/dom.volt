@@ -7,6 +7,7 @@ import watt.io;
 import watt.text.format;
 import watt.text.json.util;
 import watt.text.json.sax;
+import watt.io.streams : InputStream;
 
 class DOMException : JSONException
 {
@@ -250,6 +251,18 @@ private enum LONG_MAX = 9223372036854775807UL;
 
 Value parse(string s)
 {
+	auto sax = new SAX(s);
+	return parse(sax);
+}
+
+Value parse(InputStream input)
+{
+	auto sax = new SAX(input);
+	return parse(sax);
+}
+
+Value parse(SAX sax)
+{
 	Value val;
 	val.setObject();
 	Value[] valueStack;
@@ -377,7 +390,6 @@ Value parse(string s)
 			break;
 		}
 	}
-	auto sax = new SAX(s);
 	while (loop) {
 		sax.get(dg);
 	}
