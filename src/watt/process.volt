@@ -240,7 +240,7 @@ version (Posix) private {
 } else version (Windows) {
 	extern (C) int _fileno(FILE* stream);
 	extern (C) HANDLE _get_osfhandle(int fd);
-	extern (C) HANDLE GetStdHandle(const DWORD noStdHandle);
+	extern (Windows) HANDLE GetStdHandle(const DWORD noStdHandle);
 	
 	LPSTR toArgz(string moduleName, string[] args)
 	{
