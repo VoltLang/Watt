@@ -7,6 +7,7 @@ import core.stdc.stdio : FILE, fopen, fclose, fputc, fwrite,
 import watt.conv;
 import watt.varargs;
 import watt.text.format;
+import watt.text.utf : encode;
 
 /**
  * OutputStreams write data to some sink (a file, a console, etc)
@@ -239,5 +240,72 @@ public:
 	override bool eof()
 	{
 		return feof(handle) != 0;
+	}
+}
+
+class OutputStringBufferStream : OutputStream
+{
+private:
+	size_t mBufferResize;
+	char[] mBuffer;
+	size_t mPosition;
+
+public:
+	this(size_t bufferSize = 1024, size_t bufferResize = 0)
+	{
+		this.mBufferResize = bufferResize;
+		this.mBuffer = new char[](bufferSize);
+	}
+
+	/**
+	 * Return everything written to the sink as string.
+	 */
+	string get()
+	{
+		// TODO make proper string
+		return cast(string)mBuffer[0..mPosition];
+	}
+
+	/**
+	 * Does nothing.
+	 */
+	override void close() {}
+
+	/**
+	 * Does nothing.
+	 */
+	override void flush() {}
+
+	/**
+	 * Write a single character out to the sink.
+	 */
+	override void put(dchar c)
+	{
+		write(encode(c));
+	}
+
+	/**
+	 * Write a series of characters to the sink.
+	 */
+	override void write(const(char)[] s)
+	{
+		reserve(s.length);
+
+		mBuffer[mPosition..mPosition+s.length] = s[];
+		mPosition = mPosition + s.length;
+	}
+
+	void reserve(size_t s) {
+		if (mPosition + s > mBuffer.length) {
+			size_t bufferResize = mBufferResize == 0 ? s : mBufferResize;
+			if (bufferResize < s) {
+				bufferResize = s;
+			}
+
+			// resize!?
+			auto newBuf = new char[](mBuffer.length + bufferResize);
+			newBuf[0..mBuffer.length] = mBuffer[];
+			mBuffer = newBuf;
+		}
 	}
 }
