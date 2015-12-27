@@ -623,7 +623,19 @@ public:
 		prepareAndCheck();
 
 		char[20] buffer;
-		auto len = cast(size_t)snprintf(buffer.ptr, buffer.length, "%d", number);
+		auto len = cast(size_t)snprintf(buffer.ptr, buffer.length, "%lld", number);
+		output.write(buffer[0 .. len]);
+	}
+
+	/**
+	 * Writes a number.
+	 */
+	void buildNumber(ulong number)
+	{
+		prepareAndCheck();
+
+		char[20] buffer;
+		auto len = cast(size_t)snprintf(buffer.ptr, buffer.length, "%llu", number);
 		output.write(buffer[0 .. len]);
 	}
 

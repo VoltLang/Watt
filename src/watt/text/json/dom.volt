@@ -7,7 +7,7 @@ import watt.io;
 import watt.text.format;
 import watt.text.json.util;
 import watt.text.json.sax;
-import watt.io.streams : InputStream;
+import watt.io.streams : InputStream, OutputStream, OutputStringBufferStream;
 
 class DOMException : JSONException
 {
@@ -51,7 +51,7 @@ struct Value
 		double floating;
 	}
 	private Store store;
-	private DomType _type;
+	/*private*/ DomType _type;
 	private Value[] _array;
 	private Value[string] object;
 
@@ -399,3 +399,56 @@ Value parse(SAX sax)
 	return valueStack[$-1];
 }
 
+void dump(Value root, OutputStream output, bool prettyPrint = false, const(char)[] indent = "    ")
+{
+	auto builder = new Builder(output, prettyPrint, indent);
+
+	void doDump(Value value)
+	{
+		final switch (value.type()) {
+			case DomType.NULL:
+				builder.buildNull();
+				break;
+			case DomType.BOOLEAN:
+				builder.buildBoolean(value.boolean());
+				break;
+			case DomType.DOUBLE:
+				builder.buildNumber(value.floating());
+				break;
+			case DomType.LONG:
+				builder.buildNumber(value.integer());
+				break;
+			case DomType.ULONG:
+				builder.buildNumber(value.unsigned());
+				break;
+			case DomType.STRING:
+				builder.buildString(value.str());
+				break;
+			case DomType.OBJECT:
+				builder.buildObjectStart();
+				foreach (key; value.keys()) {
+					builder.buildString(key);
+					doDump(value.lookupObjectKey(key));
+				}
+				builder.buildObjectEnd();
+				break;
+			case DomType.ARRAY:
+				builder.buildArrayStart();
+				foreach (element; value.array()) {
+					doDump(element);
+				}
+				builder.buildArrayEnd();
+				break;
+		}
+	}
+
+	doDump(root);
+	builder.finalize();
+}
+
+string dump(Value value, bool prettyPrint = false, const(char)[] indent = "    ")
+{
+	auto output = new OutputStringBufferStream();
+	dump(value, output, prettyPrint, indent);
+	return output.get();
+}
