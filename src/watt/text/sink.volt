@@ -7,7 +7,7 @@ module watt.text.sink;
 alias Sink = scope void delegate(SinkArg);
 
 /// The argument to the one true sink.
-alias SinkArg = const(char)[];
+alias SinkArg = scope const(char)[];
 
 /// A sink to create long strings.
 struct StringSink
