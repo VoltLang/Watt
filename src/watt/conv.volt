@@ -2,6 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.conv;
 
+import core.stdc.stdlib : strtof, strtod;
 import watt.text.ascii : isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
 import watt.text.format : format;
 import watt.text.utf : encode;
@@ -95,20 +96,16 @@ uint toUint(const(char)[] s, int base = 10)
 	return cast(uint)v;
 }
 
-/**
- * @todo actually implement
- */
-float toFloat(string)
+float toFloat(string s)
 {
-	return 0.0f;
+	const(char)* cstr = toStringz(s);
+	return strtof(cstr, null);
 }
 
-/**
- * @todo actually implement
- */
-double toDouble(string)
+double toDouble(string s)
 {
-	return 0.0;
+	const(char)* cstr = toStringz(s);
+	return strtod(cstr, null);
 }
 
 const(char)[] toString(ubyte b)
