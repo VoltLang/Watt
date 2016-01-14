@@ -154,6 +154,11 @@ const(char)[] toString(void* p)
 	return "0x" ~ toStringHex(u);
 }
 
+const(char)[] toString(bool b)
+{
+	return b ? "true" : "false";
+}
+
 const(char)[] charToString(dchar c)
 {
 	if ((cast(uint) c) >= 255) {
