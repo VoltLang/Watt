@@ -60,7 +60,7 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 		}
 	}
 	buf ~= '\0';
-	buf.length = buf.length - 1;  // Disregard the nul when it comes to length.
+	buf = buf[0 .. $-1];  // Disregard the nul when it comes to length.
 }
 
 private void formatNull(ref char[] buf, ref va_list vl)
