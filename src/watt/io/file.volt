@@ -45,7 +45,7 @@ void[] read(string filename)
 	}
 
 	auto buf = new char[](size);
-	size_t bytesRead = fread(buf.ptr, 1, size, fp);
+	size_t bytesRead = fread(cast(void*)buf.ptr, 1, size, fp);
 	if (bytesRead != size) {
 		throw new Exception("read failure.");
 	}

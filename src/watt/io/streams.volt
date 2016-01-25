@@ -184,7 +184,7 @@ public:
 
 	override void write(const(char)[] s)
 	{
-		fwrite(s.ptr, 1, s.length, handle);
+		fwrite(cast(void*)s.ptr, 1, s.length, handle);
 	}
 
 	override void flush()
@@ -229,7 +229,7 @@ public:
 
 	override ubyte[] read(ubyte[] buffer)
 	{
-		size_t num = fread(buffer.ptr, 1, buffer.length, handle);
+		size_t num = fread(cast(void*)buffer.ptr, 1, buffer.length, handle);
 		if (num != buffer.length) {
 			return buffer[0..num];
 		}

@@ -89,16 +89,16 @@ bool parseDouble(const(char)[] data, out double d)
  */
 bool parseDouble(const(char)[] data, out double d, ref char[] buffer)
 {
-	const(void)* ptr = data.ptr;
+	const(void)* ptr = cast(const(void)*)data.ptr;
 	if (data[$-1] != '\0') {
 		if (buffer.length <= data.length) {
 			buffer = new char[](data.length + 1);
 		}
 		buffer[0 .. data.length] = data[];
 		buffer[data.length] = '\0';
-		ptr = buffer.ptr;
+		ptr = cast(const(void)*)buffer.ptr;
 	}
-	d = strtod(ptr, null);
+	d = strtod(cast(const(char)*)ptr, null);
 	return true;
 }
 
