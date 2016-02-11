@@ -129,15 +129,11 @@ version (Linux) {
 	enum CLOCK_PROCESS_CPUTIME_ID = 2;
 	enum CLOCK_THREAD_CPUTIME_ID  = 3;
 
-	// NOTE: See above for why this is commented out.
-	//
-	//struct timespec
-	//{
-	//    time_t  tv_sec;
-	//    c_long  tv_nsec;
-	//}
-
-	alias timespec = uint;
+	struct timespec
+	{
+		time_t  tv_sec;
+		c_long  tv_nsec;
+	}
 
 	struct itimerspec
 	{
