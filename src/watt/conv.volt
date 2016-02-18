@@ -148,6 +148,26 @@ const(char)[] toString(long l)
 	return toStringSigned(l, 20);
 }
 
+const(char)[] toString(float f)
+{
+	auto buf = new char[](1024);
+	int retval = snprintf(buf.ptr, buf.length, "%f", f);
+	if (retval < 0) {
+		throw new ConvException("couldn't convert float to string.");
+	}
+	return buf[0 .. cast(size_t)retval];
+}
+
+const(char)[] toString(double d)
+{
+	auto buf = new char[](1024);
+	int retval = snprintf(buf.ptr, buf.length, "%f", d);
+	if (retval < 0) {
+		throw new ConvException("couldn't convert double to string.");
+	}
+	return buf[0 .. cast(size_t)retval];
+}
+
 const(char)[] toString(void* p)
 {
 	auto u = cast(size_t) p;
@@ -270,6 +290,7 @@ const(char)* toStringz(const(char)[] s)
 }
 
 private extern (C) size_t strlen(scope const(char)* s);
+private extern (C) int snprintf(char*, size_t, const(char)*, ...);
 
 /**
  * Given a nul terminated string s, return a Volt string.
