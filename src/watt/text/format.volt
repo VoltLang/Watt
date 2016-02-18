@@ -33,6 +33,15 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 			case 'd':
 				formatInt(ref buf, ref vl);
 				break;
+			case 'f':
+				if (_typeids[index].type == object.TYPE_FLOAT) {
+					formatFloat(ref buf, ref vl);
+				} else if (_typeids[index].type == object.TYPE_DOUBLE) {
+					formatDouble(ref buf, ref vl);
+				} else {
+					throw new object.Exception("type to %f format mismatch");
+				}
+				break;
 			case 'X':
 				formatHex(ref buf, ref vl);
 				break;
@@ -135,6 +144,18 @@ private void formatUlong(ref char[] buf, ref va_list vl)
 	buf ~= cast(char[]) toString(l);
 }
 
+private void formatFloat(ref char[] buf, ref va_list vl)
+{
+	auto f = va_arg!float(vl);
+	buf ~= cast(char[]) toString(f);
+}
+
+private void formatDouble(ref char[] buf, ref va_list vl)
+{
+	auto d = va_arg!double(vl);
+	buf ~= cast(char[]) toString(d);
+}
+
 private void formatChar(ref char[] buf, ref va_list vl)
 {
 	auto c = va_arg!char(vl);
@@ -215,6 +236,12 @@ private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
 		break;
 	case object.TYPE_ULONG:
 		formatUlong(ref buf, ref vl);
+		break;
+	case object.TYPE_FLOAT:
+		formatFloat(ref buf, ref vl);
+		break;
+	case object.TYPE_DOUBLE:
+		formatDouble(ref buf, ref vl);
 		break;
 	case object.TYPE_CHAR:
 		formatChar(ref buf, ref vl);
