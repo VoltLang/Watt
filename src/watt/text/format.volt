@@ -47,7 +47,7 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				break;
 			case 'x':
 				formatHex(ref buf, ref vl);
-				buf = toLower(cast(string) buf);
+				buf = cast(char[])toLower(cast(string) buf);
 				break;
 			case 'p':
 				formatPointer(ref buf, ref vl);
