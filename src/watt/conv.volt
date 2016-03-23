@@ -3,6 +3,7 @@
 module watt.conv;
 
 import core.stdc.stdlib : strtof, strtod;
+import core.stdc.stdio : snprintf;
 import watt.text.ascii : isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
 import watt.text.format : format;
 import watt.text.utf : encode;
@@ -290,7 +291,6 @@ const(char)* toStringz(const(char)[] s)
 }
 
 private extern (C) size_t strlen(scope const(char)* s);
-private extern (C) int snprintf(char*, size_t, const(char)*, ...);
 
 /**
  * Given a nul terminated string s, return a Volt string.
