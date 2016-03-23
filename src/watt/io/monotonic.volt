@@ -42,7 +42,7 @@ version (Windows) {
 		return ticks;
 	}
 
-	long ricks()
+	long ticks()
 	{
 		long ticks;
 		if (QueryPerformanceCounter(&ticks) == 0) {
