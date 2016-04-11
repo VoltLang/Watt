@@ -32,7 +32,7 @@ time_t
 uid_t
 */
 
-version (Linux) {
+version (Linux || Windows) {
 
 	// static if (__USE_FILE_OFFSET64)
 	version (all) {
@@ -73,6 +73,7 @@ version (Linux) {
 	//size_t (defined in core.stdc.stddef)
 	alias c_long = ptrdiff_t;
 	//time_t (defined in core.stdc.time)
+	alias ssize_t = c_long;
 	alias uid_t = uint;
 
 } else version (FreeBSD) {
