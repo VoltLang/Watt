@@ -196,7 +196,7 @@ string extension(const(char)[] path)
 	return new string(path[i .. $]);
 }
 
-string temporaryFilename(string extension="")
+string temporaryFilename(string extension="", string subdir="")
 {
 	RandomGenerator rng;
 	rng.seed(getHardwareSeedUint());
@@ -204,6 +204,11 @@ string temporaryFilename(string extension="")
 		string prefix = getEnv("TEMP") ~ '/';
 	} else {
 		string prefix = "/tmp/";
+	}
+
+	if (subdir != "") {
+		prefix ~= subdir ~ "/";
+		mkdir(prefix);
 	}
 
 	string filename;
