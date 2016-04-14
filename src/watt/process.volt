@@ -3,7 +3,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.process;
 
-import core.stdc.stdlib : csystem = system;
+import core.stdc.stdlib : csystem = system, exit;
+import core.stdc.string : strlen;
 import core.stdc.stdio;
 version (Windows) {
 	import core.windows.windows;
@@ -89,7 +90,6 @@ Pid spawnProcess(string name, string[] args,
 
 private {
 	extern(C) char* getenv(in char*);
-	extern(C) size_t strlen(in char*);
 }
 
 string getEnv(string env)
@@ -115,7 +115,6 @@ version (Posix) private {
 	extern(C) int dup2(int, int);
 	extern(C) void close(int);
 	extern(C) pid_t waitpid(pid_t, int*, int);
-	extern(C) void exit(int);
 
 	int spawnProcessPosix(string name,
 	                      string[] args,

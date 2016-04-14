@@ -22,9 +22,7 @@ global this()
 	}
 }
 
-extern(C) {
-	void exit(int);
-}
+import core.stdc.stdlib : exit;
 
 version (Windows) {
 
