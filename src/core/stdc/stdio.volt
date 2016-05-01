@@ -262,31 +262,41 @@ enum
 
 version (Windows) {
 
-    enum
-    {
-        _IOFBF   = 0,
-        _IOLBF   = 0x40,
-        _IONBF   = 4,
-        _IOREAD  = 1,     // non-standard
-        _IOWRT   = 2,     // non-standard
-        _IOMYBUF = 8,     // non-standard
-        _IOEOF   = 0x10,  // non-standard
-        _IOERR   = 0x20,  // non-standard
-        _IOSTRG  = 0x40,  // non-standard
-        _IORW    = 0x80,  // non-standard
-        _IOTRAN  = 0x100, // non-standard
-        _IOAPP   = 0x200, // non-standard
-    }
+	enum {
+		_IOFBF   = 0,
+		_IOLBF   = 0x40,
+		_IONBF   = 4,
+		_IOREAD  = 1,     // non-standard
+		_IOWRT   = 2,     // non-standard
+		_IOMYBUF = 8,     // non-standard
+		_IOEOF   = 0x10,  // non-standard
+		_IOERR   = 0x20,  // non-standard
+		_IOSTRG  = 0x40,  // non-standard
+		_IORW    = 0x80,  // non-standard
+		_IOTRAN  = 0x100, // non-standard
+		_IOAPP   = 0x200, // non-standard
+	}
 
-    extern global void function() _fcloseallp;
+	extern global void function() _fcloseallp;
 
-    private extern global FILE[/+_NFILE+/60] _iob;
 
-    @property FILE* stdin()  { return cast(FILE*) &_iob[0]; }
-    @property FILE* stdout() { return cast(FILE*) &_iob[1]; }
-    @property FILE* stderr() { return cast(FILE*) &_iob[2]; }
-    @property FILE* stdaux() { return cast(FILE*) &_iob[3]; }
-    @property FILE* stdprn() { return cast(FILE*) &_iob[4]; }
+	version (MSVC) {
+
+		extern(Windows) FILE* __acrt_iob_func(int);
+
+		@property FILE* stdin()  { return __acrt_iob_func(0); }
+		@property FILE* stdout() { return __acrt_iob_func(1); }
+		@property FILE* stderr() { return __acrt_iob_func(2); }
+
+	} else {
+
+		private extern global FILE[/+_NFILE+/60] _iob;
+
+		@property FILE* stdin()  { return cast(FILE*) &_iob[0]; }
+		@property FILE* stdout() { return cast(FILE*) &_iob[1]; }
+		@property FILE* stderr() { return cast(FILE*) &_iob[2]; }
+
+	}
 
 } else version (Linux) {
 
@@ -435,8 +445,12 @@ version (Windows) {
 
 	int feof(FILE* stream);
 
-	int   _snprintf(char* s, size_t n, in char* fmt, ...);
-	alias snprintf = _snprintf;
+	version (MSVC) {
+		int   snprintf(char* s, size_t n, in char* fmt, ...);
+	} else {
+		int   _snprintf(char* s, size_t n, in char* fmt, ...);
+		alias snprintf = _snprintf;
+	}
 
 	int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
 	alias vsnprintf = _vsnprintf;
