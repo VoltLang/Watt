@@ -10,6 +10,7 @@ import watt.text.format : format;
 import watt.text.utf : encode;
 import watt.text.sink : StringSink;
 
+
 class ConvException : Exception
 {
 	this(string msg)
@@ -152,22 +153,24 @@ const(char)[] toString(long l)
 
 const(char)[] toString(float f)
 {
-	auto buf = new char[](1024);
+	char[1024] buf;
 	int retval = snprintf(buf.ptr, buf.length, "%f", f);
+
 	if (retval < 0) {
 		throw new ConvException("couldn't convert float to string.");
 	}
-	return buf[0 .. cast(size_t)retval];
+	return new string(buf[0 .. cast(size_t)retval]);
 }
 
 const(char)[] toString(double d)
 {
-	auto buf = new char[](1024);
+	char[1024] buf;
 	int retval = snprintf(buf.ptr, buf.length, "%f", d);
+
 	if (retval < 0) {
 		throw new ConvException("couldn't convert double to string.");
 	}
-	return buf[0 .. cast(size_t)retval];
+	return new string(buf[0 .. cast(size_t)retval]);
 }
 
 const(char)[] toString(void* p)
