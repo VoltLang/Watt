@@ -1,23 +1,17 @@
-// Copyright © 2013, Bernard Helyer.
+// Copyright © 2013-2016, Bernard Helyer.  All rights reserved.
+// Copyright © 2015-2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.path;
 
-import watt.text.string : indexOf, lastIndexOf;
-import watt.math.random : RandomGenerator;
-import watt.process : getEnv;
-import watt.io.seed: getHardwareSeedUint;
-import watt.io.file : exists;
-import core.stdc.stdio;
+version (Windows || Posix):
+
 version (Windows) {
-	import core.windows.windows;
+	import core.windows.windows : HMODULE, DWORD, CreateDirectoryA;
 } else version (Posix) {
 	import core.posix.sys.stat : cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
-	import core.posix.sys.types;
-} else version (Emscripten) {
-	// Nothing
-} else {
-	static assert(false);
+	import core.posix.sys.types : mode_t;
 }
+
 version (Windows) {
 	extern(Windows) DWORD GetModuleFileNameA(HMODULE, const(char)*, DWORD);
 } else version (OSX) {
@@ -25,15 +19,24 @@ version (Windows) {
 } else version (Linux) {
 	import core.posix.sys.types : ssize_t;
 	extern(C) ssize_t readlink(const(char)* path, char* buf, size_t bufsiz);
+} else {
+	static assert(false, "unsupported platform");
 }
 
+import watt.text.string : indexOf, lastIndexOf;
+import watt.math.random : RandomGenerator;
+import watt.process : getEnv;
+import watt.io.seed: getHardwareSeedUint;
+import watt.io.file : exists;
 
+
+/**
+ * Used to seperate directory in a path.
+ */
 version (Windows) {
 	enum string dirSeparator = "\\";
-} else version (Posix || Emscripten) {
+} else version (Posix) {
 	enum string dirSeparator = "/";
-} else {
-	static assert(false, "not a supported platform");
 }
 
 /**
