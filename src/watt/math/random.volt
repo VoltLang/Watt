@@ -1,6 +1,10 @@
+// Copyright © 2015-2016, Bernard Helyer.  All rights reserved.
+// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.math.random;
 
-import watt.io.seed : getHardwareSeedUint;
+
+/// Default RandomGenerator.
+alias RandomGenerator = MersenneTwisterEngine;
 
 /// Mersenne Twister engine, adapted from Phobos's std.random.
 struct MersenneTwisterEngine
@@ -139,13 +143,13 @@ public:
 			char c;
 			switch (uniformInt(0, 3)) {
 			case 0:
-				c = cast(char)uniformUint(cast(uint)'0', cast(uint)('1')+1);
+				c = cast(char)uniformUint('0', '1' + 1U);
 				break;
 			case 1:
-				c = cast(char)uniformUint(cast(uint)'a', cast(uint)('z')+1);
+				c = cast(char)uniformUint('a', 'z' + 1U);
 				break;
 			case 2:
-				c = cast(char)uniformUint(cast(uint)'A', cast(uint)('Z')+1);
+				c = cast(char)uniformUint('A', 'Z' + 1U);
 				break;
 			default:
 				assert(false);
@@ -159,13 +163,4 @@ private:
 	private uint[624/*MT_N*/] mt;
 	private uint mti;// = cast(uint) -1;
 	private bool inited;
-}
-
-alias RandomGenerator = MersenneTwisterEngine;
-
-string randomString(size_t n)
-{
-	RandomGenerator rng;
-	rng.seed(getHardwareSeedUint());
-	return rng.randomString(n);
 }
