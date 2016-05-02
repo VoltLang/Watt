@@ -40,6 +40,15 @@ version (Windows) {
 }
 
 /**
+ * Used to seperate entries in the PATH environment variable.
+ */
+version (Windows) {
+	enum string pathSeparator = ";";
+} else version (Posix) {
+	enum string pathSeparator = ":";
+}
+
+/**
  * mkdir creates a single given directory.
  *
  * Existence is not treated as failure.
