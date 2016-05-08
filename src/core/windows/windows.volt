@@ -215,3 +215,27 @@ BOOL FindNextFileA(HANDLE, LPWIN32_FIND_DATA);
 
 DWORD GetCurrentDirectoryA(DWORD, LPSTR);
 BOOL SetCurrentDirectoryA(LPCSTR);
+
+
+enum uint CP_UTF8 = 65001;
+
+enum GET_FILEEX_INFO_LEVELS
+{
+	GetFileExInfoStandard
+}
+
+int MultiByteToWideChar(uint, DWORD, LPCSTR, int, LPWSTR, int);
+
+struct WIN32_FILE_ATTRIBUTE_DATA
+{
+	DWORD    dwFileAttributes;
+	FILETIME ftCreationTime;
+	FILETIME ftLastAccessTime;
+	FILETIME ftLastWriteTime;
+	DWORD    nFileSizeHigh;
+	DWORD    nFileSizeLow;
+}
+
+alias LPWIN32_FILE_ATTRIBUTE_DATA = WIN32_FILE_ATTRIBUTE_DATA*;
+
+BOOL GetFileAttributesExW(LPCWSTR, GET_FILEEX_INFO_LEVELS, LPVOID);
