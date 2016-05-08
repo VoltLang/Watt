@@ -244,11 +244,12 @@ version (Posix) private {
 	LPSTR toArgz(string moduleName, string[] args)
 	{
 		char[] buffer;
+		buffer ~= '"';
 		for (size_t i = 0; i < args.length; i++) {
-			buffer ~= ' ';
+			buffer ~= "\" \"";
 			buffer ~= cast(char[]) args[i];
 		}
-		buffer ~= '\0';
+		buffer ~= "\"\0";
 		return buffer.ptr;
 	}
 
