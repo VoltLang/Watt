@@ -24,7 +24,7 @@
 		DEALINGS IN THE SOFTWARE.
 	Authors: Sönke Ludwig
 */
-module vibe.textfilter.markdown;
+module watt.text.markdown;
 
 import watt.io;  // TODO: Remove
 import watt.algorithm : min;
