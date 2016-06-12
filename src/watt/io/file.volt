@@ -7,8 +7,13 @@ import watt.text.format;
 import watt.text.utf;
 import core.stdc.stdio;
 
-version (Windows) import core.windows.windows;
-version (Posix) import core.posix.dirent;
+version (Windows) {
+	import core.windows.windows;
+} else version (Posix) {
+	import core.posix.dirent;
+	import core.posix.sys.stat;
+}
+
 
 class FileException : Exception
 {
@@ -153,6 +158,31 @@ version (Windows) void searchDir(string dirName, string glob, scope void delegat
 			}
 		}
 	} while (true);
+}
+
+/**
+ * Returns true if a given directory exists.
+ */
+bool isDir(scope const(char)[] path)
+{
+	version (Windows) {
+		DWORD attr = GetFileAttributesA(toStringz(path));
+		if (attr == INVALID_FILE_ATTRIBUTES) {
+			return false;
+		}
+
+		return (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;	
+	} else version (Posix) {
+		stat_t buf;
+
+		if (stat(toStringz(path), &buf) != 0) {
+			return false;
+		}
+
+		return (buf.st_mode & S_IFMT) == S_IFDIR;
+	} else {
+		return false;
+	}
 }
 
 /**
