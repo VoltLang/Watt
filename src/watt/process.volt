@@ -16,7 +16,7 @@ import watt.conv;
 
 class Pid
 {
-private:
+public:
 	version (Windows) {
 		HANDLE _handle;
 	} else version (Posix) {
