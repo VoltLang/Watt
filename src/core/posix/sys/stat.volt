@@ -77,13 +77,13 @@ version (Linux) {
 		{
 			dev_t       st_dev;
 			ushort      __pad1;
-//			static if (!__USE_FILE_OFFSET64)
+//			static if (__USE_FILE_OFFSET64)
 //			{
-				ino_t       st_ino;
+//				uint        __st_ino;
 //			}
 //			else
 //			{
-//				uint        __st_ino;
+				ino_t       st_ino;
 //			}
 			mode_t      st_mode;
 			nlink_t     st_nlink;

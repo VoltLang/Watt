@@ -60,18 +60,19 @@ version (Linux) {
 	}
 
 	// static if (__USE_LARGEFILE64)
-	version (all) {
+	version (none) {
 
 		dirent* readdir64(DIR*);
 		alias readdir = readdir64;
-		DIR* opendir(const(char)*);
-		int     closedir(DIR*);
 
 	} else {
 
 		dirent* readdir(DIR*);
 
 	}
+
+	DIR* opendir(const(char)*);
+	int     closedir(DIR*);
 
 } else version (OSX) {
 
@@ -155,7 +156,7 @@ int readdir_r(DIR*, dirent*, dirent**);
 version (Linux) {
 
 	// static if (__USE_LARGEFILE64)
-	version (all) {
+	version (none) {
 
 		int   readdir64_r(DIR*, dirent*, dirent**);
 		alias readdir_r = readdir64_r;

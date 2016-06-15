@@ -35,7 +35,7 @@ uid_t
 version (Linux || Windows) {
 
 	// static if (__USE_FILE_OFFSET64)
-	version (all) {
+	version (none) {
 
 		alias blkcnt_t = long;
 		alias ino_t = ulong;
@@ -111,7 +111,7 @@ useconds_t
 version (Linux)
 {
 	// static if (__USE_FILE_OFFSET64)
-	version (all) {
+	version (none) {
 
 		alias fsblkcnt_t = ulong;
 		alias fsfilcnt_t = ulong;
