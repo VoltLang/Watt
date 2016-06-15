@@ -28,6 +28,9 @@ class FileException : Exception
  */
 void[] read(string filename)
 {
+	if (!isFile(filename)) {
+		return null;
+	}
 	auto cstr = filename ~ "\0";
 	auto fp = fopen(cstr.ptr, "rb");
 	if (fp is null) {
@@ -158,6 +161,14 @@ version (Windows) void searchDir(string dirName, string glob, scope void delegat
 			}
 		}
 	} while (true);
+}
+
+/**
+ * Returns true if a path exists and is not a directory.
+ */
+bool isFile(scope const(char)[] path)
+{
+	return exists(path) && !isDir(path);
 }
 
 /**
