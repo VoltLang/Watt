@@ -43,10 +43,10 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				}
 				break;
 			case 'X':
-				formatHex(ref buf, ref vl);
+				formatHex(_typeids[index], ref buf, ref vl);
 				break;
 			case 'x':
-				formatHex(ref buf, ref vl);
+				formatHex(_typeids[index],ref buf, ref vl);
 				buf = cast(char[])toLower(cast(string) buf);
 				break;
 			case 'p':
@@ -162,10 +162,38 @@ private void formatChar(ref char[] buf, ref va_list vl)
 	buf ~= c;
 }
 
-private void formatHex(ref char[] buf, ref va_list vl)
+private void formatHex(object.TypeInfo id, ref char[] buf, ref va_list vl)
 {
-	auto l = va_arg!ulong(vl);
-	buf ~= cast(char[]) toStringHex(l);
+	u64 ul;
+	switch (id.type) {
+	case object.TYPE_BYTE:
+		ul = cast(u64)va_arg!i8(vl);
+		break;
+	case object.TYPE_UBYTE:
+		ul = cast(u64)va_arg!u8(vl);
+		break;
+	case object.TYPE_SHORT:
+		ul = cast(u64)va_arg!i16(vl);
+		break;
+	case object.TYPE_USHORT:
+		ul = cast(u64)va_arg!u16(vl);
+		break;
+	case object.TYPE_INT:
+		ul = cast(u64)va_arg!i32(vl);
+		break;
+	case object.TYPE_UINT:
+		ul = cast(u64)va_arg!u32(vl);
+		break;
+	case object.TYPE_LONG:
+		ul = cast(u64)va_arg!i64(vl);
+		break;
+	case object.TYPE_ULONG:
+		ul = va_arg!u64(vl);
+		break;
+	default:
+		throw new object.Exception(format("Can't know how to hex-print type id %s.", id.type));
+	}
+	buf ~= cast(char[])toStringHex(ul);
 }
 
 private void formatPointer(ref char[] buf, ref va_list vl)
