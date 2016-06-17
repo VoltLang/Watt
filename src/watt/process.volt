@@ -258,26 +258,34 @@ version (Posix) private {
 
 	HANDLE spawnProcessWindows(string name, string[] args, FILE* stdinFP, FILE* stdoutFP, FILE* stderrFP)
 	{
-		STARTUPINFOA si;
-		si.cb = cast(DWORD) typeid(si).size;
-
 		HANDLE stdHandle(FILE* file, DWORD stdNo) {
 			if (file !is null) {
-				HANDLE handle = _get_osfhandle(_fileno(file));
-				if (handle !is cast(HANDLE)INVALID_HANDLE_VALUE) {
-					return handle;
+				h := _get_osfhandle(_fileno(file));
+				if (h !is cast(HANDLE)INVALID_HANDLE_VALUE) {
+					return h;
 				}
 			}
-			HANDLE handle = GetStdHandle(stdNo);
-			if (handle is cast(HANDLE)INVALID_HANDLE_VALUE) {
+			h := GetStdHandle(stdNo);
+			if (h is cast(HANDLE)INVALID_HANDLE_VALUE) {
 				throw new Exception("Couldn't get standard handle.");
 			}
-			return handle;
+			return h;
 		}
 
-		si.hStdInput = stdHandle(stdinFP, STD_INPUT_HANDLE);
-		si.hStdOutput = stdHandle(stdoutFP, STD_OUTPUT_HANDLE);
-		si.hStdError = stdHandle(stderrFP, STD_ERROR_HANDLE);
+		hStdInput  := stdHandle(stdinFP,  STD_INPUT_HANDLE);
+		hStdOutput := stdHandle(stdoutFP, STD_OUTPUT_HANDLE);
+		hStdError  := stdHandle(stderrFP, STD_ERROR_HANDLE);
+
+		return spawnProcessWindows(name, args, hStdInput, hStdOutput, hStdError);
+	}
+
+	HANDLE spawnProcessWindows(string name, string[] args, HANDLE hStdIn, HANDLE hStdOut, HANDLE hStdErr)
+	{
+		STARTUPINFOA si;
+		si.cb = cast(DWORD) typeid(si).size;
+		si.hStdInput  = hStdIn;
+		si.hStdOutput = hStdOut;
+		si.hStdError  = hStdErr;
 		if ((si.hStdInput  !is null && si.hStdInput  !is cast(HANDLE)INVALID_HANDLE_VALUE) ||
 		    (si.hStdOutput !is null && si.hStdOutput !is cast(HANDLE)INVALID_HANDLE_VALUE) ||
 		    (si.hStdError  !is null && si.hStdError  !is cast(HANDLE)INVALID_HANDLE_VALUE)) {
