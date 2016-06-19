@@ -1,7 +1,7 @@
 // Copyright © 2013, Jakob Bornecrantz.
 // Copyright © 2013, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-module watt.process;
+module watt.process.spawn;
 
 import core.stdc.stdlib : csystem = system, exit;
 import core.stdc.string : strlen;
