@@ -457,6 +457,9 @@ version (Windows) {
 
 } else version (Linux) {
 
+	FILE* popen(const(char)*, const(char)*);
+	int pclose(FILE*);
+
 	// No unsafe pointer manipulation.
 	@trusted
 	{
@@ -471,6 +474,9 @@ version (Windows) {
 	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
 
 } else version (OSX) {
+
+	FILE* popen(const(char)*, const(char)*);
+	int pclose(FILE*);
 
 	// No unsafe pointer manipulation.
 	@trusted
