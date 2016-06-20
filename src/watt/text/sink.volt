@@ -52,6 +52,11 @@ public:
 		return new string(mArr[0 .. mLength]);
 	}
 
+	char[] toChar()
+	{
+		return new char[](mArr[0 .. mLength]);
+	}
+
 	void reset()
 	{
 		mArr = [];
