@@ -109,7 +109,10 @@ string[] parseArguments(SinkArg str)
 			}
 			break;
 		case ESCAPE:
-			add(c);
+			if (c != '\n') {
+				add(c);
+			}
+
 			if (stateOld == IGNORE) {
 				state = IGNORE;
 			} else {
