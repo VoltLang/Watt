@@ -62,6 +62,14 @@ public:
 		return new char[](mArr[0 .. mLength]);
 	}
 
+	/**
+	 * Safely get the backing storage from the sink without coping.
+	 */
+	void toSink(Sink sink)
+	{
+		return sink(mArr[0 .. mLength]);
+	}
+
 	void reset()
 	{
 		mArr = null;
