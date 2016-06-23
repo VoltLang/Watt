@@ -13,6 +13,7 @@ alias SinkArg = scope const(char)[];
 struct StringSink
 {
 private:
+	char[1024] mStore;
 	char[] mArr;
 	size_t mLength;
 
@@ -23,8 +24,12 @@ public:
 	void sink(SinkArg str)
 	{
 		auto newSize = str.length + mLength;
+		if (mArr.length == 0) {
+			mArr = mStore[..];
+		}
+
 		if (newSize <= mArr.length) {
-			mArr[mLength .. newSize] = str[];
+			mArr[mLength .. newSize] = str[..];
 			mLength = newSize;
 			return;
 		}
@@ -42,7 +47,7 @@ public:
 
 		auto n = new char[](newSize + 256);
 		n[0 .. mLength] = mArr[0 .. mLength];
-		n[mLength .. newSize] = str[];
+		n[mLength .. newSize] = str[..];
 		mLength = newSize;
 		mArr = n;
 	}
@@ -59,7 +64,7 @@ public:
 
 	void reset()
 	{
-		mArr = [];
+		mArr = null;
 		mLength = 0;
 	}
 }
