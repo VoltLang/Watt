@@ -5,3 +5,4 @@ module watt.process;
 public import watt.process.cmd;
 public import watt.process.pipe;
 public import watt.process.spawn;
+public import watt.process.environment;
