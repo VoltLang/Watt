@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/license.d (BOOST ver. 1.0).
 module core.stdc.stdarg;
 
+static import object;
+
 
 extern(C):
 @system: // Types only.

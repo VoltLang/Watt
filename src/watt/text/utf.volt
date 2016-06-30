@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 module watt.text.utf;
 
+static import object;
+
 import watt.text.sink;
 
 

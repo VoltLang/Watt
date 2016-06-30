@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.conv;
 
+static import object;
+
 import core.stdc.stdlib : strtof, strtod;
 import core.stdc.stdio : snprintf;
 import core.stdc.string : strlen;

@@ -3,6 +3,8 @@
 // Command line options parser.
 module watt.text.getopt;
 
+static import object;
+
 import watt.conv;
 import watt.varargs;
 import watt.text.format;

@@ -1,5 +1,7 @@
 module watt.text.format;
 
+static import object;
+
 import core.stdc.stdio;
 import watt.varargs;
 import watt.conv;

@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.streams;
 
+static import object;
+
 import core.stdc.stdio : FILE, fopen, fclose, fputc, fwrite,
                          fflush, feof, fgetc, ungetc, fread;
 import watt.conv;

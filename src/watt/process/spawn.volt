@@ -3,6 +3,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.process.spawn;
 
+static import object;
+
 import core.stdc.stdlib : csystem = system, exit;
 import core.stdc.string : strlen;
 import core.stdc.stdio;
