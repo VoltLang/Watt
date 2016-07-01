@@ -3,8 +3,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.process.spawn;
 
-static import object;
-
+import core.exception;
 import core.stdc.stdlib : csystem = system, exit;
 import core.stdc.string : strlen;
 import core.stdc.stdio;
@@ -61,7 +60,7 @@ int wait(Pid p)
 	return p.wait();
 }
 
-class ProcessException : object.Exception
+class ProcessException : Exception
 {
 	this(string msg)
 	{

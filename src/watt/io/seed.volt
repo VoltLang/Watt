@@ -3,6 +3,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.seed;
 
+import core.exception;
 import core.windows.windows;
 
 version (Windows) {

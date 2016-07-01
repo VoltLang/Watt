@@ -3,10 +3,12 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.text.json.util;
 
+import core.exception;
 import core.stdc.stdlib : strtod;
 import watt.text.utf : encode;
 import watt.text.ascii : isDigit, isHexDigit, HEX_DIGITS;
 import watt.conv : toLong, toUlong, toLower;
+
 
 /**
  * Base Exception for the whole json module.

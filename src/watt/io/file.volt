@@ -2,10 +2,11 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.file;
 
+import core.exception;
+import core.stdc.stdio;
 import watt.conv;
 import watt.text.format;
 import watt.text.utf;
-import core.stdc.stdio;
 
 version (Windows) {
 	import core.windows.windows;

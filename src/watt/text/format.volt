@@ -1,10 +1,11 @@
 module watt.text.format;
 
 static import object;
-
+import core.exception;
 import core.stdc.stdio;
 import watt.varargs;
 import watt.conv;
+
 
 string format(const(char)[] formatString, ...)
 {
@@ -41,7 +42,7 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				} else if (_typeids[index].type == object.TYPE_DOUBLE) {
 					formatDouble(ref buf, ref vl);
 				} else {
-					throw new object.Exception("type to %f format mismatch");
+					throw new Exception("type to %f format mismatch");
 				}
 				break;
 			case 'X':
@@ -58,7 +59,7 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				formatType(_typeids[index], ref buf, ref vl);
 				break;
 			default:
-				throw new object.Exception(format("unknown format specifier '%c'", c));
+				throw new Exception(format("unknown format specifier '%c'", c));
 			}
 			formatting = false;
 			index++;
@@ -193,7 +194,7 @@ private void formatHex(object.TypeInfo id, ref char[] buf, ref va_list vl)
 		ul = va_arg!u64(vl);
 		break;
 	default:
-		throw new object.Exception(format("Can't know how to hex-print type id %s.", id.type));
+		throw new Exception(format("Can't know how to hex-print type id %s.", id.type));
 	}
 	buf ~= cast(char[])toStringHex(ul);
 }
@@ -280,7 +281,7 @@ private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
 		formatPointer(ref buf, ref vl);
 		break;
 	default:
-		throw new object.Exception(format("Don't know how to print type id %s.", id.type));
+		throw new Exception(format("Don't know how to print type id %s.", id.type));
 	}
 }
 

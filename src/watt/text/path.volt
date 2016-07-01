@@ -2,6 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.text.path;
 
+import core.exception;
 import watt.text.sink;
 import watt.path;
 

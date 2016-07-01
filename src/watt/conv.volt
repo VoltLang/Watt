@@ -4,6 +4,7 @@ module watt.conv;
 
 static import object;
 
+import core.exception;
 import core.stdc.stdlib : strtof, strtod;
 import core.stdc.stdio : snprintf;
 import core.stdc.string : strlen;

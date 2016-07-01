@@ -3,7 +3,7 @@
 // Command line options parser.
 module watt.text.getopt;
 
-static import object;
+import core.exception;
 
 import watt.conv;
 import watt.varargs;
@@ -12,8 +12,9 @@ import watt.text.string;
 import watt.text.utf;
 import watt.io;
 
+
 /// An exception thrown on errors.
-class GetoptException : object.Exception
+class GetoptException : Exception
 {
 	this(string msg)
 	{

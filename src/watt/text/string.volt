@@ -1,9 +1,12 @@
-// Copyright © 2014-2015, Bernard Helyer.  // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
+// Copyright © 2014-2015, Bernard Helyer.
+// See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 // String utilities.
 module watt.text.string;
 
+import core.exception;
 import watt.text.ascii : isWhite;
 import watt.text.utf;
+
 
 /**
  * Split string s by a given delimiter.

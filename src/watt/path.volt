@@ -5,6 +5,8 @@ module watt.path;
 
 version (Windows || Posix):
 
+import core.exception;
+
 version (Windows) {
 	import core.windows.windows : HMODULE, DWORD, CreateDirectoryA;
 } else version (Posix) {
