@@ -269,7 +269,7 @@ version (Posix) private {
 			}
 			h := GetStdHandle(stdNo);
 			if (h is cast(HANDLE)INVALID_HANDLE_VALUE) {
-				throw new Exception("Couldn't get standard handle.");
+				throw new ProcessException("Couldn't get standard handle.");
 			}
 			return h;
 		}
