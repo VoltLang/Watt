@@ -116,12 +116,12 @@ public:
 
 		global Library load(string filename)
 		{
-			throw new Exception("Huh oh! no impementation");
+			return null;
 		}
 
 		final void* symbol(string symbol)
 		{
-			throw new Exception("Huh oh! no impementation");
+			return null;
 		}
 
 		final void free()
