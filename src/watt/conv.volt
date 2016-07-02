@@ -2,8 +2,6 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.conv;
 
-static import object;
-
 import core.exception;
 import core.stdc.stdlib : strtof, strtod;
 import core.stdc.stdio : snprintf;
@@ -190,7 +188,7 @@ const(char)[] toString(bool b)
 const(char)[] charToString(dchar c)
 {
 	if ((cast(uint) c) >= 255) {
-		throw new object.Error("charToString: non ASCII dchars unimplemented.");
+		throw new Error("charToString: non ASCII dchars unimplemented.");
 	}
 	auto buf = new char[](1);
 	buf[0] = cast(char) c;

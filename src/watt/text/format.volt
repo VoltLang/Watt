@@ -1,6 +1,7 @@
 module watt.text.format;
 
-static import object;
+import core.object;
+import core.typeinfo;
 import core.exception;
 import core.stdc.stdio;
 import watt.varargs;
@@ -18,7 +19,7 @@ string format(const(char)[] formatString, ...)
 	return cast(string) buf;
 }
 
-void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref char[] buf, ref va_list vl)
+void formatImpl(const(char)[] formatString, ref TypeInfo[] _typeids, ref char[] buf, ref va_list vl)
 {
 	bool formatting;
 	int index;
@@ -37,9 +38,9 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				formatInt(ref buf, ref vl);
 				break;
 			case 'f':
-				if (_typeids[index].type == object.Type.F32) {
+				if (_typeids[index].type == Type.F32) {
 					formatFloat(ref buf, ref vl);
-				} else if (_typeids[index].type == object.Type.F64) {
+				} else if (_typeids[index].type == Type.F64) {
 					formatDouble(ref buf, ref vl);
 				} else {
 					throw new Exception("type to %f format mismatch");
@@ -82,7 +83,7 @@ private void formatNull(ref char[] buf, ref va_list vl)
 
 private void formatObject(ref char[] buf, ref va_list vl)
 {
-	auto obj = va_arg!object.Object(vl);
+	auto obj = va_arg!Object(vl);
 	if (obj is null) {
 		formatNull(ref buf, ref vl);
 		return;
@@ -165,32 +166,32 @@ private void formatChar(ref char[] buf, ref va_list vl)
 	buf ~= c;
 }
 
-private void formatHex(object.TypeInfo id, ref char[] buf, ref va_list vl)
+private void formatHex(TypeInfo id, ref char[] buf, ref va_list vl)
 {
 	u64 ul;
 	switch (id.type) {
-	case object.Type.I8:
+	case Type.I8:
 		ul = cast(u64)va_arg!i8(vl);
 		break;
-	case object.Type.U8:
+	case Type.U8:
 		ul = cast(u64)va_arg!u8(vl);
 		break;
-	case object.Type.I16:
+	case Type.I16:
 		ul = cast(u64)va_arg!i16(vl);
 		break;
-	case object.Type.U16:
+	case Type.U16:
 		ul = cast(u64)va_arg!u16(vl);
 		break;
-	case object.Type.I32:
+	case Type.I32:
 		ul = cast(u64)va_arg!i32(vl);
 		break;
-	case object.Type.U32:
+	case Type.U32:
 		ul = cast(u64)va_arg!u32(vl);
 		break;
-	case object.Type.I64:
+	case Type.I64:
 		ul = cast(u64)va_arg!i64(vl);
 		break;
-	case object.Type.U64:
+	case Type.U64:
 		ul = va_arg!u64(vl);
 		break;
 	default:
@@ -206,9 +207,9 @@ private void formatPointer(ref char[] buf, ref va_list vl)
 }
 
 
-private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
+private void formatArray(TypeInfo id, ref char[] buf, ref va_list vl)
 {
-	if (id.base.type == object.Type.Char) {
+	if (id.base.type == Type.Char) {
 		formatString(ref buf, ref vl);
 	} else {
 		auto v = va_arg!void[](vl);
@@ -216,7 +217,7 @@ private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
 		vl = v.ptr;
 		buf ~= cast(char[]) "[";
 		for (size_t i = 0; i < v.length; i++) {
-			if (id.base.type == object.Type.Char) {
+			if (id.base.type == Type.Char) {
 				buf ~= cast(char[]) "\"";
 				formatString(ref buf, ref vl);
 				buf ~= cast(char[]) "\"";
@@ -232,52 +233,52 @@ private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
 	}
 }
 
-private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
+private void formatType(TypeInfo id, ref char[] buf, ref va_list vl)
 {
 	switch (id.type) {
-	case object.Type.Class:
+	case Type.Class:
 		formatObject(ref buf, ref vl);
 		break;
-	case object.Type.Array:
+	case Type.Array:
 		formatArray(id, ref buf, ref vl);
 		break;
-	case object.Type.Bool:
+	case Type.Bool:
 		formatBool(ref buf, ref vl);
 		break;
-	case object.Type.I8:
+	case Type.I8:
 		formatByte(ref buf, ref vl);
 		break;
-	case object.Type.U8:
+	case Type.U8:
 		formatUbyte(ref buf, ref vl);
 		break;
-	case object.Type.I16:
+	case Type.I16:
 		formatShort(ref buf, ref vl);
 		break;
-	case object.Type.U16:
+	case Type.U16:
 		formatUshort(ref buf, ref vl);
 		break;
-	case object.Type.I32:
+	case Type.I32:
 		formatInt(ref buf, ref vl);
 		break;
-	case object.Type.U32:
+	case Type.U32:
 		formatUint(ref buf, ref vl);
 		break;
-	case object.Type.I64:
+	case Type.I64:
 		formatLong(ref buf, ref vl);
 		break;
-	case object.Type.U64:
+	case Type.U64:
 		formatUlong(ref buf, ref vl);
 		break;
-	case object.Type.F32:
+	case Type.F32:
 		formatFloat(ref buf, ref vl);
 		break;
-	case object.Type.F64:
+	case Type.F64:
 		formatDouble(ref buf, ref vl);
 		break;
-	case object.Type.Char:
+	case Type.Char:
 		formatChar(ref buf, ref vl);
 		break;
-	case object.Type.Function, object.Type.Delegate, object.Type.Pointer:
+	case Type.Function, Type.Delegate, Type.Pointer:
 		formatPointer(ref buf, ref vl);
 		break;
 	default:

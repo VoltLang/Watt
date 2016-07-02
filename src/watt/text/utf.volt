@@ -2,7 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 module watt.text.utf;
 
-static import object;
+import core.rt.utf;
+import core.exception;
 
 import watt.text.sink;
 
@@ -19,7 +20,7 @@ private enum CONTINUING_MASK                 = 0xC0;
 private ubyte readByte(string str, ref size_t index)
 {
 	if (index >= str.length) {
-		throw new object.MalformedUTF8Exception("unexpected end of stream");
+		throw new MalformedUTF8Exception("unexpected end of stream");
 	}
 	ubyte b = str[index];
 	index = index + 1;
@@ -34,7 +35,7 @@ private dchar readChar(string str, ref size_t index)
 
 dchar decode(string str, ref size_t index)
 {
-	return object.vrt_decode_u8_d(str, ref index);
+	return vrt_decode_u8_d(str, ref index);
 }
 
 /// Return how many codepoints are in a given UTF-8 string.
@@ -131,6 +132,6 @@ void encode(Sink dg, dchar c)
 		buf[0] = readByte(0x00FC, 0x0001);
 		return dg(buf[0 .. 6]);
 	} else {
-		throw new object.MalformedUTF8Exception("encode: unsupported codepoint range");
+		throw new MalformedUTF8Exception("encode: unsupported codepoint range");
 	}
 }

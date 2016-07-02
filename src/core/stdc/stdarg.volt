@@ -2,7 +2,7 @@
 // See copyright notice in src/watt/license.d (BOOST ver. 1.0).
 module core.stdc.stdarg;
 
-static import object;
+import core.compiler.varargs;
 
 
 extern(C):
@@ -10,5 +10,5 @@ extern(C):
 nothrow:
 
 alias va_list = void*;
-alias va_start = object.__llvm_volt_va_start;
-alias va_end = object.__llvm_volt_va_end;
+alias va_start = __llvm_volt_va_start;
+alias va_end = __llvm_volt_va_end;

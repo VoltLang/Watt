@@ -2,8 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.streams;
 
-static import object;
-
+import core.typeinfo;
 import core.stdc.stdio : FILE, fopen, fclose, fputc, fwrite,
                          fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
@@ -59,7 +58,7 @@ public:
 		put('\n');
 	}
 
-	void vwritef(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
+	void vwritef(const(char)[] formatString, ref TypeInfo[] typeids, ref va_list vl)
 	{
 		char[] buf;
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
@@ -78,7 +77,7 @@ public:
 		write(buf);
 	}
 
-	void vwritefln(const(char)[] formatString, ref object.TypeInfo[] typeids, ref va_list vl)
+	void vwritefln(const(char)[] formatString, ref TypeInfo[] typeids, ref va_list vl)
 	{
 		char[] buf;
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
