@@ -37,9 +37,9 @@ void formatImpl(const(char)[] formatString, ref object.TypeInfo[] _typeids, ref 
 				formatInt(ref buf, ref vl);
 				break;
 			case 'f':
-				if (_typeids[index].type == object.TYPE_FLOAT) {
+				if (_typeids[index].type == object.Type.F32) {
 					formatFloat(ref buf, ref vl);
-				} else if (_typeids[index].type == object.TYPE_DOUBLE) {
+				} else if (_typeids[index].type == object.Type.F64) {
 					formatDouble(ref buf, ref vl);
 				} else {
 					throw new Exception("type to %f format mismatch");
@@ -169,28 +169,28 @@ private void formatHex(object.TypeInfo id, ref char[] buf, ref va_list vl)
 {
 	u64 ul;
 	switch (id.type) {
-	case object.TYPE_BYTE:
+	case object.Type.I8:
 		ul = cast(u64)va_arg!i8(vl);
 		break;
-	case object.TYPE_UBYTE:
+	case object.Type.U8:
 		ul = cast(u64)va_arg!u8(vl);
 		break;
-	case object.TYPE_SHORT:
+	case object.Type.I16:
 		ul = cast(u64)va_arg!i16(vl);
 		break;
-	case object.TYPE_USHORT:
+	case object.Type.U16:
 		ul = cast(u64)va_arg!u16(vl);
 		break;
-	case object.TYPE_INT:
+	case object.Type.I32:
 		ul = cast(u64)va_arg!i32(vl);
 		break;
-	case object.TYPE_UINT:
+	case object.Type.U32:
 		ul = cast(u64)va_arg!u32(vl);
 		break;
-	case object.TYPE_LONG:
+	case object.Type.I64:
 		ul = cast(u64)va_arg!i64(vl);
 		break;
-	case object.TYPE_ULONG:
+	case object.Type.U64:
 		ul = va_arg!u64(vl);
 		break;
 	default:
@@ -208,7 +208,7 @@ private void formatPointer(ref char[] buf, ref va_list vl)
 
 private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
 {
-	if (id.base.type == object.TYPE_CHAR) {
+	if (id.base.type == object.Type.Char) {
 		formatString(ref buf, ref vl);
 	} else {
 		auto v = va_arg!void[](vl);
@@ -216,7 +216,7 @@ private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
 		vl = v.ptr;
 		buf ~= cast(char[]) "[";
 		for (size_t i = 0; i < v.length; i++) {
-			if (id.base.type == object.TYPE_CHAR) {
+			if (id.base.type == object.Type.Char) {
 				buf ~= cast(char[]) "\"";
 				formatString(ref buf, ref vl);
 				buf ~= cast(char[]) "\"";
@@ -235,49 +235,49 @@ private void formatArray(object.TypeInfo id, ref char[] buf, ref va_list vl)
 private void formatType(object.TypeInfo id, ref char[] buf, ref va_list vl)
 {
 	switch (id.type) {
-	case object.TYPE_CLASS:
+	case object.Type.Class:
 		formatObject(ref buf, ref vl);
 		break;
-	case object.TYPE_ARRAY:
+	case object.Type.Array:
 		formatArray(id, ref buf, ref vl);
 		break;
-	case object.TYPE_BOOL:
+	case object.Type.Bool:
 		formatBool(ref buf, ref vl);
 		break;
-	case object.TYPE_BYTE:
+	case object.Type.I8:
 		formatByte(ref buf, ref vl);
 		break;
-	case object.TYPE_UBYTE:
+	case object.Type.U8:
 		formatUbyte(ref buf, ref vl);
 		break;
-	case object.TYPE_SHORT:
+	case object.Type.I16:
 		formatShort(ref buf, ref vl);
 		break;
-	case object.TYPE_USHORT:
+	case object.Type.U16:
 		formatUshort(ref buf, ref vl);
 		break;
-	case object.TYPE_INT:
+	case object.Type.I32:
 		formatInt(ref buf, ref vl);
 		break;
-	case object.TYPE_UINT:
+	case object.Type.U32:
 		formatUint(ref buf, ref vl);
 		break;
-	case object.TYPE_LONG:
+	case object.Type.I64:
 		formatLong(ref buf, ref vl);
 		break;
-	case object.TYPE_ULONG:
+	case object.Type.U64:
 		formatUlong(ref buf, ref vl);
 		break;
-	case object.TYPE_FLOAT:
+	case object.Type.F32:
 		formatFloat(ref buf, ref vl);
 		break;
-	case object.TYPE_DOUBLE:
+	case object.Type.F64:
 		formatDouble(ref buf, ref vl);
 		break;
-	case object.TYPE_CHAR:
+	case object.Type.Char:
 		formatChar(ref buf, ref vl);
 		break;
-	case object.TYPE_FUNCTION, object.TYPE_DELEGATE, object.TYPE_POINTER:
+	case object.Type.Function, object.Type.Delegate, object.Type.Pointer:
 		formatPointer(ref buf, ref vl);
 		break;
 	default:
