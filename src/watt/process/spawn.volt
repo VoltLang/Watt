@@ -73,7 +73,7 @@ Pid spawnProcess(string name, string[] args,
                  FILE* _stderr)
 {
 	version (Posix) {
-		stdinfd := _stdout is null ? fileno(stdin) : fileno(_stdin);
+		stdinfd := _stdin is null ? fileno(stdin) : fileno(_stdin);
 		stdoutfd := _stdout is null ? fileno(stdout) : fileno(_stdout);
 		stderrfd := _stderr is null ? fileno(stderr) : fileno(_stderr);
 		auto pid = spawnProcessPosix(name, args, stdinfd, stdoutfd, stderrfd);
