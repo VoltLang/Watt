@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.process.environment;
 
+version (Windows || Posix):
+
 import core.stdc.string;
 
 import watt.io;

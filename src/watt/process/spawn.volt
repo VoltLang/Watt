@@ -3,10 +3,13 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.process.spawn;
 
+version (Windows || Posix):
+
 import core.exception;
 import core.stdc.stdlib : csystem = system, exit;
 import core.stdc.string : strlen;
 import core.stdc.stdio;
+
 version (Windows) {
 	import core.windows.windows;
 } else version (Posix) {
