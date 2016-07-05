@@ -17,6 +17,9 @@ version (Windows) {
 }
 
 import watt.process.environment;
+import watt.text.string : split;
+import watt.io.file : exists;
+import watt.path : dirSeparator, pathSeparator;
 import watt.conv;
 
 
@@ -77,13 +80,28 @@ Pid spawnProcess(string name, string[] args,
                  FILE* _stderr,
                  Environment env = null)
 {
+	if (name is null) {
+		throw new ProcessException("Name can not be null");
+	}
+
+	cmd : string;
+	if (exists(name)) {
+		cmd = name;
+	} else {
+		cmd = searchPath(name);
+	}
+
+	if (cmd is null) {
+		throw new ProcessException("Can not find command " ~ name);
+	}
+
 	version (Posix) {
 		stdinfd := _stdin is null ? fileno(stdin) : fileno(_stdin);
 		stdoutfd := _stdout is null ? fileno(stdout) : fileno(_stdout);
 		stderrfd := _stderr is null ? fileno(stderr) : fileno(_stderr);
-		auto pid = spawnProcessPosix(name, args, stdinfd, stdoutfd, stderrfd, env);
+		auto pid = spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
 	} else version (Windows) {
-		auto pid = spawnProcessWindows(name, args, _stdin, _stdout, _stderr, env);
+		auto pid = spawnProcessWindows(cmd, args, _stdin, _stdout, _stderr, env);
 	} else {
 		int pid;
 	}
@@ -93,6 +111,27 @@ Pid spawnProcess(string name, string[] args,
 
 private {
 	extern(C) char* getenv(in char*);
+}
+
+string searchPath(string cmd, string path = null)
+{
+	if (path is null) {
+		path = getEnv("PATH");
+	}
+	if (path is null) {
+		return null;
+	}
+
+	assert(pathSeparator.length == 1);
+
+	foreach (p; split(path, pathSeparator[0])) {
+		t := p ~ dirSeparator ~ cmd;
+		if (exists(t)) {
+			return t;
+		}
+	}
+
+	return null;
 }
 
 string getEnv(string env)
@@ -112,8 +151,8 @@ int system(string name)
 
 version (Posix) private {
 
-	extern(C) int execvp(const(char)* file, const(char)** argv);
-	extern(C) int execvpe(const(char)* file, const(char)** argv, const(char)** env);
+	extern(C) int execv(const(char)* file, const(char)** argv);
+	extern(C) int execve(const(char)* file, const(char)** argv, const(char)** env);
 	extern(C) pid_t fork();
 	extern(C) int dup(int);
 	extern(C) int dup2(int, int);
@@ -168,9 +207,9 @@ version (Posix) private {
 			close(stderrFD);
 
 		if (env is null) {
-			execvp(argz[0], argz.ptr);
+			execv(argz[0], argz.ptr);
 		} else {
-			execvpe(argz[0], argz.ptr, envz.ptr);
+			execve(argz[0], argz.ptr, envz.ptr);
 		}
 		exit(-1);
 		assert(false);
