@@ -59,14 +59,13 @@ public:
 		return (key in store) !is null;
 	}
 
-	bool get(string key, out string value)
+	string getOrNull(string key)
 	{
 		r := key in store;
 		if (r !is null) {
-			value = *r;
-			return true;
+			return *r;
 		}
-		return false;
+		return null;
 	}
 
 	void set(string key, string value)
