@@ -300,6 +300,10 @@ const(char)* toStringz(const(char)[] s)
  */
 string toString(scope const(char)* s)
 {
+	if (s is null) {
+		return null;
+	}
+
 	auto str = new char[](strlen(s));
 	str[] = s[0 .. str.length];
 	return cast(string) str;
@@ -307,6 +311,10 @@ string toString(scope const(char)* s)
 
 string toString(const(char)* s)
 {
+	if (s is null) {
+		return null;
+	}
+
 	auto str = new char[](strlen(s));
 	str[] = s[0 .. str.length];
 	return cast(string) str;
