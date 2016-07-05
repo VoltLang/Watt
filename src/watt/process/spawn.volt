@@ -15,40 +15,34 @@ version (Windows) {
 
 import watt.conv;
 
+
 class Pid
 {
 public:
 	version (Windows) {
-		HANDLE _handle;
+		alias NativeID = HANDLE;
+		alias _handle = nativeID;
 	} else version (Posix) {
-		pid_t _pid;
+		alias NativeID = pid_t;
+		alias _pid = nativeID;
 	} else {
-		// Nothing
+		alias NativeID = int;
 	}
 
+	NativeID nativeID;
+
 public:
-	version (Windows) {
-		this(HANDLE handle)
-		{
-			this._handle = handle;
-		}
-	} else version (Posix) {
-		this(pid_t pid)
-		{
-			this._pid = pid;
-		}
-	} else {
-		this(int pid)
-		{
-		}
+	this(NativeID nativeID)
+	{
+		this.nativeID = nativeID;
 	}
 
 	int wait()
 	{
 		version (Posix) {
-			return waitPosix(_pid);
+			return waitPosix(nativeID);
 		} else version (Windows) {
-			return waitWindows(_handle);
+			return waitWindows(nativeID);
 		} else {
 			return -1;
 		}
