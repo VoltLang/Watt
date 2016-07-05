@@ -13,6 +13,7 @@ version (Windows) {
 	import core.posix.sys.types : pid_t;
 }
 
+import watt.process.environment;
 import watt.conv;
 
 
@@ -64,21 +65,22 @@ class ProcessException : Exception
 
 Pid spawnProcess(string name, string[] args)
 {
-	return spawnProcess(name, args, stdin, stdout, stderr);
+	return spawnProcess(name, args, stdin, stdout, stderr, null);
 }
 
 Pid spawnProcess(string name, string[] args,
                  FILE* _stdin,
                  FILE* _stdout,
-                 FILE* _stderr)
+                 FILE* _stderr,
+                 Environment env = null)
 {
 	version (Posix) {
 		stdinfd := _stdin is null ? fileno(stdin) : fileno(_stdin);
 		stdoutfd := _stdout is null ? fileno(stdout) : fileno(_stdout);
 		stderrfd := _stderr is null ? fileno(stderr) : fileno(_stderr);
-		auto pid = spawnProcessPosix(name, args, stdinfd, stdoutfd, stderrfd);
+		auto pid = spawnProcessPosix(name, args, stdinfd, stdoutfd, stderrfd, env);
 	} else version (Windows) {
-		auto pid = spawnProcessWindows(name, args, _stdin, _stdout, _stderr);
+		auto pid = spawnProcessWindows(name, args, _stdin, _stdout, _stderr, env);
 	} else {
 		int pid;
 	}
@@ -107,7 +109,8 @@ int system(string name)
 
 version (Posix) private {
 
-	extern(C) int execvp(char* file, char** argv);
+	extern(C) int execvp(const(char)* file, const(char)** argv);
+	extern(C) int execvpe(const(char)* file, const(char)** argv, const(char)** env);
 	extern(C) pid_t fork();
 	extern(C) int dup(int);
 	extern(C) int dup2(int, int);
@@ -118,17 +121,23 @@ version (Posix) private {
 	                      string[] args,
 	                      int stdinFD,
 	                      int stdoutFD,
-	                      int stderrFD)
+	                      int stderrFD,
+	                      Environment env)
 	{
-		auto stack = new char[](16384);
-		auto argz = new char*[](4096);
+		char[] argStack = new char[](16384);
+		char[] envStack = new char[](16384);
+		char*[] argz = new char*[](4096);
+		char*[] envz = new char*[](4096);
+		if (env !is null) {
+			toEnvz(envStack, envz, env);
+		}
 
 		// Remove these when enums work.
 		int STDIN_FILENO = 0;
 		int STDOUT_FILENO = 1;
 		int STDERR_FILENO = 2;
 
-		toArgz(stack[], argz[], name, args);
+		toArgz(argStack, argz, name, args);
 
 		auto pid = fork();
 		if (pid != 0)
@@ -155,7 +164,11 @@ version (Posix) private {
 		if (stderrFD > STDERR_FILENO)
 			close(stderrFD);
 
-		execvp(argz[0], &argz[0]);
+		if (env is null) {
+			execvp(argz[0], argz.ptr);
+		} else {
+			execvpe(argz[0], argz.ptr, envz.ptr);
+		}
 		exit(-1);
 		assert(false);
 	}
@@ -181,6 +194,28 @@ version (Posix) private {
 		}
 
 		// Zero the last argument.
+		result[resultPos] = null;
+	}
+
+	void toEnvz(char[] stack, char*[] result, Environment env)
+	{
+		start, end, resultPos : size_t;
+
+		foreach (k, v; env.store) {
+			start = end;
+			end = start + k.length;
+			stack[start .. end] = k;
+			stack[end++] = '=';
+
+			result[resultPos++] = &stack[start];
+
+			if (v.length) {
+				start = end;
+				end = start + v.length;
+				stack[start .. end] = v;
+			}
+			stack[end++] = '\0';
+		}
 		result[resultPos] = null;
 	}
 
@@ -234,7 +269,9 @@ version (Posix) private {
 
 	int termsig(int status)    { return status & 0x7f; }
 	int exitstatus(int status) { return (status & 0xff00) >> 8; }
+
 } else version (Windows) {
+
 	extern (C) int _fileno(FILE* stream);
 	extern (C) HANDLE _get_osfhandle(int fd);
 	extern (Windows) HANDLE GetStdHandle(const DWORD noStdHandle);
@@ -251,7 +288,11 @@ version (Posix) private {
 		return buffer.ptr;
 	}
 
-	HANDLE spawnProcessWindows(string name, string[] args, FILE* stdinFP, FILE* stdoutFP, FILE* stderrFP)
+	HANDLE spawnProcessWindows(string name, string[] args,
+	                           FILE* stdinFP,
+	                           FILE* stdoutFP,
+	                           FILE* stderrFP,
+	                           Environment env)
 	{
 		HANDLE stdHandle(FILE* file, DWORD stdNo) {
 			if (file !is null) {
@@ -271,10 +312,14 @@ version (Posix) private {
 		hStdOutput := stdHandle(stdoutFP, STD_OUTPUT_HANDLE);
 		hStdError  := stdHandle(stderrFP, STD_ERROR_HANDLE);
 
-		return spawnProcessWindows(name, args, hStdInput, hStdOutput, hStdError);
+		return spawnProcessWindows(name, args, hStdInput, hStdOutput, hStdError, env);
 	}
 
-	HANDLE spawnProcessWindows(string name, string[] args, HANDLE hStdIn, HANDLE hStdOut, HANDLE hStdErr)
+	HANDLE spawnProcessWindows(string name, string[] args,
+	                           HANDLE hStdIn,
+	                           HANDLE hStdOut,
+	                           HANDLE hStdErr,
+	                           Environment env)
 	{
 		STARTUPINFOA si;
 		si.cb = cast(DWORD) typeid(si).size;

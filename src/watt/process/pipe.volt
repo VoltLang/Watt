@@ -48,7 +48,7 @@ version(Windows) {
 		}
 
 		// Use helpers to spawn.
-		hProcess = spawnProcessWindows(cmd, args, null, hOut, null);
+		hProcess = spawnProcessWindows(cmd, args, null, hOut, null, null);
 		scope(exit) {
 			CloseHandle(hProcess);
 		}
