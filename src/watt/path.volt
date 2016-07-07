@@ -9,9 +9,12 @@ import core.exception;
 
 version (Windows) {
 	import core.windows.windows : HMODULE, DWORD, CreateDirectoryA;
+	extern(C) char* _fullpath(char*, const(char)*, size_t length);
+	extern(C) char* _wfullpath(wchar*, const(wchar)*, size_t length);
 } else version (Posix) {
 	import core.posix.sys.stat : cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
 	import core.posix.sys.types : mode_t;
+	extern(C) char* realpath(const(char)*, char*);
 }
 
 version (Windows) {
@@ -25,6 +28,8 @@ version (Windows) {
 	static assert(false, "unsupported platform");
 }
 
+import core.stdc.stdlib : free;
+import watt.conv : toString, toStringz;
 import watt.text.string : indexOf, lastIndexOf;
 import watt.math.random : RandomGenerator;
 import watt.process : getEnv;
@@ -232,6 +237,20 @@ string temporaryFilename(string extension="", string subdir="")
 	} while (exists(filename));
 
 	return filename;
+}
+
+string fullPath(string file)
+{
+	version (Posix) {
+		result := realpath(toStringz(file), null);
+	} else version (Windows) {
+		result := _fullpath(null, toStringz(file), 0);
+	}
+
+	ret := toString(result);
+	free(cast(void*)result);
+
+	return ret;
 }
 
 /**
