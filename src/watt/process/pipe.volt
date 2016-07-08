@@ -22,7 +22,7 @@ version(Windows) {
 	 * Run the given command and read back the output into a string.
 	 * Waits for the command to complete before returning.
 	 */
-	string getOutputWindows(string cmd, string[] args)
+	fn getOutputWindows(cmd : string, args : string[]) string
 	{
 		saAttr : SECURITY_ATTRIBUTES;
 		hOut, hIn, hProcess : HANDLE;
@@ -90,7 +90,7 @@ version(Posix) {
 	 * Run the given command and read back the output into a string.
 	 * Waits for the command to complete before returning.
 	 */
-	string getOutputPosix(string cmd, string[] args)
+	fn getOutputPosix(cmd : string, args : string[]) string
 	{
 		cmdPtr := toArgsPosix(cmd, args);
 		fp := popen(cmdPtr, "r");

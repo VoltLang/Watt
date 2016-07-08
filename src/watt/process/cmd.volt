@@ -10,7 +10,7 @@ import watt.text.ascii;
 /**
  * Surround the string with " and escape " and / with /.
  */
-void escapeAndAddQuotation(Sink sink, SinkArg str)
+fn escapeAndAddQuotation(sink : Sink, str : SinkArg) void
 {
 	sink(`"`);
 	foreach (dchar d; str) {
@@ -27,9 +27,9 @@ void escapeAndAddQuotation(Sink sink, SinkArg str)
  * Returns a textual representation of the command and args
  * that can be passed to "/bin/sh -c".
  */
-char* toArgsPosix(SinkArg cmd, SinkArg[] args)
+fn toArgsPosix(cmd : SinkArg, args : SinkArg[]) char*
 {
-	StringSink sink;
+	sink : StringSink;
 
 	escapeAndAddQuotation(sink.sink, cmd);
 	foreach (arg; args) {
@@ -54,7 +54,7 @@ private enum ArgumentParseState {
 /**
  * Parser a string as a series of arguments, just like bash/make does.
  */
-string[] parseArguments(SinkArg str)
+fn parseArguments(str : SinkArg) string[]
 {
 	pos : size_t;
 	ret : string[];
@@ -63,16 +63,16 @@ string[] parseArguments(SinkArg str)
 	state := ArgumentParseState.WHITESPACE;
 	stateOld := state;
 
-	void escape() {
+	fn escape() void {
 		stateOld = state;
 		state = ArgumentParseState.ESCAPE;
 	}
 
-	void add(char c) {
+	fn add(c : char) void {
 		tmp[pos++] = c;
 	}
 
-	void done() {
+	fn done() void {
 		if (pos == 0) {
 			return;
 		}

@@ -14,11 +14,11 @@ import watt.text.sink;
 /**
  * Returns a environment that is a copy of the running process environment.
  */
-version(Posix) Environment retriveEnvironment()
+version(Posix) fn retriveEnvironment() Environment
 {
 	env := new Environment();
 	ptr := environ;
-	for (auto s = *ptr; s !is null; s = *(++ptr)) {
+	for (s : char* = *ptr; s !is null; s = *(++ptr)) {
 		str := s[0 .. strlen(s)];
 		pos := indexOf(str, '=');
 		valuePos := cast(size_t)(pos + 1);
@@ -43,7 +43,7 @@ version(Posix) Environment retriveEnvironment()
 /**
  * Returns a environment that is a copy of the running process environment.
  */
-version(Windows) Environment retriveEnvironment()
+version(Windows) fn retriveEnvironment() Environment
 {
 	// This is a stub
 	return new Environment();
@@ -52,16 +52,16 @@ version(Windows) Environment retriveEnvironment()
 class Environment
 {
 public:
-	string[string] store;
+	store : string[string];
 
 
 public:
-	bool isSet(string key)
+	fn isSet(key : string) bool
 	{
 		return (key in store) !is null;
 	}
 
-	string getOrNull(string key)
+	fn getOrNull(key : string) string
 	{
 		r := key in store;
 		if (r !is null) {
@@ -70,12 +70,12 @@ public:
 		return null;
 	}
 
-	void set(string key, string value)
+	fn set(key : string, value : string) void
 	{
 		store[key] = value;
 	}
 
-	void remove(string key)
+	fn remove(key : string) void
 	{
 		store.remove(key);
 	}
@@ -84,13 +84,13 @@ public:
 version (OSX) {
 
 	/// TODO Remove this from iOS, or apps gets rejected.
-	extern(C) char*** _NSGetEnviron();
+	extern(C) fn _NSGetEnviron() char*** ;
 
-	@property char** environ()
+	@property fn environ() char**
 	{
 		return *_NSGetEnviron();
 	}
 
 } else version (Posix) {
-	extern extern(C) global char** environ;
+	extern extern(C) global environ : char**;
 }
