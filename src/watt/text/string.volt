@@ -211,8 +211,7 @@ fn replace(str : const(char)[], from : const(char)[], to : const(char)[]) string
 }
 
 
-//fn startsWith(str : const(char)[], beginnings : const(char)[][]...) int
-int startsWith(const(char)[] str, const(char)[][] beginnings...)
+fn startsWith(str : const(char)[], beginnings : const(char)[][]...) int
 {
 	result : int;
 	foreach (beginning; beginnings) {
@@ -226,8 +225,7 @@ int startsWith(const(char)[] str, const(char)[][] beginnings...)
 	return result;
 }
 
-//fn endsWith(str : const(char)[], ends : const(char)[][]...) int
-int endsWith(const(char)[] str, const(char)[][] ends...)
+fn endsWith(str : const(char)[], ends : const(char)[][]...) int
 {
 	result : int;
 	foreach (end; ends) {
