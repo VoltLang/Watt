@@ -13,17 +13,17 @@ alias SinkArg = scope const(char)[];
 struct StringSink
 {
 private:
-	char[1024] mStore;
-	char[] mArr;
-	size_t mLength;
+	mStore : char[1024];
+	mArr : char[];
+	mLength : size_t;
 
 	enum size_t minSize = 16;
 	enum size_t maxSize = 2048;
 
 public:
-	void sink(SinkArg str)
+	fn sink(str : SinkArg) void
 	{
-		auto newSize = str.length + mLength;
+		newSize := str.length + mLength;
 		if (mArr.length == 0) {
 			mArr = mStore[..];
 		}
@@ -34,7 +34,7 @@ public:
 			return;
 		}
 
-		auto allocSize = mArr.length;
+		allocSize := mArr.length;
 		while (allocSize < newSize) {
 			if (allocSize < minSize) {
 				allocSize = minSize;
@@ -45,19 +45,19 @@ public:
 			}
 		}
 
-		auto n = new char[](newSize + 256);
+		n := new char[](newSize + 256);
 		n[0 .. mLength] = mArr[0 .. mLength];
 		n[mLength .. newSize] = str[..];
 		mLength = newSize;
 		mArr = n;
 	}
 
-	string toString()
+	fn toString() string
 	{
 		return new string(mArr[0 .. mLength]);
 	}
 
-	char[] toChar()
+	fn toChar() char[]
 	{
 		return new char[](mArr[0 .. mLength]);
 	}
@@ -65,12 +65,12 @@ public:
 	/**
 	 * Safely get the backing storage from the sink without coping.
 	 */
-	void toSink(Sink sink)
+	fn toSink(sink : Sink) void
 	{
 		return sink(mArr[0 .. mLength]);
 	}
 
-	void reset()
+	fn reset() void
 	{
 		mArr = null;
 		mLength = 0;

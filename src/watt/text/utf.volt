@@ -17,31 +17,31 @@ private enum FIVE_BYTE_MASK                  = 0xFC;
 private enum SIX_BYTE_MASK                   = 0xFE;
 private enum CONTINUING_MASK                 = 0xC0;
 
-private ubyte readByte(string str, ref size_t index)
+private fn readU8(str : string, ref index : size_t) u8
 {
 	if (index >= str.length) {
 		throw new MalformedUTF8Exception("unexpected end of stream");
 	}
-	ubyte b = str[index];
-	index = index + 1;
-	return b;
+	return str[index++];
 }
 
-private dchar readChar(string str, ref size_t index)
+/*
+private fn readChar(str string, ref index : size_t) dchar
 {
-	ubyte b = readByte(str, ref index);
-	return cast(dchar)(b & cast(ubyte)~ONE_BYTE_MASK);
+	u8 b = readU8(str, ref index);
+	return cast(dchar)(b & cast(u8)~ONE_BYTE_MASK);
 }
+*/
 
-dchar decode(string str, ref size_t index)
+fn decode(str : string, ref index : size_t) dchar
 {
 	return vrt_decode_u8_d(str, ref index);
 }
 
 /// Return how many codepoints are in a given UTF-8 string.
-size_t count(string s)
+fn count(s : string) size_t
 {
-	size_t i, length;
+	i, length : size_t;
 	while (i < s.length) {
 		decode(s, ref i);
 		length++;
@@ -49,24 +49,24 @@ size_t count(string s)
 	return length;
 }
 
-void validate(string s)
+fn validate(s : string) void
 {
-	size_t i;
+	i : size_t;
 	while (i < s.length) {
 		decode(s, ref i);
 	}
 }
 
 /// Encode c into a given UTF-8 array.
-void encode(ref char[] buf, dchar c)
+fn encode(ref buf : char[], c : dchar) void
 {
 	buf ~= .encode(c);
 }
 
 /// Encode a unicode array into utf8
-string encode(dchar[] arr)
+fn encode(arr : dchar[]) string
 {
-	char[] buf;
+	buf : char[];
 	foreach (dchar d; arr) {
 		encode(ref buf, d);
 	}
@@ -74,10 +74,10 @@ string encode(dchar[] arr)
 }
 
 /// Encode c as UTF-8.
-string encode(dchar c)
+fn encode(c : dchar) string
 {
-	string ret;
-	void dg(SinkArg s) {
+	ret : string;
+	fn dg(s : SinkArg) void {
 		ret = new string(s);
 	}
 
@@ -86,14 +86,14 @@ string encode(dchar c)
 }
 
 /// Encode c as UTF-8.
-void encode(Sink dg, dchar c)
+fn encode(dg : Sink, c : dchar) void
 {
-	char[6] buf;
-	auto cval = cast(uint) c;
+	buf : char[6];
+	cval := cast(uint) c;
 
-	ubyte readByte(uint a, uint b)
+	fn readU8(a : u32, b : u32) u8
 	{
-		ubyte _byte = cast(ubyte) (a | (cval & b));
+		_byte := cast(u8) (a | (cval & b));
 		cval = cval >> 6;
 		return _byte;
 	}
@@ -102,34 +102,34 @@ void encode(Sink dg, dchar c)
 		buf[0] = cast(char) c;
 		return dg(buf[0 .. 1]);
 	} else if (cval >= 0x80 && cval <= 0x7FF) {
-		buf[1] = readByte(0x0080, 0x003F);
-		buf[0] = readByte(0x00C0, 0x001F);
+		buf[1] = readU8(0x0080, 0x003F);
+		buf[0] = readU8(0x00C0, 0x001F);
 		return dg(buf[0 .. 2]);
 	} else if (cval >= 0x800 && cval <= 0xFFFF) {
-		buf[2] = readByte(0x0080, 0x003F);
-		buf[1] = readByte(0x0080, 0x003F);
-		buf[0] = readByte(0x00E0, 0x000F);
+		buf[2] = readU8(0x0080, 0x003F);
+		buf[1] = readU8(0x0080, 0x003F);
+		buf[0] = readU8(0x00E0, 0x000F);
 		return dg(buf[0 .. 3]);
 	} else if (cval >= 0x10000 && cval <= 0x1FFFFF) {
-		buf[3] = readByte(0x0080, 0x003F);
-		buf[2] = readByte(0x0080, 0x003F);
-		buf[1] = readByte(0x0080, 0x003F);
-		buf[0] = readByte(0x00F0, 0x000E);
+		buf[3] = readU8(0x0080, 0x003F);
+		buf[2] = readU8(0x0080, 0x003F);
+		buf[1] = readU8(0x0080, 0x003F);
+		buf[0] = readU8(0x00F0, 0x000E);
 		return dg(buf[0 .. 4]);
 	} else if (cval >= 0x200000 && cval <= 0x3FFFFFF) {
-		buf[4] = readByte(0x0080, 0x003F);
-		buf[3] = readByte(0x0080, 0x003F);
-		buf[2] = readByte(0x0080, 0x003F);
-		buf[1] = readByte(0x0080, 0x003F);
-		buf[0] = readByte(0x00F8, 0x0007);
+		buf[4] = readU8(0x0080, 0x003F);
+		buf[3] = readU8(0x0080, 0x003F);
+		buf[2] = readU8(0x0080, 0x003F);
+		buf[1] = readU8(0x0080, 0x003F);
+		buf[0] = readU8(0x00F8, 0x0007);
 		return dg(buf[0 .. 5]);
 	} else if (cval >= 0x4000000 && cval <= 0x7FFFFFFF) {
-		buf[5] = readByte(0x0080, 0x003F);
-		buf[4] = readByte(0x0080, 0x003F);
-		buf[3] = readByte(0x0080, 0x003F);
-		buf[2] = readByte(0x0080, 0x003F);
-		buf[1] = readByte(0x0080, 0x003F);
-		buf[0] = readByte(0x00FC, 0x0001);
+		buf[5] = readU8(0x0080, 0x003F);
+		buf[4] = readU8(0x0080, 0x003F);
+		buf[3] = readU8(0x0080, 0x003F);
+		buf[2] = readU8(0x0080, 0x003F);
+		buf[1] = readU8(0x0080, 0x003F);
+		buf[0] = readU8(0x00FC, 0x0001);
 		return dg(buf[0 .. 6]);
 	} else {
 		throw new MalformedUTF8Exception("encode: unsupported codepoint range");

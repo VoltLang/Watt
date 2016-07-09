@@ -15,13 +15,13 @@ import watt.text.utf;
  *   split("a = b", '=') ["a ", " b"]
  *   split("a=b", '@') []
  */
-string[] split(string s, dchar delimiter)
+fn split(s : string, delimiter : dchar) string[]
 {
 	if (s.length == 0) {
 		return null;
 	}
-	string[] strings;
-	size_t base, i, oldi;
+	strings : string[];
+	base, i, oldi : size_t;
 	while (i < s.length) {
 		oldi = i;
 		if (decode(s, ref i) == delimiter) {
@@ -36,16 +36,16 @@ string[] split(string s, dchar delimiter)
 /**
  * Split string s by \n, \r, and \r\n.
  */
-string[] splitLines(string s)
+fn splitLines(s : string) string[]
 {
 	if (s.length == 0) {
 		return null;
 	}
-	string[] strings;
-	size_t base, i, oldi;
+	strings : string[];
+	base, i, oldi : size_t;
 	while (i < s.length) {
 		oldi = i;
-		auto c = decode(s, ref i);
+		c := decode(s, ref i);
 		if (c == '\n' || c == '\r') {
 			strings ~= s[base .. oldi];
 			base = i;
@@ -65,10 +65,10 @@ string[] splitLines(string s)
  *   strip("  apple  ") -> "apple"
  *   strip("  apple  pie  ") -> "apple pie"
  */
-string strip(const(char)[] str)
+fn strip(str : const(char)[]) string
 {
-	size_t start = 0;
-	size_t stop = str.length;
+	start : size_t;
+	stop := str.length;
 	for(; start < str.length; start++) {
 		if (!isWhite(str[start])) {
 			break;
@@ -85,7 +85,7 @@ string strip(const(char)[] str)
 /**
  * Remove leading whitespace, as defined by watt.ascii.isWhite.
  */
-string stripLeft(const(char)[] str)
+fn stripLeft(str : const(char)[]) string
 {
 	foreach (i, dchar c; str) {
 		if (!isWhite(c)) {
@@ -98,7 +98,7 @@ string stripLeft(const(char)[] str)
 /**
  * Remove trailing whitespace, as defined by watt.ascii.isWhite.
  */
-string stripRight(string str)
+fn stripRight(str : string) string
 {
 	foreach_reverse (i, dchar c; str) {
 		if (!isWhite(c)) {
@@ -109,11 +109,11 @@ string stripRight(string str)
 }
 
 /// Returns how many times c occurs in s.
-size_t count(string s, dchar c)
+fn count(str : string, c : dchar) size_t
 {
-	size_t n, i;
-	while (i < s.length) {
-		if (decode(s, ref i) == c) {
+	n, i : size_t;
+	while (i < str.length) {
+		if (decode(str, ref i) == c) {
 			n++;
 		}
 	}
@@ -124,12 +124,12 @@ size_t count(string s, dchar c)
  * Returns the index of the first place c occurs in str,
  * or -1 if it doesn't occur.
  */
-ptrdiff_t indexOf(const(char)[] s, dchar c)
+fn indexOf(str : const(char)[], c : dchar) ptrdiff_t
 {
-	size_t i, oldi;
-	while (i < s.length) {
+	i, oldi : size_t;
+	while (i < str.length) {
 		oldi = i;
-		if (decode(s, ref i) == c) {
+		if (decode(str, ref i) == c) {
 			if (oldi >= ptrdiff_t.max) {
 				throw new Exception("indexOf: string too big.");
 			}
@@ -143,9 +143,9 @@ ptrdiff_t indexOf(const(char)[] s, dchar c)
  * Returns the index of the last place c occurs in str,
  * or -1 otherwise.
  */
-ptrdiff_t lastIndexOf(const(char)[] s, dchar c)
+fn lastIndexOf(str : const(char)[], c : dchar) ptrdiff_t
 {
-	foreach_reverse (i, dchar e; s) {
+	foreach_reverse (i, dchar e; str) {
 		if (e == c) {
 			return cast(ptrdiff_t)i;
 		}
@@ -157,24 +157,24 @@ ptrdiff_t lastIndexOf(const(char)[] s, dchar c)
  * If the substring sub occurs in s, returns the index where it occurs.
  * Otherwise, it returns -1.
  */
-ptrdiff_t indexOf(const(char)[] s, const(char)[] sub)
+fn indexOf(str : const(char)[], sub : const(char)[]) ptrdiff_t
 {
 	if (sub.length == 0) {
 		return -1;
 	}
-	size_t i;
-	while (i < s.length) {
-		auto remaining = s.length - i;
+	i : size_t;
+	while (i < str.length) {
+		remaining := str.length - i;
 		if (remaining < sub.length) {
 			return -1;
 		}
-		if (s[i .. i + sub.length] == sub) {
+		if (str[i .. i + sub.length] == sub) {
 			if (i >= ptrdiff_t.max) {
 				throw new Exception("indexOf: string to big.");
 			}
 			return cast(ptrdiff_t) i;
 		}
-		decode(s, ref i);
+		decode(str, ref i);
 	}
 	return -1;
 }
@@ -182,10 +182,10 @@ ptrdiff_t indexOf(const(char)[] s, const(char)[] sub)
 /**
  * Returns the index in which s first occurs in ss, or -1.
  */
-ptrdiff_t indexOf(const(char)[][] ss, const(char)[] s)
+fn indexOf(ss : const(char)[][], str : const(char)[]) ptrdiff_t
 {
 	foreach (i, e; ss) {
-		if (e == s) {
+		if (e == str) {
 			return cast(ptrdiff_t)i;
 		}
 	}
@@ -195,43 +195,46 @@ ptrdiff_t indexOf(const(char)[][] ss, const(char)[] s)
 /**
  * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
  */
-string replace(const(char)[] s, const(char)[] from, const(char)[] to)
+fn replace(str : const(char)[], from : const(char)[], to : const(char)[]) string
 {
 	if (from == to) {
 		throw new Exception("replace: from and to cannot match!");
 	}
-	string result = s;
-	auto i = indexOf(result, from);
+	result := new string(str);
+	i := indexOf(result, from);
 	while (i != -1) {
-		auto si = cast(size_t) i;
+		si := cast(size_t) i;
 		result = result[0 .. si] ~ to ~ result[si + from.length .. $];
 		i = indexOf(result, from);
 	}
 	return result;
 }
 
-int startsWith(const(char)[] s, const(char)[][] beginnings...)
+
+//fn startsWith(str : const(char)[], beginnings : const(char)[][]...) int
+int startsWith(const(char)[] str, const(char)[][] beginnings...)
 {
-	int result;
+	result : int;
 	foreach (beginning; beginnings) {
-		if (beginning.length > s.length) {
+		if (beginning.length > str.length) {
 			continue;
 		}
-		if (s[0 .. beginning.length] == beginning) {
+		if (str[0 .. beginning.length] == beginning) {
 			result++;
 		}
 	}
 	return result;
 }
 
-int endsWith(const(char)[] s, const(char)[][] ends...)
+//fn endsWith(str : const(char)[], ends : const(char)[][]...) int
+int endsWith(const(char)[] str, const(char)[][] ends...)
 {
-	int result;
+	result : int;
 	foreach (end; ends) {
-		if (end.length > s.length) {
+		if (end.length > str.length) {
 			continue;
 		}
-		if (s[$ - end.length .. $] == end) {
+		if (str[$ - end.length .. $] == end) {
 			result++;
 		}
 	}
@@ -239,9 +242,9 @@ int endsWith(const(char)[] s, const(char)[][] ends...)
 }
 
 /// Join an array of strings into one, separated by sep.
-string join(const(char)[][] ss, const(char)[] sep="")
+fn join(ss : const(char)[][], sep : const(char)[] = "") string
 {
-	string outs;
+	outs : string;
 	foreach (i, e; ss) {
 		outs ~= e;
 		if (i < ss.length - 1) {

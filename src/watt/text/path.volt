@@ -7,7 +7,7 @@ import watt.text.sink;
 import watt.path;
 
 
-string normalizePathWindows(SinkArg n)
+fn normalizePathWindows(n : SinkArg) string
 {
 	pos : size_t;
 	r : char[4096];
@@ -28,7 +28,7 @@ string normalizePathWindows(SinkArg n)
 	return new string(r[0 .. pos]);
 }
 
-string normalizePathPosix(SinkArg n)
+fn normalizePathPosix(n : SinkArg) string
 {
 	// TODO much better logic here for normalizing paths.
 	return new string(n);
