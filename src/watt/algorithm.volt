@@ -11,21 +11,21 @@ alias SwapDg = scope void delegate(size_t, size_t);
  *
  * They are given indicies on an array you manage.
  */
-void runSort(size_t numElements, CmpDg cmp, SwapDg swap)
+fn runSort(numElements : size_t, cmp : CmpDg, swap : SwapDg)
 {
 	qsort(0, numElements-1, cmp, swap);
 }
 
-void sort(int[] ints)
+fn sort(ints : i32[])
 {
-	bool cmp(size_t ia, size_t ib)
+	fn cmp(ia : size_t, ib : size_t) bool
 	{
 		return ints[ia] < ints[ib];
 	}
 
-	void swap(size_t ia, size_t ib)
+	fn swap(ia : size_t, ib : size_t)
 	{
-		int tmp = ints[ia];
+		i32 tmp = ints[ia];
 		ints[ia] = ints[ib];
 		ints[ib] = tmp;
 	}
@@ -40,32 +40,32 @@ void sort(int[] ints)
  *
  */
 
-size_t max(size_t a, size_t b)
+fn max(a : size_t, b : size_t) size_t
 {
 	return a > b ? a : b;
 }
 
-size_t min(size_t a, size_t b)
+fn min(a : size_t, b : size_t) size_t
 {
 	return a < b ? a : b;
 }
 
-int max(int a, int b)
+fn max(a : i32, b : i32) i32
 {
 	return a > b ? a : b;
 }
 
-int min(int a, int b)
+fn min(a : i32, b : i32) i32
 {
 	return a < b ? a : b;
 }
 
-double max(double a, double b)
+fn max(a : f64, b : f64) f64
 {
 	return a > b ? a : b;
 }
 
-double min(double a, double b)
+fn min(a : f64, b : f64) f64
 {
 	return a < b ? a : b;
 }
@@ -77,7 +77,7 @@ double min(double a, double b)
  *
  */
 
-private void qsort(size_t lo, size_t hi, CmpDg cmp, SwapDg swap)
+private fn qsort(lo : size_t, hi : size_t, cmp : CmpDg, swap : SwapDg)
 {
 	if (lo < hi) {
 		p := partition(lo, hi, cmp, swap);
@@ -88,7 +88,7 @@ private void qsort(size_t lo, size_t hi, CmpDg cmp, SwapDg swap)
 	}
 }
 
-private size_t partition(size_t lo, size_t hi, CmpDg cmp, SwapDg swap)
+private fn partition(lo : size_t, hi : size_t, cmp : CmpDg, swap : SwapDg) size_t
 {
 	pivotIndex := choosePivot(lo, hi);
 	swap(pivotIndex, hi);
@@ -103,7 +103,7 @@ private size_t partition(size_t lo, size_t hi, CmpDg cmp, SwapDg swap)
 	return storeIndex;
 }
 
-private size_t choosePivot(size_t lo, size_t hi)
+private fn choosePivot(lo : size_t, hi : size_t) size_t
 {
 	return lo + ((hi - lo) / 2);
 }
