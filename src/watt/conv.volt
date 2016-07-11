@@ -303,8 +303,12 @@ string toString(scope const(char)* s)
 	if (s is null) {
 		return null;
 	}
+	len := strlen(s);
+	if (len == 0) {
+		return null;
+	}
 
-	auto str = new char[](strlen(s));
+	auto str = new char[](len);
 	str[] = s[0 .. str.length];
 	return cast(string) str;
 }
@@ -314,8 +318,12 @@ string toString(const(char)* s)
 	if (s is null) {
 		return null;
 	}
+	len := strlen(s);
+	if (len == 0) {
+		return null;
+	}
 
-	auto str = new char[](strlen(s));
+	auto str = new char[](len);
 	str[] = s[0 .. str.length];
 	return cast(string) str;
 }
