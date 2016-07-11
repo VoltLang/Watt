@@ -25,7 +25,7 @@ fn sort(ints : i32[])
 
 	fn swap(ia : size_t, ib : size_t)
 	{
-		i32 tmp = ints[ia];
+		tmp : i32 = ints[ia];
 		ints[ia] = ints[ib];
 		ints[ib] = tmp;
 	}
@@ -93,7 +93,7 @@ private fn partition(lo : size_t, hi : size_t, cmp : CmpDg, swap : SwapDg) size_
 	pivotIndex := choosePivot(lo, hi);
 	swap(pivotIndex, hi);
 	storeIndex := lo;
-	for (size_t i = lo; i <= hi - 1; ++i) {
+	for (i : size_t = lo; i <= hi - 1; ++i) {
 		if (cmp(i, hi)) {
 			swap(i, storeIndex);
 			storeIndex++;
