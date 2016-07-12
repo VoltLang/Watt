@@ -9,21 +9,21 @@ import core.exception;
 
 version (Windows) {
 	import core.windows.windows : HMODULE, DWORD, CreateDirectoryA;
-	extern(C) char* _fullpath(char*, const(char)*, size_t length);
-	extern(C) char* _wfullpath(wchar*, const(wchar)*, size_t length);
+	extern(C) fn _fullpath(char*, const(char)*, length : size_t) char*;
+	extern(C) fn _wfullpath(wchar*, const(wchar)*, length : size_t) char*;
 } else version (Posix) {
 	import core.posix.sys.stat : cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
 	import core.posix.sys.types : mode_t;
-	extern(C) char* realpath(const(char)*, char*);
+	extern(C) fn realpath(const(char)*, char*) char*;
 }
 
 version (Windows) {
-	extern(Windows) DWORD GetModuleFileNameA(HMODULE, const(char)*, DWORD);
+	extern(Windows) fn GetModuleFileNameA(HMODULE, const(char)*, DWORD) DWORD;
 } else version (OSX) {
-	extern(C) int _NSGetExecutablePath(char*, uint*);
+	extern(C) fn _NSGetExecutablePath(char*, u32*) i32;
 } else version (Linux) {
 	import core.posix.sys.types : ssize_t;
-	extern(C) ssize_t readlink(const(char)* path, char* buf, size_t bufsiz);
+	extern(C) fn readlink(path : const(char)*, buf : char*, bufsiz : size_t) ssize_t;
 } else {
 	static assert(false, "unsupported platform");
 }
@@ -60,9 +60,9 @@ version (Windows) {
  *
  * Existence is not treated as failure.
  */
-void mkdir(const(char)[] dir)
+fn mkdir(dir : const(char)[])
 {
-	auto cstr = dir ~ "\0";
+	cstr := dir ~ "\0";
 	version (Windows) {
 		// TODO: Unicode and error handling.
 		CreateDirectoryA(cstr.ptr, null);
@@ -76,9 +76,9 @@ void mkdir(const(char)[] dir)
  * need to be created -- separating the path with '/' on posix platforms,
  * '/' and '\' on Windows platforms.
  */
-void mkdirP(const(char)[] dir)
+fn mkdirP(dir : const(char)[])
 {
-	for (size_t i = 0; i < dir.length; i++) {
+	for (i : size_t = 0; i < dir.length; i++) {
 		if (dir[i] == '/' || dir[i] == '\\') {
 			mkdir(dir[0 .. i]);
 		}
@@ -87,7 +87,7 @@ void mkdirP(const(char)[] dir)
 }
 
 
-private bool isSlash(char c)
+private fn isSlash(c : char) bool
 {
 	version (Windows) {
 		return c == '\\' || c == '/';
@@ -96,11 +96,11 @@ private bool isSlash(char c)
 	}
 }
 
-private size_t countSlashes(const(char)[] s)
+private fn countSlashes(s : const(char)[]) size_t
 {
-	size_t count;
-	for (size_t i = 0; i < s.length; ++i) {
-		auto c = s[i];
+	count : size_t;
+	for (i : size_t = 0; i < s.length; ++i) {
+		c := s[i];
 		if (isSlash(c)) {
 			count++;
 		}
@@ -108,7 +108,7 @@ private size_t countSlashes(const(char)[] s)
 	return count;
 }
 
-private void removeTrailingSlashes(ref string s)
+private fn removeTrailingSlashes(ref s : string)
 {
 	while (s.length > 0 && isSlash(s[$-1])) {
 		s = s[0 .. $-1];
@@ -119,9 +119,9 @@ private void removeTrailingSlashes(ref string s)
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html,
  * with a few additions when handling drives and multiple path separator types on Windows.
  */
-string dirName(const(char)[] path)
+fn dirName(path : const(char)[]) string
 {
-	string drive;
+	drive : string;
 	version (Windows) if (path.length >= 2 && path[1] == ':') {
 		drive = path[0 .. 2];
 		path = path[2 .. $];
@@ -134,7 +134,7 @@ string dirName(const(char)[] path)
 
 	/* 2. If string consists entirely of <slash> characters, 
 	 * set string to a single <slash> and skip steps 3 to 8. */
-	auto count = countSlashes(path);
+	count := countSlashes(path);
 	if (count == path.length) {
 		return drive ~ dirSeparator;
 	}
@@ -171,7 +171,7 @@ string dirName(const(char)[] path)
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html.
  * with a few additions when handling drives and multiple path separator types on Windows.
  */
-string baseName(const(char)[] path, const(char)[] suffix="")
+fn baseName(path : const(char)[], suffix : const(char)[] = "") string
 {
 	// Omit drive letters.
 	version (Windows) {
@@ -184,14 +184,14 @@ string baseName(const(char)[] path, const(char)[] suffix="")
 		return "";
 	}
 
-	auto slashesCount = countSlashes(path);
+	slashesCount := countSlashes(path);
 	if (countSlashes(path) == path.length) {
 		return dirSeparator;
 	}
 
 	removeTrailingSlashes(ref path);
 
-	auto slashIndex = path.indexOf(dirSeparator[0]);
+	slashIndex := path.indexOf(dirSeparator[0]);
 	while (slashIndex >= 0) {
 		path = path[slashIndex+1 .. $];
 		slashIndex = path.indexOf(dirSeparator[0]);
@@ -205,9 +205,9 @@ string baseName(const(char)[] path, const(char)[] suffix="")
 	return path;
 }
 
-string extension(const(char)[] path)
+fn extension(path : const(char)[]) string
 {
-	auto i = lastIndexOf(path, '.');
+	i := lastIndexOf(path, '.');
 	if (i <= 0) {
 		return null;
 	}
@@ -215,14 +215,14 @@ string extension(const(char)[] path)
 	return new string(path[i .. $]);
 }
 
-string temporaryFilename(string extension="", string subdir="")
+fn temporaryFilename(extension : string = "", subdir : string = "") string
 {
-	RandomGenerator rng;
+	rng : RandomGenerator;
 	rng.seed(getHardwareSeedUint());
 	version (Windows) {
-		string prefix = getEnv("TEMP") ~ '/';
+		prefix : string = getEnv("TEMP") ~ '/';
 	} else {
-		string prefix = "/tmp/";
+		prefix : string = "/tmp/";
 	}
 
 	if (subdir != "") {
@@ -230,7 +230,7 @@ string temporaryFilename(string extension="", string subdir="")
 		mkdir(prefix);
 	}
 
-	string filename;
+	filename : string;
 	do {
 		filename = rng.randomString(32);
 		filename = prefix ~ filename ~ extension;
@@ -239,7 +239,7 @@ string temporaryFilename(string extension="", string subdir="")
 	return filename;
 }
 
-string fullPath(string file)
+fn fullPath(file : string) string
 {
 	version (Posix) {
 		result := realpath(toStringz(file), null);
@@ -256,31 +256,31 @@ string fullPath(string file)
 /**
  * Return the path to the dir that the executable is in.
  */
-string getExecDir()
+fn getExecDir() string
 {
-	char[512] stack;
+	stack : char[512];
 	version (Windows) {
 
-		auto ret = GetModuleFileNameA(null, stack.ptr, 512);
+		ret := GetModuleFileNameA(null, stack.ptr, 512);
 
 	} else version (Linux) {
 
-		auto ret = readlink("/proc/self/exe", stack.ptr, 512);
+		ret := readlink("/proc/self/exe", stack.ptr, 512);
 
 	} else version (OSX) {
 
-		uint size = cast(uint)stack.length;
-		auto ret = _NSGetExecutablePath(stack.ptr, &size);
+		size := cast(u32)stack.length;
+		ret := _NSGetExecutablePath(stack.ptr, &size);
 
 		if (ret != 0 || size == 0) {
 			ret = -1;
 		} else {
-			ret = cast(int)size;
+			ret = cast(i32)size;
 		}
 
 	} else version (Emscripten) {
 
-		int ret = 0;
+		i32 ret = 0;
 
 	} else {
 
