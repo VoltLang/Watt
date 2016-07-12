@@ -12,9 +12,9 @@ version(Windows) {
 	// XXX Proper way to import this.
 	extern(Windows)
 	{
-		HMODULE LoadLibraryA(const(char)* name);
-		void* FreeLibrary(HMODULE lib);
-		void* GetProcAddress(HMODULE lib, const(char)* name);
+		fn LoadLibraryA(name : const(char)*) HMODULE;
+		fn FreeLibrary(lib : HMODULE) void*;
+		fn GetProcAddress(lib : HMODULE, name : const(char)*) void*;
 	}
 
 } else {
@@ -22,10 +22,10 @@ version(Windows) {
 	// XXX Proper way to import this.
 	extern(C)
 	{
-		void *dlopen(const(char)* file, int mode);
-		int dlclose(void* handle);
-		void *dlsym(void* handle, const(char)* name);
-		char* dlerror();
+		fn dlopen(file : const(char)*, mode : i32) void*;
+		fn dlclose(handle : void*) i32;
+		fn dlsym(handle : void*, name : const(char)*) void*;
+		fn dlerror() char*;
 	}
 
 	enum RTLD_NOW    = 0x00002;
@@ -37,16 +37,16 @@ class Library
 {
 private:
 	version (Windows) {
-		HMODULE ptr;
+		ptr : HMODULE;
 	} else {
-		void* ptr;
+		ptr : void*;
 	}
 
 public:
-	global Library loads(string[] files)
+	global fn loads(files : string[]) Library
 	{
-		for (size_t i; i < files.length; i++) {
-			auto l = load(files[i]);
+		for (i : size_t; i < files.length; i++) {
+			l := load(files[i]);
 			if (l !is null) {
 				return l;
 			}
@@ -62,9 +62,9 @@ public:
 
 	version (Windows) {
 
-		global Library load(string filename)
+		global fn load(filename : string) Library
 		{
-			void *ptr = LoadLibraryA(filename.ptr);
+			ptr : void* = LoadLibraryA(filename.ptr);
 
 			if (ptr is null) {
 				return null;
@@ -73,12 +73,12 @@ public:
 			return new Library(ptr);
 		}
 
-		final void* symbol(string symbol)
+		final fn symbol(symbol : string) void*
 		{
 			return GetProcAddress(ptr, symbol.ptr);
 		}
 
-		final void free()
+		final fn free()
 		{
 			if (ptr !is null) {
 				FreeLibrary(ptr);
@@ -88,9 +88,9 @@ public:
 
 	} else version (Posix) {
 
-		global Library load(string filename)
+		global fn load(filename : string) Library
 		{
-			void *ptr = dlopen(filename.ptr, RTLD_NOW | RTLD_GLOBAL);
+			ptr : void* = dlopen(filename.ptr, RTLD_NOW | RTLD_GLOBAL);
 
 			if (ptr is null) {
 				return null;
@@ -99,12 +99,12 @@ public:
 			return new Library(ptr);
 		}
 
-		final void* symbol(string symbol)
+		final fn symbol(symbol : string) void*
 		{
 			return dlsym(ptr, symbol.ptr);
 		}
 
-		final void free()
+		final fn free()
 		{
 			if (ptr !is null) {
 				dlclose(ptr);
@@ -114,17 +114,17 @@ public:
 
 	} else version (Emscripten) {
 
-		global Library load(string filename)
+		global fn load(filename : string) Library
 		{
 			return null;
 		}
 
-		final void* symbol(string symbol)
+		final fn symbol(symbol : string) void*
 		{
 			return null;
 		}
 
-		final void free()
+		final fn free()
 		{
 		}
 
@@ -136,12 +136,12 @@ public:
 
 private:
 	version (Windows) {
-		this(HMODULE ptr)
+		this(ptr : HMODULE)
 		{
 			this.ptr = ptr;
 		}
 	} else {
-		this(void* ptr)
+		this(ptr : void*)
 		{
 			this.ptr = ptr;
 		}
