@@ -42,9 +42,9 @@ import watt.text.html;
 */
 
 /// Returns false if str contains a character that's not in chars.
-bool allOf(string str, string chars)
+fn allOf(str : string, chars : string) bool
 {
-	foreach (dchar c; str) {
+	foreach (c : dchar; str) {
 		if (indexOf(chars, c) == -1) {
 			return false;
 		}
@@ -53,9 +53,9 @@ bool allOf(string str, string chars)
 }
 
 /// Returns true if str contains any characters in chars.
-bool anyOf(string str, string chars)
+fn anyOf(str : string, chars : string) bool
 {
-	foreach (dchar c; str) {
+	foreach (c : dchar; str) {
 		if (indexOf(chars, c) != -1) {
 			return true;
 		}
@@ -64,9 +64,9 @@ bool anyOf(string str, string chars)
 }
 
 /// Returns how many of chr str starts with.
-size_t countLeading(string str, dchar chr)
+fn countLeading(str : string, chr : dchar) size_t
 {
-	foreach (i, dchar c; str) {
+	foreach (i, c : dchar; str) {
 		if (c != chr) {
 			return i;
 		}
@@ -76,13 +76,14 @@ size_t countLeading(string str, dchar chr)
 
 /// Finds the index of the closing bracket if str starts with [, (, <, or {.
 /// -1 on failure.
-private ptrdiff_t matchBracket(string str, bool nested = true)
+private fn matchBracket(str : string, nested : bool = true) ptrdiff_t
 {
 	if (str.length < 2) {
 		return -1;
 	}
 
-	dchar open = str[0], close;
+	open : dchar = str[0];
+	close : dchar;
 	switch (str[0]) {
 	case '[': close = ']'; break;
 	case '(': close = ')'; break;
@@ -91,9 +92,9 @@ private ptrdiff_t matchBracket(string str, bool nested = true)
 	default: return -1;
 	}
 
-	size_t level = 1;
-	bool escape;
-	foreach (i, dchar c; str[1 .. $]) {
+	level : size_t = 1;
+	escape : bool;
+	foreach (i, c : dchar; str[1 .. $]) {
 		if (c == '\\') {
 			escape = true;
 			continue;
@@ -118,11 +119,11 @@ private ptrdiff_t matchBracket(string str, bool nested = true)
 }
 
 
-string backslashEscape(string str)
+fn backslashEscape(str : string) string
 {
-	StringSink dst;
-	bool next = false;
-	foreach (dchar c; str) {
+	dst : StringSink;
+	next : bool = false;
+	foreach (c : dchar; str) {
 		if (!next && c != '\\') {
 			dst.sink(encode(c));
 			continue;
@@ -151,15 +152,16 @@ string backslashEscape(string str)
 
 /** Returns a Markdown filtered HTML string.
 */
-string filterMarkdown(string str, MarkdownFlags flags)
+fn filterMarkdown(str : string, flags : MarkdownFlags) string
 {
-	auto settings = new MarkdownSettings();
+	settings := new MarkdownSettings();
 	settings.flags = flags;
 	return filterMarkdown(str, settings);
 }
 /// ditto
-string filterMarkdown(string str, scope MarkdownSettings settings = null) {
-	StringSink dst;
+fn filterMarkdown(str : string, settings : scope MarkdownSettings = null) string
+{
+	dst : StringSink;
 	filterMarkdown(dst.sink, str, settings);
 	return dst.toString();
 }
@@ -168,39 +170,39 @@ string filterMarkdown(string str, scope MarkdownSettings settings = null) {
 
 /** Markdown filters the given string and writes the corresponding HTML to an output range.
 */
-void filterMarkdown(Sink dg, string src, MarkdownFlags flags)
+fn filterMarkdown(dg : Sink, src : string, flags : MarkdownFlags)
 {
-	auto settings = new MarkdownSettings();
+	settings := new MarkdownSettings();
 	settings.flags = flags;
 	filterMarkdown(dg, src, settings);
 }
 /// ditto
-void filterMarkdown(Sink dg, string src, scope MarkdownSettings settings = null)
+fn filterMarkdown(dg : Sink, src : string, settings : scope MarkdownSettings = null)
 {
-	auto defsettings = new MarkdownSettings();
+	defsettings := new MarkdownSettings();
 	if (settings is null) settings = defsettings;
 
-	auto all_lines = splitLines(src);
+	all_lines := splitLines(src);
 	while (all_lines.length > 0 && isLineBlank(all_lines[$-1])) {
 		all_lines = all_lines[0 .. $-1];
 	}
-	auto links = new LinkRefs();
+	links := new LinkRefs();
 	links.scanForReferences(ref all_lines);
-	auto lines = parseLines(ref all_lines, settings);
-	Block root_block;
+	lines := parseLines(ref all_lines, settings);
+	root_block : Block;
 	parseBlocks(ref root_block, ref lines, null, settings);
 	writeBlock(dg, ref root_block, links, settings);
 }
 
 final class MarkdownSettings {
 	/// Controls the capabilities of the parser.
-	MarkdownFlags flags = MarkdownFlags.voltDefault;
+	flags : MarkdownFlags = MarkdownFlags.voltDefault;
 
 	/// Heading tags will start at this level.
-	size_t headingBaseLevel = 1;
+	headingBaseLevel : size_t = 1;
 
 	/// Called for every link/image URL to perform arbitrary transformations.
-	string delegate(string url_or_path, bool is_image) urlFilter;
+	urlFilter : string delegate(url_or_path : string, is_image : bool);
 }
 
 enum MarkdownFlags {
@@ -217,7 +219,7 @@ enum MarkdownFlags {
 }
 
 private {
-	global immutable s_blockTags = [
+	global s_blockTags : immutable(string[]) = [
 "address", "article", "aside",
 "base", "basefont", "blockquote", "body",
 "caption", "center", "col", "colgroup",
@@ -235,7 +237,7 @@ private {
 "ul"
 ];
 
-	global immutable s_literalTags = [
+	global s_literalTags : immutable(string[]) = [
 "script", "style", "pre"
 ];
 }
@@ -259,18 +261,19 @@ private enum LineType {
 }
 
 private struct Line {
-	LineType type;
-	IndentType[] indent;
-	string text;
-	string unindented;
-	HtmlBlockInfo hblock;
-	size_t leadingSpaces;
-	string listNum;
+	type : LineType;
+	indent : IndentType[];
+	text : string;
+	unindented : string;
+	hblock : HtmlBlockInfo;
+	leadingSpaces : size_t;
+	listNum : string;
 
-	string unindent(size_t n) {
+	fn unindent(n : size_t) string
+	{
 		assert(n <= indent.length);
-		string ln = text;
-		size_t i;
+		ln : string = text;
+		i : size_t;
 		while (i < n) {
 			final switch (indent[i]) {
 			case IndentType.White:
@@ -290,21 +293,21 @@ private struct Line {
 	}
 }
 
-private size_t countOpeningWhitespace(string text)
+private fn countOpeningWhitespace(text : string) size_t
 {
-	size_t i;
+	i : size_t;
 	while (isWhite(text[i])) {
 		i++;
 	}
 	return i;
 }
 
-private string codeUnindent(string text, size_t listSpaces)
+private fn codeUnindent(text : string, listSpaces : size_t) string
 {
 	if (listSpaces > 0 && text.length >= listSpaces && text[0 .. listSpaces].allOf(" \t")) {
 		return codeUnindent(text[listSpaces .. $], 0);
 	}
-	string s = text;
+	s : string = text;
 	if (s.startsWith("\t")) {
 		return s[1 .. $];
 	}
@@ -333,9 +336,9 @@ private string codeUnindent(string text, size_t listSpaces)
 	return s;
 }
 
-private bool isCode(string text, size_t leadingSpaces)
+private fn isCode(text : string, leadingSpaces : size_t) bool
 {
-	string s = text;
+	s : string = text;
 	if (text.length <= leadingSpaces) {
 		return false;
 	}
@@ -364,18 +367,19 @@ private bool isCode(string text, size_t leadingSpaces)
 	return false;
 }
 
-private Line[] parseLines(ref string[] lines, scope MarkdownSettings settings) {
-	Line[] ret;
-	for (size_t i = 0; i < lines.length; ++i) {
-		auto ln = lines[i];
+private fn parseLines(ref lines : string[], settings : scope MarkdownSettings) Line[]
+{
+	ret : Line[];
+	for (i : size_t = 0; i < lines.length; ++i) {
+		ln := lines[i];
 
-		Line lninfo;
+		lninfo : Line;
 		lninfo.leadingSpaces = countLeading(ln, ' ');
 		lninfo.text = ln;
 		lninfo.type = LineType.Plain;
 
 		while (ln.length > 0) {
-			void codeIndent()
+			fn codeIndent()
 			{
 				foreach (j; 0 .. 4) {
 					lninfo.indent ~= IndentType.White;
@@ -418,7 +422,7 @@ private Line[] parseLines(ref string[] lines, scope MarkdownSettings settings) {
 		else if (isUListLine(ln)) lninfo.type = LineType.UList;
 		else if (isLineBlank(ln)) lninfo.type = LineType.Blank;
 		else {
-			auto hblock = parseHtmlBlockLine(ln, lninfo.leadingSpaces);
+			hblock := parseHtmlBlockLine(ln, lninfo.leadingSpaces);
 			if (!(settings.flags & MarkdownFlags.noInlineHtml) && hblock.isHtmlBlock) {
 				lninfo.type = LineType.HtmlBlock;
 				lninfo.hblock = parseHtmlBlockLine(ln, lninfo.leadingSpaces);
@@ -452,17 +456,17 @@ private enum HtmlEnd {
 }
 
 private struct Block {
-	BlockType type;
-	string[] text;
-	Block[] blocks;
-	size_t headerLevel;
-	string classTag;
-	string listNum;
+	type : BlockType;
+	text : string[];
+	blocks : Block[];
+	headerLevel : size_t;
+	classTag : string;
+	listNum : string;
 }
 
-private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_indent, scope MarkdownSettings settings, bool list=false)
+private fn parseBlocks(ref root : Block, ref lines : Line[], base_indent : IndentType[], settings : scope MarkdownSettings, list : bool = false)
 {
-	bool hasQuote(IndentType[] itypes)
+	fn hasQuote(itypes : IndentType[]) bool
 	{
 		foreach (itype; itypes) {
 			if (itype == IndentType.Quote) {
@@ -475,16 +479,16 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 	if (base_indent.length == 0) root.type = BlockType.Text;
 	else if (base_indent[$-1] == IndentType.Quote) root.type = BlockType.Quote;
 
-	bool skipEmptyBlockQuote;
-	size_t blankSkips;
+	skipEmptyBlockQuote : bool;
+	blankSkips : size_t;
 	while (lines.length > 0) {
-		auto ln = lines[0];
+		ln := lines[0];
 
 		if (ln.type == LineType.Blank) {
-			bool quoteNext = lines.length > 1 && lines[1].indent.hasQuote();
+			quoteNext : bool = lines.length > 1 && lines[1].indent.hasQuote();
 			if (!quoteNext && ln.indent.hasQuote() && !skipEmptyBlockQuote) {
 				// Empty quote.
-				Block b;
+				b : Block;
 				b.type = BlockType.Plain;
 				b.text ~= ["<blockquote></blockquote>"];
 				root.blocks ~= b;
@@ -504,21 +508,21 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 		}
 		skipEmptyBlockQuote = false;
 
-		size_t l = base_indent.length >= 4 ? base_indent.length : cast(size_t)0;
+		l : size_t = base_indent.length >= 4 ? base_indent.length : cast(size_t)0;
 		if (list) {
 			l += 4;
 		}
 		if (ln.text.isCode(l)) {
-			Block cblock;
-			Block qblock;
-			bool isQuote;
+			cblock : Block;
+			qblock : Block;
+			isQuote : bool;
 			if (ln.text.startsWith("> ") || ln.unindented.startsWith("> ")) {
 				isQuote = true;
 				qblock.type = BlockType.Quote;
 			}
 			cblock.type = BlockType.Code;
-			Line[] blanklines;
-			bool reContinue;
+			blanklines : Line[];
+			reContinue : bool;
 			while (lines.length > 0 && (lines[0].text.isCode(l) || lines[0].type == LineType.Blank )) {
 				if (lines[0].indent.hasQuote() && lines[0].text.length >= l + 2) {
 					lines[0].text = lines[0].text[l + 2 .. $];
@@ -558,11 +562,11 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 		}
 
 		// Give how much indent a line has. This is different to ln.indent, as it includes white space after quote indent.
-		size_t lineIndent(string s)
+		fn lineIndent(s : string) size_t
 		{
-			size_t i;
-			foreach (dchar c; s) {
-				bool breakNow;
+			i : size_t;
+			foreach (c : dchar; s) {
+				breakNow : bool;
 				switch (c) {
 				case ' ': i++; break;
 				case '>': i++; break;
@@ -580,9 +584,9 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			if (ln.indent.length < base_indent.length || ln.indent[0 .. base_indent.length] != base_indent )
 				return;
 
-			auto cindent = base_indent ~ [IndentType.White, IndentType.White, IndentType.White, IndentType.White];
+			cindent := base_indent ~ [IndentType.White, IndentType.White, IndentType.White, IndentType.White];
 			if (ln.indent != cindent || list) {
-				Block subblock;
+				subblock : Block;
 				parseBlocks(ref subblock, ref lines, ln.indent[0 .. base_indent.length+1], settings, list);
 				root.blocks ~= subblock;
 				continue;
@@ -590,8 +594,8 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 				continue;
 			}
 		}
-		Block b, subblock;
-		bool subblockappend;
+		b, subblock : Block;
+		subblockappend : bool;
 		final switch (ln.type) {
 		case LineType.Undefined: assert(false);
 		case LineType.Blank: assert(false);
@@ -604,7 +608,7 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 				if (ln.unindented.startsWith("\\>")) {
 					ln.unindented = ln.unindented[1 .. $];
 				}
-				auto setln = lines[1].unindented;
+				setln := lines[1].unindented;
 				b.type = BlockType.Header;
 				b.text = [htmlEscapeIgnoreTags(ln.unindented.stripRight())];
 				b.headerLevel = setln.strip()[0] == '=' ? 1 : 2;
@@ -621,7 +625,7 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			break;
 		case LineType.AtxHeader:
 			b.type = BlockType.Header;
-			string hl = ln.unindented;
+			hl : string = ln.unindented;
 			b.headerLevel = 0;
 			while (hl.length > 0 && hl[0] == '#') {
 				b.headerLevel++;
@@ -629,7 +633,7 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			}
 
 			hl = hl.stripRight();
-			size_t endi = hl.length - 1;
+			endi : size_t = hl.length - 1;
 			while (endi > 0 && (hl[endi] == '#' || isWhite(hl[endi]))) {
 				endi--;
 			}
@@ -657,10 +661,10 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			if (b.type == BlockType.OList) {
 				b.listNum = ln.listNum;
 			}
-			auto itemindent = base_indent;
-			bool trailing;
-			auto s = ln.unindent(base_indent.length);
-			foreach (dchar c; s) {
+			itemindent := base_indent;
+			trailing : bool;
+			s := ln.unindent(base_indent.length);
+			foreach (c : dchar; s) {
 				if (isWhite(c)) {
 					if (trailing) {
 						itemindent ~= IndentType.White;
@@ -676,9 +680,9 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			if (b.type == BlockType.UList || b.type == BlockType.OList) {
 				itemindent ~= IndentType.White;
 			}
-			size_t quotes(IndentType[] indents)
+			fn quotes(indents : IndentType[]) size_t
 			{
-				size_t qcount;
+				qcount : size_t;
 				foreach (indent; indents) {
 					if (indent == IndentType.Quote) {
 						qcount++;
@@ -687,9 +691,9 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 				return qcount;
 			}
 			while (lines.length > 0 && lines[0].type == ln.type && lines[0].indent == base_indent) {
-				Block itm;
+				itm : Block;
 				itm.text = skipText(ref lines, itemindent);
-				size_t leadingSpace;
+				leadingSpace : size_t;
 				itm.text[0] = removeListPrefix(itm.text[0], ln.type, ref leadingSpace);
 				if ( isHlineInList(itm.text[0], leadingSpace)) {
 					itm.text[0] = "<hr />";
@@ -704,11 +708,11 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 				}
 
 				if (!subblockappend) {
-					size_t oldLength = itm.blocks.length;
+					oldLength : size_t = itm.blocks.length;
 					parseBlocks(ref itm, ref lines, itemindent, settings, true);
-					size_t newLength = itm.blocks.length;
+					newLength : size_t = itm.blocks.length;
 					if (newLength > oldLength) {
-						Block para;
+						para : Block;
 						para.type = BlockType.Paragraph;
 						para.text = itm.text;
 						itm.blocks = para ~ itm.blocks;
@@ -720,9 +724,9 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			}
 			break;
 		case LineType.HtmlBlock:
-			int nestlevel = 0;
-			auto starttag = ln.hblock;
-			HtmlEnd end;
+			nestlevel : i32 = 0;
+			starttag := ln.hblock;
+			end : HtmlEnd;
 			if (!starttag.isHtmlBlock) {
 				break;
 			} else if (!starttag.open) {
@@ -751,8 +755,8 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			while (lines.length > 0) {
 				if (lines[0].indent.length < base_indent.length) break;
 				if (lines[0].indent[0 .. base_indent.length] != base_indent) break;
-				auto str = lines[0].unindent(base_indent.length);
-				auto taginfo = parseHtmlBlockLine(str);
+				str := lines[0].unindent(base_indent.length);
+				taginfo := parseHtmlBlockLine(str);
 				b.text ~= taginfo.indent ~ lines[0].unindent(base_indent.length);
 				lines = lines[1 .. $];
 				if (taginfo.isHtmlBlock && taginfo.tagName == starttag.tagName )
@@ -773,12 +777,12 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 			}
 			break;
 		case LineType.CodeBlockDelimiter:
-			size_t tilde = ln.text.count('~');
-			size_t backt = ln.text.count('`');
+			tilde : size_t = ln.text.count('~');
+			backt : size_t = ln.text.count('`');
 			assert((tilde == 0 && backt > 0) || (tilde > 0 && backt == 0));
 
 			// Get language from line if present.
-			size_t a;
+			a : size_t;
 			if (tilde > 0) {
 				a = cast(size_t)ln.text.indexOf('~');
 			} else {
@@ -789,12 +793,12 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 				a++;
 			}
 
-			size_t bi = a;
+			bi : size_t = a;
 			while (bi < ln.text.length && !isWhite(ln.text[bi])) {
 				bi++;
 			}
 
-			string lang = ln.text[a .. bi];
+			lang : string = ln.text[a .. bi];
 			if (lang.length > 0 && lang.count('~') == 0 && lang.count('`') == 0) {
 					b.classTag = "language-" ~ lang;
 			}
@@ -824,12 +828,13 @@ private void parseBlocks(ref Block root, ref Line[] lines, IndentType[] base_ind
 	}
 }
 
-private string[] skipText(ref Line[] lines, IndentType[] indent) {
-	static bool matchesIndent(IndentType[] indent, IndentType[] base_indent)
+private fn skipText(ref lines : Line[], indent : IndentType[]) string[]
+{
+	static fn matchesIndent(indent : IndentType[], base_indent : IndentType[]) bool
 	{
 		if (indent.length > base_indent.length) return false;
 		if (indent != base_indent[0 .. indent.length]) return false;
-		ptrdiff_t qidx = -1;
+		qidx : ptrdiff_t = -1;
 		foreach_reverse (i, tp; base_indent) if (tp == IndentType.Quote) { qidx = cast(ptrdiff_t)i; break; }
 		if (qidx >= 0) {
 			qidx = cast(ptrdiff_t)(base_indent.length-1) - qidx;
@@ -838,9 +843,9 @@ private string[] skipText(ref Line[] lines, IndentType[] indent) {
 		return true;
 	}
 
-	string[] ret;
+	ret : string[];
 
-	bool wasQuote = lines[0].indent.length > 0 && lines[0].indent[0] == IndentType.Quote;
+	wasQuote : bool = lines[0].indent.length > 0 && lines[0].indent[0] == IndentType.Quote;
 	while (true) {
 		ret ~= htmlEscapeIgnoreTags(lines[0].unindent(min(indent.length, lines[0].indent.length)));
 		lines = lines[1 .. $];
@@ -858,7 +863,7 @@ private string[] skipText(ref Line[] lines, IndentType[] indent) {
 }
 
 /// private
-private void writeBlock(Sink dg, ref const Block block, LinkRefs links, scope MarkdownSettings settings, bool fromOrdered = false)
+private fn writeBlock(dg : Sink, ref block : const Block, links : LinkRefs, settings : scope MarkdownSettings, fromOrdered : bool = false)
 {
 	final switch (block.type) {
 	case BlockType.Plain:
@@ -882,7 +887,7 @@ private void writeBlock(Sink dg, ref const Block block, LinkRefs links, scope Ma
 		break;
 	case BlockType.Header:
 		assert(block.blocks.length == 0);
-		auto hlvl = block.headerLevel + (settings ? settings.headingBaseLevel-1 : cast(size_t)0);
+		hlvl := block.headerLevel + (settings ? settings.headingBaseLevel-1 : cast(size_t)0);
 		dg(format("<h%s>", hlvl));
 		assert(block.text.length == 1);
 		writeMarkdownEscaped(dg, ref block.text[0], links, settings);
@@ -935,25 +940,25 @@ private void writeBlock(Sink dg, ref const Block block, LinkRefs links, scope Ma
 	}
 }
 
-private void writeMarkdownEscaped(Sink dg, ref const Block block, in LinkRefs links, scope MarkdownSettings settings)
+private fn writeMarkdownEscaped(dg : Sink, ref block : const Block, in links : LinkRefs, settings : scope MarkdownSettings)
 {
-	auto lines = cast(string[])block.text;
-	auto text = settings.flags & MarkdownFlags.keepLineBreaks ? lines.join("<br>") : lines.join("\n");
+	lines := cast(string[])block.text;
+	text := settings.flags & MarkdownFlags.keepLineBreaks ? lines.join("<br>") : lines.join("\n");
 	writeMarkdownEscaped(dg, text, links, settings);
 	if (lines.length) dg("\n");
 }
 
 /// private
-private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope MarkdownSettings settings)
+private fn writeMarkdownEscaped(dg : Sink, ln : string, linkrefs : LinkRefs, settings : scope MarkdownSettings)
 {
-	string filterLink(string lnk, bool is_image) {
+	fn filterLink(lnk : string, is_image : bool) string {
 		return settings.urlFilter !is null ? settings.urlFilter(lnk, is_image) : lnk;
 	}
 
 	ln = ln.strip();
-	bool br = ln.endsWith("  ") != 0;
-	size_t spaces;
-	void flushSpaces()
+	br : bool = ln.endsWith("  ") != 0;
+	spaces : size_t;
+	fn flushSpaces()
 	{
 		while (spaces > 0) {
 			dg(" ");
@@ -974,7 +979,7 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 				dg("<br />");
 				spaces = 0;
 			}
-			size_t zero = 0;
+			zero : size_t = 0;
 			encode(dg, decode(ln, ref zero));
 			ln = ln[zero .. $];
 			break;
@@ -1004,7 +1009,7 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 		case '_':
 		case '*':
 			flushSpaces();
-			string text;
+			text : string;
 			if (auto em = parseEmphasis(ref ln, ref text)) {
 				dg(em == 1 ? "<em>" : em == 2 ? "<strong>" : "<strong><em>");
 				htmlEscapeIgnoreTags(dg, text);
@@ -1019,7 +1024,7 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 			if (!(settings.flags & MarkdownFlags.strikeThrough)) {
 				goto default;
 			}
-			string strucken;
+			strucken : string;
 			if (parseStrike(ref ln, ref strucken)) {
 				dg("<del>");
 				htmlEscapeIgnoreTags(dg, strucken);
@@ -1031,7 +1036,7 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 			break;
 		case '`':
 			flushSpaces();
-			string code;
+			code : string;
 			if (parseInlineCode(ref ln, ref code)) {
 				dg("<code>");
 				htmlEscapeIgnoreTags(dg, code);
@@ -1043,8 +1048,8 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 			break;
 		case '[':
 			flushSpaces();
-			Link link;
-			bool b = parseLink(ref ln, ref link, linkrefs);
+			link : Link;
+			b : bool = parseLink(ref ln, ref link, linkrefs);
 			if (b) {
 				dg("<a href=\"");
 				htmlEscape(dg, filterLink(link.url, false));
@@ -1064,7 +1069,7 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 			break;
 		case '!':
 			flushSpaces();
-			Link link;
+			link : Link;
 			if (parseLink(ref ln, ref link, linkrefs)) {
 				dg("<img src=\"");
 				htmlEscape(dg, filterLink(link.url, true));
@@ -1093,9 +1098,9 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 			break;
 		case '<':
 			flushSpaces();
-			string url;
+			url : string;
 			if (parseAutoLink(ref ln, ref url)) {
-				bool is_email = url.startsWith("mailto:") != 0;
+				is_email : bool = url.startsWith("mailto:") != 0;
 				dg("<a href=\"");
 				if (is_email) htmlEscapeAll(dg, url);
 				else htmlEscape(dg, filterLink(url, false));
@@ -1129,11 +1134,11 @@ private void writeMarkdownEscaped(Sink dg, string ln, LinkRefs linkrefs, scope M
 	if (br) dg("<br/>");
 }
 
-private bool isLineBlank(string ln) {
+private fn isLineBlank(ln : string) bool {
 	return allOf(ln, " \t");
 }
 
-private bool isSetextHeaderLine(string ln, Line lastLine, size_t leadingSpaces) {
+private fn isSetextHeaderLine(ln : string, lastLine : Line, leadingSpaces : size_t) bool {
 	if (lastLine.type != LineType.Plain || leadingSpaces >= 4 || lastLine.leadingSpaces >= 4) return false;
 
 	ln = stripLeft(ln);
@@ -1149,16 +1154,16 @@ private bool isSetextHeaderLine(string ln, Line lastLine, size_t leadingSpaces) 
 	return false;
 }
 
-private bool isAtxHeaderLine(string ln, size_t leadingSpaces) {
+private fn isAtxHeaderLine(ln : string, leadingSpaces : size_t) bool {
 	if ( leadingSpaces >= 4) return false;
 	ln = stripLeft(ln);
-	size_t i = 0;
+	i : size_t = 0;
 	while (i < ln.length && ln[i] == '#') i++;
 	if (i < 1 || i > 6) return false;
 	return i >= ln.length ? true : ln[i] == ' ';
 }
 
-private bool isHlineLine(string ln, size_t leadingSpaces) {
+private fn isHlineLine(ln : string, leadingSpaces : size_t) bool {
 	if (leadingSpaces >= 4) return false;
 	if (allOf(ln, " -") && count(ln, '-') >= 3) return true;
 	if (allOf(ln, " *") && count(ln, '*') >= 3) return true;
@@ -1166,19 +1171,19 @@ private bool isHlineLine(string ln, size_t leadingSpaces) {
 	return false;
 }
 
-private bool isHlineInList(string ln, size_t leadingSpaces) {
+private fn isHlineInList(ln : string, leadingSpaces : size_t) bool {
 	if (leadingSpaces >= 4) return false;
 	if (allOf(ln, " *") && count(ln, '*') >= 3) return true;
 	if (allOf(ln, " _") && count(ln, '_') >= 3) return true;
 	return false;
 }
 
-private bool isQuoteLine(string ln) {
+private fn isQuoteLine(ln : string) bool {
 	return ln.stripLeft().startsWith(">") > 0;
 }
 
-private size_t getQuoteLevel(string ln) {
-	size_t level = 0;
+private fn getQuoteLevel(ln : string) size_t {
+	level : size_t = 0;
 	ln = stripLeft(ln);
 	while (ln.length > 0 && ln[0] == '>') {
 		level++;
@@ -1187,7 +1192,7 @@ private size_t getQuoteLevel(string ln) {
 	return level;
 }
 
-private bool isUListLine(string ln) {
+private fn isUListLine(ln : string) bool {
 	ln = stripLeft(ln);
 	if (ln.length < 1) return false;
 	if (indexOf("*+-", ln[0]) == -1) return false;
@@ -1195,12 +1200,12 @@ private bool isUListLine(string ln) {
 	return true;
 }
 
-private bool isOListLine(string ln, ref string num) {
+private fn isOListLine(ln : string, ref num : string) bool {
 	ln = stripLeft(ln);
 	if (ln.length < 1) return false;
 	if (ln[0] < '0' || ln[0] > '9') return false;
-	string n;
-	bool hitNonZero;
+	n : string;
+	hitNonZero : bool;
 	while (ln.length > 0 && ln[0] >= '0' && ln[0] <= '9') {
 		if (ln[0] != '0') {
 			hitNonZero = true;
@@ -1221,40 +1226,40 @@ private bool isOListLine(string ln, ref string num) {
 	return true;
 }
 
-private string removeListPrefix(string str, LineType tp, ref size_t leadingSpace) {
+private fn removeListPrefix(str : string, tp : LineType, ref leadingSpace : size_t) string {
 	switch (tp) {
 		default: assert(false);
 		case LineType.OList: // skip bullets and output using normal escaping
-			auto idx = str.indexOf('.');
+			idx := str.indexOf('.');
 			if (idx < 0) {
 				idx = str.indexOf(")");
 			}
 			assert(idx > 0);
-			auto s = str[idx+1 .. $];
+			s := str[idx+1 .. $];
 			leadingSpace = countLeading(s, ' ');
 			return s.stripLeft();
 		case LineType.UList:
-			auto s = str.stripLeft()[1 .. $];
+			s := str.stripLeft()[1 .. $];
 			leadingSpace = countLeading(s, ' ');
 			return s.stripLeft();
 	}
 }
 
 struct HtmlBlockInfo {
-	string fullText;
-	bool isCommentOpenBlock;
-	bool isCommentCloseBlock;
-	string closeTag;
-	bool isHtmlBlock;
-	string tagName;
-	bool open;
-	bool uniqueBlankTag;
-	string literalInLine;
-	string indent;
+	fullText : string;
+	isCommentOpenBlock : bool;
+	isCommentCloseBlock : bool;
+	closeTag : string;
+	isHtmlBlock : bool;
+	tagName : string;
+	open : bool;
+	uniqueBlankTag : bool;
+	literalInLine : string;
+	indent : string;
 }
 
-private HtmlBlockInfo parseHtmlBlockLine(string ln, size_t leadingSpaces=0) {
-	HtmlBlockInfo ret;
+private fn parseHtmlBlockLine(ln : string, leadingSpaces : size_t = 0) HtmlBlockInfo {
+	ret : HtmlBlockInfo;
 	ret.fullText = ln;
 	ret.isHtmlBlock = false;
 	ret.open = true;
@@ -1319,7 +1324,7 @@ private HtmlBlockInfo parseHtmlBlockLine(string ln, size_t leadingSpaces=0) {
 	}
 
 	ln = ln[1 .. $];
-	size_t idx = 0;
+	idx : size_t = 0;
 	while (idx < ln.length && ln[idx] != ' ' && ln[idx] != '>' )
 		idx++;
 	ret.tagName = ln[0 .. idx];
@@ -1331,12 +1336,12 @@ private HtmlBlockInfo parseHtmlBlockLine(string ln, size_t leadingSpaces=0) {
 
 	if (s_literalTags.indexOf(ret.tagName.toLower()) > -1) {
 		ret.isHtmlBlock = true;
-		auto openi = ln.indexOf('<');
+		openi := ln.indexOf('<');
 		if (openi == -1) {
 			return ret;
 		}
-		string _body = ln[0 .. openi];
-		auto tag = parseHtmlBlockLine(ln[openi .. $]);
+		_body : string = ln[0 .. openi];
+		tag := parseHtmlBlockLine(ln[openi .. $]);
 		if (tag.isHtmlBlock && tag.tagName == ret.tagName && !tag.open) {
 			ret.literalInLine = "<" ~ ret.tagName ~ _body ~ "</" ~ tag.tagName ~ ">";
 		}
@@ -1344,7 +1349,7 @@ private HtmlBlockInfo parseHtmlBlockLine(string ln, size_t leadingSpaces=0) {
 	}
 
 	if (s_blockTags.indexOf(ret.tagName.toLower()) == -1) {
-		auto eidx = ln.indexOf('>');
+		eidx := ln.indexOf('>');
 		if (eidx < 0) return ret;
 		if (eidx != cast(ptrdiff_t)(ln.length-1)) return ret;
 		ret.isHtmlBlock = true;
@@ -1356,11 +1361,11 @@ private HtmlBlockInfo parseHtmlBlockLine(string ln, size_t leadingSpaces=0) {
 	return ret;
 }
 
-private bool validTag(string s) {
+private fn validTag(s : string) bool {
 	if (s.length == 0) {
 		return false;
 	}
-	foreach (i, dchar c; s) {
+	foreach (i, c : dchar; s) {
 		if (i == 0 && !isAlpha(c)) {
 			return false;
 		} else if (!isAlpha(c) && !isDigit(c) && c != '-') {
@@ -1370,12 +1375,12 @@ private bool validTag(string s) {
 	return true;
 }
 
-private bool isCodeBlockDelimiter(string ln, size_t leadingSpaces) {
+private fn isCodeBlockDelimiter(ln : string, leadingSpaces : size_t) bool {
 	if (leadingSpaces >= 4) {
 		return false;
 	}
-	auto text = ln.strip();
-	bool fence = text.startsWith("```") > 0 || text.startsWith("~~~") > 0;
+	text := ln.strip();
+	fence : bool = text.startsWith("```") > 0 || text.startsWith("~~~") > 0;
 	if (!fence) {
 		return false;
 	}
@@ -1383,7 +1388,7 @@ private bool isCodeBlockDelimiter(string ln, size_t leadingSpaces) {
 	/* Code fences may not have internal spaces, but they can specify languages.
 	 * Go to the end of the first fence, and check for any ` ~ characters after that. */
 	if (text.length >= 3) {
-		size_t i = 3;
+		i : size_t = 3;
 		while (i < text.length && (text[i] == '`' || text[i] == '~')) {
 			i++;
 		}
@@ -1400,25 +1405,25 @@ private bool isCodeBlockDelimiter(string ln, size_t leadingSpaces) {
 	return true;
 }
 
-private string getHtmlTagName(string ln) {
+private fn getHtmlTagName(ln : string) string {
 	return parseHtmlBlockLine(ln).tagName;
 }
 
-private bool isLineIndented(string ln) {
+private fn isLineIndented(ln : string) bool {
 	return ln.startsWith("\t") || ln.startsWith("    ");
 }
 
-private string unindentLine(string ln) {
+private fn unindentLine(ln : string) string {
 	if (ln.startsWith("\t")) return ln[1 .. $];
 	if (ln.startsWith("    ")) return ln[4 .. $];
 	assert(false);
 }
 
-private int parseEmphasis(ref string str, ref string text) {
-	string pstr = str;
+private fn parseEmphasis(ref str : string, ref text : string) i32 {
+	pstr : string = str;
 	if (pstr.length < 3) return false;
 
-	string ctag;
+	ctag : string;
 	if (pstr.startsWith("***")) ctag = "***";
 	else if (pstr.startsWith("**")) ctag = "**";
 	else if (pstr.startsWith("*")) ctag = "*";
@@ -1433,17 +1438,17 @@ private int parseEmphasis(ref string str, ref string text) {
 	 * this can't be a left-flanking delimiter run. */
 	if (isWhite(pstr[0])) return false;
 
-	ptrdiff_t cidx() { return pstr.indexOf(ctag); }
+	fn cidx() ptrdiff_t { return pstr.indexOf(ctag); }
 	if (cidx() < 1) return false;
 
 	text = pstr[0 .. cast(size_t)cidx()];
 
 	str = pstr[cast(size_t)cidx()+ctag.length .. $];
-	return cast(int)ctag.length;
+	return cast(i32)ctag.length;
 }
 
-private bool parseStrike(ref string str, ref string strucken) {
-	string pstr = str;
+private fn parseStrike(ref str : string, ref strucken : string) bool {
+	pstr : string = str;
 	if (pstr.length < 5) {
 		return false;
 	}
@@ -1451,7 +1456,7 @@ private bool parseStrike(ref string str, ref string strucken) {
 		return false;
 	}
 	pstr = pstr[2 .. $];
-	ptrdiff_t cidx() { return pstr.indexOf("~~"); }
+	fn cidx() ptrdiff_t { return pstr.indexOf("~~"); }
 	if (cidx() < 1) {
 		return false;
 	}
@@ -1461,18 +1466,18 @@ private bool parseStrike(ref string str, ref string strucken) {
 	return true;
 }
 
-private bool parseInlineCode(ref string str, ref string code) {
+private fn parseInlineCode(ref str : string, ref code : string) bool {
 	string pstr = str;
 	if (pstr.length < 3 || pstr[0] != '`') return false;
-	string ctag;
-	size_t i;
+	ctag : string;
+	i : size_t;
 	while (pstr[i] == '`') {
 		i++;
 	}
 	ctag = pstr[0 .. i];
 	pstr = pstr[ctag.length .. $];
 
-	ptrdiff_t cidx() { return pstr.indexOf(ctag); }
+	fn cidx() ptrdiff_t { return pstr.indexOf(ctag); }
 	if (cidx() < 1) return false;
 
 	code = pstr[0 .. cast(size_t)cidx()].strip();
@@ -1480,15 +1485,15 @@ private bool parseInlineCode(ref string str, ref string code) {
 	return true;
 }
 
-private string restoreQuotes(string s)
+private fn restoreQuotes(s : string) string
 {
-	StringSink ss;
-	bool foundEscape;
-	StringSink escapess;
-	foreach (dchar c; s) {
+	ss : StringSink;
+	foundEscape : bool;
+	escapess : StringSink;
+	foreach (c : dchar; s) {
 		if (foundEscape) {
 			if (c == ';') {
-				string tag = escapess.toString();
+				tag : string = escapess.toString();
 				if (tag != "quot") {
 					ss.sink("&");
 					ss.sink(tag);
@@ -1512,17 +1517,17 @@ private string restoreQuotes(string s)
 	return ss.toString();
 }
 
-private bool parseLink(ref string str, ref Link dst, LinkRefs linkrefs) {
-	string pstr = str;
+private fn parseLink(ref str : string, ref dst : Link, linkrefs : LinkRefs) bool {
+	pstr : string = str;
 	if (pstr.length < 3) return false;
 	// ignore img-link prefix
 	if (pstr[0] == '!') pstr = pstr[1 .. $];
 
 	// parse the text part [text]
 	if (pstr[0] != '[') return false;
-	auto cidx = pstr.matchBracket();
+	cidx := pstr.matchBracket();
 	if (cidx < 1) return false;
-	string refid;
+	refid : string;
 	dst.text = pstr[1 .. cidx];
 	pstr = pstr[cidx+1 .. $];
 
@@ -1530,11 +1535,11 @@ private bool parseLink(ref string str, ref Link dst, LinkRefs linkrefs) {
 	if (pstr.length > 2 && pstr[0] == '(') {
 		cidx = pstr.matchBracket();
 		if (cidx < 1) return false;
-		auto inner = pstr[1 .. cidx].restoreQuotes();
-		immutable qidx = inner.indexOf('"');
+		inner := pstr[1 .. cidx].restoreQuotes();
+		qidx : immutable(ptrdiff_t) = inner.indexOf('"');
 		if (qidx > 1 && inner[qidx - 1].isWhite()) {
 			dst.url = inner[0 .. qidx].stripRight();
-			immutable len = inner[qidx .. $].lastIndexOf('"');
+			len : immutable(ptrdiff_t) = inner[qidx .. $].lastIndexOf('"');
 			if (len == 0) return false;
 			assert(len > 0);
 			dst.title = inner[qidx + 1 .. qidx + len];
@@ -1560,7 +1565,7 @@ private bool parseLink(ref string str, ref Link dst, LinkRefs linkrefs) {
 	}
 
 	if (refid.length > 0) {
-		auto pr = toLower(refid) in linkrefs.ret;
+		pr := toLower(refid) in linkrefs.ret;
 		if (pr is null) {
 			return false;
 		}
@@ -1572,12 +1577,12 @@ private bool parseLink(ref string str, ref Link dst, LinkRefs linkrefs) {
 	return true;
 }
 
-private bool parseAutoLink(ref string str, ref string url) {
-	string pstr = str;
+private fn parseAutoLink(ref str : string, ref url : string) bool {
+	pstr : string = str;
 	if (pstr.length < 3) return false;
 	if (pstr[0] != '<') return false;
 	pstr = pstr[1 .. $];
-	auto cidx = pstr.indexOf('>');
+	cidx := pstr.indexOf('>');
 	if (cidx < 0) return false;
 	url = pstr[0 .. cidx];
 	if (anyOf(url, " \t")) return false;
@@ -1587,15 +1592,15 @@ private bool parseAutoLink(ref string str, ref string url) {
 	return true;
 }
 
-private string urlEscape(string s, bool escapeSpaces, bool escapeSlashes)
+private fn urlEscape(s : string, escapeSpaces : bool, escapeSlashes : bool) string
 {
-	StringSink ss;
-	foreach (dchar c; s) {
+	ss : StringSink;
+	foreach (c : dchar; s) {
 		switch (c) {
 		default:
-			string sss = encode(c);
-			foreach (char cc; sss) {
-				uint i = cast(uint) cc;
+			sss : string = encode(c);
+			foreach (cc : char; sss) {
+				i := cast(u32) cc;
 				if (i <= 127) {
 					ss.sink(encode(cc));
 				} else {
@@ -1623,19 +1628,19 @@ private string urlEscape(string s, bool escapeSpaces, bool escapeSlashes)
 
 private class LinkRefs
 {
-	LinkRef[string] ret;
+	ret : LinkRef[string];
 
-	void scanForReferences(ref string[] lines) {
-		bool[size_t] reflines;
-		bool lookingForUrl, lookingForTitle;
-		string currentRefid, currentUrl;
-		size_t[] multilines;
-		char titleChar = '?';
-		char[] titleBuf;
-		size_t startidx;  // The index this ref started parsing on.
-		string[size_t] insertlines;
+	fn scanForReferences(ref lines : string[]) {
+		reflines : bool[size_t];
+		lookingForTitle, lookingForUrl : bool;
+		currentRefid, currentUrl : string;
+		multilines : size_t[];
+		titleChar : char = '?';
+		titleBuf : char[];
+		startidx : size_t;  // The index this ref started parsing on.
+		insertlines : string[size_t];
 
-		void resetVars()
+		fn resetVars()
 		{
 			currentUrl = currentRefid = "";
 			multilines = [];
@@ -1648,13 +1653,13 @@ private class LinkRefs
 		//   [refid] link "opt text"
 		//   [refid] <link> "opt text"
 		//   "opt text", 'opt text', (opt text)
-		size_t lnidx;
+		lnidx : size_t;
 		while (lnidx < lines.length) {
-			auto leadingSpaces = countLeading(lines[lnidx], ' ');
-			string ln = stripLeft(lines[lnidx]);
+			leadingSpaces := countLeading(lines[lnidx], ' ');
+			ln : string = stripLeft(lines[lnidx]);
 			if (!ln.startsWith("[") && !lookingForUrl && !lookingForTitle) {
-				auto starti = ln.indexOf("[");
-				auto cdatai = ln.indexOf("<![CDATA[");
+				starti := ln.indexOf("[");
+				cdatai := ln.indexOf("<![CDATA[");
 				if (starti < 0 || cdatai >= 0) {
 					lnidx++;
 					continue;
@@ -1666,8 +1671,8 @@ private class LinkRefs
 			}
 
 			if (!lookingForUrl && !lookingForTitle && lnidx > 0) {
-				auto p = (lnidx-1) in reflines;
-				string dummy;
+				p := (lnidx-1) in reflines;
+				dummy : string;
 				if (!lines[lnidx-1].stripLeft().startsWith("[") &&
 				    !isAtxHeaderLine(lines[lnidx-1], leadingSpaces) &&
 					!isHlineLine(ln, leadingSpaces) &&
@@ -1693,16 +1698,16 @@ private class LinkRefs
 			if (!lookingForUrl && !lookingForTitle) {
 				startidx = lnidx;
 				ln = ln[1 .. $];
-				ptrdiff_t idx() {
+				fn idx() ptrdiff_t {
 					return ln.indexOf("]:");
 				}
-				string refid;
+				refid : string;
 				if (idx() < 0) {
 					if (ln.indexOf("]") >= 0) {
 						lnidx++;
 						continue;
 					}
-					size_t[] indices;
+					indices : size_t[];
 					do {
 						indices ~= lnidx;
 						lnidx++;
@@ -1727,10 +1732,10 @@ private class LinkRefs
 				ln = stripLeft(ln);
 			}
 
-			string url;
+			url : string;
 			if (!lookingForTitle) {
 				if (ln.startsWith("<")) {
-					auto i = ln.indexOf('>');
+					i := ln.indexOf('>');
 					if (i < 0) {
 						lnidx++;
 						continue;
@@ -1738,7 +1743,7 @@ private class LinkRefs
 					url = ln[1 .. cast(size_t)i];
 					ln = ln[cast(size_t)i+1 .. $];
 				} else {
-					auto i = ln.indexOf(' ');
+					i := ln.indexOf(' ');
 					if (i > 0) {
 						url = ln[0 .. cast(size_t)i];
 						ln = ln[cast(size_t)i+1 .. $];
@@ -1774,7 +1779,7 @@ private class LinkRefs
 					lookingForTitle = true;
 					titleChar = ln[0];
 					titleBuf = [];
-					auto endi = ln.lastIndexOf(titleChar);
+					endi := ln.lastIndexOf(titleChar);
 					ln = ln[1 .. $];
 					if (ln.length == 0 || ln.stripRight()[$-1] != titleChar) {
 						if (endi != 0) {
@@ -1803,8 +1808,8 @@ private class LinkRefs
 				lookingForTitle = false;
 			}
 
-			string title;
-			auto stripped = ln.stripRight();
+			title : string;
+			stripped := ln.stripRight();
 			if (stripped.length >= 1 && stripped[$-1] == titleChar) {
 				titleBuf ~= stripped[0 .. $-1];
 				title = cast(string)titleBuf;
@@ -1842,8 +1847,8 @@ private class LinkRefs
 			currentUrl = urlEscape(backslashEscape(currentUrl), true, true);
 			title = backslashEscape(title);
 			LinkRef lr = {currentRefid, currentUrl, title};
-			auto id = toLower(currentRefid);
-			auto tag = id in ret;
+			id := toLower(currentRefid);
+			tag := id in ret;
 			if (tag is null) {
 				ret[toLower(currentRefid)] = lr;
 			}
@@ -1858,10 +1863,10 @@ private class LinkRefs
 		}
 
 		// remove all lines containing references
-		string[] nonreflines;
+		nonreflines : string[];
 		foreach (i, ln; lines) {
-			auto p = i in reflines;
-			auto pp = i in insertlines;
+			p := i in reflines;
+			pp := i in insertlines;
 			if (p is null) {
 				nonreflines ~= ln;
 			} else if (pp !is null) {
@@ -1873,13 +1878,13 @@ private class LinkRefs
 }
 
 private struct LinkRef {
-	string id;
-	string url;
-	string title;
+	id : string;
+	url : string;
+	title : string;
 }
 
 private struct Link {
-	string text;
-	string url;
-	string title;
+	text : string;
+	url : string;
+	title : string;
 }
