@@ -12,13 +12,13 @@ class Source
 {
 public:
 	/// The location of the current character @p front.
-	Location loc;
+	loc : Location;
 
 	/// @see empty.
 	alias eof = empty;
 
 private:
-	SimpleSource mSrc;
+	mSrc : SimpleSource;
 
 public:
 	/**
@@ -31,7 +31,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	this(string s, string filename)
+	this(s : string, filename : string)
 	{
 		// mSrc call its own popFront.
 		mSrc.source = s;
@@ -45,7 +45,7 @@ public:
 	/**
 	 * Have we reached EOF, if we have current = dchar.init.
 	 */
-	final @property dchar empty()
+	final @property fn empty() dchar
 	{
 		return mSrc.empty;
 	}
@@ -56,7 +56,7 @@ public:
 	 * Side-effects:
 	 *   None.
 	 */
-	final @property dchar front()
+	final @property fn front() dchar
 	{
 		return mSrc.mChar;
 	}
@@ -67,7 +67,7 @@ public:
 	 * Side-effects:
 	 *   None.
 	 */
-	final @property dchar following()
+	final @property fn following() dchar
 	{
 		return mSrc.following;
 	}
@@ -84,7 +84,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	void popFront()
+	fn popFront()
 	{
 		if (mSrc.mChar == '\n') {
 			loc.line++;
@@ -108,7 +108,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	void popFrontN(size_t n)
+	fn popFrontN(n : size_t)
 	{
 		while (!eof && n != 0) {
 			popFront();
@@ -123,7 +123,7 @@ public:
 	 * Side-effects:
 	 *   @arg @see popFront
 	 */
-	final void skipWhitespace()
+	final fn skipWhitespace()
 	{
 		while (isWhite(mSrc.mChar) && !eof) {
 			popFront();
@@ -136,9 +136,9 @@ public:
 	 * Side-effects:
 	 *   @arg @see popFront
 	 */
-	void skipEndOfLine()
+	fn skipEndOfLine()
 	{
-		dchar d;
+		d : dchar;
 		do {
 			d = front;
 			popFront();
@@ -158,17 +158,17 @@ public:
 	 * Returns:
 	 *   Unicode char at @p n or @p dchar.init at EOF.
 	 */
-	final dchar lookahead(size_t n, out bool lookaheadEOF)
+	final fn lookahead(n : size_t, out lookaheadEOF : bool) dchar
 	{
 		return mSrc.lookahead(n, out lookaheadEOF);
 	}
 
-	final size_t save()
+	final fn save() size_t
 	{
 		return mSrc.mLastIndex;
 	}
 
-	final string sliceFrom(size_t mark)
+	final fn sliceFrom(mark : size_t) string
 	{
 		return mSrc.mSrc[mark .. mSrc.mLastIndex];
 	}
@@ -183,22 +183,22 @@ struct SimpleSource
 {
 public:
 	/// Source code, assumed to be validated utf8.
-	string mSrc;
+	mSrc : string;
 	/// Pointer into the string for the next character.
-	size_t mNextIndex;
+	mNextIndex : size_t;
 	/// The index for mChar
-	size_t mLastIndex;
+	mLastIndex : size_t;
 	/// The current unicode character.
-	dchar mChar;
+	mChar : dchar;
 
 	/// @see empty.
 	alias eof = empty;
 
 	/// Have we reached EOF, if we have front = dchar.init.
-	bool empty;
+	empty : bool;
 
 public:
-	@property string source(string src)
+	@property fn source(src : string) string
 	{
 		mSrc = src;
 		mLastIndex = 0;
@@ -208,7 +208,7 @@ public:
 		return src;
 	}
 
-	@property string source()
+	@property fn source() string
 	{
 		return mSrc;
 	}
@@ -219,7 +219,7 @@ public:
 	 * Side-effects:
 	 *   None.
 	 */
-	@property dchar front()
+	@property fn front() dchar
 	{
 		return mChar;
 	}
@@ -230,9 +230,9 @@ public:
 	 * Side-effects:
 	 *   None.
 	 */
-	@property dchar following()
+	@property fn following() dchar
 	{
-		size_t dummy = mNextIndex;
+		dummy : size_t = mNextIndex;
 		return decodeChar(ref dummy);
 	}
 
@@ -248,7 +248,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	void popFront()
+	fn popFront()
 	{
 		mLastIndex = mNextIndex;
 		mChar = decodeChar(ref mNextIndex);
@@ -271,7 +271,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	void popFrontN(size_t n)
+	fn popFrontN(n : size_t)
 	{
 		while (!empty && n != 0) {
 			popFront();
@@ -292,16 +292,16 @@ public:
 	 * Returns:
 	 *   Unicode char at @p n or @p dchar.init at empty.
 	 */
-	dchar lookahead(size_t n, out bool lookaheadEmpty)
+	fn lookahead(n : size_t, out lookaheadEmpty : bool) dchar
 	{
 		if (n == 0) {
 			lookaheadEmpty = empty;
 			return mChar;
 		}
 
-		dchar c;
-		auto index = mNextIndex;
-		for (size_t i; i < n; i++) {
+		c : dchar;
+		index := mNextIndex;
+		for (i : size_t; i < n; i++) {
 			c = decodeChar(ref index);
 			if (c == dchar.init) {
 				lookaheadEmpty = true;
@@ -314,7 +314,7 @@ public:
 	/**
 	 * Decodes a single utf8 code point at index in the given source.
 	 */
-	dchar decodeChar(ref size_t index)
+	fn decodeChar(ref index : size_t) dchar
 	{
 		if (index >= source.length) {
 			return dchar.init;
@@ -332,13 +332,13 @@ public:
 struct Location
 {
 public:
-	string filename;
-	size_t line;
-	size_t column;
-	size_t length;
+	filename : string;
+	line : size_t;
+	column : size_t;
+	length : size_t;
 
 public:
-	string toString()
+	fn toString() string
 	{
 		return format("%s:%s:%s", filename, line, column);
 	}
@@ -348,7 +348,7 @@ public:
 	 * end - begin == begin ... end
 	 * @see difference
 	 */
-	Location opSub(ref Location begin)
+	fn opSub(ref begin : Location) Location
 	{
 		return difference(ref this, ref begin, ref begin);
 	}
@@ -359,8 +359,8 @@ public:
 	 * On mismatch of filename or if begin is after
 	 * end _default is returned.
 	 */
-	global Location difference(ref Location end, ref Location begin,
-	                           ref Location _default)
+	global fn difference(ref end : Location, ref begin : Location,
+	                     ref _default : Location) Location
 	{
 		if (begin.filename != end.filename ||
 		    begin.line > end.line) {
@@ -382,7 +382,7 @@ public:
 		return loc;
 	}
 
-	void spanTo(ref Location end)
+	fn spanTo(ref end : Location)
 	{
 		if (line <= end.line && column < end.column) {
 			this = end - this;
