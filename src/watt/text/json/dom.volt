@@ -10,7 +10,7 @@ import watt.text.json.sax;
 
 class DOMException : JSONException
 {
-	this(string msg, string file = __FILE__, size_t line = __LINE__)
+	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -28,8 +28,8 @@ enum DomType
 	ARRAY
 }
 
-private void enforceJEx(bool b, string msg = "Json type enforce failure.",
-                        string file = __FILE__, size_t line = __LINE__)
+private fn enforceJEx(b : bool, msg : string = "Json type enforce failure.",
+                      file : string = __FILE__, line : size_t = __LINE__)
 {
 	if (!b) {
 		throw new DOMException(msg, file, line);
@@ -43,29 +43,29 @@ struct Value
 {
 	union Store
 	{
-		bool boolean;
-		immutable(char)[] str;  // TODO: If this is a string, Volt's classify blows up.
-		long integer;
-		ulong unsigned;
-		double floating;
+		boolean : bool;
+		str : immutable(char)[];  // TODO: If this is a string, Volt's classify blows up.
+		integer : i64;
+		unsigned : u64;
+		floating : f64;
 	}
-	private Store store;
-	private DomType _type;
-	private Value[] _array;
-	private Value[string] object;
+	private store : Store;
+	private _type : DomType;
+	private _array : Value[];
+	private object : Value[string];
 
 	/**
 	 * Returns the DomType of the value stored in this node.
 	 */
-	DomType type()
+	fn type() DomType
 	{
 		return _type;
 	}
 
 	/**
-	 * Test wether the type is null.
+	 * Test whether the type is null.
 	 */
-	bool isNull()
+	fn isNull() bool
 	{
 		return _type == DomType.NULL;
 	}
@@ -73,7 +73,7 @@ struct Value
 	/**
 	 * Set the type to null.
 	 */
-	void setNull()
+	fn setNull()
 	{
 		_type = DomType.NULL;
 	}
@@ -81,7 +81,7 @@ struct Value
 	/**
 	 * Getter for DomType.BOOLEAN.
 	 */
-	bool boolean()
+	fn boolean() bool
 	{
 		enforceJEx(_type == DomType.BOOLEAN, "Value is not a boolean.");
 		return store.boolean;
@@ -90,7 +90,7 @@ struct Value
 	/**
 	 * Setter for DomType.BOOLEAN.
 	 */
-	void boolean(bool b)
+	fn boolean(b : bool)
 	{
 		_type = DomType.BOOLEAN;
 		store.boolean = b;
@@ -99,7 +99,7 @@ struct Value
 	/**
 	 * Getter for DomType.STRING.
 	 */
-	string str()
+	fn str() string
 	{
 		enforceJEx(_type == DomType.STRING, "Value is not a string.");
 		return store.str;
@@ -108,7 +108,7 @@ struct Value
 	/**
 	 * Setter for DomType.STRING.
 	 */
-	void str(string s)
+	fn str(s : string)
 	{
 		_type = DomType.STRING;
 		store.str = s;
@@ -117,7 +117,7 @@ struct Value
 	/**
 	 * Getter for DomType.LONG.
 	 */
-	long integer()
+	fn integer() i64
 	{
 		enforceJEx(_type == DomType.LONG, "Value is not a long.");
 		return store.integer;
@@ -126,7 +126,7 @@ struct Value
 	/**
 	 * Setter for DomType.LONG.
 	 */
-	void integer(long l)
+	fn integer(l : i64)
 	{
 		_type = DomType.LONG;
 		store.integer = l;
@@ -135,7 +135,7 @@ struct Value
 	/**
 	 * Getter for DomType.ULONG.
 	 */
-	ulong unsigned()
+	fn unsigned() u64
 	{
 		enforceJEx(_type == DomType.ULONG, "Value is not a ulong.");
 		return store.unsigned;
@@ -144,7 +144,7 @@ struct Value
 	/**
 	 * Setter for DomType.ULONG.
 	 */
-	void unsigned(ulong l)
+	fn unsigned(l : u64)
 	{
 		_type = DomType.ULONG;
 		store.unsigned = l;
@@ -153,7 +153,7 @@ struct Value
 	/**
 	 * Getter for DomType.DOUBLE.
 	 */
-	double floating()
+	fn floating() f64
 	{
 		enforceJEx(_type == DomType.DOUBLE, "Value is not a double.");
 		return store.floating;
@@ -162,7 +162,7 @@ struct Value
 	/**
 	 * Setter for DomType.DOUBLE.
 	 */
-	void floating(double d)
+	fn floating(d : f64)
 	{
 		_type = DomType.DOUBLE;
 		store.floating = d;
@@ -171,7 +171,7 @@ struct Value
 	/**
 	 * Getter for DomType.ARRAY.
 	 */
-	Value[] array()
+	fn array() Value[]
 	{
 		enforceJEx(_type == DomType.ARRAY, "Value is not an array.");
 		return _array;
@@ -180,7 +180,7 @@ struct Value
 	/**
 	 * Setter for DomType.ARRAY.
 	 */
-	void array(Value[] array)
+	fn array(array : Value[])
 	{
 		_type = DomType.ARRAY;
 		_array = array;
@@ -189,7 +189,7 @@ struct Value
 	/**
 	 * Add value to the array.
 	 */
-	void arrayAdd(Value val)
+	fn arrayAdd(val : Value)
 	{
 		enforceJEx(_type == DomType.ARRAY, "Value is not an array.");
 		_array ~= val;
@@ -198,7 +198,7 @@ struct Value
 	/**
 	 * Set type as DomType.ARRAY.
 	 */
-	void setArray()
+	fn setArray()
 	{
 		_type = DomType.ARRAY;
 	}
@@ -206,10 +206,10 @@ struct Value
 	/**
 	 * Getter for DomType.OBJECT.
 	 */
-	Value lookupObjectKey(string s)
+	fn lookupObjectKey(s : string) Value
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
-		auto p = s in object;
+		p := s in object;
 		if (p is null) {
 			throw new DOMException(format("Lookup of '%s' through JSON object failed.", s));
 		}
@@ -219,7 +219,7 @@ struct Value
 	/**
 	 * Setter for DomType.OBJECT.
 	 */
-	void setObjectKey(string s, Value v)
+	fn setObjectKey(s : string, v : Value)
 	{
 		_type = DomType.OBJECT;
 		object[s] = v;
@@ -228,18 +228,18 @@ struct Value
 	/**
 	 * Set type as DomType.OBJECT.
 	 */
-	void setObject()
+	fn setObject()
 	{
 		_type = DomType.OBJECT;
 	}
 
-	string[] keys()
+	fn keys() string[]
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
 		return object.keys;
 	}
 
-	Value[] values()
+	fn values() Value[]
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
 		return object.values;
@@ -248,44 +248,44 @@ struct Value
 
 private enum LONG_MAX = 9223372036854775807UL;
 
-Value parse(string s)
+fn parse(s : string) Value
 {
-	Value val;
+	val : Value;
 	val.setObject();
-	Value[] valueStack;
-	string[] keyStack;
+	valueStack : Value[];
+	keyStack : string[];
 
-	void addKey(string key)
+	fn addKey(key : string)
 	{
 		keyStack ~= key;
 	}
 
-	string getKey()
+	fn getKey() string
 	{
 		assert(valueStack.length >= 1);
 		if (valueStack[$-1]._type == DomType.ARRAY) {
 			return "";
 		}
 		assert(keyStack.length >= 1);
-		auto key = keyStack[$-1];
+		key := keyStack[$-1];
 		keyStack = keyStack[0 .. $-1];
 		return key;
 	}
 
-	void pushValue(Value p)
+	fn pushValue(p : Value)
 	{
 		valueStack ~= p;
 	}
 
-	Value popValue()
+	fn popValue() Value
 	{
 		assert(valueStack.length > 1);
-		auto val = valueStack[$-1];
+		val := valueStack[$-1];
 		valueStack = valueStack[0 .. $-1];
 		return val;
 	}
 
-	void addValue(Value val, string key="")
+	fn addValue(val : Value, key : string ="")
 	{
 		assert(valueStack.length >= 1);
 		assert(valueStack[$-1]._type == DomType.OBJECT || valueStack[$-1]._type == DomType.ARRAY);
@@ -298,15 +298,15 @@ Value parse(string s)
 		}
 	}
 
-	auto current = &val;
-	bool loop = true;
-	void dg(Event event, const(ubyte)[] data)
+	current := &val;
+	loop := true;
+	fn dg(event : Event, data : const(ubyte)[])
 	{
 		if (event == Event.ERROR) {
 			throw new DOMException(cast(string)data);
 		}
 		loop = event != Event.STOP;
-		Value v;
+		v : Value;
 		final switch (event) {
 		case Event.ERROR:
 			assert(false);
@@ -323,11 +323,11 @@ Value parse(string s)
 			break;
 		case Event.NUMBER:
 			if (canBeInteger(cast(const(char)[])data, false)) {
-				ulong ul;
+				ul : u64;
 				parseUlong(cast(const(char)[])data, out ul);
 				if (ul < LONG_MAX) {
 					assert(canBeInteger(cast(const(char)[])data, true));
-					long l;
+					i64 l;
 					parseLong(cast(const(char)[])data, out l);
 					v.integer(l);
 					addValue(v, getKey());
@@ -337,15 +337,15 @@ Value parse(string s)
 				addValue(v, getKey());
 				break;
 			} else if (canBeInteger(cast(const(char)[])data, true)) {
-				long l;
+				l : i64;
 				parseLong(cast(const(char[]))data, out l);
 				v.integer(l);
 				addValue(v, getKey());
 				break;
 			}
-			double d;
-			char[] buf;
-			bool ret = parseDouble(cast(const(char)[])data, out d, ref buf);
+			d : f64;
+			buf : char[];
+			ret : bool = parseDouble(cast(const(char)[])data, out d, ref buf);
 			assert(ret);
 			v.floating(d);
 			addValue(v, getKey());
@@ -359,7 +359,7 @@ Value parse(string s)
 			pushValue(v);
 			break;
 		case Event.ARRAY_END:
-			auto av = popValue();
+			av := popValue();
 			addValue(av, getKey());
 			break;
 		case Event.OBJECT_START:
@@ -368,7 +368,7 @@ Value parse(string s)
 			break;
 		case Event.OBJECT_END:
 			if (valueStack.length > 1) {
-				auto ov = popValue();
+				ov := popValue();
 				addValue(ov, getKey());
 			}
 			break;
@@ -377,7 +377,7 @@ Value parse(string s)
 			break;
 		}
 	}
-	auto sax = new SAX(s);
+	sax := new SAX(s);
 	while (loop) {
 		sax.get(dg);
 	}

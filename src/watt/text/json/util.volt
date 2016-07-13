@@ -15,7 +15,7 @@ import watt.conv : toLong, toUlong, toLower;
  */
 class JSONException : Exception
 {
-	this(string msg, string file = __FILE__, size_t line = __LINE__)
+	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -26,7 +26,7 @@ class JSONException : Exception
  */
 class ParseException : JSONException
 {
-	this(string msg, string file = __FILE__, size_t line = __LINE__)
+	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -36,9 +36,9 @@ class ParseException : JSONException
  * Returns true if data contains a non-digit, character.
  * If signed is false, '-' will make this function return false.
  */
-bool canBeInteger(const(char)[] data, bool signed)
+fn canBeInteger(data : const(char)[], signed : bool) bool
 {
-	for (size_t i = 0; i < data.length; ++i) {
+	for (i : size_t = 0; i < data.length; ++i) {
 		if (!isDigit(data[i]) && (!signed || data[i] != '-')) {
 			return false;
 		}
@@ -50,7 +50,7 @@ bool canBeInteger(const(char)[] data, bool signed)
  * Parse a ulong from a JSON number string.
  * Returns true if a double was parsed, false otherwise.
  */
-bool parseUlong(const(char)[] data, out ulong l)
+fn parseUlong(data : const(char)[], out l : u64) bool
 {
 	if (!canBeInteger(data, false)) {
 		return false;
@@ -63,7 +63,7 @@ bool parseUlong(const(char)[] data, out ulong l)
  * Parse a long from a JSON number string.
  * Returns true if a double was parsed, false otherwise.
  */
-bool parseLong(const(char)[] data, out long l)
+fn parseLong(data : const(char)[], out l : i64) bool
 {
 	if (!canBeInteger(data, true)) {
 		return false;
@@ -77,9 +77,9 @@ bool parseLong(const(char)[] data, out long l)
  *
  * Returns true if a double was parsed, false otherwise.
  */
-bool parseDouble(const(char)[] data, out double d)
+fn parseDouble(data : const(char)[], out d : f64) bool
 {
-	char[] buffer;
+	buffer : char[];
 	return parseDouble(data, out d, ref buffer);
 }
 
@@ -89,9 +89,9 @@ bool parseDouble(const(char)[] data, out double d)
  *
  * Returns true if a double was parsed, false otherwise.
  */
-bool parseDouble(const(char)[] data, out double d, ref char[] buffer)
+fn parseDouble(data : const(char)[], out d : f64, ref buffer : char[]) bool
 {
-	const(void)* ptr = cast(const(void)*)data.ptr;
+	ptr := cast(const(void)*)data.ptr;
 	if (data[$-1] != '\0') {
 		if (buffer.length <= data.length) {
 			buffer = new char[](data.length + 1);
@@ -104,7 +104,7 @@ bool parseDouble(const(char)[] data, out double d, ref char[] buffer)
 	return true;
 }
 
-bool parseBool(const(char)[] data)
+fn parseBool(data : const(char)[]) bool
 {
 	return toLower(data) == "true";
 }
@@ -112,9 +112,9 @@ bool parseBool(const(char)[] data)
 /**
  * Unescape a JSON string and return it.
  */
-const(char)[] unescapeString(const(char)[] str)
+fn unescapeString(str : const(char)[]) const(char)[]
 {
-	char[] buffer;
+	buffer : char[];
 	return unescapeString(str, ref buffer);
 }
 
@@ -122,16 +122,16 @@ const(char)[] unescapeString(const(char)[] str)
  * Unescape a JSON string and return it, using a pre allocated buffer and
  * resizing it if needed.
  */
-const(char)[] unescapeString(const(char)[] str, ref char[] buffer)
+fn unescapeString(str : const(char)[], ref buffer : char[]) const(char)[]
 {
-	bool needsEscape = false;
-	bool escaping = false;
-	char[4] hexBuffer;
-	size_t bufferIndex;
-	size_t toCopyIndex;
-	size_t i;
+	needsEscape := false;
+	escaping := false;
+	hexBuffer : char[4];
+	bufferIndex : size_t;
+	toCopyIndex : size_t;
+	i : size_t;
 
-	void doUnescape(const(char)[] unescaped)
+	fn doUnescape(unescaped : const(char)[])
 	{
 		if (!needsEscape) {
 			if (buffer.length < str.length) {
@@ -142,20 +142,20 @@ const(char)[] unescapeString(const(char)[] str, ref char[] buffer)
 			buffer[0..bufferIndex] = str[0..bufferIndex];
 			needsEscape = true;
 		} else {
-			auto diff = toCopyIndex - bufferIndex;
+			diff := toCopyIndex - bufferIndex;
 			buffer[bufferIndex..toCopyIndex] = str[i-diff-1..i-1];
 			bufferIndex = toCopyIndex;
 		}
 
 		// the string can only get shorter, no need to resize
-		auto newLen = bufferIndex + unescaped.length;
+		newLen := bufferIndex + unescaped.length;
 		buffer[bufferIndex..newLen] = unescaped[];
 		bufferIndex = newLen;
 		toCopyIndex = bufferIndex;
 	}
 
 	for (i = 0; i < str.length; i++) {
-		char c = str[i];
+		c : char = str[i];
 
 		if (escaping) {
 			switch (c) {
@@ -205,7 +205,7 @@ const(char)[] unescapeString(const(char)[] str, ref char[] buffer)
 	}
 
 	if (needsEscape) {
-		auto diff = toCopyIndex - bufferIndex;
+		diff := toCopyIndex - bufferIndex;
 		buffer[bufferIndex..toCopyIndex] = str[i-diff..i];
 		return buffer[0..toCopyIndex];
 	}
@@ -213,7 +213,7 @@ const(char)[] unescapeString(const(char)[] str, ref char[] buffer)
 	return str;
 }
 
-private void simpleCharToHex(char c, char* buffer)
+private fn simpleCharToHex(c : char, buffer : char*)
 {
     buffer[0] = HEX_DIGITS[c >> 4];
     buffer[1] = HEX_DIGITS[c & 0x0F];
@@ -222,9 +222,9 @@ private void simpleCharToHex(char c, char* buffer)
 /**
  * Escapes a JSON string and returns it.
  */
-const(char)[] escapeString(const(char)[] str)
+fn escapeString(str : const(char)[]) const(char)[]
 {
-	char[] buffer;
+	buffer : char[];
 	return escapeString(str, ref buffer);
 }
 
@@ -232,15 +232,15 @@ const(char)[] escapeString(const(char)[] str)
  * Escapes a JSON string and returns it, using a pre allocated buffer and
  * resizing it if needed.
  */
-const(char)[] escapeString(const(char)[] str, ref char[] buffer)
+fn escapeString(str : const(char)[], ref buffer : char[]) const(char)[]
 {
-	bool needsEscape = false;
-	size_t bufferIndex;
-	size_t toCopyIndex;
-	size_t i = 0;
-	char[6] hexBuffer = ['\\', 'u', '0', '0', '0', '0'];
+	needsEscape := false;
+	bufferIndex : size_t;
+	toCopyIndex : size_t;
+	i : size_t = 0;
+	hexBuffer : char[6] = ['\\', 'u', '0', '0', '0', '0'];
 
-	void doEscape(const(char)[] escape)
+	fn doEscape(escape : const(char)[])
 	{
 		// is it the first encountered escape?
 		if (!needsEscape) {
@@ -253,10 +253,10 @@ const(char)[] escapeString(const(char)[] str, ref char[] buffer)
 			needsEscape = true;
 		}
 
-		auto diff = toCopyIndex - bufferIndex;
-		auto newLen = bufferIndex + escape.length + diff;
+		diff := toCopyIndex - bufferIndex;
+		newLen := bufferIndex + escape.length + diff;
 		if (buffer.length < newLen) { // resize buffer if needed.
-			auto tmp = new char[](newLen + 32);
+			tmp := new char[](newLen + 32);
 			tmp[0..buffer.length] = buffer[];
 			buffer = tmp;
 		}
@@ -269,7 +269,7 @@ const(char)[] escapeString(const(char)[] str, ref char[] buffer)
 	}
 
 	for (i = 0; i < str.length; ++i) {
-		char c = str[i];
+		c : char = str[i];
 
 		switch (c) {
 			case '"':
@@ -309,9 +309,9 @@ const(char)[] escapeString(const(char)[] str, ref char[] buffer)
 	}
 
 	if (needsEscape) {
-		auto diff = toCopyIndex - bufferIndex;
+		diff := toCopyIndex - bufferIndex;
 		if (buffer.length < bufferIndex + toCopyIndex) {
-			auto tmp = new char[](bufferIndex + toCopyIndex);
+			tmp := new char[](bufferIndex + toCopyIndex);
 			tmp[0..buffer.length] = buffer[];
 			buffer = tmp;
 		}

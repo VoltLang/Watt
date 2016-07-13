@@ -13,8 +13,8 @@ import watt.math : isinf, isnan;
 import util = watt.text.json.util;
 
 private extern(C) {
-	char* strcat(char* dest, const(char)* src);
-	size_t strspn(const(char)* str1, const(char)* str2 );
+	fn strcat(dest : char*, src : const(char)*) char*;
+	fn strspn(str1 : const(char)*, str2 : const(char)*) size_t;
 }
 
 /**
@@ -22,7 +22,7 @@ private extern(C) {
  */
 class BuilderException : util.JSONException
 {
-	this(string msg, string file = __FILE__, size_t line = __LINE__)
+	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -61,7 +61,7 @@ enum Event
 /**
  * Turn a *Event* into a human readable string.
  */
-string eventToString(Event event)
+fn eventToString(event : Event) string
 {
 	switch (event) with (Event) {
 		case START: return "start";
@@ -88,29 +88,29 @@ string eventToString(Event event)
 class SAX
 {
 public:
-	bool ignoreGarbage; ///< Ignore garbage/left over data after the root element is parsed.
+	ignoreGarbage : bool; ///< Ignore garbage/left over data after the root element is parsed.
 
 protected:
-	InputStream source; //< Input source.
-	ubyte[] buffer; //< the complete buffer.
-	size_t reallocSize; //< resize to buffer.length + reallocSize if buffer is not big enough.
+	source : InputStream; //< Input source.
+	buffer : u8[]; //< the complete buffer.
+	reallocSize : size_t; //< resize to buffer.length + reallocSize if buffer is not big enough.
 
-	const(ubyte)[] current; //< slice to buffer.
-	size_t index;
-	size_t savedMark;
-	bool isMarked;
+	current : const(u8)[]; //< slice to buffer.
+	index : size_t;
+	savedMark : size_t;
+	isMarked : bool;
 
-	ParserStack state; //< holds the current state.
+	state : ParserStack; //< holds the current state.
 
-	string lastError; //< last error.
+	lastError : string; //< last error.
 
 public:
 	/**
 	 * Creates a JSON object from an InputStream.
 	 */
-	this(InputStream source, size_t bufferSize = 65536, size_t reallocSize = 16384) {
+	this(source : InputStream, bufferSize : size_t = 65536, reallocSize : size_t = 16384) {
 		this.source = source;
-		this.buffer = new ubyte[](bufferSize);
+		this.buffer = new u8[](bufferSize);
 		this.reallocSize = reallocSize;
 
 		this.state.push(State.START);
@@ -119,7 +119,7 @@ public:
 	/**
 	 * Creates a JSON object from an array.
 	 */
-	this(const(ubyte)[] data)
+	this(data : const(u8)[])
 	{
 		this.source = null;
 		this.buffer = null;
@@ -133,9 +133,9 @@ public:
 	/**
 	 * Creates a JSON object from a string.
 	 */
-	this(const(char)[] data)
+	this(data : const(char)[])
 	{
-		this(cast(const(ubyte)[])data);
+		this(cast(const(u8)[])data);
 	}
 
 	/**
@@ -145,7 +145,7 @@ public:
 	 * *get* call. strings and numbers still need to be further processed e.g. throught
 	 * *parseNumber* and *unescapeString*.
 	 */
-	void get(scope void delegate(Event event, const(ubyte)[] data) callback)
+	fn get(callback : scope void delegate(event : Event, data : const(u8)[]))
 	{
 		if (state.head == State.ERROR) {
 			callback(Event.ERROR, cast(const(ubyte)[])lastError);
@@ -153,9 +153,9 @@ public:
 		}
 
 		State s;
-		const(ubyte)[] data;
-		char next;
-		bool getSuccess = get(out next);
+		data : const(u8)[];
+		next : char;
+		getSuccess : bool = get(out next);
 
 		while (true) {
 			switch (state.head) with (State) {
@@ -188,7 +188,7 @@ public:
 						state.push(ERROR);
 					}
 
-					callback(Event.ERROR, cast(const(ubyte)[])lastError);
+					callback(Event.ERROR, cast(const(u8)[])lastError);
 					return;
 				case ARRAY_START:
 					// The point of this section is to make sure
@@ -319,13 +319,13 @@ public:
 	}
 
 protected:
-	void error(string message, string file = __FILE__, const int line = __LINE__)
+	fn error(message : string, file : string = __FILE__, line : const i32 = __LINE__)
 	{
 		lastError = message;
 		state.push(State.ERROR);
 	}
 
-	bool eof()
+	fn eof() bool
 	{
 		skipWhite();
 		if (source is null) {
@@ -335,20 +335,20 @@ protected:
 		return source.eof();
 	}
 
-	void mark()
+	fn mark()
 	{
 		savedMark = index;
 		isMarked = true;
 	}
 
-	const(ubyte)[] retrieve()
+	fn retrieve() const(u8)[]
 	{
 		assert(isMarked);
 		isMarked = false;
 		return current[savedMark..index];
 	}
 
-	bool get(out char c, bool skip = true, bool advance = true)
+	fn get(out c : char, skip : bool = true, advance : bool = true) bool
 	{
 		if (skip) {
 			skipWhite();
@@ -364,7 +364,7 @@ protected:
 				if (!isMarked) {
 					// copy over the last byte of the current buffer to make unget work.
 					buffer[0] = current.length > 0 ? current[$-1] : cast(ubyte)0;
-					auto slice = source.read(buffer[1..$]);
+					slice := source.read(buffer[1..$]);
 					current = buffer[0..1+slice.length];
 					index = 1;
 				} else {
@@ -372,9 +372,9 @@ protected:
 						// the whole buffer is the marked range, we need a bigger buffer!
 						buffer = new ubyte[](buffer.length + reallocSize);
 					}
-					auto len = current.length - savedMark;
+					len := current.length - savedMark;
 					buffer[0..len] = current[savedMark..$];
-					auto slice = source.read(buffer[len..$]);
+					slice := source.read(buffer[len..$]);
 					current = buffer[0..len+slice.length];
 					index = len;
 					savedMark = 0;
@@ -393,20 +393,20 @@ protected:
 		return true;
 	}
 
-	void unget()
+	fn unget()
 	{
 		assert(index >= 1);
 		index = index - 1;
 	}
 
-	void skipWhite()
+	fn skipWhite()
 	{
 		while (index < current.length && isWhite(current[index])) index++;
 	}
 
-	bool skipDigits()
+	fn skipDigits() bool
 	{
-		char c;
+		c : char;
 
 		while (true) {
 			if (!get(out c, false, false)) return false;
@@ -421,9 +421,9 @@ protected:
 		return true;
 	}
 
-	bool expect(char c, bool skip = false)
+	fn expect(c : char, skip : bool = false) bool
 	{
-		char g;
+		g : char;
 		if (!get(out g, skip)) return false;
 		if (g != c) {
 			error(format("Expected '%c' got '%c'.", c, g));
@@ -432,12 +432,12 @@ protected:
 		return true;
 	}
 
-	bool getString(out const(ubyte)[] array)
+	fn getString(out array : const(u8)[]) bool
 	{
 		if (!expect('"')) return false;
 
 		mark();
-		char c;
+		c : char;
 
 		while (true) {
 			if (!get(out c, false)) return false;
@@ -453,9 +453,9 @@ protected:
 		return true;
 	}
 
-	bool getNumber(out const(ubyte)[] array)
+	fn getNumber(out array : const(u8)[]) bool
 	{
-		char c;
+		c : char;
 		mark();
 
 		if (!get(out c, false)) return false;
@@ -500,11 +500,11 @@ protected:
 		return true;
 	}
 
-	bool getBoolean(out const(ubyte)[] array)
+	fn getBoolean(out array : const(u8)[]) bool
 	{
 		mark();
 
-		char c;
+		c : char;
 		if (!get(out c)) return false;
 		if (c == 't' || c == 'T') {
 			if (!expect('r')) return false;
@@ -524,11 +524,11 @@ protected:
 		return true;
 	}
 
-	bool getNull(out const(ubyte)[] array)
+	fn getNull(out array : const(u8)[]) bool
 	{
 		mark();
 
-		char c;
+		c : char;
 		if (!get(out c)) return false;
 		if (c == 'n' || c == 'N') {
 			if (!expect('u')) return false;
@@ -550,15 +550,15 @@ protected:
 class Builder
 {
 protected:
-	OutputStream output;
+	output : OutputStream;
 
-	bool prettyPrint;
-	const(char)[] indent;
+	prettyPrint : bool;
+	indent : const(char)[];
 
-	size_t indentLevel;
+	indentLevel : size_t;
 
-	char[] buffer;
-	ParserStack state;
+	buffer : char[];
+	state : ParserStack;
 
 public:
 	/**
@@ -567,7 +567,7 @@ public:
 	 * *prettyPrint*: If true emit formatted JSON
 	 * *indent*: Only relevant if *prettyPrint* is enabled, sets the indentation per level.
 	 */
-	this(OutputStream output, bool prettyPrint = false, const(char)[] indent = "    ")
+	this(output : OutputStream, prettyPrint : bool = false, indent : const(char)[] = "    ")
 	{
 		this.output = output;
 
@@ -582,7 +582,7 @@ public:
 	/**
 	 * Writes a null value.
 	 */
-	void buildNull()
+	fn buildNull()
 	{
 		prepareAndCheck();
 		output.write("null");
@@ -591,15 +591,15 @@ public:
 	/**
 	 * Writes a number.
 	 */
-	void buildNumber(double number)
+	fn buildNumber(number : f64)
 	{
 		if (isnan(number) || isinf(number)) {
 			throw new BuilderException("Invalid number.");
 		}
 		prepareAndCheck();
 
-		char[32] buffer;
-		auto len = cast(size_t)snprintf(buffer.ptr, buffer.length, "%.20g", number);
+		buffer : char[32];
+		len := cast(size_t)snprintf(buffer.ptr, buffer.length, "%.20g", number);
 		if (len + 2 <= buffer.length && strspn(buffer.ptr, "0123456789-") == len) {
 			strcat(buffer.ptr, ".0");
 			len += 2;
@@ -610,20 +610,20 @@ public:
 	/**
 	 * Writes a number.
 	 */
-	void buildNumber(int number)
+	fn buildNumber(number : i32)
 	{
-		buildNumber(cast(long)number);
+		buildNumber(cast(i64)number);
 	}
 
 	/**
 	 * Writes a number.
 	 */
-	void buildNumber(long number)
+	fn buildNumber(number : i64)
 	{
 		prepareAndCheck();
 
-		char[20] buffer;
-		auto len = cast(size_t)snprintf(buffer.ptr, buffer.length, "%d", number);
+		buffer : char[20];
+		len := cast(size_t)snprintf(buffer.ptr, buffer.length, "%d", number);
 		output.write(buffer[0 .. len]);
 	}
 
@@ -631,7 +631,7 @@ public:
 	 * Writes a string, if *escape* is *true* (default) the string will
 	 * be escaped, set this to false if you want to write an already escaped string.
 	 */
-	void buildString(const(char)[] str, bool escape = true)
+	fn buildString(str : const(char)[], escape : bool = true)
 	{
 		prepareAndCheck(true);
 		output.write("\"");
@@ -646,7 +646,7 @@ public:
 	/**
 	 * Writes a boolean.
 	 */
-	void buildBoolean(bool b)
+	fn buildBoolean(b : bool)
 	{
 		prepareAndCheck();
 		if (b) {
@@ -660,7 +660,7 @@ public:
 	 * Writes the start of a JSON object.
 	 * JSON keys are expected to be built with *buildString*.
 	 */
-	void buildObjectStart()
+	fn buildObjectStart()
 	{
 		prepareAndCheck();
 		state.push(State.OBJECT_START);
@@ -671,9 +671,9 @@ public:
 	/**
 	 * Writes the end of a JSON object.
 	 */
-	void buildObjectEnd()
+	fn buildObjectEnd()
 	{
-		auto s = state.pop();
+		s := state.pop();
 		if (s != State.OBJECT && s != State.OBJECT_START) {
 			throw new BuilderException("Wrong state to end object.");
 		}
@@ -692,7 +692,7 @@ public:
 	/**
 	 * Writes the start of a JSON array.
 	 */
-	void buildArrayStart()
+	fn buildArrayStart()
 	{
 		state.push(State.ARRAY_START);
 		output.write("[");
@@ -702,9 +702,9 @@ public:
 	/**
 	 * Writes the end of a JSON array.
 	 */
-	void buildArrayEnd()
+	fn buildArrayEnd()
 	{
-		auto s = state.pop();
+		s := state.pop();
 		if (s != State.ARRAY && s != State.ARRAY_START) {
 			throw new BuilderException("Wrong state to end array.");
 		}
@@ -712,7 +712,7 @@ public:
 		--indentLevel;
 		if (prettyPrint) {
 			output.write("\n");
-			for (size_t i = 0; i < indentLevel; ++i) {
+			for (i : size_t = 0; i < indentLevel; ++i) {
 				output.write(indent);
 			}
 		}
@@ -725,7 +725,7 @@ public:
 	 * it checks for malformed JSON and writes an additional newline
 	 * if *prettyPrint* is enabled.
 	 */
-	void finalize()
+	fn finalize()
 	{
 		if (state.head != State.START && state.head != State.STOP) {
 			throw new BuilderException("Invalid state.");
@@ -737,9 +737,9 @@ public:
 	}
 
 protected:
-	void prepareAndCheck(bool isString = false)
+	fn prepareAndCheck(isString : bool = false)
 	{
-		bool doPretty = prettyPrint;
+		doPretty : bool = prettyPrint;
 
 		if (state.used == 0) {
 			throw new BuilderException("Invalid state.");
@@ -793,7 +793,7 @@ protected:
 		if (doPretty) {
 			output.write("\n");
 
-			for (size_t i = 0; i < indentLevel; ++i) {
+			for (i : size_t = 0; i < indentLevel; ++i) {
 				output.write(indent);
 			}
 		}
@@ -818,13 +818,13 @@ private enum State
 
 struct ParserStack
 {
-	State[] data;
-	size_t used;
+	data : State[];
+	used : size_t;
 
-	void push(State status)
+	fn push(status : State)
 	{
 		if (data.length <= used) {
-			auto newData = new State[](data.length + 128);
+			newData := new State[](data.length + 128);
 			newData[0..data.length] = data[];
 			data = newData;
 		}
@@ -832,13 +832,13 @@ struct ParserStack
 		data[used++] = status;
 	}
 
-	State pop()
+	fn pop() State
 	{
 		assert(used >= 1);
 		return data[--used];
 	}
 
-	@property State head()
+	@property fn head() State
 	{
 		assert(data.length > used);
 		return data[used-1];
