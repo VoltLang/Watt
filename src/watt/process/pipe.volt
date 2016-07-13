@@ -26,10 +26,10 @@ version(Windows) {
 	{
 		saAttr : SECURITY_ATTRIBUTES;
 		hOut, hIn, hProcess : HANDLE;
-		uRet : uint;
+		uRet : u32;
 		bRet : BOOL;
 
-		saAttr.nLength = cast(uint)typeid(saAttr).size;
+		saAttr.nLength = cast(u32)typeid(saAttr).size;
 		saAttr.bInheritHandle = true;
 		saAttr.lpSecurityDescriptor = null;
 

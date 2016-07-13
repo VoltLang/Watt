@@ -40,12 +40,12 @@ public:
 	nativeID : NativeID;
 
 public:
-	this(NativeID nativeID)
+	this(nativeID : NativeID)
 	{
 		this.nativeID = nativeID;
 	}
 
-	fn wait() int
+	fn wait() i32
 	{
 		version (Posix) {
 			return waitPosix(nativeID);
@@ -57,7 +57,7 @@ public:
 	}
 }
 
-fn wait(p : Pid) int
+fn wait(p : Pid) i32
 {
 	return p.wait();
 }
@@ -143,27 +143,27 @@ fn getEnv(env : string) string
 	}
 }
 
-fn system(name : string) int
+fn system(name : string) i32
 {
 	return csystem(toStringz(name));
 }
 
 version (Posix) private {
 
-	extern(C) fn execv(const(char)*, const(char)**) int;
-	extern(C) fn execve(const(char)*, const(char)**, const(char)**) int;
+	extern(C) fn execv(const(char)*, const(char)**) i32;
+	extern(C) fn execve(const(char)*, const(char)**, const(char)**) i32;
 	extern(C) fn fork() pid_t;
-	extern(C) fn dup(int) int;
-	extern(C) fn dup2(int, int) int;
-	extern(C) fn close(int) void;
-	extern(C) fn waitpid(pid_t, int*, int) pid_t;
+	extern(C) fn dup(i32) i32;
+	extern(C) fn dup2(i32, i32) i32;
+	extern(C) fn close(i32) void;
+	extern(C) fn waitpid(pid_t, i32*, i32) pid_t;
 
 	fn spawnProcessPosix(name : string,
 	                     args : string[],
-	                     stdinFD : int,
-	                     stdoutFD : int,
-	                     stderrFD : int,
-	                     env : Environment) int
+	                     stdinFD : i32,
+	                     stdoutFD : i32,
+	                     stderrFD : i32,
+	                     env : Environment) i32
 	{
 		argStack := new char[](16384);
 		envStack := new char[](16384);
@@ -280,9 +280,9 @@ version (Posix) private {
 		assert(false);
 	}
 
-	fn waitManyPosix(out pid : pid_t) int
+	fn waitManyPosix(out pid : pid_t) i32
 	{
-		status, result : int;
+		status, result : i32;
 
 		// Because stopped processes doesn't count.
 		while(true) {
@@ -303,17 +303,17 @@ version (Posix) private {
 		assert(false);
 	}
 
-	fn stopped(status : int) bool { return (status & 0xff) == 0x7f; }
-	fn signaled(status : int) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
-	fn exited(status : int) bool { return (status & 0x7f) == 0; }
+	fn stopped(status : i32) bool { return (status & 0xff) == 0x7f; }
+	fn signaled(status : i32) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
+	fn exited(status : i32) bool { return (status & 0x7f) == 0; }
 
-	fn termsig(status : int) int { return status & 0x7f; }
-	fn exitstatus(status : int) int { return (status & 0xff00) >> 8; }
+	fn termsig(status : i32) i32 { return status & 0x7f; }
+	fn exitstatus(status : i32) i32 { return (status & 0xff00) >> 8; }
 
 } else version (Windows) {
 
-	extern (C) fn _fileno(FILE*) int;
-	extern (C) fn _get_osfhandle(int) HANDLE;
+	extern (C) fn _fileno(FILE*) i32;
+	extern (C) fn _get_osfhandle(i32) HANDLE;
 	extern (Windows) fn GetStdHandle(const DWORD) HANDLE;
 	
 	fn toArgz(moduleName : string, args : string[]) LPSTR
@@ -383,10 +383,10 @@ version (Posix) private {
 		return pi.hProcess;
 	}
 
-	fn waitWindows(handle : HANDLE) int
+	fn waitWindows(handle : HANDLE) i32
 	{
-		waitResult := WaitForSingleObject(handle, cast(uint) 0xFFFFFFFF);
-		if (waitResult == cast(uint) 0xFFFFFFFF) {
+		waitResult := WaitForSingleObject(handle, cast(u32) 0xFFFFFFFF);
+		if (waitResult == cast(u32) 0xFFFFFFFF) {
 			throw new ProcessException("WaitForSingleObject failed with error code " ~ toString(cast(int)GetLastError()));
 		}
 		retval : DWORD;
@@ -396,6 +396,6 @@ version (Posix) private {
 		}
 
 		CloseHandle(handle);
-		return cast(int) retval;
+		return cast(i32) retval;
 	}
 }
