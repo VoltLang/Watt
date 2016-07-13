@@ -19,19 +19,19 @@ public:
 	/**
 	 * Close the stream.
 	 */
-	abstract void close();
+	abstract fn close();
 
 	/**
 	 * Write a single character out to the sink.
 	 */
-	abstract void put(dchar c);
+	abstract fn put(c : dchar);
 
 	/**
 	 * Write a series of characters to the sink.
 	 */
-	void write(const(char)[] s)
+	fn write(s : const(char)[])
 	{
-		for (size_t i = 0u; i < s.length; i = i + 1u) {
+		for (i : size_t = 0u; i < s.length; i = i + 1u) {
 			put(s[i]);
 		}
 	}
@@ -40,7 +40,7 @@ public:
 	 * After this call has completed, the state of this stream's
 	 * sink should match the data committed to it.
 	 */
-	abstract void flush();
+	abstract fn flush();
 
 
 	/*
@@ -52,24 +52,24 @@ public:
 	/**
 	 * Write a series of characters then a newline.
 	 */
-	void writeln(const(char)[] s)
+	fn writeln(s : const(char)[])
 	{
 		write(s);
 		put('\n');
 	}
 
-	void vwritef(const(char)[] formatString, ref TypeInfo[] typeids, ref va_list vl)
+	fn vwritef(formatString : const(char)[], ref typeids : TypeInfo[], ref vl : va_list)
 	{
-		char[] buf;
+		buf : char[];
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
 		write(buf);
 	}
 
 
-	void writef(const(char)[] formatString, ...)
+	fn writef(formatString : const(char)[], ...)
 	{
-		char[] buf;
-		va_list vl;
+		buf : char[];
+		vl : va_list;
 
 		va_start(vl);
 		formatImpl(formatString, ref _typeids, ref buf, ref vl);
@@ -77,17 +77,17 @@ public:
 		write(buf);
 	}
 
-	void vwritefln(const(char)[] formatString, ref TypeInfo[] typeids, ref va_list vl)
+	fn vwritefln(formatString : const(char)[], ref typeids : TypeInfo[], ref vl : va_list)
 	{
-		char[] buf;
+		buf : char[];
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
 		writeln(buf);
 	}
 
-	void writefln(const(char)[] formatString, ...)
+	fn writefln(formatString : const(char)[], ...)
 	{
-		char[] buf;
-		va_list vl;
+		buf : char[];
+		vl : va_list;
 
 		va_start(vl);
 		formatImpl(formatString, ref _typeids, ref buf, ref vl);
@@ -105,17 +105,17 @@ public:
 	/**
 	 * Close the input stream.
 	 */
-	abstract void close();
+	abstract fn close();
 
 	/**
 	 * Returns the character that will be retrieved by get().
 	 */
-	abstract dchar peek();
+	abstract fn peek() dchar;
 
 	/**
 	 * Read a single character from the source.
 	 */
-	abstract dchar get();
+	abstract fn get() dchar;
 
 	/**
 	 * Read as much data as possible into buffer.
@@ -123,13 +123,13 @@ public:
 	 * will be shorter than buffer if EOF was encountered before the
 	 * buffer was filled.
 	 */
-	abstract ubyte[] read(ubyte[] buffer);
+	abstract fn read(buffer : u8[]) u8[];
 
 	/**
 	 * Returns true if the stream indicates that there is no more data.
 	 * This may never be true, depending on the source.
 	 */
-	abstract bool eof();
+	abstract fn eof() bool;
 
 
 	/*
@@ -143,10 +143,10 @@ public:
 	 *
 	 * The newline is discarded.
 	 */
-	string readln()
+	fn readln() string
 	{
-		char[] buf;
-		char c = cast(char) get();
+		buf : char[];
+		c : char = cast(char) get();
 		while (c != '\n' && !eof()) {
 			buf ~= c;
 			c = cast(char) get();
@@ -162,33 +162,33 @@ public:
 class OutputFileStream : OutputStream
 {
 public:
-	FILE* handle;
+	handle : FILE*;
 
 public:
-	this(const(char)[] filename)
+	this(filename : const(char)[])
 	{
 		if (filename.length > 0u) {
 			handle = fopen(filename.ptr, "w".ptr);
 		}
 	}
 
-	override void close()
+	override fn close()
 	{
 		fclose(handle);
 		handle = null;
 	}
 
-	override void put(dchar c)
+	override fn put(c : dchar)
 	{
-		fputc(cast(int) c, handle);
+		fputc(cast(i32) c, handle);
 	}
 
-	override void write(const(char)[] s)
+	override fn write(s : const(char)[])
 	{
 		fwrite(cast(void*)s.ptr, 1, s.length, handle);
 	}
 
-	override void flush()
+	override fn flush()
 	{
 		fflush(handle);
 	}
@@ -200,44 +200,44 @@ public:
 class InputFileStream : InputStream
 {
 public:
-	FILE* handle;
+	handle : FILE*;
 
 public:
-	this(const(char)[] filename)
+	this(filename : const(char)[])
 	{
 		if (filename.length > 0u) {
 			handle = fopen(filename.ptr, "r".ptr);
 		}
 	}
 
-	override void close()
+	override fn close()
 	{
 		fclose(handle);
 		handle = null;
 	}
 
-	override dchar peek()
+	override fn peek() dchar
 	{
-		int c = fgetc(handle);
+		i32 c = fgetc(handle);
 		ungetc(c, handle);
 		return cast(dchar) c;
 	}
 
-	override dchar get()
+	override fn get() dchar
 	{
 		return cast(dchar) fgetc(handle);
 	}
 
-	override ubyte[] read(ubyte[] buffer)
+	override fn read(buffer : u8[]) u8[]
 	{
-		size_t num = fread(cast(void*)buffer.ptr, 1, buffer.length, handle);
+		num : size_t = fread(cast(void*)buffer.ptr, 1, buffer.length, handle);
 		if (num != buffer.length) {
 			return buffer[0..num];
 		}
 		return buffer;
 	}
 
-	override bool eof()
+	override fn eof() bool
 	{
 		return feof(handle) != 0;
 	}

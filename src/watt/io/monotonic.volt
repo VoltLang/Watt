@@ -27,22 +27,22 @@ import core.stdc.stdlib : exit;
 version (Windows) {
 
 	extern (Windows) {
-		int QueryPerformanceFrequency(long*);
-		int QueryPerformanceCounter(long*);
+		fn QueryPerformanceFrequency(i64*) i32;
+		fn QueryPerformanceCounter(i64*) i32;
 	}
 
-	long windowsTicksPerSecond()
+	fn windowsTicksPerSecond() i64
 	{
-		long ticks;
+		ticks : i64;
 		if (QueryPerformanceFrequency(&ticks) == 0) {
 			exit(-1);
 		}
 		return ticks;
 	}
 
-	long ticks()
+	fn ticks() i64
 	{
-		long ticks;
+		ticks : i64;
 		if (QueryPerformanceCounter(&ticks) == 0) {
 			exit(-1);
 		}
@@ -54,28 +54,28 @@ version (Windows) {
 	extern(C) {
 		struct mach_timebase_info_data_t
 		{
-			uint numer;
-			uint denom;
+			numer : u32;
+			denom : u32;
 		}
 
 		alias mach_timebase_info_t = mach_timebase_info_data_t*;
 
-		int mach_timebase_info(mach_timebase_info_t);
+		fn mach_timebase_info(mach_timebase_info_t) i32;
 
-		ulong mach_absolute_time();
+		fn mach_absolute_time() u64;
 	}
 
 	/*
 	 * Grabbed verbatim from druntume, good thing its BOOST v1.0 as well.
 	 */
-	long machTicksPerSecond()
+	fn machTicksPerSecond() i64
 	{
-		mach_timebase_info_data_t info;
+		info : mach_timebase_info_data_t;
 		if(mach_timebase_info(&info) != 0) {
 			exit(-1);
 		}
 
-		long scaledDenom = 1_000_000_000L * info.denom;
+		scaledDenom : i64 = 1_000_000_000L * info.denom;
 		if (scaledDenom % info.numer != 0) {
 			exit(-1);
 		}
@@ -83,18 +83,18 @@ version (Windows) {
 		return scaledDenom / info.numer;
 	}
 
-	long ticks()
+	fn ticks() i64
 	{
-		return cast(long)mach_absolute_time();
+		return cast(i64)mach_absolute_time();
 	}
 
 } else version (Posix) {
 
 	import core.posix.time;
 
-	long posixTicksPerSecond(int clock)
+	fn posixTicksPerSecond(clock : i32) i64
 	{
-		timespec ts;
+		ts : timespec;
 		if (clock_getres(clock, &ts) !=  0) {
 			exit(-1);
 		}
@@ -103,9 +103,9 @@ version (Windows) {
 			1_000_000_000L / ts.tv_nsec;
 	}
 
-	long posixTicks(int clock)
+	fn posixTicks(clock : i32) i64
 	{
-		timespec ts;
+		ts : timespec;
 		if (clock_gettime(clock, &ts) != 0) {
 			exit(-1);
 		}
@@ -114,17 +114,17 @@ version (Windows) {
 			1_000_000_000L, ticksPerSecond);
 	}
 
-	long ticks()
+	fn ticks() i64
 	{
 		return posixTicks(CLOCK_MONOTONIC);
 	}
 }
 
 /*
- * Grabbed verbatim from druntime, good thing its BOOST v1.0 as well.
+ * Grabbed from druntime, good thing its BOOST v1.0 as well.
  */
 @safe pure nothrow
-long convClockFreq(long ticks, long srcTicksPerSecond, long dstTicksPerSecond)
+fn convClockFreq(ticks : i64, srcTicksPerSecond : i64, dstTicksPerSecond : i64) i64
 {
 	// This would be more straightforward with floating point arithmetic,
 	// but we avoid it here in order to avoid the rounding errors that that

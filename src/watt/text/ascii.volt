@@ -16,78 +16,78 @@ version (Windows) {
 	enum NEWLINE = "\n";
 }
 
-bool isAlphaNum(dchar c)
+fn isAlphaNum(c : dchar) bool
 {
 	return isAlpha(c) || isDigit(c);
 }
 
-bool isAlpha(dchar c)
+fn isAlpha(c : dchar) bool
 {
 	return isLower(c) || isUpper(c);
 }
 
-bool isLower(dchar c)
+fn isLower(c : dchar) bool
 {
 	return c >= 'a' && c <= 'z';
 }
 
-bool isUpper(dchar c)
+fn isUpper(c : dchar) bool
 {
 	return c >= 'A' && c <= 'Z';
 }
 
-bool isDigit(dchar c)
+fn isDigit(c : dchar) bool
 {
 	return c >= '0' && c <= '9';
 }
 
-bool isOctalDigit(dchar c)
+fn isOctalDigit(c : dchar) bool
 {
 	return c >= '0' && c <= '7';
 }
 
-bool isHexDigit(dchar c)
+fn isHexDigit(c : dchar) bool
 {
 	return c >= '0' && c <= '9' || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F';
 }
 
-bool isWhite(dchar c)
+fn isWhite(c : dchar) bool
 {
 	return c == ' ' || c == '\t' || c == '\r' || c == '\f' || c == '\v' || c == '\n';
 }
 
-bool isControl(dchar c)
+fn isControl(c : dchar) bool
 {
 	return c < 32 || c == 127;
 }
 
-bool isPunctuation(dchar c)
+fn isPunctuation(c : dchar) bool
 {
 	return !isAlphaNum(c) && !isWhite(c) && !isControl(c);
 }
 
-bool isPrintable(dchar c)
+fn isPrintable(c : dchar) bool
 {
 	return c >= 32 && c <= 126;
 }
 
-bool isASCII(dchar c)
+fn isASCII(c : dchar) bool
 {
 	return c <= 127;
 }
 
-dchar toLower(dchar c)
+fn toLower(c : dchar) dchar
 {
 	if (isUpper(c)) {
-		return cast(dchar) (cast(int) c + ('a' - 'A'));
+		return cast(dchar) (cast(i32) c + ('a' - 'A'));
 	}
 	return c;
 }
 
-dchar toUpper(dchar c)
+fn toUpper(c : dchar) dchar
 {
 	if (isLower(c)) {
-		return cast(dchar) (cast(int) c - ('a' - 'A'));
+		return cast(dchar) (cast(i32) c - ('a' - 'A'));
 	}
 	return c;
 }

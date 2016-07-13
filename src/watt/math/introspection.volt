@@ -3,22 +3,22 @@
 module watt.math.introspection;
 
 
-int isnan(double d)
+fn isnan(d : f64) i32
 {
 	return d != d;
 }
 
-int isnan(float f)
+fn isnan(f : f32) i32
 {
 	return f != f;
 }
 
-int isinf(double d)
+fn isinf(d : f64) i32
 {
 	return !isnan(d) && isnan(d - d);
 }
 
-int isinf(float f)
+fn isinf(f : f32) i32
 {
 	return !isnan(f) && isnan(f - f);
 }

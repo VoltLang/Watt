@@ -12,9 +12,9 @@ import watt.text.string : indexOf;
  * Returns the HTML escaped version of a given string.
  * According to the OWASP rules.
  */
-string htmlEscape(string str)
+fn htmlEscape(str : string) string
 {
-	StringSink dst;
+	dst : StringSink;
 	htmlEscape(dst.sink, str);
 	return dst.toString();
 }
@@ -23,12 +23,12 @@ string htmlEscape(string str)
  * Writes the HTML escaped version of a given string to the given dg.
  * According to the OWASP rules:
  */
-void htmlEscape(Sink dg, string str)
+fn htmlEscape(dg : Sink, str : string)
 {
-	size_t i, org;
+	i, org : size_t;
 	// This is okay because we don't escape UTF-8 codes.
 	while (i < str.length) {
-		char ch = str[i];
+		ch : char = str[i];
 		switch (ch) {
 		default:
 			i++;
@@ -62,9 +62,9 @@ void htmlEscape(Sink dg, string str)
 /**
  * Returns the HTML escaped version of a given string, ignoring any html tags.
  */
-string htmlEscapeIgnoreTags(string str)
+fn htmlEscapeIgnoreTags(str : string) string
 {
-	StringSink dst;
+	dst : StringSink;
 	htmlEscapeIgnoreTags(dst.sink, str);
 	return dst.toString();
 }
@@ -73,14 +73,14 @@ string htmlEscapeIgnoreTags(string str)
  * Writes the HTML escaped version of a given string to
  * the given dg, ignoring any tags.
  */
-void htmlEscapeIgnoreTags(Sink dg, string str)
+fn htmlEscapeIgnoreTags(dg : Sink, str : string)
 {
-	bool eatingHtmlTag;
-	size_t i, org;
+	eatingHtmlTag : bool;
+	i, org : size_t;
 
 	// This is okay because we don't escape UTF-8 codes.
 	while (i < str.length) {
-		char ch = str[i];
+		ch : char = str[i];
 
 		if (eatingHtmlTag) {
 			i++;
@@ -129,9 +129,9 @@ void htmlEscapeIgnoreTags(Sink dg, string str)
 /**
  * Escape every single character.
  */
-string htmlEscapeAll(string str)
+fn htmlEscapeAll(str : string) string
 {
-	StringSink dst;
+	dst : StringSink;
 	htmlEscapeAll(dst.sink, str);
 	return dst.toString();
 }
@@ -139,12 +139,12 @@ string htmlEscapeAll(string str)
 /**
  * Escape every single character.
  */
-void htmlEscapeAll(Sink dg, string str)
+fn htmlEscapeAll(dg : Sink, str : string)
 {
-	foreach (dchar d; str) {
+	foreach (d : dchar; str) {
 		dg("&#");
 		// @TODO add sink version of to string.
-		dg(toString(cast(uint)d));
+		dg(toString(cast(u32)d));
 		dg(";");
 	}
 }

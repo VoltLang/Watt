@@ -4,17 +4,17 @@ module watt.math.floating;
 
 
 // Can't fit more bits into floats and double, yes really.
-enum float PIf = 3.141592653589793238462643383279502884197169399375105820974944;
-enum double PI = 3.141592653589793238462643383279502884197169399375105820974944;
+enum f32 PIf = 3.141592653589793238462643383279502884197169399375105820974944;
+enum f64 PI = 3.141592653589793238462643383279502884197169399375105820974944;
 
-extern(C) double sin(double);
-extern(C) float sinf(float);
+extern(C) fn sin(f64) f64;
+extern(C) fn sinf(f32) f32;
 alias sin = sinf;
 
-extern(C) double cos(double);
-extern(C) float cosf(float);
+extern(C) fn cos(f64) f64;
+extern(C) fn cosf(f32) f32;
 alias cos = cosf;
 
-extern(C) double sqrt(double);
-extern(C) float sqrtf(float);
+extern(C) fn sqrt(f64) f64;
+extern(C) fn sqrtf(f32) f32;
 alias sqrt = sqrtf;

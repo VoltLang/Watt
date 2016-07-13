@@ -8,20 +8,20 @@ import core.windows.windows;
 
 version (Windows) {
 	alias HCRYPTPROV = size_t*;
-	extern (Windows) BOOL CryptAcquireContextA(HCRYPTPROV*, LPCSTR, LPCSTR, DWORD, DWORD);
-	extern (Windows) BOOL CryptReleaseContext(HCRYPTPROV, DWORD);
-	extern (Windows) BOOL CryptGenRandom(HCRYPTPROV, DWORD, ubyte*);
+	extern (Windows) fn CryptAcquireContextA(HCRYPTPROV*, LPCSTR, LPCSTR, DWORD, DWORD) BOOL;
+	extern (Windows) fn CryptReleaseContext(HCRYPTPROV, DWORD) BOOL;
+	extern (Windows) fn CryptGenRandom(HCRYPTPROV, DWORD, u8*) BOOL;
 	enum PROV_RSA_FULL = 1;
 	enum CRYPT_NEWKEYSET = 0x00000008;
 
-	uint getHardwareSeedUint()
+	fn getHardwareSeedUint() u32
 	{
-		auto buf = new uint[](1);
-		HCRYPTPROV hcpov;
+		buf := new u32[](1);
+		hcpov : HCRYPTPROV;
 		if (!CryptAcquireContextA(&hcpov, null, null, PROV_RSA_FULL, 0)) {
 			throw new Exception("Can't get CryptoAPI provider.");
 		}
-		if (!CryptGenRandom(hcpov, 4, cast(ubyte*)buf.ptr)) {
+		if (!CryptGenRandom(hcpov, 4, cast(u8*)buf.ptr)) {
 			throw new Exception("Can't get random bytes from CryptoAPI.");
 		}
 		CryptReleaseContext(hcpov, 0);
@@ -30,19 +30,19 @@ version (Windows) {
 } else version (OSX || Linux) {
 	private import watt.io.streams : InputFileStream;
 
-	uint getHardwareSeedUint()
+	fn getHardwareSeedUint() u32
 	{
-		auto ifs = new InputFileStream("/dev/urandom");
-		uint ret;
-		for (uint i; i < 32; i += 8) {
-			ret |= cast(uint)((ifs.get() & 0xff) << i);
+		ifs := new InputFileStream("/dev/urandom");
+		ret : u32;
+		for (i : u32; i < 32; i += 8) {
+			ret |= cast(u32)((ifs.get() & 0xff) << i);
 		}
 		ifs.close();
 
 		return ret;
 	}
 } else version (Emscripten) {
-	uint getHardwareSeedUint()
+	fn getHardwareSeedUint() u32
 	{
 		assert(false);
 	}

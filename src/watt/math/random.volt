@@ -10,19 +10,19 @@ alias RandomGenerator = MersenneTwisterEngine;
 struct MersenneTwisterEngine
 {
 public:
-	enum uint MT_W = 32U;
-	enum uint MT_SZ = 4U;
-	enum uint MT_N = 624U;
-	enum uint MT_M = 397U;
-	enum uint MT_R = 31U;
-	enum uint MT_A = 0x9908B0DFU;
-	enum uint MT_U = 11U;
-	enum uint MT_S = 7U;
-	enum uint MT_B = 0x9D2C5680U;
-	enum uint MT_T = 15U;
-	enum uint MT_C = 0xEFC60000U;
-	enum uint MT_L = 18U;
-	uint MT_MAG(uint u)
+	enum u32 MT_W = 32U;
+	enum u32 MT_SZ = 4U;
+	enum u32 MT_N = 624U;
+	enum u32 MT_M = 397U;
+	enum u32 MT_R = 31U;
+	enum u32 MT_A = 0x9908B0DFU;
+	enum u32 MT_U = 11U;
+	enum u32 MT_S = 7U;
+	enum u32 MT_B = 0x9D2C5680U;
+	enum u32 MT_T = 15U;
+	enum u32 MT_C = 0xEFC60000U;
+	enum u32 MT_L = 18U;
+	fn MT_MAG(u : u32) u32
 	{
 		if (u == 0) {
 			return 0;
@@ -31,70 +31,70 @@ public:
 		}
 	}
 
-	enum uint wordSize    = MT_W;
-	enum uint stateSize   = MT_N;
-	enum uint shiftSize   = MT_M;
-	enum uint maskBits    = MT_R;
-	enum uint xorMask     = MT_A;
-	enum uint temperingU  = MT_U;
-	enum uint temperingS  = MT_S;
-	enum uint temperingB  = MT_B;
-	enum uint temperingT  = MT_T;
-	enum uint temperingC  = MT_C;
-	enum uint temperingL  = MT_L;
+	enum u32 wordSize    = MT_W;
+	enum u32 stateSize   = MT_N;
+	enum u32 shiftSize   = MT_M;
+	enum u32 maskBits    = MT_R;
+	enum u32 xorMask     = MT_A;
+	enum u32 temperingU  = MT_U;
+	enum u32 temperingS  = MT_S;
+	enum u32 temperingB  = MT_B;
+	enum u32 temperingT  = MT_T;
+	enum u32 temperingC  = MT_C;
+	enum u32 temperingL  = MT_L;
 
 	/// Smallest generated value.
-	enum uint min = 0;
+	enum u32 min = 0;
 	/// Largest generated value.
-	// uint.max >>> (uint.sizeof * 8 - w)
-	enum uint max = 0xFFFFFFFFU;//_FFFFFFFFU;
-	enum uint defaultSeed = 5489U;
+	// u32.max >>> (uint.sizeof * 8 - w)
+	enum u32 max = 0xFFFFFFFFU;//_FFFFFFFFU;
+	enum u32 defaultSeed = 5489U;
 
 public:
-	uint _y;// = cast(uint) -1;
+	_y : u32;// = cast(u32) -1;
 
 public:
-	void seed(uint value = 5489U/*defaultSeed*/)
+	fn seed(value : u32 = 5489U/*defaultSeed*/)
 	{
 		mt[0] = value;
 		for (mti = 1; mti < MT_N; ++mti) {
-			mt[cast(uint)mti] = cast(uint) (1812433253U * (mt[cast(uint)(mti-1)] ^ (mt[cast(uint)(mti-1)] >>> (MT_W - 2))) + mti);
+			mt[cast(u32)mti] = cast(u32) (1812433253U * (mt[cast(u32)(mti-1)] ^ (mt[cast(u32)(mti-1)] >>> (MT_W - 2))) + mti);
 		}
 		inited = true;
 		popFront();
 	}
 
 	/// Advances the generator.
-	void popFront()
+	fn popFront()
 	{
 		if (!inited) {
 			seed();
 			return;
 		}
-		uint upperMask = ~((cast(uint) 1u << (MT_SZ * 8 - (MT_W - MT_R))) - 1);
-		uint lowerMask = (cast(uint) 1u << MT_R) - 1;
+		upperMask : u32 = ~((cast(u32) 1u << (MT_SZ * 8 - (MT_W - MT_R))) - 1);
+		lowerMask : u32 = (cast(u32) 1u << MT_R) - 1;
 
-		uint y; // = void;
+		y : u32; // = void;
 
 		if (mti >= MT_N) {
 			// Generate N words at one time.
-			uint kk = 0;
-			const limit1 = MT_N - MT_M;
+			kk : u32 = 0;
+			limit1 : const(u32) = MT_N - MT_M;
 			for (; kk < limit1; ++kk) {
-				y = (mt[cast(uint)kk] & upperMask)|(mt[cast(uint)(kk + 1)] & lowerMask);
-				mt[cast(uint)kk] = cast(uint) (mt[cast(uint)(kk+MT_M)]^ (y >>> 1) ^ MT_MAG(cast(uint) y & 0x1U));
+				y = (mt[cast(u32)kk] & upperMask)|(mt[cast(u32)(kk + 1)] & lowerMask);
+				mt[cast(u32)kk] = cast(u32) (mt[cast(u32)(kk+MT_M)]^ (y >>> 1) ^ MT_MAG(cast(u32) y & 0x1U));
 			}
-			const limit2 = MT_N - 1;
+			limit2 : const(u32) = MT_N - 1;
 			for (; kk < limit2; ++kk) {
-				y = (mt[cast(uint)kk] & upperMask) | (mt[cast(uint)(kk + 1)] & lowerMask);
-				mt[cast(uint)kk] = cast(uint) (mt[cast(uint)(kk + (MT_M - MT_N))] ^ (y >>> 1) ^ MT_MAG(cast(uint) y & 0x1U));
+				y = (mt[cast(u32)kk] & upperMask) | (mt[cast(u32)(kk + 1)] & lowerMask);
+				mt[cast(u32)kk] = cast(u32) (mt[cast(u32)(kk + (MT_M - MT_N))] ^ (y >>> 1) ^ MT_MAG(cast(u32) y & 0x1U));
 			}
 			y = (mt[MT_N - 1] & upperMask)|(mt[0] & lowerMask);
-			mt[MT_N - 1] = cast(uint) (mt[MT_M - 1] ^ (y >>> 1) ^ MT_MAG(cast(uint) y & 0x1U));
+			mt[MT_N - 1] = cast(u32) (mt[MT_M - 1] ^ (y >>> 1) ^ MT_MAG(cast(u32) y & 0x1U));
 			mti = 0;
 		}
 
-		y = mt[cast(uint)(mti++)];
+		y = mt[cast(u32)(mti++)];
 
 		// Tempering.
 		y ^= (y >>> temperingU);
@@ -102,11 +102,11 @@ public:
 		y ^= (y << temperingT) & temperingC;
 		y ^= (y >>> temperingL);
 
-		_y = cast(uint) y;
+		_y = cast(u32) y;
 	}
 
 	/// Returns the current random value.
-	@property uint front()
+	@property fn front() u32
 	{
 		if (!inited) {
 			seed();
@@ -114,33 +114,33 @@ public:
 		return _y;
 	}
 
-	@property MersenneTwisterEngine save()
+	@property fn save() MersenneTwisterEngine
 	{
 		return this;
 	}
 
-	@property bool empty()
+	@property fn empty() bool
 	{
 		return false;
 	}
 
-	uint uniformUint(uint lower, uint upper)
+	fn uniformUint(lower : u32, upper : u32) u32
 	{
-		uint base = front;
+		base : u32 = front;
 		popFront();
-		return cast(uint)(lower + (upper - lower) * cast(double)(base - RandomGenerator.min) / (RandomGenerator.max - RandomGenerator.min));
+		return cast(u32)(lower + (upper - lower) * cast(f64)(base - RandomGenerator.min) / (RandomGenerator.max - RandomGenerator.min));
 	}
 
-	int uniformInt(int lower, int upper)
+	fn uniformInt(lower : i32, upper : i32) i32
 	{
-		return cast(int)uniformUint(cast(uint)lower, cast(uint)upper);
+		return cast(i32)uniformUint(cast(u32)lower, cast(u32)upper);
 	}
 
-	string randomString(size_t length)
+	fn randomString(length : size_t) string
 	{
-		auto str = new char[](length);
+		str := new char[](length);
 		foreach (i; 0 .. length) {
-			char c;
+			c : char;
 			switch (uniformInt(0, 3)) {
 			case 0:
 				c = cast(char)uniformUint('0', '1' + 1U);
@@ -160,7 +160,7 @@ public:
 	}
 
 private:
-	private uint[624/*MT_N*/] mt;
-	private uint mti;// = cast(uint) -1;
-	private bool inited;
+	private mt : u32[624/*MT_N*/];
+	private mti : u32;// = cast(uint) -1;
+	private inited : bool;
 }
