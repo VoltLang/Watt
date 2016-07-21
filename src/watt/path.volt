@@ -280,7 +280,7 @@ fn getExecDir() string
 
 	} else version (Emscripten) {
 
-		i32 ret = 0;
+		ret : i32 = 0;
 
 	} else {
 

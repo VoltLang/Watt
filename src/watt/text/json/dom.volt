@@ -327,7 +327,7 @@ fn parse(s : string) Value
 				parseUlong(cast(const(char)[])data, out ul);
 				if (ul < LONG_MAX) {
 					assert(canBeInteger(cast(const(char)[])data, true));
-					i64 l;
+					l : i64;
 					parseLong(cast(const(char)[])data, out l);
 					v.integer(l);
 					addValue(v, getKey());

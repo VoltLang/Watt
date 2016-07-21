@@ -851,8 +851,8 @@ private fn skipText(ref lines : Line[], indent : IndentType[]) string[]
 		lines = lines[1 .. $];
 
 		if (lines.length > 0) {
-			HtmlBlockInfo tag = parseHtmlBlockLine(lines[0].text);
-			if (tag.uniqueBlankTag )
+			tag := parseHtmlBlockLine(lines[0].text);
+			if (tag.uniqueBlankTag)
 				continue;
 		}
 
@@ -1467,7 +1467,7 @@ private fn parseStrike(ref str : string, ref strucken : string) bool {
 }
 
 private fn parseInlineCode(ref str : string, ref code : string) bool {
-	string pstr = str;
+	pstr := str;
 	if (pstr.length < 3 || pstr[0] != '`') return false;
 	ctag : string;
 	i : size_t;
@@ -1846,7 +1846,7 @@ private class LinkRefs
 
 			currentUrl = urlEscape(backslashEscape(currentUrl), true, true);
 			title = backslashEscape(title);
-			LinkRef lr = {currentRefid, currentUrl, title};
+			lr : LinkRef = {currentRefid, currentUrl, title};
 			id := toLower(currentRefid);
 			tag := id in ret;
 			if (tag is null) {

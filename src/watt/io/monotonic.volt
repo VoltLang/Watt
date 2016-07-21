@@ -5,7 +5,7 @@
 module vrt.time;
 
 
-global long ticksPerSecond;
+global ticksPerSecond : i64;
 
 global this()
 {

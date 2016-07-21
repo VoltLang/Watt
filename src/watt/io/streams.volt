@@ -218,7 +218,7 @@ public:
 
 	override fn peek() dchar
 	{
-		i32 c = fgetc(handle);
+		c : i32 = fgetc(handle);
 		ungetc(c, handle);
 		return cast(dchar) c;
 	}

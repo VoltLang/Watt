@@ -152,7 +152,7 @@ public:
 			return;
 		}
 
-		State s;
+		s : State;
 		data : const(u8)[];
 		next : char;
 		getSuccess : bool = get(out next);
@@ -681,7 +681,7 @@ public:
 		--indentLevel;
 		if (prettyPrint) {
 			output.write("\n");
-			for (size_t i = 0; i < indentLevel; ++i) {
+			foreach (i; 0 .. indentLevel) {
 				output.write(indent);
 			}
 		}

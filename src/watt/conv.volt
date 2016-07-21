@@ -79,7 +79,7 @@ fn toUlong(s : const(char)[], base : i32 = 10) u64
 
 fn toLong(s : const(char)[], base : i32 = 10) i64
 {
-	i64 multiply = 1;
+	multiply : i64 = 1;
 	if (s.length > 0 && s[0] == '-') {
 		s = s[1 .. $];
 		multiply = -1;

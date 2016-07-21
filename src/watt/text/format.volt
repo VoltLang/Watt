@@ -93,7 +93,7 @@ private fn formatObject(ref buf : char[], ref vl : va_list)
 
 private fn formatString(ref buf : char[], ref vl : va_list)
 {
-	auto s = va_arg!char[](vl);
+	s := va_arg!char[](vl);
 	if (s.length > 1 && s[s.length - 1] == '\0') {
 		s = s[0 .. s.length - 1];
 	}
@@ -216,7 +216,7 @@ private fn formatArray(id : TypeInfo, ref buf : char[], ref vl : va_list)
 		old := vl;
 		vl = v.ptr;
 		buf ~= cast(char[]) "[";
-		for (size_t i = 0; i < v.length; i++) {
+		foreach (i; 0 .. v.length) {
 			if (id.base.type == Type.Char) {
 				buf ~= cast(char[]) "\"";
 				formatString(ref buf, ref vl);

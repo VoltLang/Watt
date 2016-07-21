@@ -367,7 +367,7 @@ public:
 			return _default;
 		}
 
-		Location loc;
+		loc : Location;
 		loc.filename = begin.filename;
 		loc.line = begin.line;
 		loc.column = begin.column;
