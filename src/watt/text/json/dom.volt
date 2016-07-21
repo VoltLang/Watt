@@ -359,8 +359,10 @@ fn parse(s : string) Value
 			pushValue(v);
 			break;
 		case Event.ARRAY_END:
-			av := popValue();
-			addValue(av, getKey());
+			if (valueStack.length > 1) {
+				av := popValue();
+				addValue(av, getKey());
+			}
 			break;
 		case Event.OBJECT_START:
 			v.setObject();
