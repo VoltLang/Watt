@@ -30,7 +30,8 @@ fn formatImpl(formatString : const(char)[], ref _typeids : TypeInfo[], ref buf :
 			switch (c) {
 			case '%':
 				buf ~= '%';
-				break;
+				formatting = false;
+				continue;
 			case 'c':
 				formatChar(ref buf, ref vl);
 				break;
