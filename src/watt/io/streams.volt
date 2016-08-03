@@ -61,38 +61,33 @@ public:
 	fn vwritef(formatString: const(char)[], ref typeids: TypeInfo[], ref vl: va_list)
 	{
 		buf: char[];
-		formatImpl(formatString, ref typeids, ref buf, ref vl);
-		write(buf);
+		formatImpl(write, formatString, ref typeids, ref vl);
 	}
 
 
 	fn writef(formatString: const(char)[], ...)
 	{
-		buf: char[];
 		vl: va_list;
 
 		va_start(vl);
-		formatImpl(formatString, ref _typeids, ref buf, ref vl);
+		formatImpl(write, formatString, ref _typeids, ref vl);
 		va_end(vl);
-		write(buf);
 	}
 
 	fn vwritefln(formatString: const(char)[], ref typeids: TypeInfo[], ref vl: va_list)
 	{
-		buf: char[];
-		formatImpl(formatString, ref typeids, ref buf, ref vl);
-		writeln(buf);
+		formatImpl(write, formatString, ref typeids, ref vl);
+		put('\n');
 	}
 
 	fn writefln(formatString: const(char)[], ...)
 	{
-		buf: char[];
 		vl: va_list;
 
 		va_start(vl);
-		formatImpl(formatString, ref _typeids, ref buf, ref vl);
+		formatImpl(write, formatString, ref _typeids, ref vl);
 		va_end(vl);
-		writeln(buf);
+		put('\n');
 	}
 }
 

@@ -6,20 +6,21 @@ import core.exception;
 import core.stdc.stdio;
 import watt.varargs;
 import watt.conv;
+import watt.text.sink;
 
 
 fn format(formatString: const(char)[], ...) string
 {
 	vl: va_list;
-	buf: char[];
+	sink: StringSink;
 
 	va_start(vl);
-	formatImpl(formatString, ref _typeids, ref buf, ref vl);
+	formatImpl(sink.sink, formatString, ref _typeids, ref vl);
 	va_end(vl);
-	return cast(string) buf;
+	return sink.toString();
 }
 
-fn formatImpl(formatString: const(char)[], ref _typeids: TypeInfo[], ref buf: char[], ref vl: va_list)
+fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[], ref vl: va_list)
 {
 	formatting: bool;
 	index: i32;
@@ -29,36 +30,37 @@ fn formatImpl(formatString: const(char)[], ref _typeids: TypeInfo[], ref buf: ch
 		if (formatting) {
 			switch (c) {
 			case '%':
-				buf ~= '%';
+				sink("%");
 				formatting = false;
 				continue;
 			case 'c':
-				formatChar(ref buf, ref vl);
+				formatChar(sink, ref vl);
 				break;
 			case 'd':
-				formatInt(ref buf, ref vl);
+				formatInt(sink, ref vl);
 				break;
 			case 'f':
 				if (_typeids[index].type == Type.F32) {
-					formatFloat(ref buf, ref vl);
+					formatFloat(sink, ref vl);
 				} else if (_typeids[index].type == Type.F64) {
-					formatDouble(ref buf, ref vl);
+					formatDouble(sink, ref vl);
 				} else {
 					throw new Exception("type to %f format mismatch");
 				}
 				break;
 			case 'X':
-				formatHex(_typeids[index], ref buf, ref vl);
+				formatHex(sink, ref vl, _typeids[index]);
 				break;
 			case 'x':
-				formatHex(_typeids[index],ref buf, ref vl);
-				buf = cast(char[])toLower(cast(string) buf);
+				StringSink tmp;
+				formatHex(tmp.sink, ref vl, _typeids[index]);
+				sink(toLower(tmp.toString()));
 				break;
 			case 'p':
-				formatPointer(ref buf, ref vl);
+				formatPointer(sink, ref vl);
 				break;
 			case 's':
-				formatType(_typeids[index], ref buf, ref vl);
+				formatType(sink, ref vl, _typeids[index]);
 				break;
 			default:
 				throw new Exception(format("unknown format specifier '%c'", c));
@@ -70,104 +72,104 @@ fn formatImpl(formatString: const(char)[], ref _typeids: TypeInfo[], ref buf: ch
 		if (c == '%') {
 			formatting = true;
 		} else {
-			buf ~= c;
+			sink(formatString[i .. i+1]);
 		}
 	}
-	buf ~= '\0';
-	buf = buf[0 .. $-1];  // Disregard the nul when it comes to length.
+	//sink("\0");
 }
 
-private fn formatNull(ref buf: char[], ref vl: va_list)
+private fn formatNull(sink: Sink, ref vl: va_list)
 {
-	buf ~= cast(char[]) "null";
+	sink("null");
 }
 
-private fn formatObject(ref buf: char[], ref vl: va_list)
+private fn formatObject(sink: Sink, ref vl: va_list)
 {
 	obj := va_arg!Object(vl);
 	if (obj is null) {
-		formatNull(ref buf, ref vl);
+		formatNull(sink, ref vl);
 		return;
 	}
-	buf ~= cast(char[]) obj.toString();
+	sink(obj.toString());
 }
 
-private fn formatString(ref buf: char[], ref vl: va_list)
+private fn formatString(sink: Sink, ref vl: va_list)
 {
 	s := va_arg!char[](vl);
 	if (s.length > 1 && s[s.length - 1] == '\0') {
 		s = s[0 .. s.length - 1];
 	}
-	buf ~= s;
+	sink(s);
 }
 
-private fn formatByte(ref buf: char[], ref vl: va_list)
+private fn formatByte(sink: Sink, ref vl: va_list)
 {
 	b := va_arg!i8(vl);
-	buf ~= cast(char[]) toString(b);
+	sink(toString(b));
 }
 
-private fn formatUbyte(ref buf: char[], ref vl: va_list)
+private fn formatUbyte(sink: Sink, ref vl: va_list)
 {
 	b := va_arg!u8(vl);
-	buf ~= cast(char[]) toString(b);
+	sink(toString(b));
 }
 
-private fn formatShort(ref buf: char[], ref vl: va_list)
+private fn formatShort(sink: Sink, ref vl: va_list)
 {
 	s := va_arg!i16(vl);
-	buf ~= cast(char[]) toString(s);
+	sink(toString(s));
 }
 
-private fn formatUshort(ref buf: char[], ref vl: va_list)
+private fn formatUshort(sink: Sink, ref vl: va_list)
 {
 	s := va_arg!u16(vl);
-	buf ~= cast(char[]) toString(s);
+	sink(toString(s));
 }
 
-private fn formatInt(ref buf: char[], ref vl: va_list)
+private fn formatInt(sink: Sink, ref vl: va_list)
 {
 	i := va_arg!i32(vl);
-	buf ~= cast(char[]) toString(i);
+	sink(toString(i));
 }
 
-private fn formatUint(ref buf: char[], ref vl: va_list)
+private fn formatUint(sink: Sink, ref vl: va_list)
 {
 	i := va_arg!u32(vl);
-	buf ~= cast(char[]) toString(i);
+	sink(toString(i));
 }
 
-private fn formatLong(ref buf: char[], ref vl: va_list)
+private fn formatLong(sink: Sink, ref vl: va_list)
 {
 	l := va_arg!i64(vl);
-	buf ~= cast(char[]) toString(l);
+	sink(toString(l));
 }
 
-private fn formatUlong(ref buf: char[], ref vl: va_list)
+private fn formatUlong(sink: Sink, ref vl: va_list)
 {
 	l := va_arg!u64(vl);
-	buf ~= cast(char[]) toString(l);
+	sink(toString(l));
 }
 
-private fn formatFloat(ref buf: char[], ref vl: va_list)
+private fn formatFloat(sink: Sink, ref vl: va_list)
 {
 	f := va_arg!f32(vl);
-	buf ~= cast(char[]) toString(f);
+	sink(toString(f));
 }
 
-private fn formatDouble(ref buf: char[], ref vl: va_list)
+private fn formatDouble(sink: Sink, ref vl: va_list)
 {
 	d := va_arg!f64(vl);
-	buf ~= cast(char[]) toString(d);
+	sink(toString(d));
 }
 
-private fn formatChar(ref buf: char[], ref vl: va_list)
+private fn formatChar(sink: Sink, ref vl: va_list)
 {
-	c := va_arg!char(vl);
-	buf ~= c;
+	tmp: char[1];
+	tmp[0] = va_arg!char(vl);
+	sink(tmp);
 }
 
-private fn formatHex(id: TypeInfo, ref buf: char[], ref vl: va_list)
+private fn formatHex(sink: Sink, ref vl: va_list, id: TypeInfo)
 {
 	ul: u64;
 	switch (id.type) {
@@ -198,97 +200,96 @@ private fn formatHex(id: TypeInfo, ref buf: char[], ref vl: va_list)
 	default:
 		throw new Exception(format("Can't know how to hex-print type id %s.", id.type));
 	}
-	buf ~= cast(char[])toStringHex(ul);
+	sink(toStringHex(ul));
 }
 
-private fn formatPointer(ref buf: char[], ref vl: va_list)
+private fn formatPointer(sink: Sink, ref vl: va_list)
 {
 	p := va_arg!void*(vl);
-	buf ~= cast(char[]) toString(p);
+	sink(toString(p));
 }
 
-
-private fn formatArray(id: TypeInfo, ref buf: char[], ref vl: va_list)
+private fn formatArray(sink: Sink, ref vl: va_list, id: TypeInfo)
 {
 	if (id.base.type == Type.Char) {
-		formatString(ref buf, ref vl);
+		formatString(sink, ref vl);
 	} else {
 		v := va_arg!void[](vl);
 		old := vl;
 		vl = v.ptr;
-		buf ~= cast(char[]) "[";
+		sink("[");
 		foreach (i; 0 .. v.length) {
 			if (id.base.type == Type.Char) {
-				buf ~= cast(char[]) "\"";
-				formatString(ref buf, ref vl);
-				buf ~= cast(char[]) "\"";
+				sink("\"");
+				formatString(sink, ref vl);
+				sink("\"");
 			} else {
-				formatType(id.base, ref buf, ref vl);
+				formatType(sink, ref vl, id.base);
 			}
 			if (i < v.length - 1) {
-				buf ~= cast(char[]) ", ";
+				sink(", ");
 			}
 		}
 		vl = old;
-		buf ~= cast(char[]) "]";
+		sink("]");
 	}
 }
 
-private fn formatType(id: TypeInfo, ref buf: char[], ref vl: va_list)
+private fn formatType(sink: Sink, ref vl: va_list, id: TypeInfo)
 {
 	switch (id.type) {
 	case Type.Class:
-		formatObject(ref buf, ref vl);
+		formatObject(sink, ref vl);
 		break;
 	case Type.Array:
-		formatArray(id, ref buf, ref vl);
+		formatArray(sink, ref vl, id);
 		break;
 	case Type.Bool:
-		formatBool(ref buf, ref vl);
+		formatBool(sink, ref vl);
 		break;
 	case Type.I8:
-		formatByte(ref buf, ref vl);
+		formatByte(sink, ref vl);
 		break;
 	case Type.U8:
-		formatUbyte(ref buf, ref vl);
+		formatUbyte(sink, ref vl);
 		break;
 	case Type.I16:
-		formatShort(ref buf, ref vl);
+		formatShort(sink, ref vl);
 		break;
 	case Type.U16:
-		formatUshort(ref buf, ref vl);
+		formatUshort(sink, ref vl);
 		break;
 	case Type.I32:
-		formatInt(ref buf, ref vl);
+		formatInt(sink, ref vl);
 		break;
 	case Type.U32:
-		formatUint(ref buf, ref vl);
+		formatUint(sink, ref vl);
 		break;
 	case Type.I64:
-		formatLong(ref buf, ref vl);
+		formatLong(sink, ref vl);
 		break;
 	case Type.U64:
-		formatUlong(ref buf, ref vl);
+		formatUlong(sink, ref vl);
 		break;
 	case Type.F32:
-		formatFloat(ref buf, ref vl);
+		formatFloat(sink, ref vl);
 		break;
 	case Type.F64:
-		formatDouble(ref buf, ref vl);
+		formatDouble(sink, ref vl);
 		break;
 	case Type.Char:
-		formatChar(ref buf, ref vl);
+		formatChar(sink, ref vl);
 		break;
 	case Type.Function, Type.Delegate, Type.Pointer:
-		formatPointer(ref buf, ref vl);
+		formatPointer(sink, ref vl);
 		break;
 	default:
 		throw new Exception(format("Don't know how to print type id %s.", id.type));
 	}
 }
 
-private fn formatBool(ref buf: char[], ref vl: va_list)
+private fn formatBool(sink: Sink, ref vl: va_list)
 {
 	b := va_arg!bool(vl);
-	buf ~= cast(char[]) (b ? "true": "false");
+	sink(b ? "true": "false");
 }
