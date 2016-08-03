@@ -11,21 +11,21 @@ alias SwapDg = scope void delegate(size_t, size_t);
  *
  * They are given indicies on an array you manage.
  */
-fn runSort(numElements : size_t, cmp : CmpDg, swap : SwapDg)
+fn runSort(numElements: size_t, cmp: CmpDg, swap: SwapDg)
 {
 	qsort(0, numElements-1, cmp, swap);
 }
 
-fn sort(ints : i32[])
+fn sort(ints: i32[])
 {
-	fn cmp(ia : size_t, ib : size_t) bool
+	fn cmp(ia: size_t, ib: size_t) bool
 	{
 		return ints[ia] < ints[ib];
 	}
 
-	fn swap(ia : size_t, ib : size_t)
+	fn swap(ia: size_t, ib: size_t)
 	{
-		tmp : i32 = ints[ia];
+		tmp: i32 = ints[ia];
 		ints[ia] = ints[ib];
 		ints[ib] = tmp;
 	}
@@ -40,34 +40,34 @@ fn sort(ints : i32[])
  *
  */
 
-fn max(a : size_t, b : size_t) size_t
+fn max(a: size_t, b: size_t) size_t
 {
-	return a > b ? a : b;
+	return a > b ? a: b;
 }
 
-fn min(a : size_t, b : size_t) size_t
+fn min(a: size_t, b: size_t) size_t
 {
-	return a < b ? a : b;
+	return a < b ? a: b;
 }
 
-fn max(a : i32, b : i32) i32
+fn max(a: i32, b: i32) i32
 {
-	return a > b ? a : b;
+	return a > b ? a: b;
 }
 
-fn min(a : i32, b : i32) i32
+fn min(a: i32, b: i32) i32
 {
-	return a < b ? a : b;
+	return a < b ? a: b;
 }
 
-fn max(a : f64, b : f64) f64
+fn max(a: f64, b: f64) f64
 {
-	return a > b ? a : b;
+	return a > b ? a: b;
 }
 
-fn min(a : f64, b : f64) f64
+fn min(a: f64, b: f64) f64
 {
-	return a < b ? a : b;
+	return a < b ? a: b;
 }
 
 
@@ -77,23 +77,23 @@ fn min(a : f64, b : f64) f64
  *
  */
 
-private fn qsort(lo : size_t, hi : size_t, cmp : CmpDg, swap : SwapDg)
+private fn qsort(lo: size_t, hi: size_t, cmp: CmpDg, swap: SwapDg)
 {
 	if (lo < hi) {
 		p := partition(lo, hi, cmp, swap);
-		mid1 := p == 0 ? 0 : p - 1;
-		mid2 := p == size_t.max ? size_t.max : p + 1;
+		mid1 := p == 0 ? 0: p - 1;
+		mid2 := p == size_t.max ? size_t.max: p + 1;
 		qsort(lo, mid1, cmp, swap);
 		qsort(mid2, hi, cmp, swap);
 	}
 }
 
-private fn partition(lo : size_t, hi : size_t, cmp : CmpDg, swap : SwapDg) size_t
+private fn partition(lo: size_t, hi: size_t, cmp: CmpDg, swap: SwapDg) size_t
 {
 	pivotIndex := choosePivot(lo, hi);
 	swap(pivotIndex, hi);
 	storeIndex := lo;
-	for (i : size_t = lo; i <= hi - 1; ++i) {
+	for (i: size_t = lo; i <= hi - 1; ++i) {
 		if (cmp(i, hi)) {
 			swap(i, storeIndex);
 			storeIndex++;
@@ -103,7 +103,7 @@ private fn partition(lo : size_t, hi : size_t, cmp : CmpDg, swap : SwapDg) size_
 	return storeIndex;
 }
 
-private fn choosePivot(lo : size_t, hi : size_t) size_t
+private fn choosePivot(lo: size_t, hi: size_t) size_t
 {
 	return lo + ((hi - lo) / 2);
 }

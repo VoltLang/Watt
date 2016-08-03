@@ -1,13 +1,13 @@
 module watt.io.std;
 
-import core.stdc.stdio : stdout, stderr, stdin;
-import watt.io.streams : OutputFileStream, InputFileStream;
-import watt.varargs : va_list, va_start, va_end;
+import core.stdc.stdio: stdout, stderr, stdin;
+import watt.io.streams: OutputFileStream, InputFileStream;
+import watt.varargs: va_list, va_start, va_end;
 
 
-global output : OutputFileStream;
-global error : OutputFileStream;
-global input : InputFileStream;
+global output: OutputFileStream;
+global error: OutputFileStream;
+global input: InputFileStream;
 
 global this()
 {
@@ -19,27 +19,27 @@ global this()
 	input.handle = stdin;
 }
 
-fn write(s : const(char)[])
+fn write(s: const(char)[])
 {
 	output.write(s);
 }
 
-fn writeln(s : const(char)[])
+fn writeln(s: const(char)[])
 {
 	output.writeln(s);
 }
 
-fn writef(s : const(char)[], ...)
+fn writef(s: const(char)[], ...)
 {
-	vl : va_list;
+	vl: va_list;
 	va_start(vl);
 	output.vwritef(s, ref _typeids, ref vl);
 	va_end(vl);
 }
 
-fn writefln(s : const(char)[], ...)
+fn writefln(s: const(char)[], ...)
 {
-	vl : va_list;
+	vl: va_list;
 	va_start(vl);
 	output.vwritefln(s, ref _typeids, ref vl);
 	va_end(vl);

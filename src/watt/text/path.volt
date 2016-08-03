@@ -7,10 +7,10 @@ import watt.text.sink;
 import watt.path;
 
 
-fn normalizePathWindows(n : SinkArg) string
+fn normalizePathWindows(n: SinkArg) string
 {
-	pos : size_t;
-	r : char[4096];
+	pos: size_t;
+	r: char[4096];
 
 	if (r.length < n.length) {
 		throw new Exception("path to long '" ~ n ~ "'");
@@ -28,7 +28,7 @@ fn normalizePathWindows(n : SinkArg) string
 	return new string(r[0 .. pos]);
 }
 
-fn normalizePathPosix(n : SinkArg) string
+fn normalizePathPosix(n: SinkArg) string
 {
 	// TODO much better logic here for normalizing paths.
 	return new string(n);

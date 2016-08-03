@@ -3,7 +3,7 @@
 module watt.io.streams;
 
 import core.typeinfo;
-import core.stdc.stdio : FILE, fopen, fclose, fputc, fwrite,
+import core.stdc.stdio: FILE, fopen, fclose, fputc, fwrite,
                          fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
 import watt.varargs;
@@ -24,14 +24,14 @@ public:
 	/**
 	 * Write a single character out to the sink.
 	 */
-	abstract fn put(c : dchar);
+	abstract fn put(c: dchar);
 
 	/**
 	 * Write a series of characters to the sink.
 	 */
-	fn write(s : const(char)[])
+	fn write(s: const(char)[])
 	{
-		for (i : size_t = 0u; i < s.length; i = i + 1u) {
+		for (i: size_t = 0u; i < s.length; i = i + 1u) {
 			put(s[i]);
 		}
 	}
@@ -52,24 +52,24 @@ public:
 	/**
 	 * Write a series of characters then a newline.
 	 */
-	fn writeln(s : const(char)[])
+	fn writeln(s: const(char)[])
 	{
 		write(s);
 		put('\n');
 	}
 
-	fn vwritef(formatString : const(char)[], ref typeids : TypeInfo[], ref vl : va_list)
+	fn vwritef(formatString: const(char)[], ref typeids: TypeInfo[], ref vl: va_list)
 	{
-		buf : char[];
+		buf: char[];
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
 		write(buf);
 	}
 
 
-	fn writef(formatString : const(char)[], ...)
+	fn writef(formatString: const(char)[], ...)
 	{
-		buf : char[];
-		vl : va_list;
+		buf: char[];
+		vl: va_list;
 
 		va_start(vl);
 		formatImpl(formatString, ref _typeids, ref buf, ref vl);
@@ -77,17 +77,17 @@ public:
 		write(buf);
 	}
 
-	fn vwritefln(formatString : const(char)[], ref typeids : TypeInfo[], ref vl : va_list)
+	fn vwritefln(formatString: const(char)[], ref typeids: TypeInfo[], ref vl: va_list)
 	{
-		buf : char[];
+		buf: char[];
 		formatImpl(formatString, ref typeids, ref buf, ref vl);
 		writeln(buf);
 	}
 
-	fn writefln(formatString : const(char)[], ...)
+	fn writefln(formatString: const(char)[], ...)
 	{
-		buf : char[];
-		vl : va_list;
+		buf: char[];
+		vl: va_list;
 
 		va_start(vl);
 		formatImpl(formatString, ref _typeids, ref buf, ref vl);
@@ -123,7 +123,7 @@ public:
 	 * will be shorter than buffer if EOF was encountered before the
 	 * buffer was filled.
 	 */
-	abstract fn read(buffer : u8[]) u8[];
+	abstract fn read(buffer: u8[]) u8[];
 
 	/**
 	 * Returns true if the stream indicates that there is no more data.
@@ -145,8 +145,8 @@ public:
 	 */
 	fn readln() string
 	{
-		buf : char[];
-		c : char = cast(char) get();
+		buf: char[];
+		c: char = cast(char) get();
 		while (c != '\n' && !eof()) {
 			buf ~= c;
 			c = cast(char) get();
@@ -162,10 +162,10 @@ public:
 class OutputFileStream : OutputStream
 {
 public:
-	handle : FILE*;
+	handle: FILE*;
 
 public:
-	this(filename : const(char)[])
+	this(filename: const(char)[])
 	{
 		if (filename.length > 0u) {
 			handle = fopen(filename.ptr, "w".ptr);
@@ -178,12 +178,12 @@ public:
 		handle = null;
 	}
 
-	override fn put(c : dchar)
+	override fn put(c: dchar)
 	{
 		fputc(cast(i32) c, handle);
 	}
 
-	override fn write(s : const(char)[])
+	override fn write(s: const(char)[])
 	{
 		fwrite(cast(void*)s.ptr, 1, s.length, handle);
 	}
@@ -200,10 +200,10 @@ public:
 class InputFileStream : InputStream
 {
 public:
-	handle : FILE*;
+	handle: FILE*;
 
 public:
-	this(filename : const(char)[])
+	this(filename: const(char)[])
 	{
 		if (filename.length > 0u) {
 			handle = fopen(filename.ptr, "r".ptr);
@@ -218,7 +218,7 @@ public:
 
 	override fn peek() dchar
 	{
-		c : i32 = fgetc(handle);
+		c: i32 = fgetc(handle);
 		ungetc(c, handle);
 		return cast(dchar) c;
 	}
@@ -228,9 +228,9 @@ public:
 		return cast(dchar) fgetc(handle);
 	}
 
-	override fn read(buffer : u8[]) u8[]
+	override fn read(buffer: u8[]) u8[]
 	{
-		num : size_t = fread(cast(void*)buffer.ptr, 1, buffer.length, handle);
+		num: size_t = fread(cast(void*)buffer.ptr, 1, buffer.length, handle);
 		if (num != buffer.length) {
 			return buffer[0..num];
 		}

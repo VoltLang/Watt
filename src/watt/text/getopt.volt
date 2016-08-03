@@ -16,14 +16,14 @@ import watt.io;
 /// An exception thrown on errors.
 class GetoptException : Exception
 {
-	this(msg : string)
+	this(msg: string)
 	{
 		super(msg);
 	}
 }
 
 /// Removes up to two leading dashes from a string.
-private fn removeDashes(s : string) string
+private fn removeDashes(s: string) string
 {
 	if (s.length == 0 || (s.length == 1 && s[0] == '-') || (s.length == 2 && s == "--")) {
 		return "";
@@ -38,21 +38,21 @@ private fn removeDashes(s : string) string
 }
 
 /// Remove an element from an array and update a given index.
-private fn remove(ref args : string[], ref index : size_t)
+private fn remove(ref args: string[], ref index: size_t)
 {
 	args = args[0 .. index] ~ args[index + 1 .. $];
 	index -= 1;
 }
 
 /// Remove two elemeents starting from index.
-private fn removeTwo(ref args : string[], ref index : size_t)
+private fn removeTwo(ref args: string[], ref index: size_t)
 {
 	args = args[0 .. index] ~ args[index + 2 .. $];
 	index -= 2;
 }
 
 /// Get all the flags described by a description, throws GetoptException on error.
-private fn parseDescription(description : string) string[]
+private fn parseDescription(description: string) string[]
 {
 	flags := split(description, '|');
 	if (flags.length == 0) {
@@ -62,9 +62,9 @@ private fn parseDescription(description : string) string[]
 }
 
 /// If s has an equals character, return everything to the right of it. Otherwise, "".
-private fn equalParameter(s : string) string
+private fn equalParameter(s: string) string
 {
-	i : size_t;
+	i: size_t;
 	while (i < s.length) {
 		if (decode(s, ref i) == '=') {
 			return s[i .. $];
@@ -74,10 +74,10 @@ private fn equalParameter(s : string) string
 }
 
 // No argument getopt base implementation.
-private fn getoptImpl(ref args : string[], description : string, dg : scope void delegate())
+private fn getoptImpl(ref args: string[], description: string, dg: scope void delegate())
 {
 	flags := parseDescription(description);
-	for (i : size_t = 1; i < args.length; ++i) {
+	for (i: size_t = 1; i < args.length; ++i) {
 		arg := removeDashes(args[i]);
 		foreach (flag; flags) {
 			if (flag == arg) {
@@ -90,11 +90,11 @@ private fn getoptImpl(ref args : string[], description : string, dg : scope void
 }
 
 // Argument taking getopt base implementation.
-fn getoptImpl(ref args : string[], description : string, dg : scope void delegate(string))
+fn getoptImpl(ref args: string[], description: string, dg: scope void delegate(string))
 {
 	flags := parseDescription(description);
-	for (i : size_t = 1; i < args.length; ++i) {
-		oneDash : bool = args[i].length > 2 && args[i][0] == '-' && args[i][1] != '-';
+	for (i: size_t = 1; i < args.length; ++i) {
+		oneDash: bool = args[i].length > 2 && args[i][0] == '-' && args[i][1] != '-';
 		arg := removeDashes(args[i]);
 		foreach (flag; flags) {
 			equals := equalParameter(arg);
@@ -124,16 +124,16 @@ fn getoptImpl(ref args : string[], description : string, dg : scope void delegat
  *  By being divided by an = character ["--string=foo"] // _string is assigned "foo".
  *  If the flag is one character (not counting the -), then it can be bundled into one ["-s32"] // _string is assigned "32". 
  */
-fn getopt(ref args : string[], description : string, ref _string : string)
+fn getopt(ref args: string[], description: string, ref _string: string)
 {
-	fn dg(param : string) { _string = param; }
+	fn dg(param: string) { _string = param; }
 	getoptImpl(ref args, description, dg);
 }
 
 /// The same as getopt with string, but the result is passed through watt.conv.toInt.
-fn getopt(ref args : string[], description : string, ref _int : i32)
+fn getopt(ref args: string[], description: string, ref _int: i32)
 {
-	fn dg(arg : string)
+	fn dg(arg: string)
 	{
 		try {
 			_int = toInt(arg);
@@ -149,20 +149,20 @@ fn getopt(ref args : string[], description : string, ref _int : i32)
  * remove any strings in args[1 .. $] that start with '-' and contain any of the description strings.
  * Sets _bool to true if args was modified.
  */
-fn getopt(ref args : string[], description : string, ref _bool : bool)
+fn getopt(ref args: string[], description: string, ref _bool: bool)
 {
 	fn dg() { _bool = true; }
 	getoptImpl(ref args, description, dg);
 }
 
 /// Calls a delegate each time the flag appears.
-fn getopt(ref args : string[], description : string, dg : scope void delegate())
+fn getopt(ref args: string[], description: string, dg: scope void delegate())
 {
 	getoptImpl(ref args, description, dg);
 }
 
 /// Calls a delegate with argument each time the flag appears.
-fn getopt(ref args : string[], description : string, dg : scope void delegate(string))
+fn getopt(ref args: string[], description: string, dg: scope void delegate(string))
 {
 	getoptImpl(ref args, description, dg);
 }
@@ -175,7 +175,7 @@ fn getopt(ref args : string[], description : string, dg : scope void delegate(st
  *         // Error, unknown option flag.
  *     }
  */
-fn remainingOptions(args : string[]) string
+fn remainingOptions(args: string[]) string
 {
 	foreach (arg; args[1 .. $]) {
 		if (arg.length > 1 && arg[0] == '-') {

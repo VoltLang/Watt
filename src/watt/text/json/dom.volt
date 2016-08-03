@@ -10,7 +10,7 @@ import watt.text.json.sax;
 
 class DOMException : JSONException
 {
-	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
+	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -28,8 +28,8 @@ enum DomType
 	ARRAY
 }
 
-private fn enforceJEx(b : bool, msg : string = "Json type enforce failure.",
-                      file : string = __FILE__, line : size_t = __LINE__)
+private fn enforceJEx(b: bool, msg: string = "Json type enforce failure.",
+                      file: string = __FILE__, line: size_t = __LINE__)
 {
 	if (!b) {
 		throw new DOMException(msg, file, line);
@@ -43,16 +43,16 @@ struct Value
 {
 	union Store
 	{
-		boolean : bool;
-		str : immutable(char)[];  // TODO: If this is a string, Volt's classify blows up.
-		integer : i64;
-		unsigned : u64;
-		floating : f64;
+		boolean: bool;
+		str: immutable(char)[];  // TODO: If this is a string, Volt's classify blows up.
+		integer: i64;
+		unsigned: u64;
+		floating: f64;
 	}
-	private store : Store;
-	private _type : DomType;
-	private _array : Value[];
-	private object : Value[string];
+	private store: Store;
+	private _type: DomType;
+	private _array: Value[];
+	private object: Value[string];
 
 	/**
 	 * Returns the DomType of the value stored in this node.
@@ -90,7 +90,7 @@ struct Value
 	/**
 	 * Setter for DomType.BOOLEAN.
 	 */
-	fn boolean(b : bool)
+	fn boolean(b: bool)
 	{
 		_type = DomType.BOOLEAN;
 		store.boolean = b;
@@ -108,7 +108,7 @@ struct Value
 	/**
 	 * Setter for DomType.STRING.
 	 */
-	fn str(s : string)
+	fn str(s: string)
 	{
 		_type = DomType.STRING;
 		store.str = s;
@@ -126,7 +126,7 @@ struct Value
 	/**
 	 * Setter for DomType.LONG.
 	 */
-	fn integer(l : i64)
+	fn integer(l: i64)
 	{
 		_type = DomType.LONG;
 		store.integer = l;
@@ -144,7 +144,7 @@ struct Value
 	/**
 	 * Setter for DomType.ULONG.
 	 */
-	fn unsigned(l : u64)
+	fn unsigned(l: u64)
 	{
 		_type = DomType.ULONG;
 		store.unsigned = l;
@@ -162,7 +162,7 @@ struct Value
 	/**
 	 * Setter for DomType.DOUBLE.
 	 */
-	fn floating(d : f64)
+	fn floating(d: f64)
 	{
 		_type = DomType.DOUBLE;
 		store.floating = d;
@@ -180,7 +180,7 @@ struct Value
 	/**
 	 * Setter for DomType.ARRAY.
 	 */
-	fn array(array : Value[])
+	fn array(array: Value[])
 	{
 		_type = DomType.ARRAY;
 		_array = array;
@@ -189,7 +189,7 @@ struct Value
 	/**
 	 * Add value to the array.
 	 */
-	fn arrayAdd(val : Value)
+	fn arrayAdd(val: Value)
 	{
 		enforceJEx(_type == DomType.ARRAY, "Value is not an array.");
 		_array ~= val;
@@ -206,7 +206,7 @@ struct Value
 	/**
 	 * Getter for DomType.OBJECT.
 	 */
-	fn lookupObjectKey(s : string) Value
+	fn lookupObjectKey(s: string) Value
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
 		p := s in object;
@@ -219,7 +219,7 @@ struct Value
 	/**
 	 * Setter for DomType.OBJECT.
 	 */
-	fn setObjectKey(s : string, v : Value)
+	fn setObjectKey(s: string, v: Value)
 	{
 		_type = DomType.OBJECT;
 		object[s] = v;
@@ -248,14 +248,14 @@ struct Value
 
 private enum LONG_MAX = 9223372036854775807UL;
 
-fn parse(s : string) Value
+fn parse(s: string) Value
 {
-	val : Value;
+	val: Value;
 	val.setObject();
-	valueStack : Value[];
-	keyStack : string[];
+	valueStack: Value[];
+	keyStack: string[];
 
-	fn addKey(key : string)
+	fn addKey(key: string)
 	{
 		keyStack ~= key;
 	}
@@ -272,7 +272,7 @@ fn parse(s : string) Value
 		return key;
 	}
 
-	fn pushValue(p : Value)
+	fn pushValue(p: Value)
 	{
 		valueStack ~= p;
 	}
@@ -285,7 +285,7 @@ fn parse(s : string) Value
 		return val;
 	}
 
-	fn addValue(val : Value, key : string ="")
+	fn addValue(val: Value, key: string ="")
 	{
 		assert(valueStack.length >= 1);
 		assert(valueStack[$-1]._type == DomType.OBJECT || valueStack[$-1]._type == DomType.ARRAY);
@@ -300,13 +300,13 @@ fn parse(s : string) Value
 
 	current := &val;
 	loop := true;
-	fn dg(event : Event, data : const(ubyte)[])
+	fn dg(event: Event, data: const(ubyte)[])
 	{
 		if (event == Event.ERROR) {
 			throw new DOMException(cast(string)data);
 		}
 		loop = event != Event.STOP;
-		v : Value;
+		v: Value;
 		final switch (event) {
 		case Event.ERROR:
 			assert(false);
@@ -323,11 +323,11 @@ fn parse(s : string) Value
 			break;
 		case Event.NUMBER:
 			if (canBeInteger(cast(const(char)[])data, false)) {
-				ul : u64;
+				ul: u64;
 				parseUlong(cast(const(char)[])data, out ul);
 				if (ul < LONG_MAX) {
 					assert(canBeInteger(cast(const(char)[])data, true));
-					l : i64;
+					l: i64;
 					parseLong(cast(const(char)[])data, out l);
 					v.integer(l);
 					addValue(v, getKey());
@@ -337,15 +337,15 @@ fn parse(s : string) Value
 				addValue(v, getKey());
 				break;
 			} else if (canBeInteger(cast(const(char)[])data, true)) {
-				l : i64;
+				l: i64;
 				parseLong(cast(const(char[]))data, out l);
 				v.integer(l);
 				addValue(v, getKey());
 				break;
 			}
-			d : f64;
-			buf : char[];
-			ret : bool = parseDouble(cast(const(char)[])data, out d, ref buf);
+			d: f64;
+			buf: char[];
+			ret: bool = parseDouble(cast(const(char)[])data, out d, ref buf);
 			assert(ret);
 			v.floating(d);
 			addValue(v, getKey());

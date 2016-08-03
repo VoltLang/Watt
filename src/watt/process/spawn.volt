@@ -6,21 +6,21 @@ module watt.process.spawn;
 version (Windows || Posix):
 
 import core.exception;
-import core.stdc.stdlib : csystem = system, exit;
-import core.stdc.string : strlen;
+import core.stdc.stdlib: csystem = system, exit;
+import core.stdc.string: strlen;
 import core.stdc.stdio;
 
 version (Windows) {
 	import core.windows.windows;
 } else version (Posix) {
-	import core.posix.sys.types : pid_t;
+	import core.posix.sys.types: pid_t;
 	import core.posix.unistd;
 }
 
 import watt.process.environment;
-import watt.text.string : split;
-import watt.io.file : exists;
-import watt.path : dirSeparator, pathSeparator;
+import watt.text.string: split;
+import watt.io.file: exists;
+import watt.path: dirSeparator, pathSeparator;
 import watt.conv;
 
 
@@ -37,10 +37,10 @@ public:
 		alias NativeID = int;
 	}
 
-	nativeID : NativeID;
+	nativeID: NativeID;
 
 public:
-	this(nativeID : NativeID)
+	this(nativeID: NativeID)
 	{
 		this.nativeID = nativeID;
 	}
@@ -57,7 +57,7 @@ public:
 	}
 }
 
-fn wait(p : Pid) i32
+fn wait(p: Pid) i32
 {
 	return p.wait();
 }
@@ -70,22 +70,22 @@ class ProcessException : Exception
 	}
 }
 
-fn spawnProcess(name : string, args : string[]) Pid
+fn spawnProcess(name: string, args: string[]) Pid
 {
 	return spawnProcess(name, args, stdin, stdout, stderr, null);
 }
 
-fn spawnProcess(name : string, args : string[],
-                _stdin : FILE*,
-                _stdout : FILE*,
-                _stderr : FILE*,
-                env : Environment = null) Pid
+fn spawnProcess(name: string, args: string[],
+                _stdin: FILE*,
+                _stdout: FILE*,
+                _stderr: FILE*,
+                env: Environment = null) Pid
 {
 	if (name is null) {
 		throw new ProcessException("Name can not be null");
 	}
 
-	cmd : string;
+	cmd: string;
 	if (exists(name)) {
 		cmd = name;
 	} else {
@@ -97,9 +97,9 @@ fn spawnProcess(name : string, args : string[],
 	}
 
 	version (Posix) {
-		stdinfd := _stdin is null ? fileno(stdin) : fileno(_stdin);
-		stdoutfd := _stdout is null ? fileno(stdout) : fileno(_stdout);
-		stderrfd := _stderr is null ? fileno(stderr) : fileno(_stderr);
+		stdinfd := _stdin is null ? fileno(stdin): fileno(_stdin);
+		stdoutfd := _stdout is null ? fileno(stdout): fileno(_stdout);
+		stderrfd := _stderr is null ? fileno(stderr): fileno(_stderr);
 		pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
 	} else version (Windows) {
 		pid := spawnProcessWindows(cmd, args, _stdin, _stdout, _stderr, env);
@@ -109,10 +109,10 @@ fn spawnProcess(name : string, args : string[],
 }
 
 private {
-	extern(C) fn getenv(ident : scope const(char)*) char*;
+	extern(C) fn getenv(ident: scope const(char)*) char*;
 }
 
-fn searchPath(cmd : string, path : string = null) string
+fn searchPath(cmd: string, path: string = null) string
 {
 	if (path is null) {
 		path = getEnv("PATH");
@@ -133,7 +133,7 @@ fn searchPath(cmd : string, path : string = null) string
 	return null;
 }
 
-fn getEnv(env : string) string
+fn getEnv(env: string) string
 {
 	ptr := getenv(env.ptr);
 	if (ptr is null) {
@@ -143,7 +143,7 @@ fn getEnv(env : string) string
 	}
 }
 
-fn system(name : string) i32
+fn system(name: string) i32
 {
 	return csystem(toStringz(name));
 }
@@ -158,12 +158,12 @@ version (Posix) private {
 	extern(C) fn close(i32) void;
 	extern(C) fn waitpid(pid_t, i32*, i32) pid_t;
 
-	fn spawnProcessPosix(name : string,
-	                     args : string[],
-	                     stdinFD : i32,
-	                     stdoutFD : i32,
-	                     stderrFD : i32,
-	                     env : Environment) i32
+	fn spawnProcessPosix(name: string,
+	                     args: string[],
+	                     stdinFD: i32,
+	                     stdoutFD: i32,
+	                     stderrFD: i32,
+	                     env: Environment) i32
 	{
 		argStack := new char[](16384);
 		envStack := new char[](16384);
@@ -214,9 +214,9 @@ version (Posix) private {
 		assert(false);
 	}
 
-	fn toArgz(stack : char[], result : char*[], name : string, args : string[]) void
+	fn toArgz(stack: char[], result: char*[], name: string, args: string[]) void
 	{
-		resultPos : size_t;
+		resultPos: size_t;
 
 		result[resultPos++] = stack.ptr;
 		stack[0 .. name.length] = name;
@@ -237,9 +237,9 @@ version (Posix) private {
 		result[resultPos] = null;
 	}
 
-	fn toEnvz(stack : char[], result : char*[], env : Environment) void
+	fn toEnvz(stack: char[], result: char*[], env: Environment) void
 	{
-		start, end, resultPos : size_t;
+		start, end, resultPos: size_t;
 
 		foreach (k, v; env.store) {
 			start = end;
@@ -259,9 +259,9 @@ version (Posix) private {
 		result[resultPos] = null;
 	}
 
-	fn waitPosix(pid : pid_t) int
+	fn waitPosix(pid: pid_t) int
 	{
-		status : int;
+		status: int;
 
 		// Because stopped processes doesn't count.
 		while(true) {
@@ -280,9 +280,9 @@ version (Posix) private {
 		assert(false);
 	}
 
-	fn waitManyPosix(out pid : pid_t) i32
+	fn waitManyPosix(out pid: pid_t) i32
 	{
-		status, result : i32;
+		status, result: i32;
 
 		// Because stopped processes doesn't count.
 		while(true) {
@@ -303,12 +303,12 @@ version (Posix) private {
 		assert(false);
 	}
 
-	fn stopped(status : i32) bool { return (status & 0xff) == 0x7f; }
-	fn signaled(status : i32) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
-	fn exited(status : i32) bool { return (status & 0x7f) == 0; }
+	fn stopped(status: i32) bool { return (status & 0xff) == 0x7f; }
+	fn signaled(status: i32) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
+	fn exited(status: i32) bool { return (status & 0x7f) == 0; }
 
-	fn termsig(status : i32) i32 { return status & 0x7f; }
-	fn exitstatus(status : i32) i32 { return (status & 0xff00) >> 8; }
+	fn termsig(status: i32) i32 { return status & 0x7f; }
+	fn exitstatus(status: i32) i32 { return (status & 0xff00) >> 8; }
 
 } else version (Windows) {
 
@@ -316,9 +316,9 @@ version (Posix) private {
 	extern (C) fn _get_osfhandle(i32) HANDLE;
 	extern (Windows) fn GetStdHandle(const DWORD) HANDLE;
 	
-	fn toArgz(moduleName : string, args : string[]) LPSTR
+	fn toArgz(moduleName: string, args: string[]) LPSTR
 	{
-		buffer : char[];
+		buffer: char[];
 		buffer ~= '"';
 		foreach (arg; args) {
 			buffer ~= "\" \"";
@@ -328,13 +328,13 @@ version (Posix) private {
 		return buffer.ptr;
 	}
 
-	fn spawnProcessWindows(name : string, args : string[],
-	                       stdinFP : FILE*,
-	                       stdoutFP : FILE*,
-	                       stderrFP : FILE*,
-	                       env : Environment) HANDLE
+	fn spawnProcessWindows(name: string, args: string[],
+	                       stdinFP: FILE*,
+	                       stdoutFP: FILE*,
+	                       stderrFP: FILE*,
+	                       env: Environment) HANDLE
 	{
-		fn stdHandle(file : FILE*, stdNo : DWORD) HANDLE {
+		fn stdHandle(file: FILE*, stdNo: DWORD) HANDLE {
 			if (file !is null) {
 				h := _get_osfhandle(_fileno(file));
 				if (h !is cast(HANDLE)INVALID_HANDLE_VALUE) {
@@ -355,13 +355,13 @@ version (Posix) private {
 		return spawnProcessWindows(name, args, hStdInput, hStdOutput, hStdError, env);
 	}
 
-	fn spawnProcessWindows(name : string, args : string[],
-	                           hStdIn : HANDLE,
-	                           hStdOut : HANDLE,
-	                           hStdErr : HANDLE,
-	                           env : Environment) HANDLE
+	fn spawnProcessWindows(name: string, args: string[],
+	                           hStdIn: HANDLE,
+	                           hStdOut: HANDLE,
+	                           hStdErr: HANDLE,
+	                           env: Environment) HANDLE
 	{
-		si : STARTUPINFOA;
+		si: STARTUPINFOA;
 		si.cb = cast(DWORD) typeid(si).size;
 		si.hStdInput  = hStdIn;
 		si.hStdOutput = hStdOut;
@@ -372,7 +372,7 @@ version (Posix) private {
 			si.dwFlags = STARTF_USESTDHANDLES;
 		}
 
-		pi : PROCESS_INFORMATION;
+		pi: PROCESS_INFORMATION;
 
 		moduleName := name ~ '\0';
 		bRet := CreateProcessA(moduleName.ptr, toArgz(moduleName, args), null, null, TRUE, 0, null, null, &si, &pi);
@@ -383,13 +383,13 @@ version (Posix) private {
 		return pi.hProcess;
 	}
 
-	fn waitWindows(handle : HANDLE) i32
+	fn waitWindows(handle: HANDLE) i32
 	{
 		waitResult := WaitForSingleObject(handle, cast(u32) 0xFFFFFFFF);
 		if (waitResult == cast(u32) 0xFFFFFFFF) {
 			throw new ProcessException("WaitForSingleObject failed with error code " ~ toString(cast(int)GetLastError()));
 		}
-		retval : DWORD;
+		retval: DWORD;
 		result := GetExitCodeProcess(handle, &retval);
 		if (result == 0) {
 			throw new ProcessException("GetExitCodeProcess failed with error code " ~ toString(cast(int)GetLastError()));

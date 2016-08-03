@@ -6,10 +6,10 @@ import watt.text.string;
 /**
  * Print the difference between two strings, line-by-line, to stdout.
  */
-fn diff(a : const(char)[], b : const(char)[]) void
+fn diff(a: const(char)[], b: const(char)[]) void
 {
-	c : size_t[];
-	w : size_t;
+	c: size_t[];
+	w: size_t;
 	A := [" "] ~ split(a, '\n');
 	B := [" "] ~ split(b, '\n');
 	lcs(A, B, out c, out w);
@@ -18,8 +18,8 @@ fn diff(a : const(char)[], b : const(char)[]) void
 
 private:
 
-fn printDiff(c :size_t[], w : size_t,
-             a : const(char)[][], b : const(char)[][], i : size_t, j : size_t) void
+fn printDiff(c :size_t[], w: size_t,
+             a: const(char)[][], b: const(char)[][], i: size_t, j: size_t) void
 {
 	if (i > 0 && j > 0 && a[i] == b[j]) {
 		printDiff(c, w, a, b, i-1, j-1);
@@ -37,8 +37,8 @@ fn printDiff(c :size_t[], w : size_t,
  * Generate a longest common substring (LCS) matrix.
  * c contains the values, w contains the width of the matrix.
  */
-fn lcs(a : const(char)[][], b : const(char)[][],
-       out c :size_t[], out w : size_t) void
+fn lcs(a: const(char)[][], b: const(char)[][],
+       out c :size_t[], out w: size_t) void
 {
 	w = b.length;
 	c = new size_t[](a.length * b.length);
@@ -49,7 +49,7 @@ fn lcs(a : const(char)[][], b : const(char)[][],
 			} else {
 				l := c[i*w+(j-1)];
 				r := c[(i-1)*w+j];
-				c[i*w+j] = l > r ? l : r;
+				c[i*w+j] = l > r ? l: r;
 			}
 		}
 	}

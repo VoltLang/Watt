@@ -3,22 +3,22 @@
 // See copyright notice in src/volt/license.d (BOOST ver. 1.0).
 module watt.text.source;
 
-import watt.text.utf : decode;
-import watt.text.ascii : isWhite;
-import watt.text.format : format;
+import watt.text.utf: decode;
+import watt.text.ascii: isWhite;
+import watt.text.format: format;
 
 
 class Source
 {
 public:
 	/// The location of the current character @p front.
-	loc : Location;
+	loc: Location;
 
 	/// @see empty.
 	alias eof = empty;
 
 private:
-	mSrc : SimpleSource;
+	mSrc: SimpleSource;
 
 public:
 	/**
@@ -31,7 +31,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	this(s : string, filename : string)
+	this(s: string, filename: string)
 	{
 		// mSrc call its own popFront.
 		mSrc.source = s;
@@ -108,7 +108,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	fn popFrontN(n : size_t)
+	fn popFrontN(n: size_t)
 	{
 		while (!eof && n != 0) {
 			popFront();
@@ -138,7 +138,7 @@ public:
 	 */
 	fn skipEndOfLine()
 	{
-		d : dchar;
+		d: dchar;
 		do {
 			d = front;
 			popFront();
@@ -158,7 +158,7 @@ public:
 	 * Returns:
 	 *   Unicode char at @p n or @p dchar.init at EOF.
 	 */
-	final fn lookahead(n : size_t, out lookaheadEOF : bool) dchar
+	final fn lookahead(n: size_t, out lookaheadEOF: bool) dchar
 	{
 		return mSrc.lookahead(n, out lookaheadEOF);
 	}
@@ -168,7 +168,7 @@ public:
 		return mSrc.mLastIndex;
 	}
 
-	final fn sliceFrom(mark : size_t) string
+	final fn sliceFrom(mark: size_t) string
 	{
 		return mSrc.mSrc[mark .. mSrc.mLastIndex];
 	}
@@ -183,22 +183,22 @@ struct SimpleSource
 {
 public:
 	/// Source code, assumed to be validated utf8.
-	mSrc : string;
+	mSrc: string;
 	/// Pointer into the string for the next character.
-	mNextIndex : size_t;
+	mNextIndex: size_t;
 	/// The index for mChar
-	mLastIndex : size_t;
+	mLastIndex: size_t;
 	/// The current unicode character.
-	mChar : dchar;
+	mChar: dchar;
 
 	/// @see empty.
 	alias eof = empty;
 
 	/// Have we reached EOF, if we have front = dchar.init.
-	empty : bool;
+	empty: bool;
 
 public:
-	@property fn source(src : string) string
+	@property fn source(src: string) string
 	{
 		mSrc = src;
 		mLastIndex = 0;
@@ -232,7 +232,7 @@ public:
 	 */
 	@property fn following() dchar
 	{
-		dummy : size_t = mNextIndex;
+		dummy: size_t = mNextIndex;
 		return decodeChar(ref dummy);
 	}
 
@@ -271,7 +271,7 @@ public:
 	 * Throws:
 	 *   UtfException if the source is not valid utf8.
 	 */
-	fn popFrontN(n : size_t)
+	fn popFrontN(n: size_t)
 	{
 		while (!empty && n != 0) {
 			popFront();
@@ -292,16 +292,16 @@ public:
 	 * Returns:
 	 *   Unicode char at @p n or @p dchar.init at empty.
 	 */
-	fn lookahead(n : size_t, out lookaheadEmpty : bool) dchar
+	fn lookahead(n: size_t, out lookaheadEmpty: bool) dchar
 	{
 		if (n == 0) {
 			lookaheadEmpty = empty;
 			return mChar;
 		}
 
-		c : dchar;
+		c: dchar;
 		index := mNextIndex;
-		for (i : size_t; i < n; i++) {
+		for (i: size_t; i < n; i++) {
 			c = decodeChar(ref index);
 			if (c == dchar.init) {
 				lookaheadEmpty = true;
@@ -314,7 +314,7 @@ public:
 	/**
 	 * Decodes a single utf8 code point at index in the given source.
 	 */
-	fn decodeChar(ref index : size_t) dchar
+	fn decodeChar(ref index: size_t) dchar
 	{
 		if (index >= source.length) {
 			return dchar.init;
@@ -332,10 +332,10 @@ public:
 struct Location
 {
 public:
-	filename : string;
-	line : size_t;
-	column : size_t;
-	length : size_t;
+	filename: string;
+	line: size_t;
+	column: size_t;
+	length: size_t;
 
 public:
 	fn toString() string
@@ -348,7 +348,7 @@ public:
 	 * end - begin == begin ... end
 	 * @see difference
 	 */
-	fn opSub(ref begin : Location) Location
+	fn opSub(ref begin: Location) Location
 	{
 		return difference(ref this, ref begin, ref begin);
 	}
@@ -359,15 +359,15 @@ public:
 	 * On mismatch of filename or if begin is after
 	 * end _default is returned.
 	 */
-	global fn difference(ref end : Location, ref begin : Location,
-	                     ref _default : Location) Location
+	global fn difference(ref end: Location, ref begin: Location,
+	                     ref _default: Location) Location
 	{
 		if (begin.filename != end.filename ||
 		    begin.line > end.line) {
 			return _default;
 		}
 
-		loc : Location;
+		loc: Location;
 		loc.filename = begin.filename;
 		loc.line = begin.line;
 		loc.column = begin.column;
@@ -382,7 +382,7 @@ public:
 		return loc;
 	}
 
-	fn spanTo(ref end : Location)
+	fn spanTo(ref end: Location)
 	{
 		if (line <= end.line && column < end.column) {
 			this = end - this;

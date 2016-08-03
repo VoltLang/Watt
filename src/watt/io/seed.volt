@@ -17,7 +17,7 @@ version (Windows) {
 	fn getHardwareSeedUint() u32
 	{
 		buf := new u32[](1);
-		hcpov : HCRYPTPROV;
+		hcpov: HCRYPTPROV;
 		if (!CryptAcquireContextA(&hcpov, null, null, PROV_RSA_FULL, 0)) {
 			throw new Exception("Can't get CryptoAPI provider.");
 		}
@@ -28,13 +28,13 @@ version (Windows) {
 		return buf[0];
 	}
 } else version (OSX || Linux) {
-	private import watt.io.streams : InputFileStream;
+	private import watt.io.streams: InputFileStream;
 
 	fn getHardwareSeedUint() u32
 	{
 		ifs := new InputFileStream("/dev/urandom");
-		ret : u32;
-		for (i : u32; i < 32; i += 8) {
+		ret: u32;
+		for (i: u32; i < 32; i += 8) {
 			ret |= cast(u32)((ifs.get() & 0xff) << i);
 		}
 		ifs.close();

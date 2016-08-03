@@ -18,7 +18,7 @@ version (Windows) {
 
 class FileException : Exception
 {
-	this(msg : string)
+	this(msg: string)
 	{
 		super(msg);
 	}
@@ -27,7 +27,7 @@ class FileException : Exception
 /**
  * Read the contents of the file pointed to by filename into a string with no verification.
  */
-fn read(filename : string) void[]
+fn read(filename: string) void[]
 {
 	if (!isFile(filename)) {
 		return null;
@@ -43,7 +43,7 @@ fn read(filename : string) void[]
 		throw new Exception("fseek failure.");
 	}
 
-	size : size_t = cast(size_t) ftell(fp);
+	size: size_t = cast(size_t) ftell(fp);
 	if (size == cast(size_t) -1) {
 		throw new Exception("ftell failure.");
 	}
@@ -54,7 +54,7 @@ fn read(filename : string) void[]
 	}
 
 	buf := new char[](size);
-	bytesRead : size_t = fread(cast(void*)buf.ptr, 1, size, fp);
+	bytesRead: size_t = fread(cast(void*)buf.ptr, 1, size, fp);
 	if (bytesRead != size) {
 		throw new Exception("read failure.");
 	}
@@ -69,20 +69,20 @@ fn read(filename : string) void[]
  *
  * Supports '*' and '?' wild cards. '*' matches zero or more characters, and '?' matches a single character.
  */
-fn globMatch(path : string, pattern : string) bool
+fn globMatch(path: string, pattern: string) bool
 {
-	patternIndex, pathIndex : size_t;
+	patternIndex, pathIndex: size_t;
 
 	while (patternIndex < pattern.length) {
-		patternC : dchar = decode(pattern, ref patternIndex);
+		patternC: dchar = decode(pattern, ref patternIndex);
 		switch (patternC) {
 		case '*':
 			if (patternIndex + 1 >= pattern.length)
 				return true;
 			if (pathIndex >= path.length)
 				return false;
-			nextPatternChar : dchar = decode(pattern, ref patternIndex);
-			pathC : dchar = decode(path, ref pathIndex);
+			nextPatternChar: dchar = decode(pattern, ref patternIndex);
+			pathC: dchar = decode(path, ref pathIndex);
 			if (nextPatternChar == '*') {
 				if (pathC != patternC) {
 					return false;
@@ -104,7 +104,7 @@ fn globMatch(path : string, pattern : string) bool
 		default:
 			if (pathIndex >= path.length)
 				return false;
-			pathC : dchar = decode(path, ref pathIndex);
+			pathC: dchar = decode(path, ref pathIndex);
 			if (pathC != patternC)
 				return false;
 			break;
@@ -114,9 +114,9 @@ fn globMatch(path : string, pattern : string) bool
 	return pathIndex == path.length;
 }
 
-version (Posix) fn searchDir(dirName : string, glob : string, dg : scope void delegate(string))
+version (Posix) fn searchDir(dirName: string, glob: string, dg: scope void delegate(string))
 {
-	dp : dirent*;
+	dp: dirent*;
 	dirp := opendir(toStringz(dirName));
 	if (dirp is null) {
 		throw new Exception(format("Couldn't open directory '%s'.", dirName));
@@ -135,9 +135,9 @@ version (Posix) fn searchDir(dirName : string, glob : string, dg : scope void de
 	closedir(dirp);
 }
 
-version (Windows) fn searchDir(dirName : string, glob : string, dg : scope void delegate(string))
+version (Windows) fn searchDir(dirName: string, glob: string, dg: scope void delegate(string))
 {
-	findData : WIN32_FIND_DATA;
+	findData: WIN32_FIND_DATA;
 	handle := FindFirstFileA(toStringz(dirName ~ "/*"), &findData);  // Use our own globbing function.
 	if ((cast(i32) handle) == INVALID_HANDLE_VALUE) {
 		error := GetLastError();
@@ -152,7 +152,7 @@ version (Windows) fn searchDir(dirName : string, glob : string, dg : scope void 
 		if (globMatch(toLower(path), toLower(glob))) {
 			dg(toString(cast(const(char)*) findData.cFileName.ptr));
 		}
-		bRetval : BOOL = FindNextFileA(handle, &findData);
+		bRetval: BOOL = FindNextFileA(handle, &findData);
 		if (bRetval == 0) {
 			error := GetLastError();
 			if (error == ERROR_NO_MORE_FILES) {
@@ -167,7 +167,7 @@ version (Windows) fn searchDir(dirName : string, glob : string, dg : scope void 
 /**
  * Returns true if a path exists and is not a directory.
  */
-fn isFile(path : scope const(char)[]) bool
+fn isFile(path: scope const(char)[]) bool
 {
 	return exists(path) && !isDir(path);
 }
@@ -175,17 +175,17 @@ fn isFile(path : scope const(char)[]) bool
 /**
  * Returns true if a given directory exists.
  */
-fn isDir(path : scope const(char)[]) bool
+fn isDir(path: scope const(char)[]) bool
 {
 	version (Windows) {
-		attr : DWORD = GetFileAttributesA(toStringz(path));
+		attr: DWORD = GetFileAttributesA(toStringz(path));
 		if (attr == INVALID_FILE_ATTRIBUTES) {
 			return false;
 		}
 
 		return (attr & FILE_ATTRIBUTE_DIRECTORY) != 0;	
 	} else version (Posix) {
-		buf : stat_t;
+		buf: stat_t;
 
 		if (stat(toStringz(path), &buf) != 0) {
 			return false;
@@ -200,7 +200,7 @@ fn isDir(path : scope const(char)[]) bool
 /**
  * Returns true if a given file exists.
  */
-fn exists(filename : const(char)[]) bool
+fn exists(filename: const(char)[]) bool
 {
 	fp := fopen(toStringz(filename), "r");
 	if (fp is null) {
@@ -213,7 +213,7 @@ fn exists(filename : const(char)[]) bool
 /**
  * Deletes a file.
  */
-fn remove(filename : const(char)[])
+fn remove(filename: const(char)[])
 {
 	if (unlink(toStringz(filename)) != 0) {
 		throw new FileException("couldn't delete file");

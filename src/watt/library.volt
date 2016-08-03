@@ -12,9 +12,9 @@ version(Windows) {
 	// XXX Proper way to import this.
 	extern(Windows)
 	{
-		fn LoadLibraryA(name : const(char)*) HMODULE;
-		fn FreeLibrary(lib : HMODULE) void*;
-		fn GetProcAddress(lib : HMODULE, name : const(char)*) void*;
+		fn LoadLibraryA(name: const(char)*) HMODULE;
+		fn FreeLibrary(lib: HMODULE) void*;
+		fn GetProcAddress(lib: HMODULE, name: const(char)*) void*;
 	}
 
 } else {
@@ -22,9 +22,9 @@ version(Windows) {
 	// XXX Proper way to import this.
 	extern(C)
 	{
-		fn dlopen(file : const(char)*, mode : i32) void*;
-		fn dlclose(handle : void*) i32;
-		fn dlsym(handle : void*, name : const(char)*) void*;
+		fn dlopen(file: const(char)*, mode: i32) void*;
+		fn dlclose(handle: void*) i32;
+		fn dlsym(handle: void*, name: const(char)*) void*;
 		fn dlerror() char*;
 	}
 
@@ -37,15 +37,15 @@ class Library
 {
 private:
 	version (Windows) {
-		ptr : HMODULE;
+		ptr: HMODULE;
 	} else {
-		ptr : void*;
+		ptr: void*;
 	}
 
 public:
-	global fn loads(files : string[]) Library
+	global fn loads(files: string[]) Library
 	{
-		for (i : size_t; i < files.length; i++) {
+		for (i: size_t; i < files.length; i++) {
 			l := load(files[i]);
 			if (l !is null) {
 				return l;
@@ -62,9 +62,9 @@ public:
 
 	version (Windows) {
 
-		global fn load(filename : string) Library
+		global fn load(filename: string) Library
 		{
-			ptr : void* = LoadLibraryA(filename.ptr);
+			ptr: void* = LoadLibraryA(filename.ptr);
 
 			if (ptr is null) {
 				return null;
@@ -73,7 +73,7 @@ public:
 			return new Library(ptr);
 		}
 
-		final fn symbol(symbol : string) void*
+		final fn symbol(symbol: string) void*
 		{
 			return GetProcAddress(ptr, symbol.ptr);
 		}
@@ -88,9 +88,9 @@ public:
 
 	} else version (Posix) {
 
-		global fn load(filename : string) Library
+		global fn load(filename: string) Library
 		{
-			ptr : void* = dlopen(filename.ptr, RTLD_NOW | RTLD_GLOBAL);
+			ptr: void* = dlopen(filename.ptr, RTLD_NOW | RTLD_GLOBAL);
 
 			if (ptr is null) {
 				return null;
@@ -99,7 +99,7 @@ public:
 			return new Library(ptr);
 		}
 
-		final fn symbol(symbol : string) void*
+		final fn symbol(symbol: string) void*
 		{
 			return dlsym(ptr, symbol.ptr);
 		}
@@ -114,12 +114,12 @@ public:
 
 	} else version (Emscripten) {
 
-		global fn load(filename : string) Library
+		global fn load(filename: string) Library
 		{
 			return null;
 		}
 
-		final fn symbol(symbol : string) void*
+		final fn symbol(symbol: string) void*
 		{
 			return null;
 		}
@@ -136,12 +136,12 @@ public:
 
 private:
 	version (Windows) {
-		this(ptr : HMODULE)
+		this(ptr: HMODULE)
 		{
 			this.ptr = ptr;
 		}
 	} else {
-		this(ptr : void*)
+		this(ptr: void*)
 		{
 			this.ptr = ptr;
 		}

@@ -22,7 +22,7 @@ public:
 	enum u32 MT_T = 15U;
 	enum u32 MT_C = 0xEFC60000U;
 	enum u32 MT_L = 18U;
-	fn MT_MAG(u : u32) u32
+	fn MT_MAG(u: u32) u32
 	{
 		if (u == 0) {
 			return 0;
@@ -51,10 +51,10 @@ public:
 	enum u32 defaultSeed = 5489U;
 
 public:
-	_y : u32;// = cast(u32) -1;
+	_y: u32;// = cast(u32) -1;
 
 public:
-	fn seed(value : u32 = 5489U/*defaultSeed*/)
+	fn seed(value: u32 = 5489U/*defaultSeed*/)
 	{
 		mt[0] = value;
 		for (mti = 1; mti < MT_N; ++mti) {
@@ -71,20 +71,20 @@ public:
 			seed();
 			return;
 		}
-		upperMask : u32 = ~((cast(u32) 1u << (MT_SZ * 8 - (MT_W - MT_R))) - 1);
-		lowerMask : u32 = (cast(u32) 1u << MT_R) - 1;
+		upperMask: u32 = ~((cast(u32) 1u << (MT_SZ * 8 - (MT_W - MT_R))) - 1);
+		lowerMask: u32 = (cast(u32) 1u << MT_R) - 1;
 
-		y : u32; // = void;
+		y: u32; // = void;
 
 		if (mti >= MT_N) {
 			// Generate N words at one time.
-			kk : u32 = 0;
-			limit1 : const(u32) = MT_N - MT_M;
+			kk: u32 = 0;
+			limit1: const(u32) = MT_N - MT_M;
 			for (; kk < limit1; ++kk) {
 				y = (mt[cast(u32)kk] & upperMask)|(mt[cast(u32)(kk + 1)] & lowerMask);
 				mt[cast(u32)kk] = cast(u32) (mt[cast(u32)(kk+MT_M)]^ (y >>> 1) ^ MT_MAG(cast(u32) y & 0x1U));
 			}
-			limit2 : const(u32) = MT_N - 1;
+			limit2: const(u32) = MT_N - 1;
 			for (; kk < limit2; ++kk) {
 				y = (mt[cast(u32)kk] & upperMask) | (mt[cast(u32)(kk + 1)] & lowerMask);
 				mt[cast(u32)kk] = cast(u32) (mt[cast(u32)(kk + (MT_M - MT_N))] ^ (y >>> 1) ^ MT_MAG(cast(u32) y & 0x1U));
@@ -124,23 +124,23 @@ public:
 		return false;
 	}
 
-	fn uniformUint(lower : u32, upper : u32) u32
+	fn uniformUint(lower: u32, upper: u32) u32
 	{
-		base : u32 = front;
+		base: u32 = front;
 		popFront();
 		return cast(u32)(lower + (upper - lower) * cast(f64)(base - RandomGenerator.min) / (RandomGenerator.max - RandomGenerator.min));
 	}
 
-	fn uniformInt(lower : i32, upper : i32) i32
+	fn uniformInt(lower: i32, upper: i32) i32
 	{
 		return cast(i32)uniformUint(cast(u32)lower, cast(u32)upper);
 	}
 
-	fn randomString(length : size_t) string
+	fn randomString(length: size_t) string
 	{
 		str := new char[](length);
 		foreach (i; 0 .. length) {
-			c : char;
+			c: char;
 			switch (uniformInt(0, 3)) {
 			case 0:
 				c = cast(char)uniformUint('0', '1' + 1U);
@@ -160,7 +160,7 @@ public:
 	}
 
 private:
-	private mt : u32[624/*MT_N*/];
-	private mti : u32;// = cast(uint) -1;
-	private inited : bool;
+	private mt: u32[624/*MT_N*/];
+	private mti: u32;// = cast(uint) -1;
+	private inited: bool;
 }

@@ -17,7 +17,7 @@ private enum FIVE_BYTE_MASK                  = 0xFC;
 private enum SIX_BYTE_MASK                   = 0xFE;
 private enum CONTINUING_MASK                 = 0xC0;
 
-private fn readU8(str : string, ref index : size_t) u8
+private fn readU8(str: string, ref index: size_t) u8
 {
 	if (index >= str.length) {
 		throw new MalformedUTF8Exception("unexpected end of stream");
@@ -26,22 +26,22 @@ private fn readU8(str : string, ref index : size_t) u8
 }
 
 /*
-private fn readChar(str string, ref index : size_t) dchar
+private fn readChar(str string, ref index: size_t) dchar
 {
 	u8 b = readU8(str, ref index);
 	return cast(dchar)(b & cast(u8)~ONE_BYTE_MASK);
 }
 */
 
-fn decode(str : string, ref index : size_t) dchar
+fn decode(str: string, ref index: size_t) dchar
 {
 	return vrt_decode_u8_d(str, ref index);
 }
 
 /// Return how many codepoints are in a given UTF-8 string.
-fn count(s : string) size_t
+fn count(s: string) size_t
 {
-	i, length : size_t;
+	i, length: size_t;
 	while (i < s.length) {
 		decode(s, ref i);
 		length++;
@@ -49,24 +49,24 @@ fn count(s : string) size_t
 	return length;
 }
 
-fn validate(s : string) void
+fn validate(s: string) void
 {
-	i : size_t;
+	i: size_t;
 	while (i < s.length) {
 		decode(s, ref i);
 	}
 }
 
 /// Encode c into a given UTF-8 array.
-fn encode(ref buf : char[], c : dchar) void
+fn encode(ref buf: char[], c: dchar) void
 {
 	buf ~= .encode(c);
 }
 
 /// Encode a unicode array into utf8
-fn encode(arr : dchar[]) string
+fn encode(arr: dchar[]) string
 {
-	buf : char[];
+	buf: char[];
 	foreach (dchar d; arr) {
 		encode(ref buf, d);
 	}
@@ -74,10 +74,10 @@ fn encode(arr : dchar[]) string
 }
 
 /// Encode c as UTF-8.
-fn encode(c : dchar) string
+fn encode(c: dchar) string
 {
-	ret : string;
-	fn dg(s : SinkArg) void {
+	ret: string;
+	fn dg(s: SinkArg) void {
 		ret = new string(s);
 	}
 
@@ -86,12 +86,12 @@ fn encode(c : dchar) string
 }
 
 /// Encode c as UTF-8.
-fn encode(dg : Sink, c : dchar) void
+fn encode(dg: Sink, c: dchar) void
 {
-	buf : char[6];
+	buf: char[6];
 	cval := cast(uint) c;
 
-	fn readU8(a : u32, b : u32) u8
+	fn readU8(a: u32, b: u32) u8
 	{
 		_byte := cast(u8) (a | (cval & b));
 		cval = cval >> 6;

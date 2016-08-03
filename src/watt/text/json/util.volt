@@ -4,10 +4,10 @@
 module watt.text.json.util;
 
 import core.exception;
-import core.stdc.stdlib : strtod;
-import watt.text.utf : encode;
-import watt.text.ascii : isDigit, isHexDigit, HEX_DIGITS;
-import watt.conv : toLong, toUlong, toLower;
+import core.stdc.stdlib: strtod;
+import watt.text.utf: encode;
+import watt.text.ascii: isDigit, isHexDigit, HEX_DIGITS;
+import watt.conv: toLong, toUlong, toLower;
 
 
 /**
@@ -15,7 +15,7 @@ import watt.conv : toLong, toUlong, toLower;
  */
 class JSONException : Exception
 {
-	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
+	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -26,7 +26,7 @@ class JSONException : Exception
  */
 class ParseException : JSONException
 {
-	this(msg : string, file : string = __FILE__, line : size_t = __LINE__)
+	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
 	{
 		super(msg, file, line);
 	}
@@ -36,9 +36,9 @@ class ParseException : JSONException
  * Returns true if data contains a non-digit, character.
  * If signed is false, '-' will make this function return false.
  */
-fn canBeInteger(data : const(char)[], signed : bool) bool
+fn canBeInteger(data: const(char)[], signed: bool) bool
 {
-	for (i : size_t = 0; i < data.length; ++i) {
+	for (i: size_t = 0; i < data.length; ++i) {
 		if (!isDigit(data[i]) && (!signed || data[i] != '-')) {
 			return false;
 		}
@@ -50,7 +50,7 @@ fn canBeInteger(data : const(char)[], signed : bool) bool
  * Parse a ulong from a JSON number string.
  * Returns true if a double was parsed, false otherwise.
  */
-fn parseUlong(data : const(char)[], out l : u64) bool
+fn parseUlong(data: const(char)[], out l: u64) bool
 {
 	if (!canBeInteger(data, false)) {
 		return false;
@@ -63,7 +63,7 @@ fn parseUlong(data : const(char)[], out l : u64) bool
  * Parse a long from a JSON number string.
  * Returns true if a double was parsed, false otherwise.
  */
-fn parseLong(data : const(char)[], out l : i64) bool
+fn parseLong(data: const(char)[], out l: i64) bool
 {
 	if (!canBeInteger(data, true)) {
 		return false;
@@ -77,9 +77,9 @@ fn parseLong(data : const(char)[], out l : i64) bool
  *
  * Returns true if a double was parsed, false otherwise.
  */
-fn parseDouble(data : const(char)[], out d : f64) bool
+fn parseDouble(data: const(char)[], out d: f64) bool
 {
-	buffer : char[];
+	buffer: char[];
 	return parseDouble(data, out d, ref buffer);
 }
 
@@ -89,7 +89,7 @@ fn parseDouble(data : const(char)[], out d : f64) bool
  *
  * Returns true if a double was parsed, false otherwise.
  */
-fn parseDouble(data : const(char)[], out d : f64, ref buffer : char[]) bool
+fn parseDouble(data: const(char)[], out d: f64, ref buffer: char[]) bool
 {
 	ptr := cast(const(void)*)data.ptr;
 	if (data[$-1] != '\0') {
@@ -104,7 +104,7 @@ fn parseDouble(data : const(char)[], out d : f64, ref buffer : char[]) bool
 	return true;
 }
 
-fn parseBool(data : const(char)[]) bool
+fn parseBool(data: const(char)[]) bool
 {
 	return toLower(data) == "true";
 }
@@ -112,9 +112,9 @@ fn parseBool(data : const(char)[]) bool
 /**
  * Unescape a JSON string and return it.
  */
-fn unescapeString(str : const(char)[]) const(char)[]
+fn unescapeString(str: const(char)[]) const(char)[]
 {
-	buffer : char[];
+	buffer: char[];
 	return unescapeString(str, ref buffer);
 }
 
@@ -122,16 +122,16 @@ fn unescapeString(str : const(char)[]) const(char)[]
  * Unescape a JSON string and return it, using a pre allocated buffer and
  * resizing it if needed.
  */
-fn unescapeString(str : const(char)[], ref buffer : char[]) const(char)[]
+fn unescapeString(str: const(char)[], ref buffer: char[]) const(char)[]
 {
 	needsEscape := false;
 	escaping := false;
-	hexBuffer : char[4];
-	bufferIndex : size_t;
-	toCopyIndex : size_t;
-	i : size_t;
+	hexBuffer: char[4];
+	bufferIndex: size_t;
+	toCopyIndex: size_t;
+	i: size_t;
 
-	fn doUnescape(unescaped : const(char)[])
+	fn doUnescape(unescaped: const(char)[])
 	{
 		if (!needsEscape) {
 			if (buffer.length < str.length) {
@@ -155,7 +155,7 @@ fn unescapeString(str : const(char)[], ref buffer : char[]) const(char)[]
 	}
 
 	for (i = 0; i < str.length; i++) {
-		c : char = str[i];
+		c: char = str[i];
 
 		if (escaping) {
 			switch (c) {
@@ -213,7 +213,7 @@ fn unescapeString(str : const(char)[], ref buffer : char[]) const(char)[]
 	return str;
 }
 
-private fn simpleCharToHex(c : char, buffer : char*)
+private fn simpleCharToHex(c: char, buffer: char*)
 {
     buffer[0] = HEX_DIGITS[c >> 4];
     buffer[1] = HEX_DIGITS[c & 0x0F];
@@ -222,9 +222,9 @@ private fn simpleCharToHex(c : char, buffer : char*)
 /**
  * Escapes a JSON string and returns it.
  */
-fn escapeString(str : const(char)[]) const(char)[]
+fn escapeString(str: const(char)[]) const(char)[]
 {
-	buffer : char[];
+	buffer: char[];
 	return escapeString(str, ref buffer);
 }
 
@@ -232,15 +232,15 @@ fn escapeString(str : const(char)[]) const(char)[]
  * Escapes a JSON string and returns it, using a pre allocated buffer and
  * resizing it if needed.
  */
-fn escapeString(str : const(char)[], ref buffer : char[]) const(char)[]
+fn escapeString(str: const(char)[], ref buffer: char[]) const(char)[]
 {
 	needsEscape := false;
-	bufferIndex : size_t;
-	toCopyIndex : size_t;
-	i : size_t = 0;
-	hexBuffer : char[6] = ['\\', 'u', '0', '0', '0', '0'];
+	bufferIndex: size_t;
+	toCopyIndex: size_t;
+	i: size_t = 0;
+	hexBuffer: char[6] = ['\\', 'u', '0', '0', '0', '0'];
 
-	fn doEscape(escape : const(char)[])
+	fn doEscape(escape: const(char)[])
 	{
 		// is it the first encountered escape?
 		if (!needsEscape) {
@@ -269,7 +269,7 @@ fn escapeString(str : const(char)[], ref buffer : char[]) const(char)[]
 	}
 
 	for (i = 0; i < str.length; ++i) {
-		c : char = str[i];
+		c: char = str[i];
 
 		switch (c) {
 			case '"':

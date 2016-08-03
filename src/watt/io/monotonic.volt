@@ -5,7 +5,7 @@
 module vrt.time;
 
 
-global ticksPerSecond : i64;
+global ticksPerSecond: i64;
 
 global this()
 {
@@ -22,7 +22,7 @@ global this()
 	}
 }
 
-import core.stdc.stdlib : exit;
+import core.stdc.stdlib: exit;
 
 version (Windows) {
 
@@ -33,7 +33,7 @@ version (Windows) {
 
 	fn windowsTicksPerSecond() i64
 	{
-		ticks : i64;
+		ticks: i64;
 		if (QueryPerformanceFrequency(&ticks) == 0) {
 			exit(-1);
 		}
@@ -42,7 +42,7 @@ version (Windows) {
 
 	fn ticks() i64
 	{
-		ticks : i64;
+		ticks: i64;
 		if (QueryPerformanceCounter(&ticks) == 0) {
 			exit(-1);
 		}
@@ -54,8 +54,8 @@ version (Windows) {
 	extern(C) {
 		struct mach_timebase_info_data_t
 		{
-			numer : u32;
-			denom : u32;
+			numer: u32;
+			denom: u32;
 		}
 
 		alias mach_timebase_info_t = mach_timebase_info_data_t*;
@@ -70,12 +70,12 @@ version (Windows) {
 	 */
 	fn machTicksPerSecond() i64
 	{
-		info : mach_timebase_info_data_t;
+		info: mach_timebase_info_data_t;
 		if(mach_timebase_info(&info) != 0) {
 			exit(-1);
 		}
 
-		scaledDenom : i64 = 1_000_000_000L * info.denom;
+		scaledDenom: i64 = 1_000_000_000L * info.denom;
 		if (scaledDenom % info.numer != 0) {
 			exit(-1);
 		}
@@ -92,9 +92,9 @@ version (Windows) {
 
 	import core.posix.time;
 
-	fn posixTicksPerSecond(clock : i32) i64
+	fn posixTicksPerSecond(clock: i32) i64
 	{
-		ts : timespec;
+		ts: timespec;
 		if (clock_getres(clock, &ts) !=  0) {
 			exit(-1);
 		}
@@ -103,9 +103,9 @@ version (Windows) {
 			1_000_000_000L / ts.tv_nsec;
 	}
 
-	fn posixTicks(clock : i32) i64
+	fn posixTicks(clock: i32) i64
 	{
-		ts : timespec;
+		ts: timespec;
 		if (clock_gettime(clock, &ts) != 0) {
 			exit(-1);
 		}
@@ -124,7 +124,7 @@ version (Windows) {
  * Grabbed from druntime, good thing its BOOST v1.0 as well.
  */
 @safe pure nothrow
-fn convClockFreq(ticks : i64, srcTicksPerSecond : i64, dstTicksPerSecond : i64) i64
+fn convClockFreq(ticks: i64, srcTicksPerSecond: i64, dstTicksPerSecond: i64) i64
 {
 	// This would be more straightforward with floating point arithmetic,
 	// but we avoid it here in order to avoid the rounding errors that that

@@ -13,15 +13,15 @@ alias SinkArg = scope const(char)[];
 struct StringSink
 {
 private:
-	mStore : char[1024];
-	mArr : char[];
-	mLength : size_t;
+	mStore: char[1024];
+	mArr: char[];
+	mLength: size_t;
 
 	enum size_t minSize = 16;
 	enum size_t maxSize = 2048;
 
 public:
-	fn sink(str : SinkArg) void
+	fn sink(str: SinkArg) void
 	{
 		newSize := str.length + mLength;
 		if (mArr.length == 0) {
@@ -65,7 +65,7 @@ public:
 	/**
 	 * Safely get the backing storage from the sink without coping.
 	 */
-	fn toSink(sink : Sink) void
+	fn toSink(sink: Sink) void
 	{
 		return sink(mArr[0 .. mLength]);
 	}

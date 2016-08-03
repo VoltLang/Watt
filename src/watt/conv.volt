@@ -3,29 +3,29 @@
 module watt.conv;
 
 import core.exception;
-import core.stdc.stdlib : strtof, strtod;
-import core.stdc.stdio : snprintf;
-import core.stdc.string : strlen;
-import watt.text.ascii : isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
-import watt.text.format : format;
-import watt.text.utf : encode;
-import watt.text.sink : StringSink;
+import core.stdc.stdlib: strtof, strtod;
+import core.stdc.stdio: snprintf;
+import core.stdc.string: strlen;
+import watt.text.ascii: isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
+import watt.text.format: format;
+import watt.text.utf: encode;
+import watt.text.sink: StringSink;
 
 
 class ConvException : Exception
 {
-	this(msg : string)
+	this(msg: string)
 	{
 		super(msg);
 	}
 }
 
-fn toLower(s : string) string
+fn toLower(s: string) string
 {
-	dst : StringSink;
+	dst: StringSink;
 	// @TODO extend to support all lowercase.
 	// https://www-01.ibm.com/support/knowledgecenter/ssw_ibm_i_71/nls/rbagslowtoupmaptable.htm
-	foreach (c : dchar; s) {
+	foreach (c: dchar; s) {
 		switch (c) {
 		case 'Α': dst.sink("α"); break;
 		case 'Γ': dst.sink("γ"); break;
@@ -36,32 +36,32 @@ fn toLower(s : string) string
 	return dst.toString();
 }
 
-fn toUpper(s : string) string
+fn toUpper(s: string) string
 {
 	ns := new char[](s.length);
-	for (i : size_t = 0; i < s.length; i++) {
+	for (i: size_t = 0; i < s.length; i++) {
 		ns[i] = cast(char) asciiToUpper(s[i]);
 	}
 	return cast(string) ns;
 }
 
-fn toUlong(s : const(char)[], base : i32 = 10) u64
+fn toUlong(s: const(char)[], base: i32 = 10) u64
 {
 	if (base > 10 || base <= 0) {
 		if (base != 16) {
 			throw new ConvException(format("Don't know how to handle base %s.", base));
 		}
 	}
-	integer : u64;
-	column : u64 = 1;
+	integer: u64;
+	column: u64 = 1;
 	for (i := s.length; i > 0; i--) {
-		c : char = s[i - 1];
+		c: char = s[i - 1];
 		if (base != 16 && !isDigit(c)) {
 			throw new ConvException(format("Found non digit %s.", c));
 		} else if (base == 16 && !isHexDigit(c)) {
 			throw new ConvException(format("Found non hex digit %s.", c));
 		}
-		digit : u64;
+		digit: u64;
 		if (isDigit(c)) {
 			digit = (cast(u64)c) - (cast(u64)'0');
 		} else if (isHexDigit(c)) {
@@ -77,9 +77,9 @@ fn toUlong(s : const(char)[], base : i32 = 10) u64
 	return integer;
 }
 
-fn toLong(s : const(char)[], base : i32 = 10) i64
+fn toLong(s: const(char)[], base: i32 = 10) i64
 {
-	multiply : i64 = 1;
+	multiply: i64 = 1;
 	if (s.length > 0 && s[0] == '-') {
 		s = s[1 .. $];
 		multiply = -1;
@@ -88,74 +88,74 @@ fn toLong(s : const(char)[], base : i32 = 10) i64
 	return v * multiply;
 }
 
-fn toInt(s : const(char)[], base : i32 = 10) i32
+fn toInt(s: const(char)[], base: i32 = 10) i32
 {
 	v := toLong(s, base);
 	return cast(i32)v;
 }
 
-fn toUint(s : const(char)[], base : i32 = 10) u32
+fn toUint(s: const(char)[], base: i32 = 10) u32
 {
 	v := toUlong(s, base);
 	return cast(u32)v;
 }
 
-fn toFloat(s : string) f32
+fn toFloat(s: string) f32
 {
-	cstr : const(char)* = toStringz(s);
+	cstr: const(char)* = toStringz(s);
 	return strtof(cstr, null);
 }
 
-fn toDouble(s : string) f64
+fn toDouble(s: string) f64
 {
-	cstr : const(char)* = toStringz(s);
+	cstr: const(char)* = toStringz(s);
 	return strtod(cstr, null);
 }
 
-fn toString(b : u8) const(char)[]
+fn toString(b: u8) const(char)[]
 {
 	return toStringUnsigned(b, 3);
 }
 
-fn toString(b : i8) const(char)[]
+fn toString(b: i8) const(char)[]
 {
 	return toStringSigned(b, 4);
 }
 
-fn toString(s : u16) const(char)[]
+fn toString(s: u16) const(char)[]
 {
 	return toStringUnsigned(s, 5);
 }
 
-fn toString(s : i16) const(char)[]
+fn toString(s: i16) const(char)[]
 {
 	return toStringSigned(s, 6);
 }
 
-fn toString(i : u32) const(char)[]
+fn toString(i: u32) const(char)[]
 {
 	return toStringUnsigned(i, 10);
 }
 
-fn toString(i : i32) const(char)[]
+fn toString(i: i32) const(char)[]
 {
 	return toStringSigned(i, 11);
 }
 
-fn toString(l : u64) const(char)[]
+fn toString(l: u64) const(char)[]
 {
 	return toStringUnsigned(l, 19);
 }
 
-fn toString(l : i64) const(char)[]
+fn toString(l: i64) const(char)[]
 {
 	return toStringSigned(l, 20);
 }
 
-fn toString(f : f32) const(char)[]
+fn toString(f: f32) const(char)[]
 {
-	buf : char[1024];
-	retval : i32 = snprintf(buf.ptr, buf.length, "%f", f);
+	buf: char[1024];
+	retval: i32 = snprintf(buf.ptr, buf.length, "%f", f);
 
 	if (retval < 0) {
 		throw new ConvException("couldn't convert float to string.");
@@ -163,10 +163,10 @@ fn toString(f : f32) const(char)[]
 	return new string(buf[0 .. cast(size_t)retval]);
 }
 
-fn toString(d : f64) const(char)[]
+fn toString(d: f64) const(char)[]
 {
-	buf : char[1024];
-	retval : i32 = snprintf(buf.ptr, buf.length, "%f", d);
+	buf: char[1024];
+	retval: i32 = snprintf(buf.ptr, buf.length, "%f", d);
 
 	if (retval < 0) {
 		throw new ConvException("couldn't convert double to string.");
@@ -174,18 +174,18 @@ fn toString(d : f64) const(char)[]
 	return new string(buf[0 .. cast(size_t)retval]);
 }
 
-fn toString(p : void*) const(char)[]
+fn toString(p: void*) const(char)[]
 {
 	u := cast(size_t) p;
 	return "0x" ~ toStringHex(u);
 }
 
-fn toString(b : bool) const(char)[]
+fn toString(b: bool) const(char)[]
 {
-	return b ? "true" : "false";
+	return b ? "true": "false";
 }
 
-fn charToString(c : dchar) const(char)[]
+fn charToString(c: dchar) const(char)[]
 {
 	if ((cast(u32) c) >= 255) {
 		throw new Error("charToString: non ASCII dchars unimplemented.");
@@ -197,14 +197,14 @@ fn charToString(c : dchar) const(char)[]
 
 // maxLength == maximum length of output string, including '-' for signed integers.
 
-private fn toStringUnsigned(i : u64, maxLength : size_t) const(char)[]
+private fn toStringUnsigned(i: u64, maxLength: size_t) const(char)[]
 {
-	index : size_t = 0u;
+	index: size_t = 0u;
 	buf := new char[](maxLength);
 
 	inLoop := true;
 	while (inLoop) {
-		remainder : u64 = i % 10;
+		remainder: u64 = i % 10;
 		c := cast(char)(cast(ulong)'0' + remainder);
 		i = i / 10;
 		buf[index++] = c;
@@ -213,8 +213,8 @@ private fn toStringUnsigned(i : u64, maxLength : size_t) const(char)[]
 	buf = buf[0 .. index];
 
 	outbuf := new char[](maxLength);
-	bindex : size_t = index;
-	oindex : size_t = 0u;
+	bindex: size_t = index;
+	oindex: size_t = 0u;
 	while (oindex != index) {
 		bindex--;
 		outbuf[oindex] = buf[bindex];
@@ -224,18 +224,18 @@ private fn toStringUnsigned(i : u64, maxLength : size_t) const(char)[]
 	return outbuf[0 .. oindex];
 }
 
-private fn toStringSigned(i : i64, maxLength : size_t) const(char)[]
+private fn toStringSigned(i: i64, maxLength: size_t) const(char)[]
 {
-	index : size_t = 0u;
+	index: size_t = 0u;
 	buf := new char[](maxLength);
-	negative : bool = i < 0;
+	negative: bool = i < 0;
 	if (negative) {
 		i = i * -1;
 	}
 	
 	inLoop := true;
 	while (inLoop) {
-		remainder : i64 = i % 10;
+		remainder: i64 = i % 10;
 		c := cast(char)(cast(i64)'0' + remainder);
 		i = i / 10;
 		buf[index++] = c;
@@ -247,8 +247,8 @@ private fn toStringSigned(i : i64, maxLength : size_t) const(char)[]
 	buf = buf[0 .. index];
 
 	outbuf := new char[](maxLength);
-	bindex : size_t = index;
-	oindex : size_t = 0u;
+	bindex: size_t = index;
+	oindex: size_t = 0u;
 	while (oindex != index) {
 		bindex--;
 		outbuf[oindex] = buf[bindex];
@@ -259,22 +259,22 @@ private fn toStringSigned(i : i64, maxLength : size_t) const(char)[]
 }
 
 /// Returns an upper case hex string from the given unsigned long.
-fn toStringHex(i : u64) const(char)[]
+fn toStringHex(i: u64) const(char)[]
 {
 	buf := new char[](0);
 
 	inLoop := true;
 	while (inLoop) {
-		remainder : u64 = i % 16;
-		c : char = HEX_DIGITS[remainder];
+		remainder: u64 = i % 16;
+		c: char = HEX_DIGITS[remainder];
 		i = i / 16;
 		buf ~= c;
 		inLoop = i != 0;
 	}
 
 	outbuf := new char[](buf.length);
-	bindex : size_t = buf.length;
-	oindex : size_t = 0u;
+	bindex: size_t = buf.length;
+	oindex: size_t = 0u;
 	while (oindex != buf.length) {
 		bindex--;
 		outbuf[oindex] = buf[bindex];
@@ -287,7 +287,7 @@ fn toStringHex(i : u64) const(char)[]
 /**
  * Given a Volt string s, return a pointer to a nul terminated string.
  */
-fn toStringz(s : const(char)[]) const(char)*
+fn toStringz(s: const(char)[]) const(char)*
 {
 	cstr := new char[](s.length + 1);
 	cstr[0 .. $-1] = s[0 .. $];
@@ -298,7 +298,7 @@ fn toStringz(s : const(char)[]) const(char)*
 /**
  * Given a nul terminated string s, return a Volt string.
  */
-fn toString(s : scope const(char)*) string
+fn toString(s: scope const(char)*) string
 {
 	if (s is null) {
 		return null;
@@ -313,7 +313,7 @@ fn toString(s : scope const(char)*) string
 	return cast(string) str;
 }
 
-fn toString(s : const(char)*) string
+fn toString(s: const(char)*) string
 {
 	if (s is null) {
 		return null;

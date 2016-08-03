@@ -3,18 +3,18 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.text.html;
 
-import watt.conv : toString, toUint;
-import watt.text.sink : Sink, StringSink;
-import watt.text.string : indexOf;
+import watt.conv: toString, toUint;
+import watt.text.sink: Sink, StringSink;
+import watt.text.string: indexOf;
 
 
 /**
  * Returns the HTML escaped version of a given string.
  * According to the OWASP rules.
  */
-fn htmlEscape(str : string) string
+fn htmlEscape(str: string) string
 {
-	dst : StringSink;
+	dst: StringSink;
 	htmlEscape(dst.sink, str);
 	return dst.toString();
 }
@@ -23,12 +23,12 @@ fn htmlEscape(str : string) string
  * Writes the HTML escaped version of a given string to the given dg.
  * According to the OWASP rules:
  */
-fn htmlEscape(dg : Sink, str : string)
+fn htmlEscape(dg: Sink, str: string)
 {
-	i, org : size_t;
+	i, org: size_t;
 	// This is okay because we don't escape UTF-8 codes.
 	while (i < str.length) {
-		ch : char = str[i];
+		ch: char = str[i];
 		switch (ch) {
 		default:
 			i++;
@@ -62,9 +62,9 @@ fn htmlEscape(dg : Sink, str : string)
 /**
  * Returns the HTML escaped version of a given string, ignoring any html tags.
  */
-fn htmlEscapeIgnoreTags(str : string) string
+fn htmlEscapeIgnoreTags(str: string) string
 {
-	dst : StringSink;
+	dst: StringSink;
 	htmlEscapeIgnoreTags(dst.sink, str);
 	return dst.toString();
 }
@@ -73,14 +73,14 @@ fn htmlEscapeIgnoreTags(str : string) string
  * Writes the HTML escaped version of a given string to
  * the given dg, ignoring any tags.
  */
-fn htmlEscapeIgnoreTags(dg : Sink, str : string)
+fn htmlEscapeIgnoreTags(dg: Sink, str: string)
 {
-	eatingHtmlTag : bool;
-	i, org : size_t;
+	eatingHtmlTag: bool;
+	i, org: size_t;
 
 	// This is okay because we don't escape UTF-8 codes.
 	while (i < str.length) {
-		ch : char = str[i];
+		ch: char = str[i];
 
 		if (eatingHtmlTag) {
 			i++;
@@ -129,9 +129,9 @@ fn htmlEscapeIgnoreTags(dg : Sink, str : string)
 /**
  * Escape every single character.
  */
-fn htmlEscapeAll(str : string) string
+fn htmlEscapeAll(str: string) string
 {
-	dst : StringSink;
+	dst: StringSink;
 	htmlEscapeAll(dst.sink, str);
 	return dst.toString();
 }
@@ -139,9 +139,9 @@ fn htmlEscapeAll(str : string) string
 /**
  * Escape every single character.
  */
-fn htmlEscapeAll(dg : Sink, str : string)
+fn htmlEscapeAll(dg: Sink, str: string)
 {
-	foreach (d : dchar; str) {
+	foreach (d: dchar; str) {
 		dg("&#");
 		// @TODO add sink version of to string.
 		dg(toString(cast(u32)d));

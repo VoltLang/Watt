@@ -4,10 +4,10 @@
 module core.stdc.wchar_;
 
 private import core.stdc.config;
-private import core.stdc.stdarg : va_list;
-private import core.stdc.stdio : FILE;
-public import core.stdc.stddef : wchar_t;
-public import core.stdc.time : tm, time_t;
+private import core.stdc.stdarg: va_list;
+private import core.stdc.stdio: FILE;
+public import core.stdc.stddef: wchar_t;
+public import core.stdc.time: tm, time_t;
 public import core.stdc.stdint;  // for WCHAR_MIN, WCHAR_MAX
 
 

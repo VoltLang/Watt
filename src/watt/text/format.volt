@@ -8,10 +8,10 @@ import watt.varargs;
 import watt.conv;
 
 
-fn format(formatString : const(char)[], ...) string
+fn format(formatString: const(char)[], ...) string
 {
-	vl : va_list;
-	buf : char[];
+	vl: va_list;
+	buf: char[];
 
 	va_start(vl);
 	formatImpl(formatString, ref _typeids, ref buf, ref vl);
@@ -19,13 +19,13 @@ fn format(formatString : const(char)[], ...) string
 	return cast(string) buf;
 }
 
-fn formatImpl(formatString : const(char)[], ref _typeids : TypeInfo[], ref buf : char[], ref vl : va_list)
+fn formatImpl(formatString: const(char)[], ref _typeids: TypeInfo[], ref buf: char[], ref vl: va_list)
 {
-	formatting : bool;
-	index : i32;
+	formatting: bool;
+	index: i32;
 
-	for (i : u32 = 0; i < formatString.length; i++) {
-		c : char = formatString[i];
+	for (i: u32 = 0; i < formatString.length; i++) {
+		c: char = formatString[i];
 		if (formatting) {
 			switch (c) {
 			case '%':
@@ -77,12 +77,12 @@ fn formatImpl(formatString : const(char)[], ref _typeids : TypeInfo[], ref buf :
 	buf = buf[0 .. $-1];  // Disregard the nul when it comes to length.
 }
 
-private fn formatNull(ref buf : char[], ref vl : va_list)
+private fn formatNull(ref buf: char[], ref vl: va_list)
 {
 	buf ~= cast(char[]) "null";
 }
 
-private fn formatObject(ref buf : char[], ref vl : va_list)
+private fn formatObject(ref buf: char[], ref vl: va_list)
 {
 	obj := va_arg!Object(vl);
 	if (obj is null) {
@@ -92,7 +92,7 @@ private fn formatObject(ref buf : char[], ref vl : va_list)
 	buf ~= cast(char[]) obj.toString();
 }
 
-private fn formatString(ref buf : char[], ref vl : va_list)
+private fn formatString(ref buf: char[], ref vl: va_list)
 {
 	s := va_arg!char[](vl);
 	if (s.length > 1 && s[s.length - 1] == '\0') {
@@ -101,75 +101,75 @@ private fn formatString(ref buf : char[], ref vl : va_list)
 	buf ~= s;
 }
 
-private fn formatByte(ref buf : char[], ref vl : va_list)
+private fn formatByte(ref buf: char[], ref vl: va_list)
 {
 	b := va_arg!i8(vl);
 	buf ~= cast(char[]) toString(b);
 }
 
-private fn formatUbyte(ref buf : char[], ref vl : va_list)
+private fn formatUbyte(ref buf: char[], ref vl: va_list)
 {
 	b := va_arg!u8(vl);
 	buf ~= cast(char[]) toString(b);
 }
 
-private fn formatShort(ref buf : char[], ref vl : va_list)
+private fn formatShort(ref buf: char[], ref vl: va_list)
 {
 	s := va_arg!i16(vl);
 	buf ~= cast(char[]) toString(s);
 }
 
-private fn formatUshort(ref buf : char[], ref vl : va_list)
+private fn formatUshort(ref buf: char[], ref vl: va_list)
 {
 	s := va_arg!u16(vl);
 	buf ~= cast(char[]) toString(s);
 }
 
-private fn formatInt(ref buf : char[], ref vl : va_list)
+private fn formatInt(ref buf: char[], ref vl: va_list)
 {
 	i := va_arg!i32(vl);
 	buf ~= cast(char[]) toString(i);
 }
 
-private fn formatUint(ref buf : char[], ref vl : va_list)
+private fn formatUint(ref buf: char[], ref vl: va_list)
 {
 	i := va_arg!u32(vl);
 	buf ~= cast(char[]) toString(i);
 }
 
-private fn formatLong(ref buf : char[], ref vl : va_list)
+private fn formatLong(ref buf: char[], ref vl: va_list)
 {
 	l := va_arg!i64(vl);
 	buf ~= cast(char[]) toString(l);
 }
 
-private fn formatUlong(ref buf : char[], ref vl : va_list)
+private fn formatUlong(ref buf: char[], ref vl: va_list)
 {
 	l := va_arg!u64(vl);
 	buf ~= cast(char[]) toString(l);
 }
 
-private fn formatFloat(ref buf : char[], ref vl : va_list)
+private fn formatFloat(ref buf: char[], ref vl: va_list)
 {
 	f := va_arg!f32(vl);
 	buf ~= cast(char[]) toString(f);
 }
 
-private fn formatDouble(ref buf : char[], ref vl : va_list)
+private fn formatDouble(ref buf: char[], ref vl: va_list)
 {
 	d := va_arg!f64(vl);
 	buf ~= cast(char[]) toString(d);
 }
 
-private fn formatChar(ref buf : char[], ref vl : va_list)
+private fn formatChar(ref buf: char[], ref vl: va_list)
 {
 	c := va_arg!char(vl);
 	buf ~= c;
 }
 
-private fn formatHex(id : TypeInfo, ref buf : char[], ref vl : va_list)
+private fn formatHex(id: TypeInfo, ref buf: char[], ref vl: va_list)
 {
-	ul : u64;
+	ul: u64;
 	switch (id.type) {
 	case Type.I8:
 		ul = cast(u64)va_arg!i8(vl);
@@ -201,14 +201,14 @@ private fn formatHex(id : TypeInfo, ref buf : char[], ref vl : va_list)
 	buf ~= cast(char[])toStringHex(ul);
 }
 
-private fn formatPointer(ref buf : char[], ref vl : va_list)
+private fn formatPointer(ref buf: char[], ref vl: va_list)
 {
 	p := va_arg!void*(vl);
 	buf ~= cast(char[]) toString(p);
 }
 
 
-private fn formatArray(id : TypeInfo, ref buf : char[], ref vl : va_list)
+private fn formatArray(id: TypeInfo, ref buf: char[], ref vl: va_list)
 {
 	if (id.base.type == Type.Char) {
 		formatString(ref buf, ref vl);
@@ -234,7 +234,7 @@ private fn formatArray(id : TypeInfo, ref buf : char[], ref vl : va_list)
 	}
 }
 
-private fn formatType(id : TypeInfo, ref buf : char[], ref vl : va_list)
+private fn formatType(id: TypeInfo, ref buf: char[], ref vl: va_list)
 {
 	switch (id.type) {
 	case Type.Class:
@@ -287,8 +287,8 @@ private fn formatType(id : TypeInfo, ref buf : char[], ref vl : va_list)
 	}
 }
 
-private fn formatBool(ref buf : char[], ref vl : va_list)
+private fn formatBool(ref buf: char[], ref vl: va_list)
 {
 	b := va_arg!bool(vl);
-	buf ~= cast(char[]) (b ? "true" : "false");
+	buf ~= cast(char[]) (b ? "true": "false");
 }

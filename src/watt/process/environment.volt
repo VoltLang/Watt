@@ -18,7 +18,7 @@ version(Posix) fn retriveEnvironment() Environment
 {
 	env := new Environment();
 	ptr := environ;
-	for (s : char* = *ptr; s !is null; s = *(++ptr)) {
+	for (s: char* = *ptr; s !is null; s = *(++ptr)) {
 		str := s[0 .. strlen(s)];
 		pos := indexOf(str, '=');
 		valuePos := cast(size_t)(pos + 1);
@@ -27,7 +27,7 @@ version(Posix) fn retriveEnvironment() Environment
 			continue;
 		}
 
-		key, value : string;
+		key, value: string;
 
 		key = new string(str[0 .. pos]);
 		if (valuePos < str.length) {
@@ -52,16 +52,16 @@ version(Windows) fn retriveEnvironment() Environment
 class Environment
 {
 public:
-	store : string[string];
+	store: string[string];
 
 
 public:
-	fn isSet(key : string) bool
+	fn isSet(key: string) bool
 	{
 		return (key in store) !is null;
 	}
 
-	fn getOrNull(key : string) string
+	fn getOrNull(key: string) string
 	{
 		r := key in store;
 		if (r !is null) {
@@ -70,12 +70,12 @@ public:
 		return null;
 	}
 
-	fn set(key : string, value : string) void
+	fn set(key: string, value: string) void
 	{
 		store[key] = value;
 	}
 
-	fn remove(key : string) void
+	fn remove(key: string) void
 	{
 		store.remove(key);
 	}
@@ -92,5 +92,5 @@ version (OSX) {
 	}
 
 } else version (Posix) {
-	extern extern(C) global environ : char**;
+	extern extern(C) global environ: char**;
 }

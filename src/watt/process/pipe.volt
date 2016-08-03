@@ -22,12 +22,12 @@ version(Windows) {
 	 * Run the given command and read back the output into a string.
 	 * Waits for the command to complete before returning.
 	 */
-	fn getOutputWindows(cmd : string, args : string[]) string
+	fn getOutputWindows(cmd: string, args: string[]) string
 	{
-		saAttr : SECURITY_ATTRIBUTES;
-		hOut, hIn, hProcess : HANDLE;
-		uRet : u32;
-		bRet : BOOL;
+		saAttr: SECURITY_ATTRIBUTES;
+		hOut, hIn, hProcess: HANDLE;
+		uRet: u32;
+		bRet: BOOL;
 
 		saAttr.nLength = cast(u32)typeid(saAttr).size;
 		saAttr.bInheritHandle = true;
@@ -62,7 +62,7 @@ version(Windows) {
 		}
 
 		// Get the size of the output.
-		sizeHigh : DWORD;
+		sizeHigh: DWORD;
 		sizeLow := GetFileSize(hIn, &sizeHigh);
 		if (sizeHigh) {
 			throw new ProcessException("Output is way to big");
@@ -90,7 +90,7 @@ version(Posix) {
 	 * Run the given command and read back the output into a string.
 	 * Waits for the command to complete before returning.
 	 */
-	fn getOutputPosix(cmd : string, args : string[]) string
+	fn getOutputPosix(cmd: string, args: string[]) string
 	{
 		cmdPtr := toArgsPosix(cmd, args);
 		fp := popen(cmdPtr, "r");
@@ -98,7 +98,7 @@ version(Posix) {
 			throw new ProcessException("failed to launch the program");
 		}
 
-		size : size_t = 4096;
+		size: size_t = 4096;
 		buf := new char[](size);
 		bytesRead := fread(cast(void*)buf.ptr, 1, size, fp);
 		if (bytesRead > size) {

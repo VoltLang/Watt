@@ -8,12 +8,12 @@ version (Windows || Posix):
 import core.exception;
 
 version (Windows) {
-	import core.windows.windows : HMODULE, DWORD, CreateDirectoryA;
-	extern(C) fn _fullpath(char*, const(char)*, length : size_t) char*;
-	extern(C) fn _wfullpath(wchar*, const(wchar)*, length : size_t) char*;
+	import core.windows.windows: HMODULE, DWORD, CreateDirectoryA;
+	extern(C) fn _fullpath(char*, const(char)*, length: size_t) char*;
+	extern(C) fn _wfullpath(wchar*, const(wchar)*, length: size_t) char*;
 } else version (Posix) {
-	import core.posix.sys.stat : cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
-	import core.posix.sys.types : mode_t;
+	import core.posix.sys.stat: cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
+	import core.posix.sys.types: mode_t;
 	extern(C) fn realpath(const(char)*, char*) char*;
 }
 
@@ -22,19 +22,19 @@ version (Windows) {
 } else version (OSX) {
 	extern(C) fn _NSGetExecutablePath(char*, u32*) i32;
 } else version (Linux) {
-	import core.posix.sys.types : ssize_t;
-	extern(C) fn readlink(path : const(char)*, buf : char*, bufsiz : size_t) ssize_t;
+	import core.posix.sys.types: ssize_t;
+	extern(C) fn readlink(path: const(char)*, buf: char*, bufsiz: size_t) ssize_t;
 } else {
 	static assert(false, "unsupported platform");
 }
 
-import core.stdc.stdlib : free;
-import watt.conv : toString, toStringz;
-import watt.text.string : indexOf, lastIndexOf;
-import watt.math.random : RandomGenerator;
-import watt.process : getEnv;
+import core.stdc.stdlib: free;
+import watt.conv: toString, toStringz;
+import watt.text.string: indexOf, lastIndexOf;
+import watt.math.random: RandomGenerator;
+import watt.process: getEnv;
 import watt.io.seed: getHardwareSeedUint;
-import watt.io.file : exists;
+import watt.io.file: exists;
 
 
 /**
@@ -60,7 +60,7 @@ version (Windows) {
  *
  * Existence is not treated as failure.
  */
-fn mkdir(dir : const(char)[])
+fn mkdir(dir: const(char)[])
 {
 	cstr := dir ~ "\0";
 	version (Windows) {
@@ -76,9 +76,9 @@ fn mkdir(dir : const(char)[])
  * need to be created -- separating the path with '/' on posix platforms,
  * '/' and '\' on Windows platforms.
  */
-fn mkdirP(dir : const(char)[])
+fn mkdirP(dir: const(char)[])
 {
-	for (i : size_t = 0; i < dir.length; i++) {
+	for (i: size_t = 0; i < dir.length; i++) {
 		if (dir[i] == '/' || dir[i] == '\\') {
 			mkdir(dir[0 .. i]);
 		}
@@ -87,7 +87,7 @@ fn mkdirP(dir : const(char)[])
 }
 
 
-private fn isSlash(c : char) bool
+private fn isSlash(c: char) bool
 {
 	version (Windows) {
 		return c == '\\' || c == '/';
@@ -96,10 +96,10 @@ private fn isSlash(c : char) bool
 	}
 }
 
-private fn countSlashes(s : const(char)[]) size_t
+private fn countSlashes(s: const(char)[]) size_t
 {
-	count : size_t;
-	for (i : size_t = 0; i < s.length; ++i) {
+	count: size_t;
+	for (i: size_t = 0; i < s.length; ++i) {
 		c := s[i];
 		if (isSlash(c)) {
 			count++;
@@ -108,7 +108,7 @@ private fn countSlashes(s : const(char)[]) size_t
 	return count;
 }
 
-private fn removeTrailingSlashes(ref s : string)
+private fn removeTrailingSlashes(ref s: string)
 {
 	while (s.length > 0 && isSlash(s[$-1])) {
 		s = s[0 .. $-1];
@@ -119,9 +119,9 @@ private fn removeTrailingSlashes(ref s : string)
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html,
  * with a few additions when handling drives and multiple path separator types on Windows.
  */
-fn dirName(path : const(char)[]) string
+fn dirName(path: const(char)[]) string
 {
-	drive : string;
+	drive: string;
 	version (Windows) if (path.length >= 2 && path[1] == ':') {
 		drive = path[0 .. 2];
 		path = path[2 .. $];
@@ -171,7 +171,7 @@ fn dirName(path : const(char)[]) string
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html.
  * with a few additions when handling drives and multiple path separator types on Windows.
  */
-fn baseName(path : const(char)[], suffix : const(char)[] = "") string
+fn baseName(path: const(char)[], suffix: const(char)[] = "") string
 {
 	// Omit drive letters.
 	version (Windows) {
@@ -205,7 +205,7 @@ fn baseName(path : const(char)[], suffix : const(char)[] = "") string
 	return path;
 }
 
-fn extension(path : const(char)[]) string
+fn extension(path: const(char)[]) string
 {
 	i := lastIndexOf(path, '.');
 	if (i <= 0) {
@@ -215,14 +215,14 @@ fn extension(path : const(char)[]) string
 	return new string(path[i .. $]);
 }
 
-fn temporaryFilename(extension : string = "", subdir : string = "") string
+fn temporaryFilename(extension: string = "", subdir: string = "") string
 {
-	rng : RandomGenerator;
+	rng: RandomGenerator;
 	rng.seed(getHardwareSeedUint());
 	version (Windows) {
-		prefix : string = getEnv("TEMP") ~ '/';
+		prefix: string = getEnv("TEMP") ~ '/';
 	} else {
-		prefix : string = "/tmp/";
+		prefix: string = "/tmp/";
 	}
 
 	if (subdir != "") {
@@ -230,7 +230,7 @@ fn temporaryFilename(extension : string = "", subdir : string = "") string
 		mkdir(prefix);
 	}
 
-	filename : string;
+	filename: string;
 	do {
 		filename = rng.randomString(32);
 		filename = prefix ~ filename ~ extension;
@@ -239,7 +239,7 @@ fn temporaryFilename(extension : string = "", subdir : string = "") string
 	return filename;
 }
 
-fn fullPath(file : string) string
+fn fullPath(file: string) string
 {
 	version (Posix) {
 		result := realpath(toStringz(file), null);
@@ -258,7 +258,7 @@ fn fullPath(file : string) string
  */
 fn getExecDir() string
 {
-	stack : char[512];
+	stack: char[512];
 	version (Windows) {
 
 		ret := GetModuleFileNameA(null, stack.ptr, 512);
@@ -280,7 +280,7 @@ fn getExecDir() string
 
 	} else version (Emscripten) {
 
-		ret : i32 = 0;
+		ret: i32 = 0;
 
 	} else {
 
