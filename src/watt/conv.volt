@@ -3,6 +3,7 @@
 module watt.conv;
 
 import core.exception;
+import core.rt.format;
 import core.stdc.stdlib: strtof, strtod;
 import core.stdc.stdio: snprintf;
 import core.stdc.string: strlen;
@@ -112,66 +113,110 @@ fn toDouble(s: string) f64
 	return strtod(cstr, null);
 }
 
-fn toString(b: u8) const(char)[]
+fn toString(val: u8) const(char)[]
 {
-	return toStringUnsigned(b, 3);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_u64(s, val);
+	return ret;
 }
 
-fn toString(b: i8) const(char)[]
+fn toString(val: i8) const(char)[]
 {
-	return toStringSigned(b, 4);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_i64(s, val);
+	return ret;
 }
 
-fn toString(s: u16) const(char)[]
+fn toString(val: u16) const(char)[]
 {
-	return toStringUnsigned(s, 5);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_u64(s, val);
+	return ret;
 }
 
-fn toString(s: i16) const(char)[]
+fn toString(val: i16) const(char)[]
 {
-	return toStringSigned(s, 6);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_i64(s, val);
+	return ret;
 }
 
-fn toString(i: u32) const(char)[]
+fn toString(val: u32) const(char)[]
 {
-	return toStringUnsigned(i, 10);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_u64(s, val);
+	return ret;
 }
 
-fn toString(i: i32) const(char)[]
+fn toString(val: i32) const(char)[]
 {
-	return toStringSigned(i, 11);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_i64(s, val);
+	return ret;
 }
 
-fn toString(l: u64) const(char)[]
+fn toString(val: u64) const(char)[]
 {
-	return toStringUnsigned(l, 19);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_u64(s, val);
+	return ret;
 }
 
-fn toString(l: i64) const(char)[]
+fn toString(val: i64) const(char)[]
 {
-	return toStringSigned(l, 20);
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_i64(s, val);
+	return ret;
 }
 
 fn toString(f: f32) const(char)[]
 {
-	buf: char[1024];
-	retval: i32 = snprintf(buf.ptr, buf.length, "%f", f);
-
-	if (retval < 0) {
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_f32(s, f);
+	if (ret is null) {
 		throw new ConvException("couldn't convert float to string.");
 	}
-	return new string(buf[0 .. cast(size_t)retval]);
+	return ret;
 }
 
-fn toString(d: f64) const(char)[]
+fn toString(f: f64) const(char)[]
 {
-	buf: char[1024];
-	retval: i32 = snprintf(buf.ptr, buf.length, "%f", d);
-
-	if (retval < 0) {
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
+	}
+	vrt_format_f64(s, f);
+	if (ret is null) {
 		throw new ConvException("couldn't convert double to string.");
 	}
-	return new string(buf[0 .. cast(size_t)retval]);
+	return ret;
 }
 
 fn toString(p: void*) const(char)[]
@@ -195,93 +240,15 @@ fn charToString(c: dchar) const(char)[]
 	return cast(const(char)[]) buf;
 }
 
-// maxLength == maximum length of output string, including '-' for signed integers.
-
-private fn toStringUnsigned(i: u64, maxLength: size_t) const(char)[]
-{
-	index: size_t = 0u;
-	buf := new char[](maxLength);
-
-	inLoop := true;
-	while (inLoop) {
-		remainder: u64 = i % 10;
-		c := cast(char)(cast(ulong)'0' + remainder);
-		i = i / 10;
-		buf[index++] = c;
-		inLoop = i != 0;
-	}
-	buf = buf[0 .. index];
-
-	outbuf := new char[](maxLength);
-	bindex: size_t = index;
-	oindex: size_t = 0u;
-	while (oindex != index) {
-		bindex--;
-		outbuf[oindex] = buf[bindex];
-		oindex++;
-	}
-
-	return outbuf[0 .. oindex];
-}
-
-private fn toStringSigned(i: i64, maxLength: size_t) const(char)[]
-{
-	index: size_t = 0u;
-	buf := new char[](maxLength);
-	negative: bool = i < 0;
-	if (negative) {
-		i = i * -1;
-	}
-	
-	inLoop := true;
-	while (inLoop) {
-		remainder: i64 = i % 10;
-		c := cast(char)(cast(i64)'0' + remainder);
-		i = i / 10;
-		buf[index++] = c;
-		inLoop = i != 0;
-	}
-	if (negative) {
-		buf[index++] = '-';
-	}
-	buf = buf[0 .. index];
-
-	outbuf := new char[](maxLength);
-	bindex: size_t = index;
-	oindex: size_t = 0u;
-	while (oindex != index) {
-		bindex--;
-		outbuf[oindex] = buf[bindex];
-		oindex++;
-	}
-
-	return outbuf[0 .. oindex];
-}
-
 /// Returns an upper case hex string from the given unsigned long.
-fn toStringHex(i: u64) const(char)[]
+fn toStringHex(val: u64) const(char)[]
 {
-	buf := new char[](0);
-
-	inLoop := true;
-	while (inLoop) {
-		remainder: u64 = i % 16;
-		c: char = HEX_DIGITS[remainder];
-		i = i / 16;
-		buf ~= c;
-		inLoop = i != 0;
+	ret: string;
+	fn s(a: SinkArg) {
+		ret = new string(a);
 	}
-
-	outbuf := new char[](buf.length);
-	bindex: size_t = buf.length;
-	oindex: size_t = 0u;
-	while (oindex != buf.length) {
-		bindex--;
-		outbuf[oindex] = buf[bindex];
-		oindex++;
-	}
-
-	return outbuf;
+	vrt_format_hex(s, val, 0);
+	return ret;
 }
 
 /**

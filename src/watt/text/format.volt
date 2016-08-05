@@ -3,6 +3,7 @@ module watt.text.format;
 import core.object;
 import core.typeinfo;
 import core.exception;
+import core.rt.format;
 import core.stdc.stdio;
 import watt.varargs;
 import watt.conv;
@@ -37,13 +38,13 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 				formatChar(sink, ref vl);
 				break;
 			case 'd':
-				formatInt(sink, ref vl);
+				vrt_format_i64(sink, va_arg!i32(vl));
 				break;
 			case 'f':
 				if (_typeids[index].type == Type.F32) {
-					formatFloat(sink, ref vl);
+					vrt_format_f32(sink, va_arg!f32(vl));
 				} else if (_typeids[index].type == Type.F64) {
-					formatDouble(sink, ref vl);
+					vrt_format_f64(sink, va_arg!f64(vl));
 				} else {
 					throw new Exception("type to %f format mismatch");
 				}
@@ -102,66 +103,6 @@ private fn formatString(sink: Sink, ref vl: va_list)
 	sink(s);
 }
 
-private fn formatByte(sink: Sink, ref vl: va_list)
-{
-	b := va_arg!i8(vl);
-	sink(toString(b));
-}
-
-private fn formatUbyte(sink: Sink, ref vl: va_list)
-{
-	b := va_arg!u8(vl);
-	sink(toString(b));
-}
-
-private fn formatShort(sink: Sink, ref vl: va_list)
-{
-	s := va_arg!i16(vl);
-	sink(toString(s));
-}
-
-private fn formatUshort(sink: Sink, ref vl: va_list)
-{
-	s := va_arg!u16(vl);
-	sink(toString(s));
-}
-
-private fn formatInt(sink: Sink, ref vl: va_list)
-{
-	i := va_arg!i32(vl);
-	sink(toString(i));
-}
-
-private fn formatUint(sink: Sink, ref vl: va_list)
-{
-	i := va_arg!u32(vl);
-	sink(toString(i));
-}
-
-private fn formatLong(sink: Sink, ref vl: va_list)
-{
-	l := va_arg!i64(vl);
-	sink(toString(l));
-}
-
-private fn formatUlong(sink: Sink, ref vl: va_list)
-{
-	l := va_arg!u64(vl);
-	sink(toString(l));
-}
-
-private fn formatFloat(sink: Sink, ref vl: va_list)
-{
-	f := va_arg!f32(vl);
-	sink(toString(f));
-}
-
-private fn formatDouble(sink: Sink, ref vl: va_list)
-{
-	d := va_arg!f64(vl);
-	sink(toString(d));
-}
-
 private fn formatChar(sink: Sink, ref vl: va_list)
 {
 	tmp: char[1];
@@ -200,7 +141,7 @@ private fn formatHex(sink: Sink, ref vl: va_list, id: TypeInfo)
 	default:
 		throw new Exception(format("Can't know how to hex-print type id %s.", id.type));
 	}
-	sink(toStringHex(ul));
+	vrt_format_hex(sink, ul, 0);
 }
 
 private fn formatPointer(sink: Sink, ref vl: va_list)
@@ -248,34 +189,34 @@ private fn formatType(sink: Sink, ref vl: va_list, id: TypeInfo)
 		formatBool(sink, ref vl);
 		break;
 	case Type.I8:
-		formatByte(sink, ref vl);
+		vrt_format_i64(sink, va_arg!i8(vl));
 		break;
 	case Type.U8:
-		formatUbyte(sink, ref vl);
+		vrt_format_u64(sink, va_arg!u8(vl));
 		break;
 	case Type.I16:
-		formatShort(sink, ref vl);
+		vrt_format_i64(sink, va_arg!i16(vl));
 		break;
 	case Type.U16:
-		formatUshort(sink, ref vl);
+		vrt_format_u64(sink, va_arg!u16(vl));
 		break;
 	case Type.I32:
-		formatInt(sink, ref vl);
+		vrt_format_i64(sink, va_arg!i32(vl));
 		break;
 	case Type.U32:
-		formatUint(sink, ref vl);
+		vrt_format_u64(sink, va_arg!u32(vl));
 		break;
 	case Type.I64:
-		formatLong(sink, ref vl);
+		vrt_format_i64(sink, va_arg!i64(vl));
 		break;
 	case Type.U64:
-		formatUlong(sink, ref vl);
+		vrt_format_u64(sink, va_arg!u64(vl));
 		break;
 	case Type.F32:
-		formatFloat(sink, ref vl);
+		vrt_format_f32(sink, va_arg!f32(vl));
 		break;
 	case Type.F64:
-		formatDouble(sink, ref vl);
+		vrt_format_f64(sink, va_arg!f64(vl));
 		break;
 	case Type.Char:
 		formatChar(sink, ref vl);

@@ -2,12 +2,13 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.text.sink;
 
+static import core.rt.format;
 
 /// The one true sink definition.
-alias Sink = scope void delegate(SinkArg);
+alias Sink = core.rt.format.Sink;
 
 /// The argument to the one true sink.
-alias SinkArg = scope const(char)[];
+alias SinkArg = core.rt.format.SinkArg;
 
 /// A sink to create long strings.
 struct StringSink
