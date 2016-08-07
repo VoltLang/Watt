@@ -7,6 +7,7 @@ import core.stdc.stdarg;
 
 extern (Windows):
 
+alias UINT = uint;
 alias WORD = ushort;
 alias DWORD = uint;
 alias BOOL = int;
@@ -16,6 +17,7 @@ alias LPVOID = void*;
 alias LPCVOID = const(void)*;
 alias LPCSTR = const(char)*;
 alias LPCWSTR = const(wchar)*;
+alias LPBOOL = BOOL*;
 alias LPSTR = char*;
 alias LPWSTR = wchar*;
 alias LPDWORD = DWORD*;
@@ -26,6 +28,7 @@ alias PHANDLE = HANDLE*;
 alias HINSTANCE = HANDLE;
 alias HMODULE = HINSTANCE;
 alias TCHAR = char;
+
 
 enum TRUE = 1;
 enum FALSE = 0;
@@ -221,14 +224,11 @@ BOOL SetCurrentDirectoryA(LPCSTR);
 BOOL SetCurrentDirectoryW(LPCWSTR);
 
 
-enum uint CP_UTF8 = 65001;
 
 enum GET_FILEEX_INFO_LEVELS
 {
 	GetFileExInfoStandard
 }
-
-int MultiByteToWideChar(uint, DWORD, LPCSTR, int, LPWSTR, int);
 
 struct WIN32_FILE_ATTRIBUTE_DATA
 {
@@ -251,3 +251,19 @@ BOOL GetFileAttributesExA(LPCSTR, GET_FILEEX_INFO_LEVELS, LPVOID);
 BOOL GetFileAttributesExW(LPCWSTR, GET_FILEEX_INFO_LEVELS, LPVOID);
 
 DWORD GetFileSize(HANDLE, LPDWORD lpFileSizeHigh);
+
+
+LPCSTR GetEnvironmentStringsA();
+LPCWSTR GetEnvironmentStringsW();
+BOOL FreeEnvironmentStringsA(LPCSTR);
+BOOL FreeEnvironmentStringsW(LPCWSTR);
+
+
+enum uint CP_UTF8 = 65001;
+
+int MultiByteToWideChar(UINT CodePage, DWORD  dwFlags, LPCSTR lpMultiByteStr,
+	int cbMultiByte, LPWSTR lpWideCharStr, int cchWideChar);
+int WideCharToMultiByte(UINT CodePage, DWORD dwFlags, LPCWSTR lpWideCharStr,
+	int cchWideChar, LPSTR lpMultiByteStr, int cbMultiByte,
+	LPCSTR lpDefaultChar, LPBOOL lpUsedDefaultChar);
+

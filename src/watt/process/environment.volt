@@ -6,6 +6,10 @@ version (Windows || Posix):
 
 import core.stdc.string;
 
+version (Windows) {
+	import core.windows.windows;
+}
+
 import watt.io;
 import watt.text.string;
 import watt.text.sink;
@@ -45,8 +49,35 @@ version(Posix) fn retriveEnvironment() Environment
  */
 version(Windows) fn retriveEnvironment() Environment
 {
-	// This is a stub
-	return new Environment();
+	index: size_t;
+	env := new Environment();
+	strs := GetEnvironmentStringsW();
+	if (strs is null) {
+		return env;
+	}
+
+	for (i: size_t; strs[i] != '\0'; i++) {
+
+		keyStart := i;
+		while (strs[i] != '=') { ++i; }
+		keyEnd := i;
+
+		valStart := ++i;
+		while (strs[i] != '\0') { ++i; }
+		valEnd := i;
+
+		if (keyStart == keyEnd) {
+			continue;
+		}
+
+		key := convert16To8(strs[keyStart .. keyEnd]);
+		val := convert16To8(strs[valStart .. valEnd]);
+		env.store[key] = val;
+	}
+
+	FreeEnvironmentStringsW(strs);
+
+	return env;
 }
 
 class Environment
@@ -92,5 +123,43 @@ version (OSX) {
 	}
 
 } else version (Posix) {
+
 	extern extern(C) global environ: char**;
+
+} else version (Windows) {
+
+	immutable(wchar)[] convert8To16(const(char)[] str)
+	{
+		if (str.length == 0) {
+			return null;
+		}
+
+		srcNum := cast(int)str.length;
+		dstNum := MultiByteToWideChar(CP_UTF8, 0, str.ptr, srcNum, null, 0);
+		w := new wchar[](dstNum+1);
+
+		dstNum = MultiByteToWideChar(CP_UTF8, 0,
+			str.ptr, -1, w.ptr, dstNum);
+		w[dstNum] = 0;
+		w = w[0 .. dstNum];
+		return cast(immutable(wchar)[])w;
+	}
+
+	string convert16To8(const(wchar)[] w)
+	{
+		if (w.length == 0) {
+			return null;
+		}
+
+		srcNum := cast(int)w.length;
+		dstNum := WideCharToMultiByte(CP_UTF8, 0, w.ptr, srcNum, null, 0, null, null);
+		str := new char[](dstNum+1);
+
+		dstNum = WideCharToMultiByte(CP_UTF8, 0,
+			w.ptr, srcNum, str.ptr, dstNum, null, null);
+		str[dstNum] = 0;
+		str = str[0 .. dstNum];
+		return cast(string)str;
+	}
+
 }
