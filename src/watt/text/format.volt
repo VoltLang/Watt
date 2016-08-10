@@ -8,6 +8,7 @@ import core.stdc.stdio;
 import watt.varargs;
 import watt.conv;
 import watt.text.sink;
+import watt.text.ascii;
 
 
 fn format(formatString: const(char)[], ...) string
@@ -26,47 +27,90 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 	formatting: bool;
 	index: i32;
 
+	zero: bool;
+	padding: i32;
+
+	fn output(str: string)
+	{
+		padding -= cast(i32)str.length;
+		if (padding < 0) {
+			padding = 0;
+		}
+		string padc = zero ? "0" : " ";
+		foreach (0 .. padding) {
+			sink(padc);
+		}
+		padding = 0;
+		zero = false;
+		formatting = false;
+		sink(str);
+	}
+
 	for (i: u32 = 0; i < formatString.length; i++) {
 		c: char = formatString[i];
 		if (formatting) {
 			switch (c) {
 			case '%':
-				sink("%");
-				formatting = false;
+				output("%");
 				continue;
 			case 'c':
-				formatChar(sink, ref vl);
+				tmp: StringSink;
+				formatChar(tmp.sink, ref vl);
+				output(tmp.toString());
 				break;
 			case 'd':
-				vrt_format_i64(sink, va_arg!i32(vl));
+				tmp: StringSink;
+				vrt_format_i64(tmp.sink, va_arg!i32(vl));
+				output(tmp.toString());
 				break;
 			case 'f':
+				tmp: StringSink;
 				if (_typeids[index].type == Type.F32) {
-					vrt_format_f32(sink, va_arg!f32(vl));
+					vrt_format_f32(tmp.sink, va_arg!f32(vl));
 				} else if (_typeids[index].type == Type.F64) {
-					vrt_format_f64(sink, va_arg!f64(vl));
+					vrt_format_f64(tmp.sink, va_arg!f64(vl));
 				} else {
 					throw new Exception("type to %f format mismatch");
 				}
+				output(tmp.toString());
 				break;
 			case 'X':
-				formatHex(sink, ref vl, _typeids[index]);
+				tmp: StringSink;
+				formatHex(tmp.sink, ref vl, _typeids[index]);
+				output(tmp.toString());
 				break;
 			case 'x':
-				StringSink tmp;
+				tmp: StringSink;
 				formatHex(tmp.sink, ref vl, _typeids[index]);
-				sink(toLower(tmp.toString()));
+				output(toLower(tmp.toString()));
 				break;
 			case 'p':
-				formatPointer(sink, ref vl);
+				tmp: StringSink;
+				formatPointer(tmp.sink, ref vl);
+				output(tmp.toString());
 				break;
 			case 's':
-				formatType(sink, ref vl, _typeids[index]);
+				tmp: StringSink;
+				formatType(tmp.sink, ref vl, _typeids[index]);
+				output(tmp.toString());
 				break;
+			case '0':
+				zero = true;
+				continue;
 			default:
+				if (isDigit(c)) {
+					paddingSink: StringSink;
+					do {
+						paddingSink.sink([c]);
+						i++;
+						c = formatString[i];
+					} while (isDigit(c) && i < formatString.length);
+					padding = toInt(paddingSink.toString());
+					i--;
+					continue;
+				}
 				throw new Exception(format("unknown format specifier '%c'", c));
 			}
-			formatting = false;
 			index++;
 			continue;
 		}
