@@ -4,9 +4,9 @@
 module watt.text.getopt;
 
 import core.exception;
+import core.varargs;
 
 import watt.conv;
-import watt.varargs;
 import watt.text.format;
 import watt.text.string;
 import watt.text.utf;

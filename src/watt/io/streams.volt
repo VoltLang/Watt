@@ -3,10 +3,10 @@
 module watt.io.streams;
 
 import core.typeinfo;
+import core.varargs;
 import core.stdc.stdio: FILE, fopen, fclose, fputc, fwrite,
                          fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
-import watt.varargs;
 import watt.text.format;
 
 /**

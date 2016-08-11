@@ -1,8 +1,8 @@
 module watt.io.std;
 
+import core.varargs: va_list, va_start, va_end;
 import core.stdc.stdio: stdout, stderr, stdin;
 import watt.io.streams: OutputFileStream, InputFileStream;
-import watt.varargs: va_list, va_start, va_end;
 
 
 global output: OutputFileStream;
