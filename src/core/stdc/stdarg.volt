@@ -2,7 +2,7 @@
 // See copyright notice in src/watt/license.d (BOOST ver. 1.0).
 module core.stdc.stdarg;
 
-import core.compiler.varargs;
+import core.varargs;
 
 
 extern(C):

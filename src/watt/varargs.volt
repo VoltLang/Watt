@@ -2,7 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.varargs;
 
-import core.compiler.varargs;
+import core.varargs;
 
 
 alias va_list = void*;
