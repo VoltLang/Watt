@@ -10,5 +10,5 @@ extern(C):
 nothrow:
 
 alias va_list = void*;
-alias va_start = __llvm_volt_va_start;
-alias va_end = __llvm_volt_va_end;
+alias va_start = core.varargs.va_start;
+alias va_end = core.varargs.va_end;
