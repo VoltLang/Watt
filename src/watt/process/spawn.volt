@@ -328,6 +328,31 @@ version (Posix) private {
 		return buffer.ptr;
 	}
 
+	fn toEnvz(stack: char[], env: Environment) void
+	{
+		start, end, resultPos: size_t;
+
+		foreach (k, v; env.store) {
+			// Will this pair fit.
+			if (stack.length < end + k.length + v.length + 4) {
+				break;
+			}
+
+			start = end;
+			end = start + k.length;
+			stack[start .. end] = k;
+			stack[end++] = '=';
+
+			if (v.length) {
+				start = end;
+				end = start + v.length;
+				stack[start .. end] = v;
+			}
+			stack[end++] = '\0';
+		}
+		stack[end++] = '\0';
+	}
+
 	fn spawnProcessWindows(name: string, args: string[],
 	                       stdinFP: FILE*,
 	                       stdoutFP: FILE*,
@@ -361,6 +386,9 @@ version (Posix) private {
 	                           hStdErr: HANDLE,
 	                           env: Environment) HANDLE
 	{
+		envStack: char[32_767];
+		envPtr: LPVOID;
+
 		si: STARTUPINFOA;
 		si.cb = cast(DWORD) typeid(si).size;
 		si.hStdInput  = hStdIn;
@@ -372,10 +400,17 @@ version (Posix) private {
 			si.dwFlags = STARTF_USESTDHANDLES;
 		}
 
+		if (env !is null) {
+			envPtr = cast(LPVOID)envStack.ptr;
+			toEnvz(envStack, env);
+		}
+
 		pi: PROCESS_INFORMATION;
 
 		moduleName := name ~ '\0';
-		bRet := CreateProcessA(moduleName.ptr, toArgz(moduleName, args), null, null, TRUE, 0, null, null, &si, &pi);
+		bRet := CreateProcessA(moduleName.ptr, toArgz(moduleName, args),
+			null, null, TRUE, 0, envPtr, null, &si, &pi);
+
 		if (bRet == 0) {
 			throw new ProcessException("CreateProcess failed with error code " ~ toString(cast(int)GetLastError()));
 		}
