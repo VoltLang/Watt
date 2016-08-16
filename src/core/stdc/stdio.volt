@@ -389,7 +389,7 @@ fn sprintf(s: char*, in format: const(char)*, ...) i32;
 fn sscanf(s: const(char)*, in format: const(char)*, ...) i32;
 fn vfprintf(stream: FILE*, format: const(char)*, arg: va_list) i32;
 fn vfscanf(stream: FILE*, in format: const(char)*, arg: va_list) i32;
-fn vsprintf(s: const(char)*, in format: const(char)*, arg: va_list) i32;
+fn vsprintf(s: char*, in format: const(char)*, arg: va_list) i32;
 fn vsscanf(in s: const(char)*, in format: const(char)*, arg: va_list) i32;
 fn vprintf(in format: const(char)*, arg: va_list) i32;
 fn vscanf(in format: const(char)*, arg: va_list) i32;
