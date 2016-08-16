@@ -385,7 +385,7 @@ fn setvbuf(stream: FILE*, buf: char*, mode: i32, size: size_t) i32;
 
 fn fprintf(stream: FILE*, in format: const(char)*, ...) i32;
 fn fscanf(stream: FILE*, in format: const(char)*, ...) i32;
-fn sprintf(s: const(char)*, in format: const(char)*, ...) i32;
+fn sprintf(s: char*, in format: const(char)*, ...) i32;
 fn sscanf(s: const(char)*, in format: const(char)*, ...) i32;
 fn vfprintf(stream: FILE*, format: const(char)*, arg: va_list) i32;
 fn vfscanf(stream: FILE*, in format: const(char)*, arg: va_list) i32;
