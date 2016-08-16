@@ -31,10 +31,10 @@ version (Windows) {
 		SYS_OPEN     = 20,      // non-standard
 	}
 
-	enum int     _NFILE     = 60;       // non-standard
+	enum i32     _NFILE     = 60;       // non-standard
 	enum string  _P_tmpdir  = "\\"; // non-standard
 //	enum string _wP_tmpdir = "\\"; // non-standard
-//	enum int     L_tmpnam   = _P_tmpdir.length + 12;
+//	enum i32     L_tmpnam   = _P_tmpdir.length + 12;
 
 } else version (Linux) {
 
@@ -63,8 +63,8 @@ version (Windows) {
 	{
 		struct __sbuf
 		{
-			ubyte*  _base;
-			int     _size;
+			_base:  i8*;
+			_size:  i32;
 		}
 
 		struct __sFILEX
@@ -127,71 +127,72 @@ version (Windows) {
 
 	struct _iobuf
 	{
-		char* _ptr;
-		int   _cnt;
-		char* _base;
-		int   _flag;
-		int   _file;
-		int   _charbuf;
-		int   _bufsiz;
-		char* __tmpnum;
+		_ptr:     char*;
+		_cnt:     i32;
+		_base:    char*;
+		_flag:    i32;
+		_file:    i32;
+		_charbuf: i32;
+		_bufsiz:  i32;
+		__tmpnum: char*;
 	}
 
 } else version (Linux) {
 
 	align(1) struct _iobuf
 	{
-		int     _flags;
-		char*   _read_ptr;
-		char*   _read_end;
-		char*   _read_base;
-		char*   _write_base;
-		char*   _write_ptr;
-		char*   _write_end;
-		char*   _buf_base;
-		char*   _buf_end;
-		char*   _save_base;
-		char*   _backup_base;
-		char*   _save_end;
-		void*   _markers;
-		_iobuf* _chain;
-		int     _fileno;
-		int     _blksize;
-		int     _old_offset;
-		ushort  _cur_column;
-		byte    _vtable_offset;
-		char[1] _shortbuf;
-		void*   _lock;
+		_flags:         i32;
+		_read_ptr:      char*;
+		_read_end:      char*;
+		_read_base:     char*;
+		_write_base:    char*;
+		_write_ptr:     char*;
+		_write_end:     char*;
+		_buf_base:      char*;
+		_buf_end:       char*;
+		_save_base:     char*;
+		_backup_base:   char*;
+		_save_end:      char*;
+		_markers:       void*;
+		_chain:         _iobuf*;
+		_fileno:        i32;
+		_blksize:       i32;
+		_old_offset:    i32;
+		_cur_column:    i32;
+		_vtable_offset: i8;
+		_shortbuf:      char[1];
+		_lock:          void*;
 	}
+
 
 } else version (OSX) {
 
 	align (1) struct _iobuf
 	{
-		ubyte*    _p;
-		int       _r;
-		int       _w;
-		short     _flags;
-		short     _file;
-		__sbuf    _bf;
-		int       _lbfsize;
+		_p:       i8*;
+		_r:       i32;
+		_w:       i32;
+		_flags:   i16;
+		_file:    i16;
+		_bf:      __sbuf;
+		_lbfsize: i32;
 
-		int* function(void*)                    _close;
-		int* function(void*, char*, int)        _read;
-		fpos_t* function(void*, fpos_t, int)    _seek;
-		int* function(void*, char *, int)       _write;
+		_close:   fn(void*) (i32*);
+		_read:    fn(void*, char*, i32) (i32*);
+		_seek:    fn(void*, fpos_t, i32) (fpos_t*);
+		_write:   fn(void*, char*, i32) (i32*);
 
-		__sbuf    _ub;
-		__sFILEX* _extra;
-		int       _ur;
+		_ub:      __sbuf;
+		_extra:   __sFILEX*;
+		_ur:      i32;
 
-		ubyte[3]  _ubuf;
-		ubyte[1]  _nbuf;
+		_ubuf:    u8[3];
+		_nbuf:    u8[1];
 
-		__sbuf    _lb;
+		_lib:     __sbuf;
 
-		int       _blksize;
-		fpos_t    _offset;
+		_blksize: i32;
+		_offset:  fpos_t;
 	}
 
 } else /+version (FreeBSD) {
@@ -277,20 +278,19 @@ version (Windows) {
 		_IOAPP   = 0x200, // non-standard
 	}
 
-	extern global void function() _fcloseallp;
-
+	extern global _fcloseallp: fn();
 
 	version (MSVC) {
 
-		extern(Windows) FILE* __acrt_iob_func(int);
+		extern(Windows) fn __acrt_iob_func(i32) FILE*;
 
-		@property FILE* stdin()  { return __acrt_iob_func(0); }
-		@property FILE* stdout() { return __acrt_iob_func(1); }
-		@property FILE* stderr() { return __acrt_iob_func(2); }
+		@property fn stdin() FILE* { return __acrt_iob_func(0); }
+		@property fn stdout() FILE* { return __acrt_iob_func(1); }
+		@property fn stderr() FILE* { return __acrt_iob_func(2); }
 
 	} else {
 
-		private extern global FILE[/+_NFILE+/60] _iob;
+		private extern global _iob: FILE[/*_NFILE*/60];
 
 		@property FILE* stdin()  { return cast(FILE*) &_iob[0]; }
 		@property FILE* stdout() { return cast(FILE*) &_iob[1]; }
@@ -307,9 +307,9 @@ version (Windows) {
 		_IONBF = 2,
 	}
 
-	extern global FILE* stdin;
-	extern global FILE* stdout;
-	extern global FILE* stderr;
+	extern global stdin: FILE*;
+	extern global stdout: FILE*;
+	extern global stderr: FILE*;
 
 } else version (OSX) {
 
@@ -320,9 +320,9 @@ version (Windows) {
 		_IONBF = 2,
 	}
 
-	private extern global /*shared*/ FILE* __stdinp;
-	private extern global /*shared*/ FILE* __stdoutp;
-	private extern global /*shared*/ FILE* __stderrp;
+	private extern global /*shared*/ __stdinp: FILE*;
+	private extern global /*shared*/ __stdoutp: FILE*;
+	private extern global /*shared*/ __stderrp: FILE*;
 
 	alias stdin = __stdinp;
 	alias stdout = __stdoutp;
@@ -354,9 +354,9 @@ version (Windows) {
 		_IONBF = 2,
 	}
 
-	extern global FILE* stdin;
-	extern global FILE* stdout;
-	extern global FILE* stderr;
+	extern global stdin: FILE*;
+	extern global stdout: FILE*;
+	extern global stderr: FILE*;
 
 } else {
 
@@ -364,72 +364,72 @@ version (Windows) {
 
 }
 
-alias fpos_t = int;
+alias fpos_t = i32;
 
-int remove(in char* filename);
-int rename(in char* from, in char* to);
+fn remove(in filename: char*) i32;
+fn rename(in from: char*, in to: char*) i32;
 
-@trusted FILE* tmpfile(); // No unsafe pointer manipulation.
-char* tmpnam(char* s);
+@trusted fn tmpfile() FILE*; // No unsafe pointer manipulation.
+fn tmpnam(s: char*) char*;
 
-int   fclose(FILE* stream);
+fn fclose(stream: FILE*) i32;
 
 // No unsafe pointer manipulation.
-@trusted int fflush(FILE* stream);
+@trusted fn fflush(stream: FILE*) i32;
 
-FILE* fopen(in char* filename, in char* mode);
-FILE* freopen(in char* filename, in char* mode, FILE* stream);
+fn fopen(in filename: char*, in mode: char*) FILE*;
+fn freopen(in filename: char*, in mode: char*, stream: FILE*) FILE*;
 
-void setbuf(FILE* stream, char* buf);
-int  setvbuf(FILE* stream, char* buf, int mode, size_t size);
+fn setbuf(stream: FILE*, buf: char*);
+fn setvbuf(stream: FILE*, buf: char*, mode: i32, size: size_t) i32;
 
-int fprintf(FILE* stream, in const(char)* format, ...);
-int fscanf(FILE* stream, in const(char)* format, ...);
-int sprintf(const(char)* s, in const(char)* format, ...);
-int sscanf(in const(char)* s, in const(char)* format, ...);
-int vfprintf(FILE* stream, in const(char)* format, va_list arg);
-int vfscanf(FILE* stream, in const(char)* format, va_list arg);
-int vsprintf(const(char)* s, in const(char)* format, va_list arg);
-int vsscanf(in const(char)* s, in const(char)* format, va_list arg);
-int vprintf(in const(char)* format, va_list arg);
-int vscanf(in const(char)* format, va_list arg);
-int printf(in const(char)* format, ...);
-int scanf(in const(char)* format, ...);
+fn fprintf(stream: FILE*, in format: const(char)*, ...) i32;
+fn fscanf(stream: FILE*, in format: const(char)*, ...) i32;
+fn sprintf(s: const(char)*, in format: const(char)*, ...) i32;
+fn sscanf(s: const(char)*, in format: const(char)*, ...) i32;
+fn vfprintf(stream: FILE*, format: const(char)*, arg: va_list) i32;
+fn vfscanf(stream: FILE*, in format: const(char)*, arg: va_list) i32;
+fn vsprintf(s: const(char)*, in format: const(char)*, arg: va_list) i32;
+fn vsscanf(in s: const(char)*, in format: const(char)*, arg: va_list) i32;
+fn vprintf(in format: const(char)*, arg: va_list) i32;
+fn vscanf(in format: const(char)*, arg: va_list) i32;
+fn printf(in format: const(char)*, ...) i32;
+fn scanf(in format: const(char)*, ...) i32;
 
-// No usafe pointer manipulation.
+// No unsafe pointer manipulation.
 @trusted
 {
-	int fgetc(FILE* stream);
-	int fputc(int c, FILE* stream);
+	fn fgetc(stream: FILE*) i32;
+	fn fputc(c: i32, stream: FILE*) i32;
 }
 
-char* fgets(char* s, int n, FILE* stream);
-int   fputs(in char* s, FILE* stream);
-char* gets(char* s);
-int   puts(in char* s);
+fn fgets(s: char*, n: i32, stream: FILE*) char*;
+fn fputs(in s: char*, stream: FILE*) i32;
+fn gets(s: char*) char*;
+fn puts(in s: char*) i32;
 
 // No unsafe pointer manipulation.
 extern(Volt) @trusted
 {
-	int getchar()                 { return getc(stdin);     }
-	int putchar(int c)            { return putc(c, stdout);  }
-	int getc(FILE* stream)        { return fgetc(stream);   }
-	int putc(int c, FILE* stream) { return fputc(c, stream); }
+	fn getchar() i32                   { return getc(stdin);     }
+	fn putchar(c: i32) i32             { return putc(c, stdout);  }
+	fn getc(stream: FILE*) i32         { return fgetc(stream);   }
+	fn putc(c: i32, stream: FILE*) i32 { return fputc(c, stream); }
 }
 
-@trusted int ungetc(int c, FILE* stream); // No unsafe pointer manipulation.
+@trusted fn ungetc(c: i32, stream: FILE*) i32;// No unsafe pointer manipulation.
 
-size_t fread(void* ptr, size_t size, size_t nmemb, FILE* stream);
-size_t fwrite(in void* ptr, size_t size, size_t nmemb, FILE* stream);
+fn fread(ptr: void*, size: size_t, nmemb: size_t, stream: FILE*) size_t;
+fn fwrite(in ptr: void*, size: size_t, nmemb: size_t, stream: FILE*) size_t;
 
 // No unsafe pointer manipulation.
 @trusted
 {
-	int fgetpos(FILE* stream, fpos_t * pos);
-	int fsetpos(FILE* stream, in fpos_t* pos);
+	fn fgetpos(stream: FILE*, pos: fpos_t*) i32;
+	fn fsetpos(stream: FILE*, in pos: fpos_t*) i32;
 
-	int    fseek(FILE* stream, c_long offset, int whence);
-	c_long ftell(FILE* stream);
+	fn    fseek(stream: FILE*, offset: c_long, whence: i32) i32;
+	fn ftell(stream: FILE*) c_long;
 }
 
 version (Windows) {
@@ -443,53 +443,53 @@ version (Windows) {
 		pure int  ferror(FILE* stream)   { return stream._flag&_IOERR;                       }
 	}+/
 
-	int feof(FILE* stream);
+	fn feof(stream: FILE*) i32;
 
 	version (MSVC) {
-		int   snprintf(char* s, size_t n, in char* fmt, ...);
+		fn   snprintf(s: char*, n: size_t, in fmt: char*, ...) i32;
 	} else {
-		int   _snprintf(char* s, size_t n, in char* fmt, ...);
+		fn   _snprintf(s: char*, n: size_t, in fmt: char*, ...) i32;
 		alias snprintf = _snprintf;
 	}
 
-	int   _vsnprintf(char* s, size_t n, in char* format, va_list arg);
+	fn   _vsnprintf(s: char*, n: size_t, in format: char*, arg: va_list) i32;
 	alias vsnprintf = _vsnprintf;
 
 } else version (Linux) {
 
-	FILE* popen(const(char)*, const(char)*);
-	int pclose(FILE*);
+	fn popen(const(char)*, const(char)*) FILE*;
+	fn pclose(FILE*) i32;
 
 	// No unsafe pointer manipulation.
 	@trusted
 	{
-		void rewind(FILE* stream);
-		pure void clearerr(FILE* stream);
-		pure int  feof(FILE* stream);
-		pure int  ferror(FILE* stream);
-		int  fileno(FILE *);
+		fn rewind(stream: FILE*);
+		pure fn clearerr(stream: FILE*);
+		pure fn  feof(stream: FILE*) i32;
+		pure fn  ferror(stream: FILE*) i32;
+		fn  fileno(FILE*) i32;
 	}
 
-	int  snprintf(char* s, size_t n, in char* format, ...);
-	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
+	fn  snprintf(s: char*, n: size_t, in format: char*, ...) i32;
+	fn  vsnprintf(s: char*, n: size_t, in format: char*, arg: va_list) i32;
 
 } else version (OSX) {
 
-	FILE* popen(const(char)*, const(char)*);
-	int pclose(FILE*);
+	fn popen(const(char)*, const(char)*) FILE*;
+	fn pclose(FILE*) i32;
 
 	// No unsafe pointer manipulation.
 	@trusted
 	{
-		void rewind(FILE*);
-		pure void clearerr(FILE*);
-		pure int  feof(FILE*);
-		pure int  ferror(FILE*);
-		int  fileno(FILE*);
+		fn rewind(FILE*);
+		pure fn clearerr(FILE*);
+		pure fn  feof(FILE*) i32;
+		pure fn  ferror(FILE*) i32;
+		fn  fileno(FILE*) i32;
 	}
 
-	int  snprintf(char* s, size_t n, in char* format, ...);
-	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
+	fn  snprintf(s: char*, n: size_t, in format: char*, ...) i32;
+	fn  vsnprintf(s: char*, n: size_t, in format: char*, arg: va_list) i32;
 
 } else /+version (FreeBSD) {
 
@@ -511,15 +511,15 @@ version (Windows) {
 	// No unsafe pointer manipulation.
 	@trusted
 	{
-		void rewind(FILE* stream);
-		pure void clearerr(FILE* stream);
-		pure int  feof(FILE* stream);
-		pure int  ferror(FILE* stream);
-		int  fileno(FILE *);
+		fn rewind(stream: FILE*);
+		pure fn clearerr(stream: FILE*);
+		pure fn  feof(stream: FILE*) i32;
+		pure fn  ferror(stream: FILE*) i32;
+		fn  fileno(FILE*) i32;
 	}
 
-	int  snprintf(char* s, size_t n, in char* format, ...);
-	int  vsnprintf(char* s, size_t n, in char* format, va_list arg);
+	fn  snprintf(s: char*, n: size_t, in format: char*, ...) i32;
+	fn  vsnprintf(s: char*, n: size_t, in format: char*, arg: va_list) i32;
 
 } else {
 
@@ -527,5 +527,5 @@ version (Windows) {
 
 }
 
-void perror(in char* s);
-int unlink(const char* s);
+fn perror(in s: char*);
+fn unlink(s: const char*) i32;
