@@ -13,20 +13,20 @@ nothrow:
 
 struct div_t
 {
-	int quot;
-	int rem;
+	quot: i32;
+	rem: i32;
 }
 
 struct ldiv_t
 {
-	int quot;
-	int rem;
+	quot: i32;
+	rem: i32;
 }
 
 struct lldiv_t
 {
-	long quot;
-	long rem;
+	quot: i64;
+	rem: i64;
 }
 
 enum EXIT_SUCCESS = 0;
@@ -41,60 +41,60 @@ else version (Solaris)    enum RAND_MAX = 0x7fff;
 else version (Emscripten) enum RAND_MAX = 0x7fffffff;
 else static assert(false, "Unsupported platform");
 
-double  atof(in char* nptr);
-int     atoi(in char* nptr);
-c_long  atol(in char* nptr);
-long    atoll(in char* nptr);
+fn  atof(in nptr: char*) f64;
+fn  atoi(in nptr: char*) i32;
+fn  atol(in nptr: char*) c_long;
+fn  atoll(in nptr: char*) i64;
 
-double  strtod(in char* nptr, char** endptr);
-float   strtof(in char* nptr, char** endptr);
-//real  strtold(in char* nptr, char** endptr);
-c_long  strtol(in char* nptr, char** endptr, int base);
-long    strtoll(in char* nptr, char** endptr, int base);
-c_ulong strtoul(in char* nptr, char** endptr, int base);
-ulong   strtoull(in char* nptr, char** endptr, int base);
+fn  strtod(in nptr: char*, endptr: char**) f64;
+fn   strtof(in nptr: char*, endptr: char**) f32;
+//real  strtold(in nptr: char*, endptr: char**);
+fn  strtol(in nptr: char*, endptr: char**, base: i32) c_long;
+fn    strtoll(in nptr: char*, endptr: char**, base: i32) i64;
+fn strtoul(in nptr: char*, endptr: char**, base: i32) c_ulong;
+fn   strtoull(in nptr: char*, endptr: char**, base: i32) u64;
 
 // No unsafe pointer manipulation.
 @trusted
 {
-	int     rand();
-	void    srand(uint seed);
+	fn rand() i32;
+	fn srand(seed: u32);
 }
 
 // We don't mark these @trusted. Given that they return a void*, one has
 // to do a pointer cast to do anything sensible with the result. Thus,
 // functions using these already have to be @trusted, allowing them to
 // call @system stuff anyway.
-void*   malloc(size_t size);
-void*   calloc(size_t nmemb, size_t size);
-void*   realloc(void* ptr, size_t size);
-void    free(void* ptr);
+fn malloc(size: size_t) void*;
+fn calloc(nmemb: size_t, size: size_t) void*;
+fn realloc(ptr: void*, size: size_t) void*;
+fn free(ptr: void*);
 
-void    abort();
-void    exit(int status);
-int     atexit(void function() func);
-void    _Exit(int status);
+fn abort();
+fn exit(status: i32);
+fn atexit(func: fn()) i32;
+fn _Exit(status: i32);
 
-char*   getenv(in char* name);
-int     system(in char* string);
+fn getenv(in name: char*) char*;
+fn system(in str: char*) i32;
 
-void*   bsearch(in void* key, in void* base, size_t nmemb, size_t size, int function(in void*, in void*) compar);
-void    qsort(void* base, size_t nmemb, size_t size, int function(in void*, in void*) compar);
+fn bsearch(in key: void*, in base: void*, nmemb: size_t, size: size_t, compar: fn(in void*, in void*) i32) void*;
+fn qsort(base: void*, nmemb: size_t, size: size_t, compar: fn(in void*, in void*) i32);
 
 // These only operate on integer values.
 @trusted
 {
-	pure int     abs(int j);
-	pure c_long  labs(c_long j);
-	pure long    llabs(long j);
+	pure fn abs(j: i32) i32;
+	pure fn labs(j: c_long) c_long;
+	pure fn llabs(j: i64) i64;
 
-	div_t   div(int numer, int denom);
-	ldiv_t  ldiv(c_long numer, c_long denom);
-	lldiv_t lldiv(long numer, long denom);
+	fn div(numer: i32, denom: i32) div_t;
+	fn ldiv(numer: c_long, denom: c_long) ldiv_t;
+	fn lldiv(numer: i64, denom: i64) lldiv_t;
 }
 
-int     mblen(in char* s, size_t n);
-int     mbtowc(wchar_t* pwc, in char* s, size_t n);
-int     wctomb(char*s, wchar_t wc);
-size_t  mbstowcs(wchar_t* pwcs, in char* s, size_t n);
-size_t  wcstombs(char* s, in wchar_t* pwcs, size_t n);
+fn mblen(in s: char*, n: size_t) i32;
+fn mbtowc(pwc: wchar_t*, in s: char*, n: size_t) i32;
+fn wctomb(s: char*, wc: wchar_t) i32;
+fn mbstowcs(pwcs: wchar_t*, in s: char*, n: size_t) size_t;
+fn wcstombs(s: char*, in pwcs: wchar_t*, n: size_t) size_t;
