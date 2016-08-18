@@ -14,49 +14,49 @@ version (Windows) {
 
 	struct tm
 	{
-		int     tm_sec;     // seconds after the minute - [0, 60]
-		int     tm_min;     // minutes after the hour - [0, 59]
-		int     tm_hour;    // hours since midnight - [0, 23]
-		int     tm_mday;    // day of the month - [1, 31]
-		int     tm_mon;     // months since January - [0, 11]
-		int     tm_year;    // years since 1900
-		int     tm_wday;    // days since Sunday - [0, 6]
-		int     tm_yday;    // days since January 1 - [0, 365]
-		int     tm_isdst;   // Daylight Saving Time flag
+		tm_sec: i32;     // seconds after the minute - [0, 60]
+		tm_min: i32;     // minutes after the hour - [0, 59]
+		tm_hour: i32;    // hours since midnight - [0, 23]
+		tm_mday: i32;    // day of the month - [1, 31]
+		tm_mon: i32;     // months since January - [0, 11]
+		tm_year: i32;    // years since 1900
+		tm_wday: i32;    // days since Sunday - [0, 6]
+		tm_yday: i32;    // days since January 1 - [0, 365]
+		tm_isdst: i32;   // Daylight Saving Time flag
 	}
 
 } else version (Posix) {
 
 	struct tm
 	{
-		int     tm_sec;     // seconds after the minute [0-60]
-		int     tm_min;     // minutes after the hour [0-59]
-		int     tm_hour;    // hours since midnight [0-23]
-		int     tm_mday;    // day of the month [1-31]
-		int     tm_mon;     // months since January [0-11]
-		int     tm_year;    // years since 1900
-		int     tm_wday;    // days since Sunday [0-6]
-		int     tm_yday;    // days since January 1 [0-365]
-		int     tm_isdst;   // Daylight Savings Time flag
-		c_long  tm_gmtoff;  // offset from CUT in seconds
-		char*   tm_zone;    // timezone abbreviation
+		tm_sec: i32;     // seconds after the minute [0-60]
+		tm_min: i32;     // minutes after the hour [0-59]
+		tm_hour: i32;    // hours since midnight [0-23]
+		tm_mday: i32;    // day of the month [1-31]
+		tm_mon: i32;     // months since January [0-11]
+		tm_year: i32;    // years since 1900
+		tm_wday: i32;    // days since Sunday [0-6]
+		tm_yday: i32;    // days since January 1 [0-365]
+		tm_isdst: i32;   // Daylight Savings Time flag
+		tm_gmtoff: c_long;  // offset from CUT in seconds
+		tm_zone: char*;    // timezone abbreviation
 	}
 
 } else version (Emscripten) {
 
 	struct tm
 	{
-		int     tm_sec;     // seconds after the minute [0-60]
-		int     tm_min;     // minutes after the hour [0-59]
-		int     tm_hour;    // hours since midnight [0-23]
-		int     tm_mday;    // day of the month [1-31]
-		int     tm_mon;     // months since January [0-11]
-		int     tm_year;    // years since 1900
-		int     tm_wday;    // days since Sunday [0-6]
-		int     tm_yday;    // days since January 1 [0-365]
-		int     tm_isdst;   // Daylight Savings Time flag
-		int     tm_gmtoff;  // offset from CUT in seconds
-		char*   tm_zone;    // timezone abbreviation
+		tm_sec: i32;     // seconds after the minute [0-60]
+		tm_min: i32;     // minutes after the hour [0-59]
+		tm_hour: i32;    // hours since midnight [0-23]
+		tm_mday: i32;    // day of the month [1-31]
+		tm_mon: i32;     // months since January [0-11]
+		tm_year: i32;    // years since 1900
+		tm_wday: i32;    // days since Sunday [0-6]
+		tm_yday: i32;    // days since January 1 [0-365]
+		tm_isdst: i32;   // Daylight Savings Time flag
+		tm_gmtoff: i32;  // offset from CUT in seconds
+		tm_zone: char*;    // timezone abbreviation
 	}
 
 } else {
@@ -87,33 +87,33 @@ version (Windows) {
 }
 
 
-clock_t clock();
-double  difftime(time_t time1, time_t time0);
-time_t  mktime(tm* timeptr);
-time_t  time(time_t* timer);
-char*   asctime(in tm* timeptr);
-char*   ctime(in time_t* timer);
-tm*     gmtime(in time_t* timer);
-tm*     localtime(in time_t* timer);
-@system size_t  strftime(char* s, size_t maxsize, in char* format, in tm* timeptr);
+fn clock() clock_t;
+fn difftime(time1: time_t, time0: time_t) f64;
+fn mktime(timeptr: tm*) time_t;
+fn time(timer: time_t*) time_t;
+fn asctime(in timeptr: tm*) char*;
+fn ctime(in timer: time_t*) char*;
+fn gmtime(in timer: time_t*) tm*;
+fn localtime(in timer: time_t*) tm*;
+@system fn strftime(s: char*, maxsize: size_t, in format: char*, in timeptr: tm*)  size_t;
 
 version (Windows) {
 
-	void  tzset();                   // non-standard
-	void  _tzset();                  // non-standard
-	@system char* _strdate(char* s); // non-standard
-	@system char* _strtime(char* s); // non-standard
+	fn  tzset();                   // non-standard
+	fn  _tzset();                  // non-standard
+	@system fn _strdate(s: char*) char*; // non-standard
+	@system fn _strtime(s: char*) char*; // non-standard
 
 	//extern global const(char)*[2] tzname; // non-standard
 
 } else version (Linux) {
 
-	void tzset();                         // non-standard
+	fn tzset();                         // non-standard
 	//extern global const(char)*[2] tzname; // non-standard
 
 } else version (OSX) {
 
-	void tzset();                         // non-standard
+	fn tzset();                         // non-standard
 	//extern global const(char)*[2] tzname; // non-standard
 
 } else /+version (FreeBSD) {
@@ -123,7 +123,7 @@ version (Windows) {
 
 } else+/ version (Emscripten) {
 
-	void tzset();                         // non-standard
+	fn tzset();                         // non-standard
 
 } else {
 
