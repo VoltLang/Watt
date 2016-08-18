@@ -270,7 +270,7 @@ fn toString(s: scope const(char)*) string
 	if (s is null) {
 		return null;
 	}
-	len := strlen(s);
+	len := strlen(cast(const(char)*)s);
 	if (len == 0) {
 		return null;
 	}

@@ -1,28 +1,28 @@
 module core.stdc.string;
 extern (C):
 
-void* memcpy(void* dest, scope const(void)* src, size_t n);
-void* memmove(void* dest, scope const(void)* src, size_t n);
-char* strcpy(char* dest, scope const(char)* src);
-char* strncpy(char* dest, scope const(char)* src, size_t n);
+fn memcpy(dest: void*, src: const(void)*, n: size_t) void*;
+fn memmove(dest: void*, src: const(void)*, n: size_t) void*;
+fn strcpy(dest: char*, src: const(char)*) char*;
+fn strncpy(dest: char*, src: const(char)*, n: size_t) char*;
 
-char* strcat(char* dest, scope const(char)* src);
-char* strncat(char* dest, scope const(char)* src, size_t n);
+fn strcat(dest: char*, src: const(char)*) char*;
+fn strncat(dest: char*, src: const(char)*, n: size_t) char*;
 
-int memcmp(scope const(void)* ptr1, scope const(void)* ptr2, size_t n);
-int strcmp(scope const(char)* str1, scope const(char)* str2);
-int strcoll(scope const(char)* str1, scope const(char)* str2);
-int strncmp(scope const(char)* str1, scope const(char)* str2, size_t n);
+fn memcmp(ptr1: const(void)*, ptr2: const(void)*, n: size_t) i32;
+fn strcmp(str1: const(char)*, str2: const(char)*) i32;
+fn strcoll(str1: const(char)*, str2: const(char)*) i32;
+fn strncmp(str1: const(char)*, str2: const(char)*, n: size_t) i32;
 
-void* memchr(scope const(void)* ptr, int val, size_t n);
-char* strchr(scope const(char)* str, int c);
-size_t strcspn(scope const(char)* str1, scope const(char)* str2);
-char* strpbrk(scope const(char)* str1, scope const(char)* str2);
-char* strrchr(scope const(char)* str, int c);
-size_t strspn(scope const(char)* str1, scope const(char)* str2);
-char* strstr(scope const(char)* str1, scope const(char)* str2);
-char* strtok(char* str, scope const(char)* delim);
+fn memchr(ptr: const(void)*, val: i32, n: size_t) void*;
+fn strchr(str: const(char)*, c: i32) char*;
+fn strcspn(str1: const(char)*, str2: const(char)*) size_t;
+fn strpbrk(str1: const(char)*, str2: const(char)*) char*;
+fn strrchr(str1: const(char)*, c: i32) char*;
+fn strspn(str1: const(char)*, str2: const(char)*) size_t;
+fn strstr(str1: const(char)*, str2: const(char)*) char*;
+fn strtok(str: char*, delim: const(char)*) char*;
 
-void* memset(void* ptr, int v, size_t n);
-char* strerror(int errnum);
-size_t strlen(scope const(char)* str);
+fn memset(ptr: void*, v: i32, n: size_t) void*;
+fn strerror(errnum: i32) char*;
+fn strlen(str: const(char)*) size_t;
