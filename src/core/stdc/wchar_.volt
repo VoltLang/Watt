@@ -15,33 +15,33 @@ extern (C):
 @system:
 nothrow:
 
-alias mbstate_t = int;
+alias mbstate_t = i32;
 alias wint_t = wchar_t;
 
 enum wchar_t WEOF = 0xFFFF;
 
-int fwprintf(FILE* stream, in wchar_t* format, ...);
-int fwscanf(FILE* stream, in wchar_t* format, ...);
-int swprintf(wchar_t* s, size_t n, in wchar_t* format, ...);
-int swscanf(in wchar_t* s, in wchar_t* format, ...);
-int vfwprintf(FILE* stream, in wchar_t* format, va_list arg);
-int vfwscanf(FILE* stream, in wchar_t* format, va_list arg);
-int vswprintf(wchar_t* s, size_t n, in wchar_t* format, va_list arg);
-int vswscanf(in wchar_t* s, in wchar_t* format, va_list arg);
-int vwprintf(in wchar_t* format, va_list arg);
-int vwscanf(in wchar_t* format, va_list arg);
-int wprintf(in wchar_t* format, ...);
-int wscanf(in wchar_t* format, ...);
+fn fwprintf(stream: FILE*, in format: wchar_t*, ...) i32;
+fn fwscanf(stream: FILE*, in format: wchar_t*, ...) i32;
+fn swprintf(s: wchar_t*, n: size_t, in format: wchar_t*, ...) i32;
+fn swscanf(in s: wchar_t*, in format: wchar_t*, ...) i32;
+fn vfwprintf(stream: FILE*, in format: wchar_t*, arg: va_list) i32;
+fn vfwscanf(stream: FILE*, in format: wchar_t*, arg: va_list) i32;
+fn vswprintf(s: wchar_t*, n: size_t, in format: wchar_t*, arg: va_list) i32;
+fn vswscanf(in s: wchar_t*, in format: wchar_t*, arg: va_list) i32;
+fn vwprintf(in format: wchar_t*, arg: va_list) i32;
+fn vwscanf(in format: wchar_t*, arg: va_list) i32;
+fn wprintf(in format: wchar_t*, ...) i32;
+fn wscanf(in format: wchar_t*, ...) i32;
 
 // No unsafe pointer manipulation.
 @trusted
 {
-	wint_t fgetwc(FILE* stream);
-	wint_t fputwc(wchar_t c, FILE* stream);
+	fn fgetwc(stream: FILE*) wint_t;
+	fn fputwc(c: wchar_t, stream: FILE*) wint_t;
 }
 
-wchar_t* fgetws(wchar_t* s, int n, FILE* stream);
-int      fputws(in wchar_t* s, FILE* stream);
+fn fgetws(s: wchar_t*, n: i32, stream: FILE*) wchar_t*;
+fn fputws(in s: wchar_t*, stream: FILE*) i32;
 
 // No unsafe pointer manipulation.
 extern(Volt) @trusted
@@ -55,62 +55,62 @@ extern(Volt) @trusted
 // No unsafe pointer manipulation.
 @trusted
 {
-	wint_t ungetwc(wint_t c, FILE* stream);
-	int    fwide(FILE* stream, int mode);
+	fn ungetwc(c: wint_t, stream: FILE*) wint_t;
+	fn fwide(stream: FILE*, mode: i32) i32;
 }
 
-double  wcstod(in wchar_t* nptr, wchar_t** endptr);
-float   wcstof(in wchar_t* nptr, wchar_t** endptr);
+fn wcstod(in wchar_t*, wchar_t**) f64;
+fn wcstof(in wchar_t*, wchar_t**) f32;
 //real    wcstold(in wchar_t* nptr, wchar_t** endptr);
-c_long  wcstol(in wchar_t* nptr, wchar_t** endptr, int base);
-long    wcstoll(in wchar_t* nptr, wchar_t** endptr, int base);
-c_ulong wcstoul(in wchar_t* nptr, wchar_t** endptr, int base);
-ulong   wcstoull(in wchar_t* nptr, wchar_t** endptr, int base);
+fn wcstol(in wchar_t*, wchar_t**, i32) c_long;
+fn wcstoll(in wchar_t*, wchar_t**, i32) i64;
+fn wcstoul(in wchar_t*, wchar_t**, i32) c_ulong;
+fn wcstoull(in wchar_t*, wchar_t**, i32) u64;
 
-wchar_t* wcscpy(wchar_t* s1, in wchar_t* s2);
-wchar_t* wcsncpy(wchar_t* s1, in wchar_t* s2, size_t n);
-wchar_t* wcscat(wchar_t* s1, in wchar_t* s2);
-wchar_t* wcsncat(wchar_t* s1, in wchar_t* s2, size_t n);
-int      wcscmp(in wchar_t* s1, in wchar_t* s2);
-int      wcscoll(in wchar_t* s1, in wchar_t* s2);
-int      wcsncmp(in wchar_t* s1, in wchar_t* s2, size_t n);
-size_t   wcsxfrm(wchar_t* s1, in wchar_t* s2, size_t n);
-wchar_t* wcschr(in wchar_t* s, wchar_t c);
-size_t   wcscspn(in wchar_t* s1, in wchar_t* s2);
-wchar_t* wcspbrk(in wchar_t* s1, in wchar_t* s2);
-wchar_t* wcsrchr(in wchar_t* s, wchar_t c);
-size_t   wcsspn(in wchar_t* s1, in wchar_t* s2);
-wchar_t* wcsstr(in wchar_t* s1, in wchar_t* s2);
-wchar_t* wcstok(wchar_t* s1, in wchar_t* s2, wchar_t** ptr);
-size_t   wcslen(in wchar_t* s);
+fn wcscpy(s1: wchar_t*, in s2: wchar_t*) wchar_t*;
+fn wcsncpy(s1: wchar_t*, in s2: wchar_t*, n: size_t) wchar_t*;
+fn wcscat(s1: wchar_t*, in s2: wchar_t*) wchar_t*;
+fn wcsncat(s1: wchar_t*, in s2: wchar_t*, n: size_t) wchar_t*;
+fn wcscmp(in wchar_t*, in wchar_t*) i32;
+fn wcscoll(in wchar_t*, in wchar_t*) i32;
+fn wcsncmp(in wchar_t*, in wchar_t*, size_t) i32;
+fn wcsxfrm(wchar_t*, in wchar_t*, size_t) size_t;
+fn wcschr(in wchar_t*, wchar_t) wchar_t*;
+fn wcscspn(in wchar_t*, in wchar_t*) size_t;
+fn wcspbrk(in wchar_t*, in wchar_t*) wchar_t*;
+fn wcsrchr(in wchar_t*, wchar_t) wchar_t*;
+fn wcsspn(in wchar_t*, in wchar_t*) size_t;
+fn wcsstr(in wchar_t*, in wchar_t*) wchar_t*;
+fn wcstok(wchar_t*, in wchar_t*, wchar_t**) wchar_t*;
+fn wcslen(in wchar_t*) size_t;
 
-wchar_t* wmemchr(in wchar_t* s, wchar_t c, size_t n);
-int      wmemcmp(in wchar_t* s1, in wchar_t* s2, size_t n);
-wchar_t* wmemcpy(wchar_t* s1, in wchar_t* s2, size_t n);
-wchar_t* wmemmove(wchar_t*s1, in wchar_t* s2, size_t n);
-wchar_t* wmemset(wchar_t* s, wchar_t c, size_t n);
+fn wmemchr(in wchar_t*, wchar_t, size_t) wchar_t*;
+fn wmemcmp(in wchar_t*, in wchar_t*, size_t) i32;
+fn wmemcpy(wchar_t*, in wchar_t*, size_t) wchar_t*;
+fn wmemmove(wchar_t*, in wchar_t*, size_t) wchar_t*;
+fn wmemset(wchar_t*, wchar_t, size_t) wchar_t*;
 
-size_t wcsftime(wchar_t* s, size_t maxsize, in wchar_t* format, in tm* timeptr);
+fn wcsftime(wchar_t*, size_t, in wchar_t*, in tm*) size_t;
 
 version (Windows) {
 
-    wchar_t* _wasctime(tm*);      // non-standard
-    wchar_t* _wctime(time_t*);    // non-standard
-    wchar_t* _wstrdate(wchar_t*); // non-standard
-    wchar_t* _wstrtime(wchar_t*); // non-standard
+    fn _wasctime(tm*) wchar_t*;      // non-standard
+    fn _wctime(time_t*) wchar_t*;    // non-standard
+    fn _wstrdate(wchar_t*) wchar_t*; // non-standard
+    fn _wstrtime(wchar_t*) wchar_t*; // non-standard
 
 }
 
 // No unsafe pointer manipulation.
 @trusted
 {
-	wint_t btowc(int c);
-	int    wctob(wint_t c);
+	fn btowc(i32) wint_t;
+	fn wctob(wint_t) i32;
 }
 
-int    mbsinit(in mbstate_t* ps);
-size_t mbrlen(in char* s, size_t n, mbstate_t* ps);
-size_t mbrtowc(wchar_t* pwc, in char* s, size_t n, mbstate_t* ps);
-size_t wcrtomb(char* s, wchar_t wc, mbstate_t* ps);
-size_t mbsrtowcs(wchar_t* dst, in char** src, size_t len, mbstate_t* ps);
-size_t wcsrtombs(char* dst, in wchar_t** src, size_t len, mbstate_t* ps);
+fn mbsinit(in mbstate_t*) i32;
+fn mbrlen(in char*, size_t, mbstate_t*) size_t;
+fn mbrtowc(wchar_t*, in char*, size_t, mbstate_t*) size_t;
+fn wcrtomb(char*, wchar_t, mbstate_t*) size_t;
+fn mbsrtowcs(wchar_t*, in char**, size_t, mbstate_t*) size_t;
+fn wcsrtombs(char*, in wchar_t**, size_t, mbstate_t*) size_t;
