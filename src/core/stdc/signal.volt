@@ -11,8 +11,6 @@ nothrow:
 // this should be volatile
 alias sig_atomic_t = i32;
 
-private alias sigfn_t = fn(i32);
-
 version (Windows) {
 
 	//enum SIG_ERR    = cast(sigfn_t) -1;
@@ -56,5 +54,5 @@ version (Windows) {
 
 }
 
-fn signal(sig: i32, func: sigfn_t) sigfn_t;
+fn signal(sig: i32, func: fn(i32)) fn(i32);
 fn raise(sig: i32) i32;
