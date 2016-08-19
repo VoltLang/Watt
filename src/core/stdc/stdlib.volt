@@ -19,8 +19,8 @@ struct div_t
 
 struct ldiv_t
 {
-	quot: i32;
-	rem: i32;
+	quot: c_long;
+	rem: c_long;
 }
 
 struct lldiv_t
