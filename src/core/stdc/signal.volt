@@ -9,9 +9,9 @@ extern(C):
 nothrow:
 
 // this should be volatile
-alias sig_atomic_t = int;
+alias sig_atomic_t = i32;
 
-private alias sigfn_t = void function(int);
+private alias sigfn_t = fn(i32);
 
 version (Windows) {
 
@@ -56,5 +56,5 @@ version (Windows) {
 
 }
 
-sigfn_t signal(int sig, sigfn_t func);
-int     raise(int sig);
+fn signal(sig: i32, func: sigfn_t) sigfn_t;
+fn raise(sig: i32) i32;
