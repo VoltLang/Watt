@@ -39,7 +39,7 @@ version (Windows) {
 		tm_yday: i32;    // days since January 1 [0-365]
 		tm_isdst: i32;   // Daylight Savings Time flag
 		tm_gmtoff: c_long;  // offset from CUT in seconds
-		tm_zone: char*;    // timezone abbreviation
+		tm_zone: const(char)*;    // timezone abbreviation
 	}
 
 } else version (Emscripten) {
@@ -56,7 +56,7 @@ version (Windows) {
 		tm_yday: i32;    // days since January 1 [0-365]
 		tm_isdst: i32;   // Daylight Savings Time flag
 		tm_gmtoff: i32;  // offset from CUT in seconds
-		tm_zone: char*;    // timezone abbreviation
+		tm_zone: const(char)*;    // timezone abbreviation
 	}
 
 } else {
