@@ -135,7 +135,7 @@ fn searchPath(cmd: string, path: string = null) string
 
 fn getEnv(env: string) string
 {
-	ptr := getenv(env.ptr);
+	ptr := getenv(toStringz(env));
 	if (ptr is null) {
 		return null;
 	} else {

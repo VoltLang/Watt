@@ -163,7 +163,7 @@ public:
 	this(filename: const(char)[])
 	{
 		if (filename.length > 0u) {
-			handle = fopen(filename.ptr, "w".ptr);
+			handle = fopen(toStringz(filename), "w".ptr);
 		}
 	}
 
@@ -201,7 +201,7 @@ public:
 	this(filename: const(char)[])
 	{
 		if (filename.length > 0u) {
-			handle = fopen(filename.ptr, "r".ptr);
+			handle = fopen(toStringz(filename), "r".ptr);
 		}
 	}
 

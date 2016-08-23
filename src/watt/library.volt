@@ -2,6 +2,8 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.library;
 
+import watt.conv : toStringz;
+
 
 alias Loader = void* delegate(string);
 
@@ -64,7 +66,7 @@ public:
 
 		global fn load(filename: string) Library
 		{
-			ptr: void* = LoadLibraryA(filename.ptr);
+			ptr: void* = LoadLibraryA(toStringz(filename));
 
 			if (ptr is null) {
 				return null;
@@ -75,7 +77,7 @@ public:
 
 		final fn symbol(symbol: string) void*
 		{
-			return GetProcAddress(ptr, symbol.ptr);
+			return GetProcAddress(ptr, toStringz(symbol));
 		}
 
 		final fn free()
@@ -90,7 +92,7 @@ public:
 
 		global fn load(filename: string) Library
 		{
-			ptr: void* = dlopen(filename.ptr, RTLD_NOW | RTLD_GLOBAL);
+			ptr: void* = dlopen(toStringz(filename), RTLD_NOW | RTLD_GLOBAL);
 
 			if (ptr is null) {
 				return null;
@@ -101,7 +103,7 @@ public:
 
 		final fn symbol(symbol: string) void*
 		{
-			return dlsym(ptr, symbol.ptr);
+			return dlsym(ptr, toStringz(symbol));
 		}
 
 		final fn free()
