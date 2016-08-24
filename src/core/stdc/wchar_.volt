@@ -16,7 +16,7 @@ extern (C):
 nothrow:
 
 alias mbstate_t = i32;
-alias wint_t = wchar_t;
+alias wint_t = u32;
 
 enum wchar_t WEOF = 0xFFFF;
 
