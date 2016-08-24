@@ -3,6 +3,7 @@
 // File taken from druntime, and modified for Volt.
 module core.stdc.stdint;
 
+private import core.stdc.config; // for c_long, c_ulong
 private import core.stdc.stddef; // for ptrdiff_t, size_t, wchar_t
 private import core.stdc.signal; // for sig_atomic_t
 private import core.stdc.wchar_; // for wint_t
@@ -12,52 +13,52 @@ extern(C):
 @trusted: // Types and constants only.
 nothrow:
 
-alias int8_t  = byte;
-alias int16_t = short;
-alias int32_t = int;
-alias int64_t = long;
+alias int8_t  = i8;
+alias int16_t = i16;
+alias int32_t = i32;
+alias int64_t = c_long;
 //alias int128_t = cent;
 
-alias uint8_t  = ubyte;
-alias uint16_t = ushort;
-alias uint32_t = uint;
-alias uint64_t = ulong;
+alias uint8_t  = u8;
+alias uint16_t = u16;
+alias uint32_t = u32;
+alias uint64_t = c_ulong;
 //alias uint128_t = ucent;
 
-alias int_least8_t  = byte;
-alias int_least16_t = short;
-alias int_least32_t = int;
-alias int_least64_t = long;
+alias int_least8_t  = i8;
+alias int_least16_t = i16;
+alias int_least32_t = i32;
+alias int_least64_t = c_long;
 
-alias uint_least8_t  = ubyte;
-alias uint_least16_t = ushort;
-alias uint_least32_t = uint;
-alias uint_least64_t = ulong;
+alias uint_least8_t  = u8;
+alias uint_least16_t = u16;
+alias uint_least32_t = u32;
+alias uint_least64_t = c_ulong;
 
-alias int_fast8_t  = byte;
-alias int_fast16_t = int;
-alias int_fast32_t = int;
-alias int_fast64_t = long;
+alias int_fast8_t  = i8;
+alias int_fast16_t = c_long;
+alias int_fast32_t = c_long;
+alias int_fast64_t = c_long;
 
-alias uint_fast8_t  = ubyte;
-alias uint_fast16_t = uint;
-alias uint_fast32_t = uint;
-alias uint_fast64_t = ulong;
+alias uint_fast8_t  = u8;
+alias uint_fast16_t = c_ulong;
+alias uint_fast32_t = c_ulong;
+alias uint_fast64_t = c_ulong;
 
 version (V_P64) {
 
-    alias intptr_t  = long;
-    alias uintptr_t = ulong;
+    alias intptr_t  = c_long;
+    alias uintptr_t = c_ulong;
 
 } else {
 
-    alias intptr_t  = int;
-    alias uintptr_t = uint;
+    alias intptr_t  = c_long;
+    alias uintptr_t = c_ulong;
 
 }
 
-alias intmax_t  = long;
-alias uintmax_t = ulong;
+alias intmax_t  = c_long;
+alias uintmax_t = c_ulong;
 
 /+
 enum int8_t   INT8_MIN  = int8_t.min;
