@@ -19,6 +19,8 @@ version (Windows) {
 
 import watt.process.environment;
 import watt.text.string: split;
+import watt.text.format : format;
+import watt.text.sink : StringSink;
 import watt.io.file: exists;
 import watt.path: dirSeparator, pathSeparator;
 import watt.conv;
@@ -93,7 +95,7 @@ fn spawnProcess(name: string, args: string[],
 	}
 
 	if (cmd is null) {
-		throw new ProcessException("Can not find command " ~ name);
+		throw new ProcessException(format("Can not find command %s", name));
 	}
 
 	version (Posix) {
@@ -124,7 +126,7 @@ fn searchPath(cmd: string, path: string = null) string
 	assert(pathSeparator.length == 1);
 
 	foreach (p; split(path, pathSeparator[0])) {
-		t := p ~ dirSeparator ~ cmd;
+		t := format("%s%s%s", p, dirSeparator, cmd);
 		if (exists(t)) {
 			return t;
 		}
@@ -318,14 +320,14 @@ version (Posix) private {
 	
 	fn toArgz(moduleName: string, args: string[]) LPSTR
 	{
-		buffer: char[];
-		buffer ~= '"';
+		buffer: StringSink;
+		buffer.sink("\"");
 		foreach (arg; args) {
-			buffer ~= "\" \"";
-			buffer ~= cast(char[]) arg;
+			buffer.sink("\" \"");
+			buffer.sink(arg);
 		}
-		buffer ~= "\"\0";
-		return buffer.ptr;
+		buffer.sink("\"\0");
+		return cast(LPSTR)buffer.toString().ptr;
 	}
 
 	fn toEnvz(stack: char[], env: Environment) void
@@ -407,12 +409,12 @@ version (Posix) private {
 
 		pi: PROCESS_INFORMATION;
 
-		moduleName := name ~ '\0';
+		moduleName := format("%s\0", name);
 		bRet := CreateProcessA(moduleName.ptr, toArgz(moduleName, args),
 			null, null, TRUE, 0, envPtr, null, &si, &pi);
 
 		if (bRet == 0) {
-			throw new ProcessException("CreateProcess failed with error code " ~ toString(cast(int)GetLastError()));
+			throw new ProcessException(format("CreateProcess failed with error code %s", toString(cast(int)GetLastError())));
 		}
 		CloseHandle(pi.hThread);
 		return pi.hProcess;
@@ -422,12 +424,12 @@ version (Posix) private {
 	{
 		waitResult := WaitForSingleObject(handle, cast(u32) 0xFFFFFFFF);
 		if (waitResult == cast(u32) 0xFFFFFFFF) {
-			throw new ProcessException("WaitForSingleObject failed with error code " ~ toString(cast(int)GetLastError()));
+			throw new ProcessException(format("WaitForSingleObject failed with error code %s", toString(cast(int)GetLastError())));
 		}
 		retval: DWORD;
 		result := GetExitCodeProcess(handle, &retval);
 		if (result == 0) {
-			throw new ProcessException("GetExitCodeProcess failed with error code " ~ toString(cast(int)GetLastError()));
+			throw new ProcessException(format("GetExitCodeProcess failed with error code ", toString(cast(int)GetLastError())));
 		}
 
 		CloseHandle(handle);

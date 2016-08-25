@@ -8,6 +8,7 @@ import core.stdc.stdio: FILE, fopen, fclose, fputc, fwrite,
                          fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
 import watt.text.format;
+import watt.text.sink : StringSink;
 
 /**
  * OutputStreams write data to some sink (a file, a console, etc)
@@ -140,13 +141,13 @@ public:
 	 */
 	fn readln() string
 	{
-		buf: char[];
+		buf: StringSink;
 		c: char = cast(char) get();
 		while (c != '\n' && !eof()) {
-			buf ~= c;
+			buf.sink([c]);
 			c = cast(char) get();
 		}
-		return cast(string) buf;
+		return buf.toString();
 	}
 }
 

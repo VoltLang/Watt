@@ -747,7 +747,7 @@ private fn parseBlocks(ref root: Block, ref lines: Line[], base_indent: IndentTy
 			if (starttag.isCommentOpenBlock) {
 				end = HtmlEnd.CloseTag;
 				if (starttag.isCommentCloseBlock && starttag.tagName == starttag.closeTag) {
-					b.text ~= starttag.indent ~ starttag.fullText;
+					b.text ~= format("%s%s", starttag.indent, starttag.fullText);
 					lines = lines[1 .. $];
 					break;
 				}
@@ -757,7 +757,7 @@ private fn parseBlocks(ref root: Block, ref lines: Line[], base_indent: IndentTy
 				if (lines[0].indent[0 .. base_indent.length] != base_indent) break;
 				str := lines[0].unindent(base_indent.length);
 				taginfo := parseHtmlBlockLine(str);
-				b.text ~= taginfo.indent ~ lines[0].unindent(base_indent.length);
+				b.text ~= format("%s%s", taginfo.indent, lines[0].unindent(base_indent.length));
 				lines = lines[1 .. $];
 				if (taginfo.isHtmlBlock && taginfo.tagName == starttag.tagName )
 					nestlevel += taginfo.open ? 1: -1;
@@ -800,7 +800,7 @@ private fn parseBlocks(ref root: Block, ref lines: Line[], base_indent: IndentTy
 
 			lang: string = ln.text[a .. bi];
 			if (lang.length > 0 && lang.count('~') == 0 && lang.count('`') == 0) {
-					b.classTag = "language-" ~ lang;
+					b.classTag = format("language-%s", lang);
 			}
 
 			lines = lines[1 .. $];
@@ -895,7 +895,7 @@ private fn writeBlock(dg: Sink, ref block: const Block, links: LinkRefs, setting
 		break;
 	case BlockType.OList:
 		if (block.listNum != "1" && !fromOrdered) {
-			dg("<ol start=\"" ~ block.listNum ~ "\">");
+			dg(format("<ol start=\"%s\">", block.listNum));
 		} else {
 			dg("<ol>\n");
 		}
@@ -919,7 +919,7 @@ private fn writeBlock(dg: Sink, ref block: const Block, links: LinkRefs, setting
 	case BlockType.Code:
 		assert(block.blocks.length == 0);
 		if (block.classTag.length > 0) {
-			dg("<pre><code class=\"" ~ block.classTag ~ "\">");
+			dg(format("<pre><code class=\"%s\">", block.classTag));
 		} else {
 			dg("<pre><code>");
 		}
@@ -1211,7 +1211,7 @@ private fn isOListLine(ln: string, ref num: string) bool {
 			hitNonZero = true;
 		}
 		if (ln[0] != '0' || hitNonZero || (ln.length > 1 && !isDigit(ln[1]))) {
-			n ~= ln[0];
+			n = format("%s%s", n, ln[0]);
 		}
 		ln = ln[1 .. $];
 	}
@@ -1343,7 +1343,7 @@ private fn parseHtmlBlockLine(ln: string, leadingSpaces: size_t = 0) HtmlBlockIn
 		_body: string = ln[0 .. openi];
 		tag := parseHtmlBlockLine(ln[openi .. $]);
 		if (tag.isHtmlBlock && tag.tagName == ret.tagName && !tag.open) {
-			ret.literalInLine = "<" ~ ret.tagName ~ _body ~ "</" ~ tag.tagName ~ ">";
+			ret.literalInLine = format("<%s%s</%s>", ret.tagName, _body, tag.tagName);
 		}
 		return ret;
 	}
@@ -1588,7 +1588,7 @@ private fn parseAutoLink(ref str: string, ref url: string) bool {
 	if (anyOf(url, " \t")) return false;
 	if (!anyOf(url, ":@")) return false;
 	str = pstr[cidx+1 .. $];
-	if (url.indexOf('@') > 0) url = "mailto:"~url;
+	if (url.indexOf('@') > 0) url = format("mailto:%s", url);
 	return true;
 }
 
@@ -1713,7 +1713,7 @@ private class LinkRefs
 						lnidx++;
 						ln = strip(lines[lnidx]);
 						if (ln.indexOf("]") < 0) {
-							refid ~= ln;
+							refid = format("%s%s", refid, ln);
 						}
 					} while (lnidx < lines.length - 1 && ln.indexOf("]") < 0);
 					if (ln.startsWith("]:")) {
@@ -1786,7 +1786,7 @@ private class LinkRefs
 							title = "";
 							lookingForTitle = false;
 						} else {
-							titleBuf ~= ln ~ '\n';
+							titleBuf = cast(char[])format("%s%s\n", titleBuf, ln);
 							multilines ~= lnidx;
 							lnidx++;
 							continue;
@@ -1811,12 +1811,12 @@ private class LinkRefs
 			title: string;
 			stripped := ln.stripRight();
 			if (stripped.length >= 1 && stripped[$-1] == titleChar) {
-				titleBuf ~= stripped[0 .. $-1];
+				titleBuf = cast(char[])format("%s%s", titleBuf, stripped[0 .. $-1]);
 				title = cast(string)titleBuf;
 				ln = "";
 			} else if (lookingForTitle) {
 				if (strip(ln).length != 0) {
-					titleBuf ~= ln ~ '\n';
+					titleBuf = cast(char[])format("%s%s\n", titleBuf, ln);
 					multilines ~= lnidx;
 					lnidx++;
 					continue;

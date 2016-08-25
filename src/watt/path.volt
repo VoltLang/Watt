@@ -35,6 +35,7 @@ import watt.math.random: RandomGenerator;
 import watt.process: getEnv;
 import watt.io.seed: getHardwareSeedUint;
 import watt.io.file: exists;
+import watt.text.format : format;
 
 
 /**
@@ -62,12 +63,12 @@ version (Windows) {
  */
 fn mkdir(dir: const(char)[])
 {
-	cstr := dir ~ "\0";
+	cstr := toStringz(dir);
 	version (Windows) {
 		// TODO: Unicode and error handling.
-		CreateDirectoryA(cstr.ptr, null);
+		CreateDirectoryA(cstr, null);
 	} else version (Posix) {
-		cmkdir(cstr.ptr, cast(mode_t)(S_IRWXU | S_IRWXG | S_IRWXO));
+		cmkdir(cstr, cast(mode_t)(S_IRWXU | S_IRWXG | S_IRWXO));
 	}
 }
 
@@ -129,14 +130,14 @@ fn dirName(path: const(char)[]) string
 
 	// 1. If the string is //,  skip steps 2 to 5.
 	if (path.length >= 2 && isSlash(path[0]) && isSlash(path[1])) {
-		return drive ~ dirSeparator;
+		return format("%s%s", drive, dirSeparator);
 	}
 
 	/* 2. If string consists entirely of <slash> characters, 
 	 * set string to a single <slash> and skip steps 3 to 8. */
 	count := countSlashes(path);
 	if (count == path.length) {
-		return drive ~ dirSeparator;
+		return format("%s%s", drive, dirSeparator);
 	}
 
 	// 3. If there are any trailing <slash> characters, they shall be removed.
@@ -161,10 +162,10 @@ fn dirName(path: const(char)[]) string
 
 	// 8. If the remaining string is empty, string shall be set to a single <slash> character.
 	if (path.length == 0) {
-		return drive ~ dirSeparator;
+		return format("%s%s", drive, dirSeparator);
 	}
 
-	return drive ~ path;
+	return format("%s%s", drive, path);
 }
 
 /**
@@ -220,20 +221,20 @@ fn temporaryFilename(extension: string = "", subdir: string = "") string
 	rng: RandomGenerator;
 	rng.seed(getHardwareSeedUint());
 	version (Windows) {
-		prefix: string = getEnv("TEMP") ~ '/';
+		prefix: string = format("%s/", getEnv("TEMP"));
 	} else {
 		prefix: string = "/tmp/";
 	}
 
 	if (subdir != "") {
-		prefix ~= subdir ~ "/";
+		prefix = format("%s%s/", prefix, subdir);
 		mkdir(prefix);
 	}
 
 	filename: string;
 	do {
 		filename = rng.randomString(32);
-		filename = prefix ~ filename ~ extension;
+		filename = format("%s%s%s", prefix, filename, extension);
 	} while (exists(filename));
 
 	return filename;

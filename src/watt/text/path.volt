@@ -4,6 +4,7 @@ module watt.text.path;
 
 import core.exception;
 import watt.text.sink;
+import watt.text.format;
 import watt.path;
 
 
@@ -13,7 +14,7 @@ fn normalizePathWindows(n: SinkArg) string
 	r: char[4096];
 
 	if (r.length < n.length) {
-		throw new Exception("path to long '" ~ n ~ "'");
+		throw new Exception(format("path too long '%s'", n));
 	}
 
 	foreach (i, char c; n) {

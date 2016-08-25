@@ -6,6 +6,8 @@ module watt.text.string;
 import core.exception;
 import watt.text.ascii: isWhite;
 import watt.text.utf;
+import watt.text.format : format;
+import watt.text.sink : StringSink;
 
 
 /**
@@ -204,7 +206,7 @@ fn replace(str: const(char)[], from: const(char)[], to: const(char)[]) string
 	i := indexOf(result, from);
 	while (i != -1) {
 		si := cast(size_t) i;
-		result = result[0 .. si] ~ to ~ result[si + from.length .. $];
+		result = format("%s%s%s", result[0 .. si], to, result[si + from.length .. $]);
 		i = indexOf(result, from);
 	}
 	return result;
@@ -242,12 +244,12 @@ fn endsWith(str: const(char)[], ends: const(char)[][]...) int
 /// Join an array of strings into one, separated by sep.
 fn join(ss: const(char)[][], sep: const(char)[] = "") string
 {
-	outs: string;
+	outs: StringSink;
 	foreach (i, e; ss) {
-		outs ~= e;
+		outs.sink(e);
 		if (i < ss.length - 1) {
-			outs ~= sep;
+			outs.sink(sep);
 		}
 	}
-	return outs;
+	return outs.toString();
 }

@@ -6,6 +6,7 @@ import core.rt.misc;
 import core.exception;
 
 import watt.text.sink;
+import watt.text.format : format;
 
 
 private enum ONE_BYTE_MASK                   = 0x80;
@@ -60,7 +61,11 @@ fn validate(s: string) void
 /// Encode c into a given UTF-8 array.
 fn encode(ref buf: char[], c: dchar) void
 {
-	buf ~= .encode(c);
+	str := .encode(c);
+	newbuf := new char[](buf.length + str.length);
+	newbuf[0 .. buf.length] = buf;
+	newbuf[buf.length .. $] = str;
+	buf = newbuf;
 }
 
 /// Encode a unicode array into utf8

@@ -222,7 +222,7 @@ fn toString(f: f64) const(char)[]
 fn toString(p: void*) const(char)[]
 {
 	u := cast(size_t) p;
-	return "0x" ~ toStringHex(u);
+	return format("0x%s", toStringHex(u));
 }
 
 fn toString(b: bool) const(char)[]

@@ -32,8 +32,8 @@ fn read(filename: string) void[]
 	if (!isFile(filename)) {
 		return null;
 	}
-	cstr := filename ~ "\0";
-	fp := fopen(cstr.ptr, "rb");
+	cstr := toStringz(filename);
+	fp := fopen(cstr, "rb");
 	if (fp is null) {
 		throw new Exception(format("Couldn't open file '%s' for reading.", filename));
 	}
@@ -138,7 +138,7 @@ version (Posix) fn searchDir(dirName: string, glob: string, dg: scope void deleg
 version (Windows) fn searchDir(dirName: string, glob: string, dg: scope void delegate(string))
 {
 	findData: WIN32_FIND_DATA;
-	handle := FindFirstFileA(toStringz(dirName ~ "/*"), &findData);  // Use our own globbing function.
+	handle := FindFirstFileA(toStringz(format("%s/*", dirName)), &findData);  // Use our own globbing function.
 	if ((cast(i32) handle) == INVALID_HANDLE_VALUE) {
 		error := GetLastError();
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
