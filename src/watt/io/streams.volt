@@ -30,7 +30,7 @@ public:
 	/**
 	 * Write a series of characters to the sink.
 	 */
-	fn write(s: const(char)[])
+	fn write(s: scope const(char)[])
 	{
 		for (i: size_t = 0u; i < s.length; i = i + 1u) {
 			put(s[i]);
