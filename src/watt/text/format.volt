@@ -30,7 +30,7 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 	zero: bool;
 	padding: i32;
 
-	fn output(str: string)
+	fn output(str: SinkArg)
 	{
 		padding -= cast(i32)str.length;
 		if (padding < 0) {
@@ -56,12 +56,12 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 			case 'c':
 				tmp: StringSink;
 				formatChar(tmp.sink, ref vl);
-				output(tmp.toString());
+				tmp.toSink(output);
 				break;
 			case 'd':
 				tmp: StringSink;
 				vrt_format_i64(tmp.sink, va_arg!i32(vl));
-				output(tmp.toString());
+				tmp.toSink(output);
 				break;
 			case 'f':
 				tmp: StringSink;
@@ -72,12 +72,12 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 				} else {
 					throw new Exception("type to %f format mismatch");
 				}
-				output(tmp.toString());
+				tmp.toSink(output);
 				break;
 			case 'X':
 				tmp: StringSink;
 				formatHex(tmp.sink, ref vl, _typeids[index]);
-				output(tmp.toString());
+				tmp.toSink(output);
 				break;
 			case 'x':
 				tmp: StringSink;
@@ -87,12 +87,12 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 			case 'p':
 				tmp: StringSink;
 				formatPointer(tmp.sink, ref vl);
-				output(tmp.toString());
+				tmp.toSink(output);
 				break;
 			case 's':
 				tmp: StringSink;
 				formatType(tmp.sink, ref vl, _typeids[index]);
-				output(tmp.toString());
+				tmp.toSink(output);
 				break;
 			case '0':
 				zero = true;
