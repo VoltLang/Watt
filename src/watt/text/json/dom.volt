@@ -10,9 +10,9 @@ import watt.text.json.sax;
 
 class DOMException : JSONException
 {
-	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
+	this(msg: string, location: string = __LOCATION__)
 	{
-		super(msg, file, line);
+		super(msg, location);
 	}
 }
 
@@ -29,10 +29,10 @@ enum DomType
 }
 
 private fn enforceJEx(b: bool, msg: string = "Json type enforce failure.",
-                      file: string = __FILE__, line: size_t = __LINE__)
+                      location: string = __LOCATION__)
 {
 	if (!b) {
-		throw new DOMException(msg, file, line);
+		throw new DOMException(msg, location);
 	}
 }
 

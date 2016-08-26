@@ -22,9 +22,9 @@ private extern(C) {
  */
 class BuilderException : util.JSONException
 {
-	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
+	this(msg: string, location: string = __LOCATION__)
 	{
-		super(msg, file, line);
+		super(msg, location);
 	}
 }
 

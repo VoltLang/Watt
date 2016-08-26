@@ -15,9 +15,9 @@ import watt.conv: toLong, toUlong, toLower;
  */
 class JSONException : Exception
 {
-	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
+	this(msg: string, location: string = __LOCATION__)
 	{
-		super(msg, file, line);
+		super(msg, location);
 	}
 }
 
@@ -26,9 +26,9 @@ class JSONException : Exception
  */
 class ParseException : JSONException
 {
-	this(msg: string, file: string = __FILE__, line: size_t = __LINE__)
+	this(msg: string, location: string = __LOCATION__)
 	{
-		super(msg, file, line);
+		super(msg, location);
 	}
 }
 
