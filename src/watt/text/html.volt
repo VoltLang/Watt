@@ -20,10 +20,10 @@ fn htmlEscape(str: string) string
 }
 
 /**
- * Writes the HTML escaped version of a given string to the given dg.
+ * Writes the HTML escaped version of a given string to the given dgt.
  * According to the OWASP rules:
  */
-fn htmlEscape(dg: Sink, str: string)
+fn htmlEscape(dgt: Sink, str: string)
 {
 	i, org: size_t;
 	// This is okay because we don't escape UTF-8 codes.
@@ -38,24 +38,24 @@ fn htmlEscape(dg: Sink, str: string)
 		}
 
 		if (i > org) {
-			dg(str[org .. i]);
+			dgt(str[org .. i]);
 		}
 
 		org = ++i;
 
 		switch (ch) {
-		case '\'': dg("&#39;"); break;
-		case '"': dg("&quot;"); break;
-		case '<': dg("&lt;"); break;
-		case '>': dg("&gt;"); break;
-		case '&': dg("&amp;"); break;
+		case '\'': dgt("&#39;"); break;
+		case '"': dgt("&quot;"); break;
+		case '<': dgt("&lt;"); break;
+		case '>': dgt("&gt;"); break;
+		case '&': dgt("&amp;"); break;
 		default:
 			assert(false);
 		}
 	}
 
 	if (i > org) {
-		dg(str[org .. i]);
+		dgt(str[org .. i]);
 	}
 }
 
@@ -71,9 +71,9 @@ fn htmlEscapeIgnoreTags(str: string) string
 
 /**
  * Writes the HTML escaped version of a given string to
- * the given dg, ignoring any tags.
+ * the given dgt, ignoring any tags.
  */
-fn htmlEscapeIgnoreTags(dg: Sink, str: string)
+fn htmlEscapeIgnoreTags(dgt: Sink, str: string)
 {
 	eatingHtmlTag: bool;
 	i, org: size_t;
@@ -105,24 +105,24 @@ fn htmlEscapeIgnoreTags(dg: Sink, str: string)
 		}
 
 		if (i > org) {
-			dg(str[org .. i]);
+			dgt(str[org .. i]);
 		}
 
 		org = ++i;
 
 		switch (ch) {
-		case '"': dg("&quot;"); break;
-		case '&': dg("&amp;"); break;
-		case '\'': dg("&#39;"); break;
-		case '<': dg("&lt;"); break;
-		case '>': dg("&gt;"); break;
+		case '"': dgt("&quot;"); break;
+		case '&': dgt("&amp;"); break;
+		case '\'': dgt("&#39;"); break;
+		case '<': dgt("&lt;"); break;
+		case '>': dgt("&gt;"); break;
 		default:
 			assert(false);
 		}
 	}
 
 	if (i > org) {
-		dg(str[org .. i]);
+		dgt(str[org .. i]);
 	}
 }
 
@@ -139,12 +139,12 @@ fn htmlEscapeAll(str: string) string
 /**
  * Escape every single character.
  */
-fn htmlEscapeAll(dg: Sink, str: string)
+fn htmlEscapeAll(dgt: Sink, str: string)
 {
 	foreach (d: dchar; str) {
-		dg("&#");
+		dgt("&#");
 		// @TODO add sink version of to string.
-		dg(toString(cast(u32)d));
-		dg(";");
+		dgt(toString(cast(u32)d));
+		dgt(";");
 	}
 }

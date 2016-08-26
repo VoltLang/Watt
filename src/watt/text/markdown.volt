@@ -170,14 +170,14 @@ fn filterMarkdown(str: string, settings: scope MarkdownSettings = null) string
 
 /** Markdown filters the given string and writes the corresponding HTML to an output range.
 */
-fn filterMarkdown(dg: Sink, src: string, flags: MarkdownFlags)
+fn filterMarkdown(dgt: Sink, src: string, flags: MarkdownFlags)
 {
 	settings := new MarkdownSettings();
 	settings.flags = flags;
-	filterMarkdown(dg, src, settings);
+	filterMarkdown(dgt, src, settings);
 }
 /// ditto
-fn filterMarkdown(dg: Sink, src: string, settings: scope MarkdownSettings = null)
+fn filterMarkdown(dgt: Sink, src: string, settings: scope MarkdownSettings = null)
 {
 	defsettings := new MarkdownSettings();
 	if (settings is null) settings = defsettings;
@@ -191,7 +191,7 @@ fn filterMarkdown(dg: Sink, src: string, settings: scope MarkdownSettings = null
 	lines := parseLines(ref all_lines, settings);
 	root_block: Block;
 	parseBlocks(ref root_block, ref lines, null, settings);
-	writeBlock(dg, ref root_block, links, settings);
+	writeBlock(dgt, ref root_block, links, settings);
 }
 
 final class MarkdownSettings {
@@ -863,93 +863,93 @@ private fn skipText(ref lines: Line[], indent: IndentType[]) string[]
 }
 
 /// private
-private fn writeBlock(dg: Sink, ref block: const Block, links: LinkRefs, settings: scope MarkdownSettings, fromOrdered: bool = false)
+private fn writeBlock(dgt: Sink, ref block: const Block, links: LinkRefs, settings: scope MarkdownSettings, fromOrdered: bool = false)
 {
 	final switch (block.type) {
 	case BlockType.Plain:
 		foreach( ln; block.text) {
-			dg(ln);
-			dg("\n");
+			dgt(ln);
+			dgt("\n");
 		}
 		foreach(b; block.blocks)
-			writeBlock(dg, ref b, links, settings, fromOrdered);
+			writeBlock(dgt, ref b, links, settings, fromOrdered);
 		break;
 	case BlockType.Text:
-		writeMarkdownEscaped(dg, ref block, links, settings);
+		writeMarkdownEscaped(dgt, ref block, links, settings);
 		foreach(b; block.blocks)
-			writeBlock(dg, ref b, links, settings, fromOrdered);
+			writeBlock(dgt, ref b, links, settings, fromOrdered);
 		break;
 	case BlockType.Paragraph:
 		assert(block.blocks.length == 0);
-		dg("<p>");
-		writeMarkdownEscaped(dg, ref block, links, settings);
-		dg("</p>\n");
+		dgt("<p>");
+		writeMarkdownEscaped(dgt, ref block, links, settings);
+		dgt("</p>\n");
 		break;
 	case BlockType.Header:
 		assert(block.blocks.length == 0);
 		hlvl := block.headerLevel + (settings ? settings.headingBaseLevel-1: cast(size_t)0);
-		dg(format("<h%s>", hlvl));
+		dgt(format("<h%s>", hlvl));
 		assert(block.text.length == 1);
-		writeMarkdownEscaped(dg, ref block.text[0], links, settings);
-		dg(format("</h%s>\n", hlvl));
+		writeMarkdownEscaped(dgt, ref block.text[0], links, settings);
+		dgt(format("</h%s>\n", hlvl));
 		break;
 	case BlockType.OList:
 		if (block.listNum != "1" && !fromOrdered) {
-			dg(format("<ol start=\"%s\">", block.listNum));
+			dgt(format("<ol start=\"%s\">", block.listNum));
 		} else {
-			dg("<ol>\n");
+			dgt("<ol>\n");
 		}
 		foreach(b; block.blocks)
-			writeBlock(dg, ref b, links, settings, true);
-		dg("</ol>\n");
+			writeBlock(dgt, ref b, links, settings, true);
+		dgt("</ol>\n");
 		break;
 	case BlockType.UList:
-		dg("<ul>\n");
+		dgt("<ul>\n");
 		foreach(b; block.blocks)
-			writeBlock(dg, ref b, links, settings, fromOrdered);
-		dg("</ul>\n");
+			writeBlock(dgt, ref b, links, settings, fromOrdered);
+		dgt("</ul>\n");
 		break;
 	case BlockType.ListItem:
-		dg("<li>");
-		writeMarkdownEscaped(dg, ref block, links, settings);
+		dgt("<li>");
+		writeMarkdownEscaped(dgt, ref block, links, settings);
 		foreach(b; block.blocks)
-			writeBlock(dg, ref b, links, settings, fromOrdered);
-		dg("</li>\n");
+			writeBlock(dgt, ref b, links, settings, fromOrdered);
+		dgt("</li>\n");
 		break;
 	case BlockType.Code:
 		assert(block.blocks.length == 0);
 		if (block.classTag.length > 0) {
-			dg(format("<pre><code class=\"%s\">", block.classTag));
+			dgt(format("<pre><code class=\"%s\">", block.classTag));
 		} else {
-			dg("<pre><code>");
+			dgt("<pre><code>");
 		}
 		foreach(ln; block.text) {
-			htmlEscape(dg, ln);
-			dg("\n");
+			htmlEscape(dgt, ln);
+			dgt("\n");
 		}
-		dg("</code></pre>");
+		dgt("</code></pre>");
 		break;
 	case BlockType.Quote:
-		dg("<blockquote>");
-		writeMarkdownEscaped(dg, ref block, links, settings);
+		dgt("<blockquote>");
+		writeMarkdownEscaped(dgt, ref block, links, settings);
 		foreach(b; block.blocks) {
-			writeBlock(dg, ref b, links, settings, fromOrdered);
+			writeBlock(dgt, ref b, links, settings, fromOrdered);
 		}
-		dg("</blockquote>\n");
+		dgt("</blockquote>\n");
 		break;
 	}
 }
 
-private fn writeMarkdownEscaped(dg: Sink, ref block: const Block, in links: LinkRefs, settings: scope MarkdownSettings)
+private fn writeMarkdownEscaped(dgt: Sink, ref block: const Block, in links: LinkRefs, settings: scope MarkdownSettings)
 {
 	lines := cast(string[])block.text;
 	text := settings.flags & MarkdownFlags.keepLineBreaks ? lines.join("<br>"): lines.join("\n");
-	writeMarkdownEscaped(dg, text, links, settings);
-	if (lines.length) dg("\n");
+	writeMarkdownEscaped(dgt, text, links, settings);
+	if (lines.length) dgt("\n");
 }
 
 /// private
-private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settings: scope MarkdownSettings)
+private fn writeMarkdownEscaped(dgt: Sink, ln: string, linkrefs: LinkRefs, settings: scope MarkdownSettings)
 {
 	fn filterLink(lnk: string, is_image: bool) string {
 		return settings.urlFilter !is null ? settings.urlFilter(lnk, is_image): lnk;
@@ -961,7 +961,7 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 	fn flushSpaces()
 	{
 		while (spaces > 0) {
-			dg(" ");
+			dgt(" ");
 			spaces--;
 		}
 	}
@@ -976,11 +976,11 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 				flushSpaces();
 			}
 			if (ln[0] == '\n' && spaces >= 2) {
-				dg("<br />");
+				dgt("<br />");
 				spaces = 0;
 			}
 			zero: size_t = 0;
-			encode(dg, decode(ln, ref zero));
+			encode(dgt, decode(ln, ref zero));
 			ln = ln[zero .. $];
 			break;
 		case '\\':
@@ -988,21 +988,21 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			if (ln.length >= 2) {
 				switch (ln[1]) {
 					default:
-						dg("\\");
+						dgt("\\");
 						ln = ln[1 .. $];
 						break;
 					case '\n':
-						dg("<br />\n");
+						dgt("<br />\n");
 						ln = ln[2 .. $];
 						break;
 					case '\'', '`', '*', '_', '{', '}', '[', ']',
 						'(', ')', '#', '+', '-', '.', '!', '~', '\\':
-						encode(dg, ln[1]);
+						encode(dgt, ln[1]);
 						ln = ln[2 .. $];
 						break;
 				}
 			} else {
-				encode(dg, ln[0]);
+				encode(dgt, ln[0]);
 				ln = ln[1 .. $];
 			}
 			break;
@@ -1011,11 +1011,11 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			flushSpaces();
 			text: string;
 			if (auto em = parseEmphasis(ref ln, ref text)) {
-				dg(em == 1 ? "<em>": em == 2 ? "<strong>": "<strong><em>");
-				htmlEscapeIgnoreTags(dg, text);
-				dg(em == 1 ? "</em>": em == 2 ? "</strong>": "</em></strong>");
+				dgt(em == 1 ? "<em>": em == 2 ? "<strong>": "<strong><em>");
+				htmlEscapeIgnoreTags(dgt, text);
+				dgt(em == 1 ? "</em>": em == 2 ? "</strong>": "</em></strong>");
 			} else {
-				encode(dg, ln[0]);
+				encode(dgt, ln[0]);
 				ln = ln[1 .. $];
 			}
 			break;
@@ -1026,11 +1026,11 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			}
 			strucken: string;
 			if (parseStrike(ref ln, ref strucken)) {
-				dg("<del>");
-				htmlEscapeIgnoreTags(dg, strucken);
-				dg("</del>");
+				dgt("<del>");
+				htmlEscapeIgnoreTags(dgt, strucken);
+				dgt("</del>");
 			} else {
-				encode(dg, ln[0]);
+				encode(dgt, ln[0]);
 				ln = ln[1 .. $];
 			}
 			break;
@@ -1038,11 +1038,11 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			flushSpaces();
 			code: string;
 			if (parseInlineCode(ref ln, ref code)) {
-				dg("<code>");
-				htmlEscapeIgnoreTags(dg, code);
-				dg("</code>");
+				dgt("<code>");
+				htmlEscapeIgnoreTags(dgt, code);
+				dgt("</code>");
 			} else while (ln.length > 0 && ln[0] == '`') {
-				encode(dg, ln[0]);
+				encode(dgt, ln[0]);
 				ln = ln[1 .. $];
 			}
 			break;
@@ -1051,19 +1051,19 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			link: Link;
 			b: bool = parseLink(ref ln, ref link, linkrefs);
 			if (b) {
-				dg("<a href=\"");
-				htmlEscape(dg, filterLink(link.url, false));
-				dg("\"");
+				dgt("<a href=\"");
+				htmlEscape(dgt, filterLink(link.url, false));
+				dgt("\"");
 				if (link.title.length) {
-					dg(" title=\"");
-					htmlEscape(dg, link.title);
-					dg("\"");
+					dgt(" title=\"");
+					htmlEscape(dgt, link.title);
+					dgt("\"");
 				}
-				dg(">");
-				writeMarkdownEscaped(dg, link.text, linkrefs, settings);
-				dg("</a>");
+				dgt(">");
+				writeMarkdownEscaped(dgt, link.text, linkrefs, settings);
+				dgt("</a>");
 			} else {
-				encode(dg, ln[0]);
+				encode(dgt, ln[0]);
 				ln = ln[1 .. $];
 			}
 			break;
@@ -1071,29 +1071,29 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			flushSpaces();
 			link: Link;
 			if (parseLink(ref ln, ref link, linkrefs)) {
-				dg("<img src=\"");
-				htmlEscape(dg, filterLink(link.url, true));
-				dg("\" alt=\"");
-				htmlEscape(dg, link.text);
-				dg("\"");
+				dgt("<img src=\"");
+				htmlEscape(dgt, filterLink(link.url, true));
+				dgt("\" alt=\"");
+				htmlEscape(dgt, link.text);
+				dgt("\"");
 				if (link.title.length) {
-					dg(" title=\"");
-					htmlEscape(dg, link.title);
-					dg("\"");
+					dgt(" title=\"");
+					htmlEscape(dgt, link.title);
+					dgt("\"");
 				}
-				dg(">");
+				dgt(">");
 			} else if (ln.length >= 2) {
-				dg(ln[0 .. 2]);
+				dgt(ln[0 .. 2]);
 				ln = ln[2 .. $];
 			} else {
-				encode(dg, ln[0]);
+				encode(dgt, ln[0]);
 				ln = ln[1 .. $];
 			}
 			break;
 		case '>':
 			flushSpaces();
-			if (settings.flags & MarkdownFlags.noInlineHtml) dg("&gt;");
-			else encode(dg, ln[0]);
+			if (settings.flags & MarkdownFlags.noInlineHtml) dgt("&gt;");
+			else encode(dgt, ln[0]);
 			ln = ln[1 .. $];
 			break;
 		case '<':
@@ -1101,37 +1101,37 @@ private fn writeMarkdownEscaped(dg: Sink, ln: string, linkrefs: LinkRefs, settin
 			url: string;
 			if (parseAutoLink(ref ln, ref url)) {
 				is_email: bool = url.startsWith("mailto:") != 0;
-				dg("<a href=\"");
-				if (is_email) htmlEscapeAll(dg, url);
-				else htmlEscape(dg, filterLink(url, false));
-				dg("\">");
-				if (is_email) htmlEscapeAll(dg, url[7 .. $]);
-				else htmlEscapeIgnoreTags(dg, url);
-				dg("</a>");
+				dgt("<a href=\"");
+				if (is_email) htmlEscapeAll(dgt, url);
+				else htmlEscape(dgt, filterLink(url, false));
+				dgt("\">");
+				if (is_email) htmlEscapeAll(dgt, url[7 .. $]);
+				else htmlEscapeIgnoreTags(dgt, url);
+				dgt("</a>");
 			} else {
 				if (ln.startsWith("<br>")) {
 					// always support line breaks, since we embed them here ourselves!
-					dg("<br>");
+					dgt("<br>");
 					ln = ln[4 .. $];
 				} else {
 					if (ln[0] == '<' && ln[$-1] == '>' && !validTag(ln[1 .. $-1])) {
-						dg("&lt;");
+						dgt("&lt;");
 						ln = ln[1 .. $];
 						while (ln[0] != '>') {
-							encode(dg, ln[0]);
+							encode(dgt, ln[0]);
 							ln = ln[1 .. $];
 						}
-						dg("&gt;");
+						dgt("&gt;");
 
-					} else if (settings.flags & MarkdownFlags.noInlineHtml) dg("&lt;");
-					else encode(dg, ln[0]);
+					} else if (settings.flags & MarkdownFlags.noInlineHtml) dgt("&lt;");
+					else encode(dgt, ln[0]);
 					ln = ln[1 .. $];
 				}
 			}
 			break;
 		}
 	}
-	if (br) dg("<br/>");
+	if (br) dgt("<br/>");
 }
 
 private fn isLineBlank(ln: string) bool {

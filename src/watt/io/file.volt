@@ -114,7 +114,7 @@ fn globMatch(path: string, pattern: string) bool
 	return pathIndex == path.length;
 }
 
-version (Posix) fn searchDir(dirName: string, glob: string, dg: scope void delegate(string))
+version (Posix) fn searchDir(dirName: string, glob: string, dgt: scope void delegate(string))
 {
 	dp: dirent*;
 	dirp := opendir(toStringz(dirName));
@@ -127,7 +127,7 @@ version (Posix) fn searchDir(dirName: string, glob: string, dg: scope void deleg
 		if (dp !is null) {
 			path := toString(cast(const(char)*) dp.d_name.ptr);
 			if (globMatch(path, glob)) {
-				dg(path);
+				dgt(path);
 			}
 		}
 	} while (dp !is null);
@@ -135,7 +135,7 @@ version (Posix) fn searchDir(dirName: string, glob: string, dg: scope void deleg
 	closedir(dirp);
 }
 
-version (Windows) fn searchDir(dirName: string, glob: string, dg: scope void delegate(string))
+version (Windows) fn searchDir(dirName: string, glob: string, dgt: scope void delegate(string))
 {
 	findData: WIN32_FIND_DATA;
 	handle := FindFirstFileA(toStringz(format("%s/*", dirName)), &findData);  // Use our own globbing function.
@@ -150,7 +150,7 @@ version (Windows) fn searchDir(dirName: string, glob: string, dg: scope void del
 	do {
 		path := toString(cast(const(char)*) findData.cFileName.ptr);
 		if (globMatch(toLower(path), toLower(glob))) {
-			dg(toString(cast(const(char)*) findData.cFileName.ptr));
+			dgt(toString(cast(const(char)*) findData.cFileName.ptr));
 		}
 		bRetval: BOOL = FindNextFileA(handle, &findData);
 		if (bRetval == 0) {

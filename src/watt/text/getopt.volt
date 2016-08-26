@@ -74,14 +74,14 @@ private fn equalParameter(s: string) string
 }
 
 // No argument getopt base implementation.
-private fn getoptImpl(ref args: string[], description: string, dg: scope void delegate())
+private fn getoptImpl(ref args: string[], description: string, dgt: scope void delegate())
 {
 	flags := parseDescription(description);
 	for (i: size_t = 1; i < args.length; ++i) {
 		arg := removeDashes(args[i]);
 		foreach (flag; flags) {
 			if (flag == arg) {
-				dg();
+				dgt();
 				remove(ref args, ref i);
 				break;
 			}
@@ -90,7 +90,7 @@ private fn getoptImpl(ref args: string[], description: string, dg: scope void de
 }
 
 // Argument taking getopt base implementation.
-fn getoptImpl(ref args: string[], description: string, dg: scope void delegate(string))
+fn getoptImpl(ref args: string[], description: string, dgt: scope void delegate(string))
 {
 	flags := parseDescription(description);
 	for (i: size_t = 1; i < args.length; ++i) {
@@ -100,16 +100,16 @@ fn getoptImpl(ref args: string[], description: string, dg: scope void delegate(s
 			equals := equalParameter(arg);
 			equalLeft := split(arg, '=')[0];
 			if (equals.length > 0 && equalLeft == flag) {
-				dg(equals);
+				dgt(equals);
 				remove(ref args, ref i);
 			} else if (flag.length == 1 && oneDash && arg[0] == flag[0]) {
-				dg(arg[1 .. $]);
+				dgt(arg[1 .. $]);
 				remove(ref args, ref i);
 			} else if (flag == arg) {
 				if (i + 1 >= args.length) {
 					throw new GetoptException(format("getopt: expected parameter for argument '%s'.", arg));
 				}
-				dg(args[i + 1]);
+				dgt(args[i + 1]);
 				removeTwo(ref args, ref i);
 			}
 		}
@@ -126,14 +126,14 @@ fn getoptImpl(ref args: string[], description: string, dg: scope void delegate(s
  */
 fn getopt(ref args: string[], description: string, ref _string: string)
 {
-	fn dg(param: string) { _string = param; }
-	getoptImpl(ref args, description, dg);
+	fn dgt(param: string) { _string = param; }
+	getoptImpl(ref args, description, dgt);
 }
 
 /// The same as getopt with string, but the result is passed through watt.conv.toInt.
 fn getopt(ref args: string[], description: string, ref _int: i32)
 {
-	fn dg(arg: string)
+	fn dgt(arg: string)
 	{
 		try {
 			_int = toInt(arg);
@@ -141,7 +141,7 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
 			throw new GetoptException(format("getopt: expected integer argument for flag '%s'.", description));
 		}
 	}
-	getopt(ref args, description, dg);
+	getopt(ref args, description, dgt);
 }
 
 /**
@@ -151,20 +151,20 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
  */
 fn getopt(ref args: string[], description: string, ref _bool: bool)
 {
-	fn dg() { _bool = true; }
-	getoptImpl(ref args, description, dg);
+	fn dgt() { _bool = true; }
+	getoptImpl(ref args, description, dgt);
 }
 
 /// Calls a delegate each time the flag appears.
-fn getopt(ref args: string[], description: string, dg: scope void delegate())
+fn getopt(ref args: string[], description: string, dgt: scope void delegate())
 {
-	getoptImpl(ref args, description, dg);
+	getoptImpl(ref args, description, dgt);
 }
 
 /// Calls a delegate with argument each time the flag appears.
-fn getopt(ref args: string[], description: string, dg: scope void delegate(string))
+fn getopt(ref args: string[], description: string, dgt: scope void delegate(string))
 {
-	getoptImpl(ref args, description, dg);
+	getoptImpl(ref args, description, dgt);
 }
 
 /**

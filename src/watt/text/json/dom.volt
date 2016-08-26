@@ -300,7 +300,7 @@ fn parse(s: string) Value
 
 	current := &val;
 	loop := true;
-	fn dg(event: Event, data: const(ubyte)[])
+	fn dgt(event: Event, data: const(ubyte)[])
 	{
 		if (event == Event.ERROR) {
 			throw new DOMException(cast(string)data);
@@ -381,7 +381,7 @@ fn parse(s: string) Value
 	}
 	sax := new SAX(s);
 	while (loop) {
-		sax.get(dg);
+		sax.get(dgt);
 	}
 	assert(valueStack.length == 1);
 	return valueStack[$-1];

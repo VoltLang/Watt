@@ -82,16 +82,16 @@ fn encode(arr: dchar[]) string
 fn encode(c: dchar) string
 {
 	ret: string;
-	fn dg(s: SinkArg) void {
+	fn dgt(s: SinkArg) void {
 		ret = new string(s);
 	}
 
-	encode(dg, c);
+	encode(dgt, c);
 	return ret;
 }
 
 /// Encode c as UTF-8.
-fn encode(dg: Sink, c: dchar) void
+fn encode(dgt: Sink, c: dchar) void
 {
 	buf: char[6];
 	cval := cast(uint) c;
@@ -105,29 +105,29 @@ fn encode(dg: Sink, c: dchar) void
 
 	if (cval <= 0x7F) {
 		buf[0] = cast(char) c;
-		return dg(buf[0 .. 1]);
+		return dgt(buf[0 .. 1]);
 	} else if (cval >= 0x80 && cval <= 0x7FF) {
 		buf[1] = readU8(0x0080, 0x003F);
 		buf[0] = readU8(0x00C0, 0x001F);
-		return dg(buf[0 .. 2]);
+		return dgt(buf[0 .. 2]);
 	} else if (cval >= 0x800 && cval <= 0xFFFF) {
 		buf[2] = readU8(0x0080, 0x003F);
 		buf[1] = readU8(0x0080, 0x003F);
 		buf[0] = readU8(0x00E0, 0x000F);
-		return dg(buf[0 .. 3]);
+		return dgt(buf[0 .. 3]);
 	} else if (cval >= 0x10000 && cval <= 0x1FFFFF) {
 		buf[3] = readU8(0x0080, 0x003F);
 		buf[2] = readU8(0x0080, 0x003F);
 		buf[1] = readU8(0x0080, 0x003F);
 		buf[0] = readU8(0x00F0, 0x000E);
-		return dg(buf[0 .. 4]);
+		return dgt(buf[0 .. 4]);
 	} else if (cval >= 0x200000 && cval <= 0x3FFFFFF) {
 		buf[4] = readU8(0x0080, 0x003F);
 		buf[3] = readU8(0x0080, 0x003F);
 		buf[2] = readU8(0x0080, 0x003F);
 		buf[1] = readU8(0x0080, 0x003F);
 		buf[0] = readU8(0x00F8, 0x0007);
-		return dg(buf[0 .. 5]);
+		return dgt(buf[0 .. 5]);
 	} else if (cval >= 0x4000000 && cval <= 0x7FFFFFFF) {
 		buf[5] = readU8(0x0080, 0x003F);
 		buf[4] = readU8(0x0080, 0x003F);
@@ -135,7 +135,7 @@ fn encode(dg: Sink, c: dchar) void
 		buf[2] = readU8(0x0080, 0x003F);
 		buf[1] = readU8(0x0080, 0x003F);
 		buf[0] = readU8(0x00FC, 0x0001);
-		return dg(buf[0 .. 6]);
+		return dgt(buf[0 .. 6]);
 	} else {
 		throw new MalformedUTF8Exception("encode: unsupported codepoint range");
 	}
