@@ -5,7 +5,7 @@ module watt.library;
 import watt.conv : toStringz;
 
 
-alias Loader = void* delegate(string);
+alias Loader = dg (string) void*;
 
 version(Windows) {
 

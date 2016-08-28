@@ -74,7 +74,7 @@ private fn equalParameter(s: string) string
 }
 
 // No argument getopt base implementation.
-private fn getoptImpl(ref args: string[], description: string, dgt: scope void delegate())
+private fn getoptImpl(ref args: string[], description: string, dgt: scope dg())
 {
 	flags := parseDescription(description);
 	for (i: size_t = 1; i < args.length; ++i) {
@@ -90,7 +90,7 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope void d
 }
 
 // Argument taking getopt base implementation.
-fn getoptImpl(ref args: string[], description: string, dgt: scope void delegate(string))
+fn getoptImpl(ref args: string[], description: string, dgt: scope dg (string))
 {
 	flags := parseDescription(description);
 	for (i: size_t = 1; i < args.length; ++i) {
@@ -156,13 +156,13 @@ fn getopt(ref args: string[], description: string, ref _bool: bool)
 }
 
 /// Calls a delegate each time the flag appears.
-fn getopt(ref args: string[], description: string, dgt: scope void delegate())
+fn getopt(ref args: string[], description: string, dgt: scope dg ())
 {
 	getoptImpl(ref args, description, dgt);
 }
 
 /// Calls a delegate with argument each time the flag appears.
-fn getopt(ref args: string[], description: string, dgt: scope void delegate(string))
+fn getopt(ref args: string[], description: string, dgt: scope dg (string))
 {
 	getoptImpl(ref args, description, dgt);
 }

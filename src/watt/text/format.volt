@@ -36,7 +36,7 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 		if (padding < 0) {
 			padding = 0;
 		}
-		string padc = zero ? "0" : " ";
+		padc := zero ? "0" : " ";
 		foreach (0 .. padding) {
 			sink(padc);
 		}

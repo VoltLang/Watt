@@ -145,7 +145,7 @@ public:
 	 * *get* call. strings and numbers still need to be further processed e.g. throught
 	 * *parseNumber* and *unescapeString*.
 	 */
-	fn get(callback: scope void delegate(event: Event, data: const(u8)[]))
+	fn get(callback: scope dg (event: Event, data: const(u8)[]))
 	{
 		if (state.head == State.ERROR) {
 			callback(Event.ERROR, cast(const(ubyte)[])lastError);

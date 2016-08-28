@@ -2,9 +2,9 @@ module watt.algorithm;
 
 
 /// Takes to indicies of elements to compare.
-alias CmpDg = scope bool delegate(size_t, size_t);
+alias CmpDg = scope dg(size_t, size_t) bool;
 /// Takes to indicies of elements to swap.
-alias SwapDg = scope void delegate(size_t, size_t);
+alias SwapDg = scope dg(size_t, size_t);
 
 /**
  * Runs a sorting algorithm on the given delegates.

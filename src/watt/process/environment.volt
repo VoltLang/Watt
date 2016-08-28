@@ -128,7 +128,7 @@ version (OSX) {
 
 } else version (Windows) {
 
-	immutable(wchar)[] convert8To16(const(char)[] str)
+	fn convert8To16(str: const(char)[]) immutable(wchar)[]
 	{
 		if (str.length == 0) {
 			return null;
@@ -145,7 +145,7 @@ version (OSX) {
 		return cast(immutable(wchar)[])w;
 	}
 
-	string convert16To8(const(wchar)[] w)
+	fn convert16To8(w: const(wchar)[]) string
 	{
 		if (w.length == 0) {
 			return null;

@@ -202,7 +202,7 @@ final class MarkdownSettings {
 	headingBaseLevel: size_t = 1;
 
 	/// Called for every link/image URL to perform arbitrary transformations.
-	urlFilter: string delegate(url_or_path: string, is_image: bool);
+	urlFilter: dg (url_or_path: string, is_image: bool) string;
 }
 
 enum MarkdownFlags {
