@@ -545,10 +545,10 @@ fn LOWORD(dw: DWORD) WORD
 
 fn HIWORD(dw: DWORD) WORD
 {
-	return cast(WORD)((cast(DWORD)dw >> 16) & 0xFFFF);
+	return cast(WORD)((dw >> 16) & 0xFFFF);
 }
 
-enum WM_ACTIVE = 1;
+enum WM_ACTIVATE = 0x0006;
 enum WM_SYSCOMMAND = 0x0112;
 enum WM_CLOSE = 0x0010;
 enum WM_KEYDOWN = 0x0100;
