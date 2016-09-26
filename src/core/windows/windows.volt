@@ -44,6 +44,7 @@ alias HCURSOR = HICON;
 alias HBRUSH = HANDLE;
 alias ATOM = WORD;
 alias HMENU = HANDLE;
+alias PROC = void*;  // This is a guess.
 
 
 enum TRUE = 1;
@@ -360,7 +361,8 @@ alias LPDEVMODE = _devicemode*;
 enum DWORD CDS_FULLSCREEN = 0x00000004;
 enum LONG DISP_CHANGE_SUCCESSFUL = 0;
 
-fn ChangeDisplaySettings(lpDevMode: DEVMODE*, dwFlags: DWORD) LONG;
+fn ChangeDisplaySettingsA(lpDevMode: DEVMODE*, dwFlags: DWORD) LONG;
+fn ChangeDisplaySettingsW(lpDevMode: DEVMODE*, dwFlags: DWORD) LONG;
 
 fn ShowCursor(bShow: BOOL) i32;
 

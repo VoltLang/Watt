@@ -11,3 +11,4 @@ alias HGLRC = HANDLE;
 fn wglMakeCurrent(hdc: HDC, hglrc: HGLRC) BOOL;
 fn wglDeleteContext(hglrc: HGLRC) BOOL;
 fn wglCreateContext(hdc: HDC) HGLRC;
+fn wglGetProcAddress(LPCSTR) PROC;
