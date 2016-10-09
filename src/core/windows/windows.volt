@@ -45,6 +45,7 @@ alias HBRUSH = HANDLE;
 alias ATOM = WORD;
 alias HMENU = HANDLE;
 alias PROC = void*;  // This is a guess.
+alias SHORT = i16;
 
 
 enum TRUE = 1;
@@ -587,3 +588,18 @@ fn DispatchMessageA(lpMsg: MSG*) LRESULT;
 fn DispatchMessageW(lpMsg: MSG*) LRESULT;
 
 fn SwapBuffers(HDC) BOOL;
+
+struct COORD
+{
+	x: SHORT;
+	y: SHORT;
+}
+alias PCOORD = COORD*;
+
+fn SetConsoleCursorPosition(hConsoleOutput: HANDLE, dwCursorPosition: COORD) BOOL;
+fn WriteConsoleA(HANDLE, const(void)*, DWORD, LPDWORD, LPVOID) BOOL;
+fn WriteConsoleW(HANDLE, const(void)*, DWORD, LPDWORD, LPVOID) BOOL;
+fn SetConsoleTitleA(LPCSTR) BOOL;
+fn SetConsoleTitleW(LPWSTR) BOOL;
+fn ReadConsoleA(HANDLE, LPVOID, DWORD, LPDWORD, LPVOID) BOOL;
+fn ReadConsoleW(HANDLE, LPVOID, DWORD, LPDWORD, LPVOID) BOOL;
