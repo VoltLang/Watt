@@ -10,15 +10,30 @@ import watt.path;
 
 fn normalizePath(path: SinkArg) string
 {
+	version (Windows) {
+		return normalizePathImpl(path, true);
+	} else {
+		return normalizePathImpl(path, false);
+	}
+}
+
+fn normalizePathWindows(path: SinkArg) string
+{
+	return normalizePathImpl(path, true);
+}
+
+private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
+{
 	buf := new char[](path.length);
 	bufIndex: size_t = 0;
 
 	slash := '/';
 	absolute := path[0].isSlash();
-	version (Windows) {
+	colonIndex: ptrdiff_t;
+	drive: string;
+	if (windowsPaths) {
 		slash = '\\';
-		colonIndex := path.indexOf(':');
-		drive: string;
+		colonIndex = path.indexOf(':');
 		if (colonIndex > 0) {
 			drive = path[0 .. colonIndex+1];
 			absolute = true;
@@ -26,7 +41,7 @@ fn normalizePath(path: SinkArg) string
 	}
 
 	fn isSlash(c: dchar) bool {
-		version (Windows) {
+		if (windowsPaths) {
 			return c == '/' || c == '\\';
 		} else {
 			return c == '/';
@@ -47,7 +62,7 @@ fn normalizePath(path: SinkArg) string
 		path[i+2] == '.' &&
 		(i+3 == path.length || path[i+3].isSlash()) && nonDot) {
 			slashIndex := buf[0 .. bufIndex].lastIndexOf(slash);
-			version (Windows) {
+			if (windowsPaths) {
 				if (slashIndex < 0) {
 					slashIndex = buf[0 .. bufIndex].lastIndexOf('/');
 				}
@@ -73,7 +88,7 @@ fn normalizePath(path: SinkArg) string
 				nonDot = true;
 			}
 			c: char = path[i++];
-			version (Windows) {
+			if (windowsPaths) {
 				// Normalise.
 				if (c == '/') {
 					c = '\\';
@@ -93,13 +108,15 @@ fn normalizePath(path: SinkArg) string
 		// "If the result of this process is an empty string...return the string "."."
 		return ".";
 	} else {
-		version (Windows) {
+		if (windowsPaths) {
 			if (drive.length > 0) {
 				return drive ~ str;
 			} else {
 				return str;
 			}
+		} else {
+			return str;
 		}
-		return str;
 	}
+	assert(false);
 }
