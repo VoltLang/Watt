@@ -17,6 +17,11 @@ fn normalizePath(path: SinkArg) string
 	}
 }
 
+fn normalizePathPosix(path: SinkArg) string
+{
+	return normalizePathImpl(path, false);
+}
+
 fn normalizePathWindows(path: SinkArg) string
 {
 	return normalizePathImpl(path, true);
