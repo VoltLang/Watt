@@ -14,7 +14,6 @@ MACHINE ?= $(HOST_MACHINE)
 
 VFLAGS ?= --no-stdlib -I %@execdir%/rt/src
 TARGETS = \
-	bin/libwatt-le32-emscripten.bc \
 	bin/libwatt-x86-mingw.bc \
 	bin/libwatt-x86_64-mingw.bc \
 	bin/libwatt-x86_64-msvc.bc \
