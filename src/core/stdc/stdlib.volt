@@ -38,7 +38,6 @@ else version (Linux)      enum RAND_MAX = 0x7fffffff;
 else version (OSX)        enum RAND_MAX = 0x7fffffff;
 else version (FreeBSD)    enum RAND_MAX = 0x7fffffff;
 else version (Solaris)    enum RAND_MAX = 0x7fff;
-else version (Emscripten) enum RAND_MAX = 0x7fffffff;
 else static assert(false, "Unsupported platform");
 
 fn  atof(in nptr: char*) f64;

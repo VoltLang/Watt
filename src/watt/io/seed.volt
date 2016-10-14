@@ -41,11 +41,6 @@ version (Windows) {
 
 		return ret;
 	}
-} else version (Emscripten) {
-	fn getHardwareSeedUint() u32
-	{
-		assert(false);
-	}
 } else {
 	static assert(false);
 }

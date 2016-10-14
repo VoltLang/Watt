@@ -15,8 +15,6 @@ global this()
 		ticksPerSecond = machTicksPerSecond();
 	} else version (Posix) {
 		ticksPerSecond = posixTicksPerSecond(CLOCK_MONOTONIC);
-	} else version (Emscripten) {
-		ticksPerSecond = 1_000_000_000L;
 	} else {
 		static assert(false);
 	}

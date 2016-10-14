@@ -114,22 +114,6 @@ public:
 			}
 		}
 
-	} else version (Emscripten) {
-
-		global fn load(filename: string) Library
-		{
-			return null;
-		}
-
-		final fn symbol(symbol: string) void*
-		{
-			return null;
-		}
-
-		final fn free()
-		{
-		}
-
 	} else {
 
 		static assert(false);

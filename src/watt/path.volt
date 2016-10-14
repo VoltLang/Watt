@@ -279,10 +279,6 @@ fn getExecDir() string
 			ret = cast(i32)size;
 		}
 
-	} else version (Emscripten) {
-
-		ret: i32 = 0;
-
 	} else {
 
 		static assert(false);
