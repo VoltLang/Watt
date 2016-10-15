@@ -33,7 +33,7 @@ import watt.conv: toString, toStringz;
 import watt.text.string: indexOf, lastIndexOf;
 import watt.math.random: RandomGenerator;
 import watt.process: getEnv;
-import watt.io.seed: getHardwareSeedUint;
+import watt.io.seed: getHardwareSeedU32;
 import watt.io.file: exists;
 import watt.text.format : format;
 
@@ -219,7 +219,7 @@ fn extension(path: const(char)[]) string
 fn temporaryFilename(extension: string = "", subdir: string = "") string
 {
 	rng: RandomGenerator;
-	rng.seed(getHardwareSeedUint());
+	rng.seed(getHardwareSeedU32());
 	version (Windows) {
 		prefix: string = format("%s/", getEnv("TEMP"));
 	} else {

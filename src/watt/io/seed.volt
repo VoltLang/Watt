@@ -14,7 +14,7 @@ version (Windows) {
 	enum PROV_RSA_FULL = 1;
 	enum CRYPT_NEWKEYSET = 0x00000008;
 
-	fn getHardwareSeedUint() u32
+	fn getHardwareSeedU32() u32
 	{
 		buf := new u32[](1);
 		hcpov: HCRYPTPROV;
@@ -30,7 +30,7 @@ version (Windows) {
 } else version (OSX || Linux) {
 	private import watt.io.streams: InputFileStream;
 
-	fn getHardwareSeedUint() u32
+	fn getHardwareSeedU32() u32
 	{
 		ifs := new InputFileStream("/dev/urandom");
 		ret: u32;
