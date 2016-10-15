@@ -6,7 +6,6 @@ SRC=src\core\posix\sys\*.volt src\core\posix\*.volt src\core\stdc\*.volt src\cor
 
 all:
 	mkdir bin
-	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o bin\libwatt-le32-emscripten.bc --arch le32 --platform emscripten $(SRC)
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o bin\libwatt-x86-linux.bc --arch x86 --platform linux $(SRC)
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o bin\libwatt-x86-mingw.bc --arch x86 --platform mingw $(SRC)
 	$(VOLT) $(VFLAGS) -I src --emit-bitcode -o bin\libwatt-x86-osx.bc --arch x86 --platform osx $(SRC)
