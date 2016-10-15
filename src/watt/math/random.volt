@@ -124,16 +124,16 @@ public:
 		return false;
 	}
 
-	fn uniformUint(lower: u32, upper: u32) u32
+	fn uniformU32(lower: u32, upper: u32) u32
 	{
 		base: u32 = front;
 		popFront();
 		return cast(u32)(lower + (upper - lower) * cast(f64)(base - RandomGenerator.min) / (RandomGenerator.max - RandomGenerator.min));
 	}
 
-	fn uniformInt(lower: i32, upper: i32) i32
+	fn uniformI32(lower: i32, upper: i32) i32
 	{
-		return cast(i32)uniformUint(cast(u32)lower, cast(u32)upper);
+		return cast(i32)uniformU32(cast(u32)lower, cast(u32)upper);
 	}
 
 	fn randomString(length: size_t) string
@@ -141,15 +141,15 @@ public:
 		str := new char[](length);
 		foreach (i; 0 .. length) {
 			c: char;
-			switch (uniformInt(0, 3)) {
+			switch (uniformI32(0, 3)) {
 			case 0:
-				c = cast(char)uniformUint('0', '1' + 1U);
+				c = cast(char)uniformU32('0', '1' + 1U);
 				break;
 			case 1:
-				c = cast(char)uniformUint('a', 'z' + 1U);
+				c = cast(char)uniformU32('a', 'z' + 1U);
 				break;
 			case 2:
-				c = cast(char)uniformUint('A', 'Z' + 1U);
+				c = cast(char)uniformU32('A', 'Z' + 1U);
 				break;
 			default:
 				assert(false);
