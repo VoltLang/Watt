@@ -305,12 +305,12 @@ fn parse(s: string) Value
 		if (event == Event.ERROR) {
 			throw new DOMException(cast(string)data);
 		}
-		loop = event != Event.STOP;
+		loop = event != Event.END;
 		v: Value;
 		final switch (event) {
 		case Event.ERROR:
 			assert(false);
-		case Event.STOP:
+		case Event.END:
 		case Event.START:
 			break;
 		case Event.NULL:

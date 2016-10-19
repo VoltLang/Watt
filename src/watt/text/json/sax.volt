@@ -44,7 +44,7 @@ enum Type
 enum Event
 {
 	START, ///< The first event, marks the start of the JSON data.
-	STOP, ///< The last event, marks the end of the JSON data.
+	END, ///< The last event, marks the end of the JSON data.
 	ERROR, ///< Event which will occour if invalid JSON is encountered.
 
 	NULL, ///< A null was encountered.
@@ -65,7 +65,7 @@ fn eventToString(event: Event) string
 {
 	switch (event) with (Event) {
 		case START: return "start";
-		case STOP: return "stop";
+		case END: return "end";
 		case ERROR: return "error";
 		case NULL: return "null";
 		case BOOLEAN: return "boolean";
@@ -162,14 +162,14 @@ public:
 				case START:
 					unget();
 					state.pop();
-					state.push(STOP);
+					state.push(END);
 					// CONTINUE is used to start with the root element
-					// and not instantly stop because of the STOP state.
+					// and not instantly stop because of the END state.
 					state.push(CONTINUE);
 					callback(Event.START, null);
 					return;
-				case STOP:
-					callback(Event.STOP, null);
+				case END:
+					callback(Event.END, null);
 					if (!ignoreGarbage && getSuccess) {
 						error("Too much data.");
 						break;
@@ -182,8 +182,8 @@ public:
 					if (!getSuccess && eof()) {
 						// could be real EOF or just the end.
 						state.pop();
-						if (state.head == STOP) {
-							goto case STOP;
+						if (state.head == END) {
+							goto case END;
 						}
 						state.push(ERROR);
 					}
@@ -727,7 +727,7 @@ public:
 	 */
 	fn finalize()
 	{
-		if (state.head != State.START && state.head != State.STOP) {
+		if (state.head != State.START && state.head != State.END) {
 			throw new BuilderException("Invalid state.");
 		}
 
@@ -748,9 +748,9 @@ protected:
 		switch (state.head) with (State) {
 			case START:
 				state.pop();
-				state.push(STOP);
+				state.push(END);
 				break;
-			case STOP:
+			case END:
 				throw new BuilderException("Only one root element allowed.");
 			case OBJECT_START:
 				state.pop();
@@ -804,7 +804,7 @@ protected:
 private enum State
 {
 	START,
-	STOP,
+	END,
 	CONTINUE,
 	ERROR,
 	OBJECT, // currently parsing an object
