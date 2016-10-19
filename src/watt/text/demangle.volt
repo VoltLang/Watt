@@ -19,6 +19,19 @@ import watt.text.format : format;
  */
 fn demangle(mangledName: const(char)[]) string
 {
+	return demangleImpl(mangledName:mangledName, abridged:false);
+}
+
+/**
+ * Demangle a given mangled name, but omit redundant information.
+ */
+fn demangleShort(mangledName: const(char)[]) string
+{
+	return demangleImpl(mangledName:mangledName, abridged:true);
+}
+
+fn demangleImpl(mangledName: const(char)[], abridged: bool) string
+{
 	StringSink sink;
 
 	// Mangle type.
@@ -26,7 +39,7 @@ fn demangle(mangledName: const(char)[]) string
 	sink.sink("fn ");
 
 	// Function name.
-	demangleName(ref sink, ref mangledName);
+	demangleName(ref sink, ref mangledName, abridged);
 	sink.sink("(");
 
 	// Function arguments.
@@ -42,7 +55,7 @@ fn demangle(mangledName: const(char)[]) string
 		} else {
 			firstIteration = false;
 		}
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 	}
 	sink.sink(")");
 
@@ -52,7 +65,7 @@ fn demangle(mangledName: const(char)[]) string
 		getFirst(ref mangledName, 1);
 	} else {
 		sink.sink(" ");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 	}
 
 	failIf(mangledName.length > 0, "unused input");
@@ -103,19 +116,32 @@ fn getNumber(ref mangledName: const(char)[]) i32
  * Format the name section (3the3bit4that2is4like4this) to sink,
  * and remove it from mangledName.
  */
-fn demangleName(ref sink: StringSink, ref mangledName: const(char)[])
+fn demangleName(ref sink: StringSink, ref mangledName: const(char)[], abridged: bool)
 {
 	firstIteration := true;
+	nameSink: StringSink;
+	lastSegment, secondToLastSegment: const(char)[];
 	while (mangledName[0].isDigit()) {
 		if (!firstIteration) {
-			sink.sink(".");
+			nameSink.sink(".");
 		} else {
 			firstIteration = false;
 		}
 
 		sectionLength := cast(size_t)getNumber(ref mangledName);
 		failIf(mangledName.length < sectionLength, "input too short");
-		sink.sink(getFirst(ref mangledName, sectionLength));
+		secondToLastSegment = lastSegment;
+		lastSegment = getFirst(ref mangledName, sectionLength);
+		nameSink.sink(lastSegment);
+	}
+	if (!abridged) {
+		nameSink.toSink(sink.sink);
+	} else {
+		if (mangledName.length > 0 && mangledName[0] == 'M') {
+			sink.sink(secondToLastSegment);
+			sink.sink(".");
+		}
+		sink.sink(lastSegment);
 	}
 }
 
@@ -123,7 +149,7 @@ fn demangleName(ref sink: StringSink, ref mangledName: const(char)[])
  * Format a type from mangledName (e.g. i => i32), add it to the sink,
  * and remove it from mangledName.
  */
-fn demangleType(ref sink: StringSink, ref mangledName: const(char)[])
+fn demangleType(ref sink: StringSink, ref mangledName: const(char)[], abridged: bool)
 {
 	t := getFirst(ref mangledName, 1);
 	switch (t) {
@@ -156,10 +182,15 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[])
 		}
 		break;
 	case "p":
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		sink.sink("*");
 		break;
 	case "a":
+		if (abridged && mangledName.length >= 2 && mangledName[0 .. 2] == "mc") {
+			getFirst(ref mangledName, 2);
+			sink.sink("string");
+			break;
+		}
 		isStatic := false;
 		staticLength: i32;
 		if (mangledName[0] == 't') {
@@ -167,7 +198,7 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[])
 			staticLength = getNumber(ref mangledName);
 			isStatic = true;
 		}
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		if (!isStatic) {
 			sink.sink("[]");
 		} else {
@@ -176,55 +207,55 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[])
 		break;
 	case "o":
 		sink.sink("const(");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		sink.sink(")");
 		break;
 	case "m":
 		sink.sink("immutable(");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		sink.sink(")");
 		break;
 	case "e":
 		sink.sink("scope(");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		sink.sink(")");
 		break;
 	case "r":
 		sink.sink("ref ");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		break;
 	case "O":
 		sink.sink("out ");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		break;
 	case "A":
 		match(ref mangledName, "a");
 		keySink: StringSink;
-		demangleType(ref keySink, ref mangledName);
+		demangleType(ref keySink, ref mangledName, abridged);
 
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 		sink.sink("[");
 		keySink.toSink(sink.sink);
 		sink.sink("]");
 		break;
 	case "F":
-		demangleFunctionType(ref sink, ref mangledName, "fn");
+		demangleFunctionType(ref sink, ref mangledName, "fn", abridged);
 		break;
 	case "D":
-		demangleFunctionType(ref sink, ref mangledName, "dg");
+		demangleFunctionType(ref sink, ref mangledName, "dg", abridged);
 		break;
 	case "S":  // Struct
 	case "C":  // Class
 	case "U":  // Union
 	case "E":  // Enum
 	case "I":  // Interface
-		demangleName(ref sink, ref mangledName);
+		demangleName(ref sink, ref mangledName, abridged);
 		break;
 	default: throw new Exception(format("unknown type string %s", t));
 	}
 }
 
-fn demangleFunctionType(ref sink: StringSink, ref mangledName: const(char)[], keyword: string)
+fn demangleFunctionType(ref sink: StringSink, ref mangledName: const(char)[], keyword: string, abridged: bool)
 {
 	getFirst(ref mangledName, 1);  // Eat calling convention ('v', etc).
 	sink.sink(format("%s(", keyword));
@@ -235,12 +266,12 @@ fn demangleFunctionType(ref sink: StringSink, ref mangledName: const(char)[], ke
 		} else {
 			firstIteration = false;
 		}
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 	}
 	sink.sink(")");
 	match(ref mangledName, "Z");
 	if (mangledName.length > 0 && mangledName[0] != 'v') {
 		sink.sink(" ");
-		demangleType(ref sink, ref mangledName);
+		demangleType(ref sink, ref mangledName, abridged);
 	}
 }
