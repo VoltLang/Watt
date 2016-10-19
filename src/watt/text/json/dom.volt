@@ -351,7 +351,7 @@ fn parse(s: string) Value
 			addValue(v, getKey());
 			break;
 		case Event.STRING:
-			v.str(unescapeString(cast(const(char)[])data));
+			v.str(unescapeString(data));
 			addValue(v, getKey());
 			break;
 		case Event.ARRAY_START:
@@ -375,7 +375,7 @@ fn parse(s: string) Value
 			}
 			break;
 		case Event.OBJECT_KEY:
-			addKey(unescapeString(cast(const(char)[])data));
+			addKey(unescapeString(data));
 			break;
 		}
 	}

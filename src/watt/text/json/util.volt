@@ -118,6 +118,12 @@ fn unescapeString(str: const(char)[]) const(char)[]
 	return unescapeString(str, ref buffer);
 }
 
+fn unescapeString(str: const(u8)[]) const(char)[]
+{
+	buffer: char[];
+	return unescapeString(cast(const(char)[])str, ref buffer);
+}
+
 /**
  * Unescape a JSON string and return it, using a pre allocated buffer and
  * resizing it if needed.
