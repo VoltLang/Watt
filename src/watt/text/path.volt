@@ -54,7 +54,7 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 	}
 
 	nonDot: bool;
-	for (i: size_t; i < path.length;) {
+	for (i: size_t = cast(size_t)colonIndex+1; i < path.length;) {
 		if (path[i].isSlash() && i < path.length-1 && path[i+1].isSlash()) {
 			// "Replace multiple Separator elements with a single one."
 			i++;
