@@ -11,6 +11,7 @@ version (Windows) {
 }
 
 import watt.io;
+import watt.conv : toUpper;
 import watt.text.string;
 import watt.text.sink;
 
@@ -72,7 +73,7 @@ version(Windows) fn retriveEnvironment() Environment
 
 		key := convert16To8(strs[keyStart .. keyEnd]);
 		val := convert16To8(strs[valStart .. valEnd]);
-		env.store[key] = val;
+		env.set(key, val);
 	}
 
 	FreeEnvironmentStringsW(strs);
@@ -89,12 +90,12 @@ public:
 public:
 	fn isSet(key: string) bool
 	{
-		return (key in store) !is null;
+		return (toUpper(key) in store) !is null;
 	}
 
 	fn getOrNull(key: string) string
 	{
-		r := key in store;
+		r := toUpper(key) in store;
 		if (r !is null) {
 			return *r;
 		}
@@ -103,12 +104,12 @@ public:
 
 	fn set(key: string, value: string) void
 	{
-		store[key] = value;
+		store[toUpper(key)] = value;
 	}
 
 	fn remove(key: string) void
 	{
-		store.remove(key);
+		store.remove(toUpper(key));
 	}
 }
 
