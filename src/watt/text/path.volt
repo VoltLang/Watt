@@ -34,7 +34,7 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 
 	slash := '/';
 	absolute := path[0].isSlash();
-	colonIndex: ptrdiff_t;
+	colonIndex: ptrdiff_t = -1;
 	drive: string;
 	if (windowsPaths) {
 		slash = '\\';
