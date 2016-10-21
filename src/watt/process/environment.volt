@@ -17,9 +17,9 @@ import watt.text.sink;
 
 
 /**
- * Returns a environment that is a copy of the running process environment.
+ * Returns an environment that is a copy of the running process environment.
  */
-version(Posix) fn retriveEnvironment() Environment
+version(Posix) fn retrieveEnvironment() Environment
 {
 	env := new Environment();
 	ptr := environ;
@@ -46,9 +46,9 @@ version(Posix) fn retriveEnvironment() Environment
 }
 
 /**
- * Returns a environment that is a copy of the running process environment.
+ * Returns an environment that is a copy of the running process environment.
  */
-version(Windows) fn retriveEnvironment() Environment
+version(Windows) fn retrieveEnvironment() Environment
 {
 	index: size_t;
 	env := new Environment();
