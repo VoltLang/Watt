@@ -140,3 +140,43 @@ fn encode(dgt: Sink, c: dchar) void
 		throw new MalformedUTF8Exception("encode: unsupported codepoint range");
 	}
 }
+
+version (Windows) {
+
+	import core.windows;
+
+	fn convertUtf8ToUtf16(str: const(char)[]) immutable(wchar)[]
+	{
+		if (str.length == 0) {
+			return null;
+		}
+
+		srcNum := cast(int)str.length;
+		dstNum := MultiByteToWideChar(CP_UTF8, 0, str.ptr, srcNum, null, 0);
+		w := new wchar[](dstNum+1);
+
+		dstNum = MultiByteToWideChar(CP_UTF8, 0,
+			str.ptr, -1, w.ptr, dstNum);
+		w[dstNum] = 0;
+		w = w[0 .. dstNum];
+		return cast(immutable(wchar)[])w;
+	}
+
+	fn convertUtf16ToUtf8(w: const(wchar)[]) string
+	{
+		if (w.length == 0) {
+			return null;
+		}
+
+		srcNum := cast(int)w.length;
+		dstNum := WideCharToMultiByte(CP_UTF8, 0, w.ptr, srcNum, null, 0, null, null);
+		str := new char[](dstNum+1);
+
+		dstNum = WideCharToMultiByte(CP_UTF8, 0,
+			w.ptr, srcNum, str.ptr, dstNum, null, null);
+		str[dstNum] = 0;
+		str = str[0 .. dstNum];
+		return cast(string)str;
+	}
+
+}

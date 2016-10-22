@@ -8,6 +8,7 @@ import core.stdc.string;
 
 version (Windows) {
 	import core.windows.windows;
+	import watt.text.utf : convertUtf16ToUtf8;
 }
 
 import watt.io;
@@ -71,8 +72,8 @@ version(Windows) fn retrieveEnvironment() Environment
 			continue;
 		}
 
-		key := convert16To8(strs[keyStart .. keyEnd]);
-		val := convert16To8(strs[valStart .. valEnd]);
+		key := convertUtf16ToUtf8(strs[keyStart .. keyEnd]);
+		val := convertUtf16ToUtf8(strs[valStart .. valEnd]);
 		env.set(key, val);
 	}
 
@@ -126,41 +127,5 @@ version (OSX) {
 } else version (Posix) {
 
 	extern extern(C) global environ: char**;
-
-} else version (Windows) {
-
-	fn convert8To16(str: const(char)[]) immutable(wchar)[]
-	{
-		if (str.length == 0) {
-			return null;
-		}
-
-		srcNum := cast(int)str.length;
-		dstNum := MultiByteToWideChar(CP_UTF8, 0, str.ptr, srcNum, null, 0);
-		w := new wchar[](dstNum+1);
-
-		dstNum = MultiByteToWideChar(CP_UTF8, 0,
-			str.ptr, -1, w.ptr, dstNum);
-		w[dstNum] = 0;
-		w = w[0 .. dstNum];
-		return cast(immutable(wchar)[])w;
-	}
-
-	fn convert16To8(w: const(wchar)[]) string
-	{
-		if (w.length == 0) {
-			return null;
-		}
-
-		srcNum := cast(int)w.length;
-		dstNum := WideCharToMultiByte(CP_UTF8, 0, w.ptr, srcNum, null, 0, null, null);
-		str := new char[](dstNum+1);
-
-		dstNum = WideCharToMultiByte(CP_UTF8, 0,
-			w.ptr, srcNum, str.ptr, dstNum, null, null);
-		str[dstNum] = 0;
-		str = str[0 .. dstNum];
-		return cast(string)str;
-	}
 
 }
