@@ -105,6 +105,7 @@ fn getFirst(ref mangledName: const(char)[], n: size_t) const(char)[]
  */
 fn getNumber(ref mangledName: const(char)[]) i32
 {
+	assert(mangledName[0].isDigit());
 	digitSink: StringSink;
 	do {
 		digitSink.sink(getFirst(ref mangledName, 1));
@@ -193,7 +194,7 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[], abridged: 
 		}
 		isStatic := false;
 		staticLength: i32;
-		if (mangledName[0] == 't') {
+		if (mangledName.length > 1 && mangledName[0] == 't' && mangledName[1].isDigit()) {
 			getFirst(ref mangledName, 1);
 			staticLength = getNumber(ref mangledName);
 			isStatic = true;
