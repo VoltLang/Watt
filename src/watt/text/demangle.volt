@@ -39,7 +39,7 @@ fn demangleImpl(mangledName: const(char)[], abridged: bool) string
 	sink.sink("fn ");
 
 	// Function name.
-	demangleName(ref sink, ref mangledName, abridged);
+	demangleName(ref sink, ref mangledName, false);
 	sink.sink("(");
 
 	// Function arguments.
