@@ -154,7 +154,7 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[], abridged: 
 {
 	t := getFirst(ref mangledName, 1);
 	switch (t) {
-	case "t": sink.sink("bool"); break;
+	case "B": sink.sink("bool"); break;
 	case "b": sink.sink("i8"); break;
 	case "s": sink.sink("i16"); break;
 	case "i": sink.sink("i32"); break;
