@@ -1,8 +1,8 @@
 // Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
 // Copyright © 2010-2012, Jonathan M Davis.  All rights reserved.
 // Copyright © 2010-2012, Kato Shoichi.  All rights reserved.
-// See copyright notice in src/volt/license.d (BOOST ver. 1.0).
-module vrt.time;
+// See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
+module watt.io.monotonic;
 
 
 global ticksPerSecond: i64;
