@@ -81,7 +81,7 @@ fn strip(str: const(char)[]) string
 			break;
 		}
 	}
-	return start == stop ? null: str[start .. stop];
+	return start == stop ? null : str[start .. stop];
 }
 
 /**
@@ -94,7 +94,7 @@ fn stripLeft(str: const(char)[]) string
 			return str[i .. $];
 		}
 	}
-	return str;
+	return null;
 }
 
 /**
@@ -107,7 +107,7 @@ fn stripRight(str: string) string
 			return str[0 .. i+1];
 		}
 	}
-	return str;
+	return null;
 }
 
 /// Returns how many times c occurs in s.
