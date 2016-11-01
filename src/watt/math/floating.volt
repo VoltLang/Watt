@@ -18,3 +18,6 @@ alias cos = cosf;
 extern(C) fn sqrt(f64) f64;
 extern(C) fn sqrtf(f32) f32;
 alias sqrt = sqrtf;
+
+@mangledName("llvm.floor.f32") fn floor(f32) f32;
+@mangledName("llvm.floor.f64") fn floor(f64) f64;
