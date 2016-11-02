@@ -84,6 +84,11 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 				formatHex(tmp.sink, ref vl, _typeids[index]);
 				output(toLower(tmp.toString()));
 				break;
+			case 'b':
+				tmp: StringSink;
+				formatBinary(tmp.sink, ref vl, _typeids[index]);
+				tmp.toSink(output);
+				break;
 			case 'p':
 				tmp: StringSink;
 				formatPointer(tmp.sink, ref vl);
@@ -183,9 +188,42 @@ private fn formatHex(sink: Sink, ref vl: va_list, id: TypeInfo)
 		ul = va_arg!u64(vl);
 		break;
 	default:
-		throw new Exception(format("Can't know how to hex-print type id %s.", id.type));
+		throw new Exception(format("Don't know how to hex-print type id %s.", id.type));
 	}
 	vrt_format_hex(sink, ul, 0);
+}
+
+private fn formatBinary(sink: Sink, ref vl: va_list, id: TypeInfo)
+{
+	ul: u64;
+	switch (id.type) {
+	case Type.I8:
+		sink(toStringBinary(va_arg!i8(vl)));
+		break;
+	case Type.U8:
+		sink(toStringBinary(va_arg!u8(vl)));
+		break;
+	case Type.I16:
+		sink(toStringBinary(va_arg!i16(vl)));
+		break;
+	case Type.U16:
+		sink(toStringBinary(va_arg!u16(vl)));
+		break;
+	case Type.I32:
+		sink(toStringBinary(va_arg!i32(vl)));
+		break;
+	case Type.U32:
+		sink(toStringBinary(va_arg!u32(vl)));
+		break;
+	case Type.I64:
+		sink(toStringBinary(va_arg!i64(vl)));
+		break;
+	case Type.U64:
+		sink(toStringBinary(va_arg!u64(vl)));
+		break;
+	default:
+		throw new Exception(format("Don't know how to binary-print type id %s.", id.type));
+	}
 }
 
 private fn formatPointer(sink: Sink, ref vl: va_list)
