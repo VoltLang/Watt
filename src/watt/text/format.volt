@@ -10,7 +10,32 @@ import watt.conv;
 import watt.text.sink;
 import watt.text.ascii;
 
-
+/**
+ * Formats various arguments into a string by interpreting formatString.
+ *
+ * Format specifiers are specified with the character '%'.
+ * %(flag)(width)(type)
+ * The flag and width fields are optional.
+ *
+ * The flags modify how the printing is formatted.
+ *   ' ': prefix positive integers with a space.
+ *   '0': pad the string with zeros, rather than spaces.
+ * The width flag pads the output if it is less than the number given.
+ * Example:
+ *   "%3s", "ab" = " ab"
+ *   "%03s", "ab" = "0ab"
+ *
+ * And the type denotes what type should be printed. They are as follows:
+ *   '%': print a '%' character.
+ *   's': perform the default action for the corresponding type.
+ *   'd': print an integer.
+ *   'x': print a lower case hex string.
+ *   'X': print an upper case hex string.
+ *   'b': print a binary string.
+ *   'p': print the value appropriately as a pointer.
+ *   'f': print a floating point value.
+ *   'c': print a single character.
+ */
 fn format(formatString: const(char)[], ...) string
 {
 	vl: va_list;
