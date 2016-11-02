@@ -28,6 +28,7 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 	index: i32;
 
 	zero: bool;
+	space: bool;
 	padding: i32;
 
 	fn output(str: SinkArg)
@@ -40,8 +41,15 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 		foreach (0 .. padding) {
 			sink(padc);
 		}
+		if (space) {
+			i := toInt(str);
+			if (i >= 0) {
+				sink(" ");
+			}
+		}
 		padding = 0;
 		zero = false;
+		space = false;
 		formatting = false;
 		sink(str);
 	}
@@ -101,6 +109,9 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 				break;
 			case '0':
 				zero = true;
+				continue;
+			case ' ':
+				space = true;
 				continue;
 			default:
 				if (isDigit(c)) {
