@@ -29,6 +29,11 @@ fn writeln(s: const(char)[])
 	output.writeln(s);
 }
 
+fn writeln()
+{
+	output.writeln("");
+}
+
 fn writef(s: const(char)[], ...)
 {
 	vl: va_list;
