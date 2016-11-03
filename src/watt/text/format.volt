@@ -63,10 +63,12 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 			padding = 0;
 		}
 		padc := zero ? "0" : " ";
+		outputSpacePadding := false;
 		foreach (0 .. padding) {
 			sink(padc);
+			outputSpacePadding = !zero;
 		}
-		if (space) {
+		if (space && !outputSpacePadding) {
 			i := toInt(str);
 			if (i >= 0) {
 				sink(" ");
