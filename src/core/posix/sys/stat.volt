@@ -109,11 +109,11 @@ version (Linux) {
 //			else
 //			{
 				time_t      st_atime;
-				ulong_t     st_atimensec;
+				c_ulong     st_atimensec;
 				time_t      st_mtime;
-				ulong_t     st_mtimensec;
+				c_ulong     st_mtimensec;
 				time_t      st_ctime;
-				ulong_t     st_ctimensec;
+				c_ulong     st_ctimensec;
 //			}
 //			static if (__USE_FILE_OFFSET64)
 //			{
