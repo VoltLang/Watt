@@ -29,6 +29,11 @@ fn writeln(s: const(char)[])
 	output.writeln(s);
 }
 
+fn writeln(i: i32)
+{
+	output.writefln("%s", i);
+}
+
 fn writeln()
 {
 	output.writeln("");
