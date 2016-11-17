@@ -34,6 +34,11 @@ fn writeln(i: i32)
 	output.writefln("%s", i);
 }
 
+fn writeln(b: bool)
+{
+	output.writefln("%s", b);
+}
+
 fn writeln()
 {
 	output.writeln("");
