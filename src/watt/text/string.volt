@@ -199,16 +199,19 @@ fn indexOf(ss: const(char)[][], str: const(char)[]) ptrdiff_t
  */
 fn replace(str: const(char)[], from: const(char)[], to: const(char)[]) string
 {
-	if (from == to) {
-		throw new Exception("replace: from and to cannot match!");
-	}
-	result := new string(str);
-	i := indexOf(result, from);
-	while (i != -1) {
-		si := cast(size_t) i;
-		result = format("%s%s%s", result[0 .. si], to, result[si + from.length .. $]);
-		i = indexOf(result, from);
-	}
+	result: string;
+	i: ptrdiff_t;
+	do {
+		i = indexOf(str, from);
+		if (i == -1) {
+			result ~= str;
+		} else {
+			si := cast(size_t)i;
+			result ~= str[0 .. si] ~ to;
+			str = str[si + from.length .. $];
+		}
+	} while (i != -1 && str.length > 0);
+
 	return result;
 }
 
