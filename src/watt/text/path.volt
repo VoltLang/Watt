@@ -58,14 +58,17 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 		if (path[i].isSlash() && i < path.length-1 && path[i+1].isSlash()) {
 			// "Replace multiple Separator elements with a single one."
 			i++;
+		} else if (i == 0 && path[i] == '.' && path.length >= 2 && path[i+1].isSlash()) {
+			// Eliminate ./ at the start.
+			i += 2;
 		} else if (path[i].isSlash() && i < path.length-1 && path[i+1] == '.' &&
-			(i > path.length-2 || path[i+2] != '.')) {
-			// "Eliminate each . path name element."
+			(i+1 == path.length-1 || path[i+2].isSlash())) {
+			// "Eliminate each /./ path name element."
 			i += 2;
 		} else if (path[i].isSlash() &&
-		path[i+1] == '.' &&
-		path[i+2] == '.' &&
-		(i+3 == path.length || path[i+3].isSlash()) && nonDot) {
+			path[i+1] == '.' &&
+			path[i+2] == '.' &&
+			(i+3 == path.length || path[i+3].isSlash()) && nonDot) {
 			slashIndex := buf[0 .. bufIndex].lastIndexOf(slash);
 			if (windowsPaths) {
 				if (slashIndex < 0) {
@@ -89,9 +92,7 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 				nonDot = false;
 			}
 		} else {
-			if (!path[i].isSlash() && path[i] != '.') {
-				nonDot = true;
-			}
+			nonDot = !path[i].isSlash() && path[i] != '.';
 			c: char = path[i++];
 			if (windowsPaths) {
 				// Normalise.
