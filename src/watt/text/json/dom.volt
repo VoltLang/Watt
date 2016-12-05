@@ -216,6 +216,12 @@ struct Value
 		return *p;
 	}
 
+	fn hasObjectKey(s: string) bool
+	{
+		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
+		return (s in object) !is null;
+	}
+
 	/**
 	 * Setter for DomType.OBJECT.
 	 */
