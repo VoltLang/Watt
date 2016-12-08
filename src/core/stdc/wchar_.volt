@@ -112,5 +112,5 @@ fn mbsinit(in mbstate_t*) i32;
 fn mbrlen(in char*, size_t, mbstate_t*) size_t;
 fn mbrtowc(wchar_t*, in char*, size_t, mbstate_t*) size_t;
 fn wcrtomb(char*, wchar_t, mbstate_t*) size_t;
-fn mbsrtowcs(wchar_t*, in char**, size_t, mbstate_t*) size_t;
+fn mbsrtowcs(wchar_t*, const(char)**, size_t, mbstate_t*) size_t;
 fn wcsrtombs(char*, in wchar_t**, size_t, mbstate_t*) size_t;
