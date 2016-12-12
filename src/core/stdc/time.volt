@@ -24,6 +24,22 @@ version (Windows) {
 		tm_yday: i32;    // days since January 1 - [0, 365]
 		tm_isdst: i32;   // Daylight Saving Time flag
 	}
+} else version (OSX) {
+
+	struct tm
+	{
+		tm_sec: i32;     // seconds after the minute [0-60]
+		tm_min: i32;     // minutes after the hour [0-59]
+		tm_hour: i32;    // hours since midnight [0-23]
+		tm_mday: i32;    // day of the month [1-31]
+		tm_mon: i32;     // months since January [0-11]
+		tm_year: i32;    // years since 1900
+		tm_wday: i32;    // days since Sunday [0-6]
+		tm_yday: i32;    // days since January 1 [0-365]
+		tm_isdst: i32;   // Daylight Savings Time flag
+		tm_gmtoff: c_long;  // offset from CUT in seconds
+		tm_zone: char*;    // timezone abbreviation
+	}
 
 } else version (Posix) {
 
