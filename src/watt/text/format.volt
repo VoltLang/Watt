@@ -47,6 +47,16 @@ fn format(formatString: const(char)[], ...) string
 	return sink.toString();
 }
 
+/// Same as above.
+fn formatSink(sink: Sink, formatString: const(char)[], ...)
+{
+	vl: va_list;
+
+	va_start(vl);
+	formatImpl(sink, formatString, ref _typeids, ref vl);
+	va_end(vl);
+}
+
 fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[], ref vl: va_list)
 {
 	formatting: bool;
