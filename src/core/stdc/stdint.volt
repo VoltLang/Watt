@@ -16,49 +16,76 @@ nothrow:
 alias int8_t  = i8;
 alias int16_t = i16;
 alias int32_t = i32;
-alias int64_t = c_long;
-//alias int128_t = cent;
+version (V_P64) {
+	alias int64_t = c_long;
+} else {
+	alias int64_t = i64;
+}
 
 alias uint8_t  = u8;
 alias uint16_t = u16;
 alias uint32_t = u32;
-alias uint64_t = c_ulong;
-//alias uint128_t = ucent;
+version (V_P64) {
+	alias uint64_t = c_ulong;
+} else {
+	alias uint64_t = u64;
+}
 
 alias int_least8_t  = i8;
 alias int_least16_t = i16;
 alias int_least32_t = i32;
-alias int_least64_t = c_long;
+version (V_P64) {
+	alias int_least64_t = c_long;
+} else {
+	alias int_least64_t = i64;
+}
 
 alias uint_least8_t  = u8;
 alias uint_least16_t = u16;
 alias uint_least32_t = u32;
-alias uint_least64_t = c_ulong;
-
-alias int_fast8_t  = i8;
-alias int_fast16_t = c_long;
-alias int_fast32_t = c_long;
-alias int_fast64_t = c_long;
-
-alias uint_fast8_t  = u8;
-alias uint_fast16_t = c_ulong;
-alias uint_fast32_t = c_ulong;
-alias uint_fast64_t = c_ulong;
-
 version (V_P64) {
-
-    alias intptr_t  = c_long;
-    alias uintptr_t = c_ulong;
-
+	alias uint_least64_t = c_ulong;
 } else {
-
-    alias intptr_t  = c_long;
-    alias uintptr_t = c_ulong;
-
+	alias uint_least64_t = u64;
 }
 
-alias intmax_t  = c_long;
-alias uintmax_t = c_ulong;
+alias int_fast8_t  = i8;
+version (V_P64) {
+	alias int_fast16_t = c_long;
+	alias int_fast32_t = c_long;
+	alias int_fast64_t = c_long;
+} else {
+	alias int_fast16_t = i32;
+	alias int_fast32_t = i32;
+	alias int_fast64_t = i64;
+}
+
+alias uint_fast8_t  = u8;
+version (V_P64) {
+	alias uint_fast16_t = c_ulong;
+	alias uint_fast32_t = c_ulong;
+	alias uint_fast64_t = c_ulong;
+} else {
+	alias uint_fast16_t = u32;
+	alias uint_fast32_t = u32;
+	alias uint_fast64_t = u64;
+}
+
+version (V_P64) {
+    alias intptr_t  = c_long;
+    alias uintptr_t = c_ulong;
+} else {
+    alias intptr_t  = i32;
+    alias uintptr_t = u32;
+}
+
+version (V_P64) {
+	alias intmax_t  = c_long;
+	alias uintmax_t = c_ulong;
+} else {
+	alias intmax_t  = i64;
+	alias uintmax_t = u64;
+}
 
 /+
 enum int8_t   INT8_MIN  = int8_t.min;
