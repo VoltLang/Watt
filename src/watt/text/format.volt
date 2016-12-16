@@ -48,7 +48,7 @@ fn format(formatString: const(char)[], ...) string
 }
 
 /// Same as above.
-fn formatSink(sink: Sink, formatString: const(char)[], ...)
+fn format(sink: Sink, formatString: const(char)[], ...)
 {
 	vl: va_list;
 
