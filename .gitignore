@@ -5,5 +5,4 @@
 *.bc
 *.tar.gz
 .pkg
-test/
 .battery.*
