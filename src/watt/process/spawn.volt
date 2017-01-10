@@ -150,15 +150,17 @@ fn system(name: string) i32
 	return csystem(toStringz(name));
 }
 
-version (Posix) private {
+version (Posix) {
 
-	extern(C) fn execv(const(char)*, const(char)**) i32;
-	extern(C) fn execve(const(char)*, const(char)**, const(char)**) i32;
-	extern(C) fn fork() pid_t;
-	extern(C) fn dup(i32) i32;
-	extern(C) fn dup2(i32, i32) i32;
-	extern(C) fn close(i32) void;
-	extern(C) fn waitpid(pid_t, i32*, i32) pid_t;
+	private {
+		extern(C) fn execv(const(char)*, const(char)**) i32;
+		extern(C) fn execve(const(char)*, const(char)**, const(char)**) i32;
+		extern(C) fn fork() pid_t;
+		extern(C) fn dup(i32) i32;
+		extern(C) fn dup2(i32, i32) i32;
+		extern(C) fn close(i32) void;
+		extern(C) fn waitpid(pid_t, i32*, i32) pid_t;
+	}
 
 	fn spawnProcessPosix(name: string,
 	                     args: string[],
