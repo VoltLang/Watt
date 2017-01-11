@@ -88,7 +88,7 @@ fn mkdirP(dir: const(char)[])
 }
 
 
-private fn isSlash(c: char) bool
+fn isSlash(c: char) bool
 {
 	version (Windows) {
 		return c == '\\' || c == '/';
@@ -97,7 +97,7 @@ private fn isSlash(c: char) bool
 	}
 }
 
-private fn countSlashes(s: const(char)[]) size_t
+fn countSlashes(s: const(char)[]) size_t
 {
 	count: size_t;
 	for (i: size_t = 0; i < s.length; ++i) {
@@ -109,7 +109,7 @@ private fn countSlashes(s: const(char)[]) size_t
 	return count;
 }
 
-private fn removeTrailingSlashes(ref s: string)
+fn removeTrailingSlashes(ref s: string)
 {
 	while (s.length > 0 && isSlash(s[$-1])) {
 		s = s[0 .. $-1];
