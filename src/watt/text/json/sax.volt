@@ -155,7 +155,7 @@ public:
 		s: State;
 		data: const(u8)[];
 		next: char;
-		getSuccess: bool = get(out next);
+		getSuccess: bool = getImpl(out next);
 
 		while (true) {
 			switch (state.head) with (State) {
@@ -207,7 +207,7 @@ public:
 					}
 					state.push(ARRAY_ITEM);
 					if (next == ',') {
-						if (!get(out next)) break;
+						if (!getImpl(out next)) break;
 					}
 					break;
 				case ARRAY_ITEM:
@@ -230,7 +230,7 @@ public:
 					}
 					state.push(OBJECT_KEY);
 					if (next == ',') {
-						if (!get(out next)) break;
+						if (!getImpl(out next)) break;
 					}
 					break;
 				case OBJECT_KEY:
@@ -253,7 +253,7 @@ public:
 						error("Expected colon.");
 						break;
 					}
-					if (!get(out next)) break;
+					if (!getImpl(out next)) break;
 					state.pop();
 					goto default;
 				default:
@@ -348,7 +348,7 @@ protected:
 		return current[savedMark..index];
 	}
 
-	fn get(out c: char, skip: bool = true, advance: bool = true) bool
+	fn getImpl(out c: char, skip: bool = true, advance: bool = true) bool
 	{
 		if (skip) {
 			skipWhite();
@@ -409,7 +409,7 @@ protected:
 		c: char;
 
 		while (true) {
-			if (!get(out c, false, false)) return false;
+			if (!getImpl(out c, false, false)) return false;
 			if (isDigit(c)) {
 				// advance by one
 				++index;
@@ -424,7 +424,7 @@ protected:
 	fn expect(c: char, skip: bool = false) bool
 	{
 		g: char;
-		if (!get(out g, skip)) return false;
+		if (!getImpl(out g, skip)) return false;
 		if (g != c) {
 			error(format("Expected '%c' got '%c'.", c, g));
 			return false;
@@ -440,7 +440,7 @@ protected:
 		c: char;
 
 		while (true) {
-			if (!get(out c, false)) return false;
+			if (!getImpl(out c, false)) return false;
 			if (c == '\\') {
 				++index;
 			} else if(c == '"') {
@@ -458,9 +458,9 @@ protected:
 		c: char;
 		mark();
 
-		if (!get(out c, false)) return false;
+		if (!getImpl(out c, false)) return false;
 		if (c == '-') {
-			if (!get(out c, false)) return false;
+			if (!getImpl(out c, false)) return false;
 		}
 
 		if (c != '0') {
@@ -472,22 +472,22 @@ protected:
 			skipDigits();
 		}
 
-		if (!get(out c, false, false)) return false;
+		if (!getImpl(out c, false, false)) return false;
 		if (c == '.') {
 			++index;
 			skipDigits();
 		}
 
-		if (!get(out c, false, false)) return false;
+		if (!getImpl(out c, false, false)) return false;
 		if (c == 'e' || c == 'E') {
 			++index;
-			if (!get(out c, false)) return false;
+			if (!getImpl(out c, false)) return false;
 			if (c != '+' || c != '-') {
 				error("Expected '+' or '-'.");
 				return false;
 			}
 
-			if (!get(out c, false)) return false;
+			if (!getImpl(out c, false)) return false;
 			if (!isDigit(c)) {
 				error("Expected digit.");
 				return false;
@@ -505,7 +505,7 @@ protected:
 		mark();
 
 		c: char;
-		if (!get(out c)) return false;
+		if (!getImpl(out c)) return false;
 		if (c == 't' || c == 'T') {
 			if (!expect('r')) return false;
 			if (!expect('u')) return false;
@@ -529,7 +529,7 @@ protected:
 		mark();
 
 		c: char;
-		if (!get(out c)) return false;
+		if (!getImpl(out c)) return false;
 		if (c == 'n' || c == 'N') {
 			if (!expect('u')) return false;
 			if (!expect('l')) return false;

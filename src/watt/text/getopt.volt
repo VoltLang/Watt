@@ -90,7 +90,7 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg())
 }
 
 // Argument taking getopt base implementation.
-fn getoptImpl(ref args: string[], description: string, dgt: scope dg (string))
+private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (string))
 {
 	flags := parseDescription(description);
 	for (i: size_t = 1; i < args.length; ++i) {
