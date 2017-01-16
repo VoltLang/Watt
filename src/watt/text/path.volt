@@ -17,6 +17,22 @@ fn normalizePath(path: SinkArg) string
 	}
 }
 
+/**
+ * Given a path, return a path that could be a subpath.
+ *
+ * A full path under windows contains a drive letter and a colon before '\'.
+ * If we want to make a subdirectory based on a full path, get rid of the colon,
+ * as it cannot exist in a valid windows filename.
+ */
+fn makePathAppendable(s: string) string
+{
+	version (Windows) {
+		return s.replace(":", "");
+	} else {
+		return s;
+	}
+}
+
 fn normalizePathPosix(path: SinkArg) string
 {
 	return normalizePathImpl(path, false);
