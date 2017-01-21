@@ -64,7 +64,8 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 
 	zero: bool;
 	space: bool;
-	padding: i32;
+	dot: bool;
+	padding: i32 = - 1;
 
 	fn output(str: SinkArg)
 	{
@@ -111,9 +112,9 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 			case 'f':
 				tmp: StringSink;
 				if (_typeids[index].type == Type.F32) {
-					vrt_format_f32(tmp.sink, va_arg!f32(vl));
+					vrt_format_f32(tmp.sink, va_arg!f32(vl), dot ? padding : -1);
 				} else if (_typeids[index].type == Type.F64) {
-					vrt_format_f64(tmp.sink, va_arg!f64(vl));
+					vrt_format_f64(tmp.sink, va_arg!f64(vl), dot ? padding : -1);
 				} else {
 					asInt: i64;
 					switch (_typeids[index].type) {
@@ -166,6 +167,10 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 				continue;
 			case ' ':
 				space = true;
+				continue;
+			case '.':
+				dot = true;
+				padding = 0;
 				continue;
 			default:
 				if (isDigit(c)) {
