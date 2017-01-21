@@ -115,7 +115,24 @@ fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[],
 				} else if (_typeids[index].type == Type.F64) {
 					vrt_format_f64(tmp.sink, va_arg!f64(vl));
 				} else {
-					throw new Exception("type to %f format mismatch");
+					asInt: i64;
+					switch (_typeids[index].type) {
+					case Type.I8:
+						asInt = cast(i64)va_arg!i8(vl);
+						break;
+					case Type.I16:
+						asInt = cast(i64)va_arg!i16(vl);
+						break;
+					case Type.I32:
+						asInt = cast(i64)va_arg!i32(vl);
+						break;
+					case Type.I64:
+						asInt = cast(i64)va_arg!i64(vl);
+						break;
+					default:
+						throw new Exception("type to %f format mismatch");
+					}
+					vrt_format_f64(tmp.sink, cast(f64)asInt);
 				}
 				tmp.toSink(output);
 				break;
