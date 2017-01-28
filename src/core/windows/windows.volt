@@ -329,6 +329,7 @@ struct _devicemode {
 		}
 		s2: _s2;
 	}
+	u: _u;
 
 	dmColor: i16;
 	dmDuplex: i16;
