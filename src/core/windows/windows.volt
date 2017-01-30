@@ -550,6 +550,7 @@ fn HIWORD(dw: DWORD) WORD
 	return cast(WORD)((dw >> 16) & 0xFFFF);
 }
 
+enum UNICODE_NOCHAR = 0xFFFF;
 enum WM_ACTIVATE = 0x0006;
 enum WM_SYSCOMMAND = 0x0112;
 enum WM_CLOSE = 0x0010;
@@ -557,9 +558,70 @@ enum WM_KEYDOWN = 0x0100;
 enum WM_KEYUP = 0x0101;
 enum WM_SIZE = 0x0005;
 enum WM_QUIT = 0x0012;
+enum WM_MOUSEMOVE = 0x0200;
+enum WM_SYSKEYDOWN = 0x0104;
+enum WM_SYSKEYUP = 0x0105;
+enum WM_CHAR = 0x0102;
+enum WM_UNICHAR = 0x0109;
+enum WM_LBUTTONDOWN = 0x0201;
+enum WM_LBUTTONUP = 0x0202;
+enum WM_MBUTTONDOWN = 0x0207;
+enum WM_MBUTTONUP = 0x0208;
+enum WM_RBUTTONDOWN = 0x0204;
+enum WM_RBUTTONUP = 0x0205;
+enum WM_XBUTTONDOWN = 0x020B;
+enum WM_XBUTTONUP = 0x020C;
+enum WM_PAINT = 0x0F;
+enum WM_ERASEBKGND = 0x0014;
 
 enum SC_SCREENSAVE = 0xF140;
 enum SC_MONITORPOWER = 0xF170;
+
+enum SM_CXSCREEN = 0;
+enum SM_CYSCREEN = 1;
+enum VK_CLEAR = 0x0C;
+enum VK_MODECHANGE = 0x1F;
+enum VK_SELECT = 0x29;
+enum VK_EXECUTE = 0x2B;
+enum VK_HELP = 0x2F;
+enum VK_PAUSE = 0x13;
+enum VK_NUMLOCK = 0x90;
+enum VK_F13 = 0x7C;
+enum VK_F14 = 0x7D;
+enum VK_F15 = 0x7E;
+enum VK_F16 = 0x7F;
+enum VK_F17 = 0x80;
+enum VK_F18 = 0x81;
+enum VK_F19 = 0x82;
+enum VK_F20 = 0x83;
+enum VK_F21 = 0x84;
+enum VK_F22 = 0x85;
+enum VK_F23 = 0x86;
+enum VK_F24 = 0x87;
+enum VK_OEM_NEC_EQUAL = 0x92;
+enum VK_BROWSER_BACK = 0xA6;
+enum VK_BROWSER_FORWARD = 0xA7;
+enum VK_BROWSER_REFRESH = 0xA8;
+enum VK_BROWSER_STOP = 0xA9;
+enum VK_BROWSER_SEARCH = 0xAA;
+enum VK_BROWSER_FAVORITES = 0xAB;
+enum VK_BROWSER_HOME = 0xAC;
+enum VK_VOLUME_MUTE = 0xAD;
+enum VK_VOLUME_DOWN = 0xAE;
+enum VK_VOLUME_UP = 0xAF;
+enum VK_MEDIA_NEXT_TRACK = 0xB0;
+enum VK_MEDIA_PREV_TRACK = 0xB1;
+enum VK_MEDIA_STOP = 0xB2;
+enum VK_MEDIA_PLAY_PAUSE = 0xB3;
+enum VK_LAUNCH_MAIL = 0xB4;
+enum VK_LAUNCH_MEDIA_SELECT = 0xB5;
+enum VK_OEM_102 = 0xE2;
+enum VK_ATTN = 0xF6;
+enum VK_CRSEL = 0xF7;
+enum VK_EXSEL = 0xF8;
+enum VK_OEM_CLEAR = 0xFE;
+enum VK_LAUNCH_APP1 = 0xB6;
+enum VK_LAUNCH_APP2 = 0xB7;
 
 fn PostQuitMessage(nExitCode: i32);
 
@@ -604,3 +666,49 @@ fn SetConsoleTitleA(LPCSTR) BOOL;
 fn SetConsoleTitleW(LPWSTR) BOOL;
 fn ReadConsoleA(HANDLE, LPVOID, DWORD, LPDWORD, LPVOID) BOOL;
 fn ReadConsoleW(HANDLE, LPVOID, DWORD, LPDWORD, LPVOID) BOOL;
+
+fn GetProcAddress(HMODULE, LPCSTR) void*;
+fn LoadLibraryA(LPCSTR) HMODULE;
+fn GetTickCount() DWORD;
+fn SetCapture(HWND);
+fn ReleaseCapture();
+fn GetWindowLongPtrA(HWND, i32) LONG_PTR;
+enum GWL_STYLE = -16;
+fn SetWindowLongPtrA(HWND, i32, LONG_PTR) LONG_PTR;
+enum WS_MINIMIZE = 0x20000000L;
+enum WS_MAXIMIZE = 0x01000000L;
+enum WS_VISIBLE  = 0x10000000L;
+fn InvalidateRect(HWND, RECT*, BOOL) BOOL;
+fn UpdateWindow(HWND) BOOL;
+fn SetWindowPos(HWND, HWND, i32, i32, i32, i32, UINT) BOOL;
+enum SWP_NOMOVE = 0x0002;
+enum SWP_FRAMECHANGED = 0x0020;
+
+fn ChangeDisplaySettingsExA(LPCSTR, DEVMODE*, HWND, DWORD, LPVOID) LONG;
+alias HMONITOR = HANDLE;
+fn MonitorFromWindow(HWND, DWORD) HMONITOR;
+enum MONITOR_DEFAULTTOPRIMARY = 1;
+struct MONITORINFOEX
+{
+	cbSize: DWORD;
+	rcMonitor: RECT;
+	rcWork: RECT;
+	dwFlags: DWORD;
+	szDevice: TCHAR[32];
+}
+fn GetMonitorInfoA(HMONITOR, MONITORINFOEX*) BOOL;
+
+fn GET_X_LPARAM(l: LPARAM) i32
+{
+	return cast(i32)cast(i16)LOWORD(cast(DWORD)l);
+}
+fn GET_Y_LPARAM(l: LPARAM) i32
+{
+	return cast(i32)cast(i16)HIWORD(cast(DWORD)l);
+}
+fn GET_XBUTTON_WPARAM(w: WPARAM) i32
+{
+	return cast(i32)cast(i16)HIWORD(cast(DWORD)w);
+}
+
+extern(Windows) fn GetSystemMetrics(i32) i32;
