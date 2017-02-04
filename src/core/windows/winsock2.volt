@@ -458,12 +458,12 @@ struct servent
     char* s_name;
     char** s_aliases;
 
-    version (Win64)
+    version (V_LP64)
     {
         char* s_proto;
         short s_port;
     }
-    else version (Win32)
+    else
     {
         short s_port;
         char* s_proto;
