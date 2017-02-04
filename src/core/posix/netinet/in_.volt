@@ -16,7 +16,7 @@ module core.posix.netinet.in_;
 
 //private import core.sys.posix.config;
 //public import core.stdc.inttypes; // for uint32_t, uint16_t, uint8_t
-//public import core.sys.posix.arpa.inet;
+public import core.posix.arpa.inet;
 public import core.posix.sys.socket; // for sa_family_t
 
 version (Posix):
@@ -217,15 +217,15 @@ int IN6_IS_ADDR_MC_ORGLOCAL(in6_addr*)
 int IN6_IS_ADDR_MC_GLOBAL(in6_addr*)
 */
 
-version ( CRuntime_Glibc )
+version ( Linux )
 {
     struct in6_addr
     {
         union _u
         {
-            uint8_t[16] s6_addr;
-            uint16_t[8] s6_addr16;
-            uint32_t[4] s6_addr32;
+            u8[16] s6_addr;
+            u16[8] s6_addr16;
+            u32[4] s6_addr32;
         }
         u: _u;
     }
@@ -234,9 +234,9 @@ version ( CRuntime_Glibc )
     {
         sa_family_t sin6_family;
         in_port_t   sin6_port;
-        uint32_t    sin6_flowinfo;
+        u32    sin6_flowinfo;
         in6_addr    sin6_addr;
-        uint32_t    sin6_scope_id;
+        u32    sin6_scope_id;
     }
 
     extern global immutable in6_addr in6addr_any;
@@ -250,7 +250,7 @@ version ( CRuntime_Glibc )
 
     enum : uint
     {
-        IPPROTO_IPV6        = 41,
+        IPPROTO_IPV6        = 41U,
 
         //INET6_ADDRSTRLEN    = 46,
 
@@ -266,101 +266,101 @@ version ( CRuntime_Glibc )
     // macros
     extern (Volt) int IN6_IS_ADDR_UNSPECIFIED( in6_addr* addr )
     {
-        return (cast(uint32_t*) addr)[0] == 0 &&
-               (cast(uint32_t*) addr)[1] == 0 &&
-               (cast(uint32_t*) addr)[2] == 0 &&
-               (cast(uint32_t*) addr)[3] == 0;
+        return (cast(u32*) addr)[0] == 0 &&
+               (cast(u32*) addr)[1] == 0 &&
+               (cast(u32*) addr)[2] == 0 &&
+               (cast(u32*) addr)[3] == 0;
     }
 
     extern (Volt) int IN6_IS_ADDR_LOOPBACK( in6_addr* addr )
     {
-        return (cast(uint32_t*) addr)[0] == 0  &&
-               (cast(uint32_t*) addr)[1] == 0  &&
-               (cast(uint32_t*) addr)[2] == 0  &&
-               (cast(uint32_t*) addr)[3] == htonl( 1 );
+        return (cast(u32*) addr)[0] == 0  &&
+               (cast(u32*) addr)[1] == 0  &&
+               (cast(u32*) addr)[2] == 0  &&
+               (cast(u32*) addr)[3] == htonl( 1 );
     }
 
     extern (Volt) int IN6_IS_ADDR_MULTICAST( in6_addr* addr )
     {
-        return (cast(uint8_t*) addr)[0] == 0xff;
+        return (cast(u8*) addr)[0] == 0xff;
     }
 
     extern (Volt) int IN6_IS_ADDR_LINKLOCAL( in6_addr* addr )
     {
-        return ((cast(uint32_t*) addr)[0] & htonl( 0xffc00000 )) == htonl( 0xfe800000 );
+        return ((cast(u32*) addr)[0] & htonl( 0xffc00000u )) == htonl( 0xfe800000u );
     }
 
     extern (Volt) int IN6_IS_ADDR_SITELOCAL( in6_addr* addr )
     {
-        return ((cast(uint32_t*) addr)[0] & htonl( 0xffc00000 )) == htonl( 0xfec00000 );
+        return ((cast(u32*) addr)[0] & htonl( 0xffc00000u )) == htonl( 0xfec00000u );
     }
 
     extern (Volt) int IN6_IS_ADDR_V4MAPPED( in6_addr* addr )
     {
-        return (cast(uint32_t*) addr)[0] == 0 &&
-               (cast(uint32_t*) addr)[1] == 0 &&
-               (cast(uint32_t*) addr)[2] == htonl( 0xffff );
+        return (cast(u32*) addr)[0] == 0 &&
+               (cast(u32*) addr)[1] == 0 &&
+               (cast(u32*) addr)[2] == htonl( 0xffff );
     }
 
     extern (Volt) int IN6_IS_ADDR_V4COMPAT( in6_addr* addr )
     {
-        return (cast(uint32_t*) addr)[0] == 0 &&
-               (cast(uint32_t*) addr)[1] == 0 &&
-               (cast(uint32_t*) addr)[2] == 0 &&
-               ntohl( (cast(uint32_t*) addr)[3] ) > 1;
+        return (cast(u32*) addr)[0] == 0 &&
+               (cast(u32*) addr)[1] == 0 &&
+               (cast(u32*) addr)[2] == 0 &&
+               ntohl( (cast(u32*) addr)[3] ) > 1;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_NODELOCAL( in6_addr* addr )
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x1;
+               ((cast(u8*) addr)[1] & 0xf) == 0x1;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_LINKLOCAL( in6_addr* addr )
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x2;
+               ((cast(u8*) addr)[1] & 0xf) == 0x2;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_SITELOCAL( in6_addr* addr )
     {
         return IN6_IS_ADDR_MULTICAST(addr) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x5;
+               ((cast(u8*) addr)[1] & 0xf) == 0x5;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_ORGLOCAL( in6_addr* addr )
     {
         return IN6_IS_ADDR_MULTICAST( addr) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x8;
+               ((cast(u8*) addr)[1] & 0xf) == 0x8;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_GLOBAL( in6_addr* addr )
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0xe;
+               ((cast(u8*) addr)[1] & 0xf) == 0xe;
     }
 }
-else version( Darwin )
+else version( OSX )
 {
     struct in6_addr
     {
         union _u
         {
-            uint8_t[16] s6_addr;
-            uint16_t[8] s6_addr16;
-            uint32_t[4] s6_addr32;
+            u8[16] s6_addr;
+            u16[8] s6_addr16;
+            u32[4] s6_addr32;
         }
         u: _u;
     }
 
     struct sockaddr_in6
     {
-        uint8_t     sin6_len;
+        u8     sin6_len;
         sa_family_t sin6_family;
         in_port_t   sin6_port;
-        uint32_t    sin6_flowinfo;
+        u32    sin6_flowinfo;
         in6_addr    sin6_addr;
-        uint32_t    sin6_scope_id;
+        u32    sin6_scope_id;
     }
 
     extern global immutable in6_addr in6addr_any;
@@ -374,7 +374,7 @@ else version( Darwin )
 
     enum : uint
     {
-        IPPROTO_IPV6        = 41,
+        IPPROTO_IPV6        = 41u,
 
         //INET6_ADDRSTRLEN    = 46,
 
@@ -390,79 +390,79 @@ else version( Darwin )
     // macros
     extern (Volt) int IN6_IS_ADDR_UNSPECIFIED( in6_addr* addr )  
     {
-        return (cast(uint32_t*) addr)[0] == 0 &&
-               (cast(uint32_t*) addr)[1] == 0 &&
-               (cast(uint32_t*) addr)[2] == 0 &&
-               (cast(uint32_t*) addr)[3] == 0;
+        return (cast(u32*) addr)[0] == 0 &&
+               (cast(u32*) addr)[1] == 0 &&
+               (cast(u32*) addr)[2] == 0 &&
+               (cast(u32*) addr)[3] == 0;
     }
 
     extern (Volt) int IN6_IS_ADDR_LOOPBACK( in6_addr* addr )  
     {
-        return (cast(uint32_t*) addr)[0] == 0  &&
-               (cast(uint32_t*) addr)[1] == 0  &&
-               (cast(uint32_t*) addr)[2] == 0  &&
-               (cast(uint32_t*) addr)[3] == ntohl( 1 );
+        return (cast(u32*) addr)[0] == 0  &&
+               (cast(u32*) addr)[1] == 0  &&
+               (cast(u32*) addr)[2] == 0  &&
+               (cast(u32*) addr)[3] == ntohl( 1 );
     }
 
     extern (Volt) int IN6_IS_ADDR_MULTICAST( in6_addr* addr )  
     {
-        return addr.s6_addr[0] == 0xff;
+        return addr.u.s6_addr[0] == 0xff;
     }
 
     extern (Volt) int IN6_IS_ADDR_LINKLOCAL( in6_addr* addr )  
     {
-        return addr.s6_addr[0] == 0xfe && (addr.s6_addr[1] & 0xc0) == 0x80;
+        return addr.u.s6_addr[0] == 0xfe && (addr.u.s6_addr[1] & 0xc0) == 0x80;
     }
 
     extern (Volt) int IN6_IS_ADDR_SITELOCAL( in6_addr* addr )  
     {
-        return addr.s6_addr[0] == 0xfe && (addr.s6_addr[1] & 0xc0) == 0xc0;
+        return addr.u.s6_addr[0] == 0xfe && (addr.u.s6_addr[1] & 0xc0) == 0xc0;
     }
 
     extern (Volt) int IN6_IS_ADDR_V4MAPPED( in6_addr* addr )  
     {
-        return (cast(uint32_t*) addr)[0] == 0 &&
-               (cast(uint32_t*) addr)[1] == 0 &&
-               (cast(uint32_t*) addr)[2] == ntohl( 0x0000ffff );
+        return (cast(u32*) addr)[0] == 0 &&
+               (cast(u32*) addr)[1] == 0 &&
+               (cast(u32*) addr)[2] == ntohl( 0x0000ffff );
     }
 
     extern (Volt) int IN6_IS_ADDR_V4COMPAT( in6_addr* addr )  
     {
-        return (cast(uint32_t*) addr)[0] == 0 &&
-               (cast(uint32_t*) addr)[1] == 0 &&
-               (cast(uint32_t*) addr)[2] == 0 &&
-               (cast(uint32_t*) addr)[3] != 0 &&
-               (cast(uint32_t*) addr)[3] != ntohl( 1 );
+        return (cast(u32*) addr)[0] == 0 &&
+               (cast(u32*) addr)[1] == 0 &&
+               (cast(u32*) addr)[2] == 0 &&
+               (cast(u32*) addr)[3] != 0 &&
+               (cast(u32*) addr)[3] != ntohl( 1 );
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_NODELOCAL( in6_addr* addr )  
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x1;
+               ((cast(u8*) addr)[1] & 0xf) == 0x1;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_LINKLOCAL( in6_addr* addr )  
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x2;
+               ((cast(u8*) addr)[1] & 0xf) == 0x2;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_SITELOCAL( in6_addr* addr )  
     {
         return IN6_IS_ADDR_MULTICAST(addr) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x5;
+               ((cast(u8*) addr)[1] & 0xf) == 0x5;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_ORGLOCAL( in6_addr* addr )  
     {
         return IN6_IS_ADDR_MULTICAST( addr) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0x8;
+               ((cast(u8*) addr)[1] & 0xf) == 0x8;
     }
 
     extern (Volt) int IN6_IS_ADDR_MC_GLOBAL( in6_addr* addr )  
     {
         return IN6_IS_ADDR_MULTICAST( addr ) &&
-               ((cast(uint8_t*) addr)[1] & 0xf) == 0xe;
+               ((cast(u8*) addr)[1] & 0xf) == 0xe;
     }
 }
 
@@ -476,9 +476,9 @@ IPPROTO_RAW
 
 version( Linux )
 {
-    enum uint IPPROTO_RAW = 255;
+    enum IPPROTO_RAW = 255;
 }
 else version( OSX )
 {
-    enum uint IPPROTO_RAW = 255;
+    enum IPPROTO_RAW = 255;
 }
