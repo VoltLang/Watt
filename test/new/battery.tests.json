@@ -1,5 +1,35 @@
 {
-	"pattern": "*.volt",
-	"testCommandPrefix": "//T "
+	"pattern": "test.volt",
+	"testCommandPrefix": "//T ",
+	"macros": {
+		"default": [
+			"//T run:volta -o %t %s",
+			"//T run:%t"
+		],
+		"expect-failure": [
+			"//T retval:1",
+			"//T run:volta -o %t %s"
+		],
+		"debug": [
+			"//T run:volta -d -o %t %s",
+			"//T run:%t"
+		],
+		"do-not-link": [
+			"//T run:volta -c %s"
+		],
+		"syntax-only": [
+			"//T run:volta -c -E %s"
+		],
+		"import": [
+			"//T run:volta -o %t %s --src-I %S/../deps",
+			"//T run:%t"
+		],
+		"importfail": [
+			"//T retval:1",
+			"//T run:volta -o %t %s --src-I %S/../deps"
+		]
+	},
+	"requiresAliases": {
+		"exceptions": "!windows"
+	}
 }
-

@@ -101,6 +101,12 @@ fn toUint(s: const(char)[], base: i32 = 10) u32
 	return cast(u32)v;
 }
 
+fn toUshort(s: const(char)[], base: i32 = 10) u16
+{
+	v := toUlong(s, base);
+	return cast(u16)v;
+}
+
 fn toFloat(s: string) f32
 {
 	cstr: const(char)* = toStringz(s);

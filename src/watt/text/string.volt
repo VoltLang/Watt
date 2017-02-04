@@ -4,7 +4,7 @@
 module watt.text.string;
 
 import core.exception;
-import watt.text.ascii: isWhite;
+import watt.text.ascii: isWhite, isDigit;
 import watt.text.utf;
 import watt.text.format : format;
 import watt.text.sink : StringSink;
@@ -257,4 +257,15 @@ fn join(ss: const(char)[][], sep: const(char)[] = "") string
 		}
 	}
 	return outs.toString();
+}
+
+/// Is every character in a string a digit?
+fn isNumeric(s: const(char)[]) bool
+{
+	foreach (c: dchar; s) {
+		if (!isDigit(c)) {
+			return false;
+		}
+	}
+	return true;
 }

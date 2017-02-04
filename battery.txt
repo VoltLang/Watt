@@ -1,3 +1,9 @@
 --if-linux
 -l
 m
+--if-msvc
+-l
+wsock32.lib
+--if-msvc
+-l
+ws2_32.lib
