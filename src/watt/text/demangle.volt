@@ -32,7 +32,7 @@ fn demangleShort(mangledName: const(char)[]) string
 
 fn demangleImpl(mangledName: const(char)[], abridged: bool) string
 {
-	StringSink sink;
+	sink: StringSink;
 
 	// Mangle type.
 	match(ref mangledName, "Vf");

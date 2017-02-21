@@ -255,9 +255,9 @@ fn toStringHex(val: u64) const(char)[]
 fn toStringBinary(val: u8) const(char)[]
 {
 	str := new char[](8);
-	for (size_t i = 0; i < str.length; ++i) {
-		bool msb = ((val << i) & 0x80) != 0;
-		str[i] = msb ? '1' : '0';
+	foreach (i, ref s: char; str) {
+		msb := ((val << i) & 0x80) != 0;
+		s = msb ? '1' : '0';
 	}
 	return cast(const(char)[])str;
 }
@@ -266,9 +266,9 @@ fn toStringBinary(val: u8) const(char)[]
 fn toStringBinary(val: u16) const(char)[]
 {
 	str := new char[](16);
-	for (size_t i = 0; i < str.length; ++i) {
-		bool msb = ((val << i) & 0x8000) != 0;
-		str[i] = msb ? '1' : '0';
+	foreach (i, ref s: char; str) {
+		msb := ((val << i) & 0x8000) != 0;
+		s = msb ? '1' : '0';
 	}
 	return cast(const(char)[])str;
 }
@@ -277,9 +277,9 @@ fn toStringBinary(val: u16) const(char)[]
 fn toStringBinary(val: u32) const(char)[]
 {
 	str := new char[](32);
-	for (size_t i = 0; i < str.length; ++i) {
-		bool msb = ((val << i) & 0x80000000UL) != 0;
-		str[i] = msb ? '1' : '0';
+	foreach (i, ref s: char; str) {
+		msb := ((val << i) & 0x80000000UL) != 0;
+		s = msb ? '1' : '0';
 	}
 	return cast(const(char)[])str;
 }
@@ -288,9 +288,9 @@ fn toStringBinary(val: u32) const(char)[]
 fn toStringBinary(val: u64) const(char)[]
 {
 	str := new char[](64);
-	for (size_t i = 0; i < str.length; ++i) {
-		bool msb = ((val << i) & 0x8000000000000000UL) != 0;
-		str[i] = msb ? '1' : '0';
+	foreach (i, ref s: char; str) {
+		msb := ((val << i) & 0x8000000000000000UL) != 0;
+		s = msb ? '1' : '0';
 	}
 	return cast(const(char)[])str;
 }

@@ -66,7 +66,7 @@ fn wait(p: Pid) i32
 
 class ProcessException : Exception
 {
-	this(string msg)
+	this(msg: string)
 	{
 		super(msg);
 	}
