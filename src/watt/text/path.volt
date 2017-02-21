@@ -132,7 +132,7 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 	} else {
 		if (windowsPaths) {
 			if (drive.length > 0) {
-				return drive ~ str;
+				return new string(drive, str);
 			} else {
 				return str;
 			}

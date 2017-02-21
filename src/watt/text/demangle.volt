@@ -170,7 +170,7 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[], abridged: 
 		case "s": sink.sink("u16"); break;
 		case "i": sink.sink("u32"); break;
 		case "l": sink.sink("u64"); break;
-		default: throw new Exception(format("unknown type string %s", t~t2));
+		default: throw new Exception(format("unknown type string %s%s", t, t2));
 		}
 		break;
 	case "f":
@@ -179,7 +179,7 @@ fn demangleType(ref sink: StringSink, ref mangledName: const(char)[], abridged: 
 		case "f": sink.sink("f32"); break;
 		case "d": sink.sink("f64"); break;
 		case "r": throw new Exception("invalid type string 'fr', denotes obsolete 'real'");
-		default: throw new Exception(format("unknown type string %s", t~t2));
+		default: throw new Exception(format("unknown type string %s%s", t, t2));
 		}
 		break;
 	case "p":
