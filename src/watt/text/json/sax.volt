@@ -598,13 +598,14 @@ public:
 		}
 		prepareAndCheck();
 
-		buffer: char[32];
-		len := cast(size_t)snprintf(buffer.ptr, buffer.length, "%.20g", number);
-		if (len + 2 <= buffer.length && strspn(buffer.ptr, "0123456789-") == len) {
-			strcat(buffer.ptr, ".0");
+		// TODO use vrt_format_* functions.
+		buf: char[32];
+		len := cast(size_t)snprintf(buf.ptr, buf.length, "%.20g", number);
+		if (len + 2 <= buf.length && strspn(buf.ptr, "0123456789-") == len) {
+			strcat(buf.ptr, ".0");
 			len += 2;
 		}
-		output.write(buffer[0 .. len]);
+		output.write(buf[0 .. len]);
 	}
 
 	/**
@@ -622,9 +623,10 @@ public:
 	{
 		prepareAndCheck();
 
-		buffer: char[20];
-		len := cast(size_t)snprintf(buffer.ptr, buffer.length, "%d", number);
-		output.write(buffer[0 .. len]);
+		// TODO use vrt_format_* functions.
+		buf: char[20];
+		len := cast(size_t)snprintf(buf.ptr, buf.length, "%d", number);
+		output.write(buf[0 .. len]);
 	}
 
 	/**

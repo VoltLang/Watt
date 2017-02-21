@@ -92,13 +92,13 @@ public:
 
 		global fn load(filename: string) Library
 		{
-			ptr: void* = dlopen(toStringz(filename), RTLD_NOW | RTLD_GLOBAL);
+			p := dlopen(toStringz(filename), RTLD_NOW | RTLD_GLOBAL);
 
-			if (ptr is null) {
+			if (p is null) {
 				return null;
 			}
 
-			return new Library(ptr);
+			return new Library(p);
 		}
 
 		final fn symbol(symbol: string) void*
