@@ -1,4 +1,4 @@
-// Copyright © 2013-2016, Bernard Helyer.
+// Copyright © 2013-2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module core.windows;
 
