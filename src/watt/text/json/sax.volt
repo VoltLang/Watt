@@ -3,7 +3,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.text.json.sax;
 
-import core.stdc.stdio: snprintf;
+import core.c.stdio: snprintf;
 import watt.io.std;
 import watt.io.streams: InputStream, OutputStream;
 import watt.text.ascii: isWhite, isDigit;

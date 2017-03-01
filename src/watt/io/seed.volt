@@ -4,7 +4,7 @@
 module watt.io.seed;
 
 import core.exception;
-import core.windows.windows;
+import core.c.windows.windows;
 
 version (Windows) {
 	alias HCRYPTPROV = size_t*;

@@ -4,9 +4,9 @@ module watt.conv;
 
 import core.exception;
 import core.rt.format;
-import core.stdc.stdlib: strtof, strtod;
-import core.stdc.stdio: snprintf;
-import core.stdc.string: strlen;
+import core.c.stdlib: strtof, strtod;
+import core.c.stdio: snprintf;
+import core.c.string: strlen;
 import watt.text.ascii: isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
 import watt.text.format: format;
 import watt.text.utf: encode;

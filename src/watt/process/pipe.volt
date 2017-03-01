@@ -5,9 +5,9 @@ module watt.process.pipe;
 version (Windows || Posix):
 
 version (Windows) {
-	import core.windows.windows;
+	import core.c.windows.windows;
 } else version (Posix) {
-	import core.stdc.stdio;
+	import core.c.stdio;
 }
 
 import watt.process.cmd;

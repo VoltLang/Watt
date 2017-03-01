@@ -4,8 +4,8 @@ module watt.io.streams;
 
 import core.typeinfo;
 import core.varargs;
-import core.stdc.stdio: FILE, fopen, fclose, fputc, fwrite,
-                         fflush, feof, fgetc, ungetc, fread;
+import core.c.stdio: FILE, fopen, fclose, fputc, fwrite,
+					fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
 import watt.text.format;
 import watt.text.sink : StringSink;

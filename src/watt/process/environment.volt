@@ -4,10 +4,10 @@ module watt.process.environment;
 
 version (Windows || Posix):
 
-import core.stdc.string;
+import core.c.string;
 
 version (Windows) {
-	import core.windows.windows;
+	import core.c.windows.windows;
 	import watt.text.utf : convertUtf16ToUtf8;
 }
 

@@ -143,7 +143,7 @@ fn encode(dgt: Sink, c: dchar) void
 
 version (Windows) {
 
-	import core.windows;
+	import core.c.windows;
 
 	fn convertUtf8ToUtf16(str: const(char)[]) immutable(wchar)[]
 	{

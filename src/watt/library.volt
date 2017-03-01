@@ -9,7 +9,7 @@ alias Loader = dg (string) void*;
 
 version(Windows) {
 
-	import core.windows.windows;
+	import core.c.windows.windows;
 
 	// XXX Proper way to import this.
 	extern(Windows)

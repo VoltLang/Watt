@@ -3,16 +3,16 @@
 module watt.io.file;
 
 import core.exception;
-import core.stdc.stdio;
+import core.c.stdio;
 import watt.conv;
 import watt.text.format;
 import watt.text.utf;
 
 version (Windows) {
-	import core.windows.windows;
+	import core.c.windows.windows;
 } else version (Posix) {
-	import core.posix.dirent;
-	import core.posix.sys.stat;
+	import core.c.posix.dirent;
+	import core.c.posix.sys.stat;
 }
 
 

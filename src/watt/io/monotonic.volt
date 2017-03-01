@@ -20,7 +20,7 @@ global this()
 	}
 }
 
-import core.stdc.stdlib: exit;
+import core.c.stdlib: exit;
 
 version (Windows) {
 
@@ -88,7 +88,7 @@ version (Windows) {
 
 } else version (Posix) {
 
-	import core.posix.time;
+	import core.c.posix.time;
 
 	fn posixTicksPerSecond(clock: i32) i64
 	{

@@ -2,7 +2,7 @@
 //T retval:0
 module test;
 
-import core.stdc.stdio;
+import core.c.stdio;
 import watt.text.format;
 
 fn main() i32

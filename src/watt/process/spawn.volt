@@ -6,15 +6,15 @@ module watt.process.spawn;
 version (Windows || Posix):
 
 import core.exception;
-import core.stdc.stdlib: csystem = system, exit;
-import core.stdc.string: strlen;
-import core.stdc.stdio;
+import core.c.stdlib: csystem = system, exit;
+import core.c.string: strlen;
+import core.c.stdio;
 
 version (Windows) {
-	import core.windows.windows;
+	import core.c.windows.windows;
 } else version (Posix) {
-	import core.posix.sys.types: pid_t;
-	import core.posix.unistd;
+	import core.c.posix.sys.types: pid_t;
+	import core.c.posix.unistd;
 }
 
 import watt.process.environment;
