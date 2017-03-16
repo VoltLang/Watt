@@ -30,29 +30,34 @@ class Pid
 {
 public:
 	version (Windows) {
-		alias NativeID = HANDLE;
-		alias _handle = nativeID;
+		alias OsHandle = HANDLE;
+		alias _handle = osHandle;
 	} else version (Posix) {
-		alias NativeID = pid_t;
-		alias _pid = nativeID;
+		alias OsHandle = pid_t;
+		alias _pid = osHandle;
 	} else {
-		alias NativeID = int;
+		alias OsHandle = int;
 	}
 
-	nativeID: NativeID;
+	alias NativeID = OsHandle;
+
 
 public:
-	this(nativeID: NativeID)
+	osHandle: OsHandle;
+
+
+public:
+	this(osHandle: OsHandle)
 	{
-		this.nativeID = nativeID;
+		this.osHandle = osHandle;
 	}
 
 	fn wait() i32
 	{
 		version (Posix) {
-			return waitPosix(nativeID);
+			return waitPosix(osHandle);
 		} else version (Windows) {
-			return waitWindows(nativeID);
+			return waitWindows(osHandle);
 		} else {
 			return -1;
 		}
