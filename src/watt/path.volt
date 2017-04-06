@@ -255,9 +255,9 @@ fn fullPath(file: string) string
 }
 
 /**
- * Return the path to the dir that the executable is in.
+ * Return the path to the executable.
  */
-fn getExecDir() string
+fn getExecFile() string
 {
 	stack: char[512];
 	version (Windows) {
@@ -289,5 +289,13 @@ fn getExecDir() string
 		throw new Exception("could not get exe path");
 	}
 
-	return new string(dirName(stack[0 .. cast(size_t)ret]));
+	return new string(stack[0 .. cast(size_t)ret]);
+}
+
+/**
+ * Return the path to the dir that the executable is in.
+ */
+fn getExecDir() string
+{
+	return dirName(getExecFile());
 }
