@@ -40,22 +40,42 @@ fn sort(ints: i32[])
  *
  */
 
-fn max(a: size_t, b: size_t) size_t
-{
-	return a > b ? a: b;
-}
-
-fn min(a: size_t, b: size_t) size_t
-{
-	return a < b ? a: b;
-}
-
 fn max(a: i32, b: i32) i32
 {
 	return a > b ? a: b;
 }
 
 fn min(a: i32, b: i32) i32
+{
+	return a < b ? a: b;
+}
+
+fn max(a: i64, b: i64) i64
+{
+	return a > b ? a: b;
+}
+
+fn min(a: i64, b: i64) i64
+{
+	return a < b ? a: b;
+}
+
+fn max(a: u32, b: u32) u32
+{
+	return a > b ? a: b;
+}
+
+fn min(a: u32, b: u32) u32
+{
+	return a < b ? a: b;
+}
+
+fn max(a: u64, b: u64) u64
+{
+	return a > b ? a: b;
+}
+
+fn min(a: u64, b: u64) u64
 {
 	return a < b ? a: b;
 }
