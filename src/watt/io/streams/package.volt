@@ -9,6 +9,7 @@ import watt.text.format;
 import watt.text.sink : StringSink;
 
 // Make sure these imports doesn't specifiy imports.
+public import watt.io.streams.fd;
 public import watt.io.streams.stdc;
 
 
