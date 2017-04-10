@@ -34,6 +34,11 @@ public:
 		handle = null;
 	}
 
+	@property override fn isOpen() bool
+	{
+		return handle !is null;
+	}
+
 	override fn put(c: dchar)
 	{
 		fputc(cast(i32) c, handle);
@@ -71,6 +76,11 @@ public:
 	{
 		fclose(handle);
 		handle = null;
+	}
+
+	@property override fn isOpen() bool
+	{
+		return handle !is null;
 	}
 
 	override fn get() dchar

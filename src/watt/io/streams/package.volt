@@ -25,6 +25,11 @@ public:
 	abstract fn close();
 
 	/**
+	 * Returns true if the stream is open.
+	 */
+	@property abstract fn isOpen() bool;
+
+	/**
 	 * Write a single character out to the sink.
 	 */
 	abstract fn put(c: dchar);
@@ -104,6 +109,11 @@ public:
 	 * Close the input stream.
 	 */
 	abstract fn close();
+
+	/**
+	 * Returns true if the stream is open.
+	 */
+	@property abstract fn isOpen() bool;
 
 	/**
 	 * Read a single character from the source.
