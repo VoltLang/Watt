@@ -1,4 +1,9 @@
+// Copyright © 2013-2017, Bernard Helyer.  All rights reserved.
+// Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
+// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.std;
+
+version (CRuntime_All):
 
 import core.varargs: va_list, va_start, va_end;
 import core.c.stdio: stdout, stderr, stdin;
