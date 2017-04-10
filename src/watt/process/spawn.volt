@@ -22,7 +22,8 @@ import watt.text.string: split;
 import watt.text.format : format;
 import watt.text.sink : StringSink;
 import watt.io.file: exists;
-import watt.io.streams : InputFileStream, OutputFileStream;
+import watt.io.streams.fd;
+import watt.io.streams.stdc;
 import watt.path: dirSeparator, pathSeparator;
 import watt.conv;
 
@@ -78,28 +79,7 @@ class ProcessException : Exception
 	}
 }
 
-fn spawnProcess(name: string, args: string[]) Pid
-{
-	return spawnProcess(name, args, stdin, stdout, stderr, null);
-}
-
-fn spawnProcess(name: string, args: string[],
-                _stdin: InputFileStream,
-                _stdout: OutputFileStream,
-                _stderr: OutputFileStream,
-                env: Environment = null) Pid
-{
-	stdinh := _stdin is null ? null : _stdin.handle;
-	stdouth := _stdout is null ? null : _stdout.handle;
-	stderrh := _stderr is null ? null : _stderr.handle;
-	return spawnProcess(name, args, stdinh, stdouth, stderrh, env);
-}
-
-fn spawnProcess(name: string, args: string[],
-                _stdin: FILE*,
-                _stdout: FILE*,
-                _stderr: FILE*,
-                env: Environment = null) Pid
+fn getCommandFromName(name: string) string
 {
 	if (name is null) {
 		throw new ProcessException("Name can not be null");
@@ -116,15 +96,67 @@ fn spawnProcess(name: string, args: string[],
 		throw new ProcessException(format("Can not find command %s", name));
 	}
 
-	version (Posix) {
-		stdinfd := _stdin is null ? fileno(stdin): fileno(_stdin);
-		stdoutfd := _stdout is null ? fileno(stdout): fileno(_stdout);
-		stderrfd := _stderr is null ? fileno(stderr): fileno(_stderr);
-		pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
-	} else version (Windows) {
-		pid := spawnProcessWindows(cmd, args, _stdin, _stdout, _stderr, env);
-	}
+	return cmd;
+}
 
+version (CRuntime_All)
+fn spawnProcess(name: string, args: string[]) Pid
+{
+	return spawnProcess(name, args, stdin, stdout, stderr, null);
+}
+
+version (CRuntime_All)
+fn spawnProcess(name: string, args: string[],
+                _stdin: InputStdcStream,
+                _stdout: OutputStdcStream,
+                _stderr: OutputStdcStream,
+                env: Environment = null) Pid
+{
+	stdinh := _stdin is null ? null : _stdin.handle;
+	stdouth := _stdout is null ? null : _stdout.handle;
+	stderrh := _stderr is null ? null : _stderr.handle;
+	return spawnProcess(name, args, stdinh, stdouth, stderrh, env);
+}
+
+version (Posix)
+fn spawnProcess(name: string, args: string[],
+                _stdin: InputFDStream,
+                _stdout: OutputFDStream,
+                _stderr: OutputFDStream,
+                env: Environment = null) Pid
+{
+	cmd := getCommandFromName(name);
+	stdinfd := _stdin is null ? STDIN_FILENO : _stdin.fd;
+	stdoutfd := _stdout is null ? STDOUT_FILENO : _stdout.fd;
+	stderrfd := _stderr is null ? STDERR_FILENO : _stderr.fd;
+	pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
+	return new Pid(pid);
+}
+
+version (Posix && CRuntime_All)
+fn spawnProcess(name: string, args: string[],
+                _stdin: FILE*,
+                _stdout: FILE*,
+                _stderr: FILE*,
+                env: Environment = null) Pid
+{
+	cmd := getCommandFromName(name);
+	stdinfd := _stdin is null ? fileno(stdin) : fileno(_stdin);
+	stdoutfd := _stdout is null ? fileno(stdout) : fileno(_stdout);
+	stderrfd := _stderr is null ? fileno(stderr) : fileno(_stderr);
+	pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
+	return new Pid(pid);
+}
+
+version (Windows && CRuntime_All)
+fn spawnProcess(name: string, args: string[],
+                _stdin: FILE*,
+                _stdout: FILE*,
+                _stderr: FILE*,
+                env: Environment = null) Pid
+{
+	cmd := getCommandFromName(name);
+	pid := spawnProcessWindows(cmd, args, _stdin, _stdout, _stderr, env);
 	return new Pid(pid);
 }
 
