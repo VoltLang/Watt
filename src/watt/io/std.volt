@@ -3,25 +3,50 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.std;
 
-version (CRuntime_All):
+version (CRuntime_All || Posix):
 
 import core.varargs: va_list, va_start, va_end;
-import core.c.stdio: stdout, stderr, stdin;
-import watt.io.streams: OutputFileStream, InputFileStream;
 
+version (Posix) {
+	import core.c.posix.unistd : STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO;
+	import watt.io.streams.fd : OutputFDStream, InputFDStream;
 
-global output: OutputFileStream;
-global error: OutputFileStream;
-global input: InputFileStream;
+	global output: OutputFDStream;
+	global error: OutputFDStream;
+	global input: InputFDStream;
+
+} else {
+	import watt.io.streams.stdc : OutputStdcStream, InputStdcStream;
+	import core.c.stdio: stdout, stderr, stdin;
+
+	global output: OutputStdcStream;
+	global error: OutputStdcStream;
+	global input: InputStdcStream;
+}
 
 global this()
 {
-	output = new OutputFileStream(null);
-	error = new OutputFileStream(null);
-	input = new InputFileStream(null);
-	output.handle = stdout;
-	error.handle = stderr;
-	input.handle = stdin;
+	version (Posix) {
+		output = new OutputFDStream(null);
+		error = new OutputFDStream(null);
+		input = new InputFDStream(null);
+		output.fd = STDOUT_FILENO;
+		error.fd = STDERR_FILENO;
+		input.fd = STDIN_FILENO;
+	} else {
+		output = new OutputStdcStream(null);
+		error = new OutputStdcStream(null);
+		input = new InputStdcStream(null);
+		output.handle = stdout;
+		error.handle = stderr;
+		input.handle = stdin;
+	}
+}
+
+global ~this()
+{
+	if (output !is null) { output.flush(); }
+	if (error !is null) { error.flush(); }
 }
 
 fn write(s: const(char)[])
