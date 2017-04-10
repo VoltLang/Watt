@@ -14,7 +14,7 @@ import watt.io.streams : OutputStream, InputStream;
 /**
  * An OutputStream in which the sink is a file.
  */
-class OutputFileStream : OutputStream
+class OutputStdcStream : OutputStream
 {
 public:
 	handle: FILE*;
@@ -58,7 +58,7 @@ public:
 /**
  * An InputStream in which the source is a file.
  */
-class InputFileStream : InputStream
+class InputStdcStream : InputStream
 {
 public:
 	handle: FILE*;

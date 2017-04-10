@@ -13,6 +13,9 @@ public import watt.io.streams.fd;
 public import watt.io.streams.stdc;
 
 
+alias InputFileStream = InputStdcStream;
+alias OutputFileStream = OutputStdcStream;
+
 /**
  * OutputStreams write data to some sink (a file, a console, etc)
  * in characters.
