@@ -22,6 +22,7 @@ import watt.text.string: split;
 import watt.text.format : format;
 import watt.text.sink : StringSink;
 import watt.io.file: exists;
+import watt.io.streams : InputFileStream, OutputFileStream;
 import watt.path: dirSeparator, pathSeparator;
 import watt.conv;
 
@@ -80,6 +81,18 @@ class ProcessException : Exception
 fn spawnProcess(name: string, args: string[]) Pid
 {
 	return spawnProcess(name, args, stdin, stdout, stderr, null);
+}
+
+fn spawnProcess(name: string, args: string[],
+                _stdin: InputFileStream,
+                _stdout: OutputFileStream,
+                _stderr: OutputFileStream,
+                env: Environment = null) Pid
+{
+	stdinh := _stdin is null ? null : _stdin.handle;
+	stdouth := _stdout is null ? null : _stdout.handle;
+	stderrh := _stderr is null ? null : _stderr.handle;
+	return spawnProcess(name, args, stdinh, stdouth, stderrh, env);
 }
 
 fn spawnProcess(name: string, args: string[],
@@ -390,10 +403,10 @@ version (Posix) {
 	}
 
 	fn spawnProcessWindows(name: string, args: string[],
-	                           hStdIn: HANDLE,
-	                           hStdOut: HANDLE,
-	                           hStdErr: HANDLE,
-	                           env: Environment) HANDLE
+	                       hStdIn: HANDLE,
+	                       hStdOut: HANDLE,
+	                       hStdErr: HANDLE,
+	                       env: Environment) HANDLE
 	{
 		envStack: char[32_767];
 		envPtr: LPVOID;
