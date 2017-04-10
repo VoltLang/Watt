@@ -5,10 +5,10 @@ import core.typeinfo;
 import core.exception;
 import core.varargs;
 import core.rt.format;
-import core.c.stdio;
 import watt.conv;
 import watt.text.sink;
 import watt.text.ascii;
+
 
 /**
  * Formats various arguments into a string by interpreting formatString.

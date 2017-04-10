@@ -5,10 +5,11 @@ module watt.io.streams;
 import core.typeinfo;
 import core.varargs;
 import core.c.stdio: FILE, fopen, fclose, fputc, fwrite,
-					fflush, feof, fgetc, ungetc, fread;
+                     fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
 import watt.text.format;
 import watt.text.sink : StringSink;
+
 
 /**
  * OutputStreams write data to some sink (a file, a console, etc)

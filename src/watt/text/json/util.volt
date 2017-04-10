@@ -91,6 +91,7 @@ fn parseDouble(data: const(char)[], out d: f64) bool
  */
 fn parseDouble(data: const(char)[], out d: f64, ref buffer: char[]) bool
 {
+	// @TODO just call toDouble with data?
 	ptr := cast(const(void)*)data.ptr;
 	if (data[$-1] != '\0') {
 		if (buffer.length <= data.length) {

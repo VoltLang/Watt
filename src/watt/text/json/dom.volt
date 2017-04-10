@@ -3,10 +3,10 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.text.json.dom;
 
-import watt.io;
 import watt.text.format;
 import watt.text.json.util;
 import watt.text.json.sax;
+
 
 class DOMException : JSONException
 {

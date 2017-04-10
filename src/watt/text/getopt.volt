@@ -10,7 +10,6 @@ import watt.conv;
 import watt.text.format;
 import watt.text.string;
 import watt.text.utf;
-import watt.io;
 
 
 /// An exception thrown on errors.
