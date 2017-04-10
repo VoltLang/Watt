@@ -4,11 +4,12 @@ module watt.io.streams;
 
 import core.typeinfo;
 import core.varargs;
-import core.c.stdio: FILE, fopen, fclose, fputc, fwrite,
-                     fflush, feof, fgetc, ungetc, fread;
 import watt.conv;
 import watt.text.format;
 import watt.text.sink : StringSink;
+
+// Make sure these imports doesn't specifiy imports.
+public import watt.io.streams.stdc;
 
 
 /**
@@ -149,93 +150,5 @@ public:
 			c = cast(char) get();
 		}
 		return buf.toString();
-	}
-}
-
-
-/**
- * An OutputStream in which the sink is a file.
- */
-class OutputFileStream : OutputStream
-{
-public:
-	handle: FILE*;
-
-public:
-	this(filename: const(char)[])
-	{
-		if (filename.length > 0u) {
-			handle = fopen(toStringz(filename), "w".ptr);
-		}
-	}
-
-	override fn close()
-	{
-		fclose(handle);
-		handle = null;
-	}
-
-	override fn put(c: dchar)
-	{
-		fputc(cast(i32) c, handle);
-	}
-
-	override fn write(s: const(char)[])
-	{
-		fwrite(cast(void*)s.ptr, 1, s.length, handle);
-	}
-
-	override fn flush()
-	{
-		fflush(handle);
-	}
-}
-
-/**
- * An InputStream in which the source is a file.
- */
-class InputFileStream : InputStream
-{
-public:
-	handle: FILE*;
-
-public:
-	this(filename: const(char)[])
-	{
-		if (filename.length > 0u) {
-			handle = fopen(toStringz(filename), "r".ptr);
-		}
-	}
-
-	override fn close()
-	{
-		fclose(handle);
-		handle = null;
-	}
-
-	override fn peek() dchar
-	{
-		c: i32 = fgetc(handle);
-		ungetc(c, handle);
-		return cast(dchar) c;
-	}
-
-	override fn get() dchar
-	{
-		return cast(dchar) fgetc(handle);
-	}
-
-	override fn read(buffer: u8[]) u8[]
-	{
-		num: size_t = fread(cast(void*)buffer.ptr, 1, buffer.length, handle);
-		if (num != buffer.length) {
-			return buffer[0..num];
-		}
-		return buffer;
-	}
-
-	override fn eof() bool
-	{
-		return feof(handle) != 0;
 	}
 }
