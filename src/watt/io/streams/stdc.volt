@@ -19,6 +19,7 @@ class OutputFileStream : OutputStream
 public:
 	handle: FILE*;
 
+
 public:
 	this(filename: const(char)[])
 	{
@@ -57,6 +58,7 @@ class InputFileStream : InputStream
 public:
 	handle: FILE*;
 
+
 public:
 	this(filename: const(char)[])
 	{
@@ -69,13 +71,6 @@ public:
 	{
 		fclose(handle);
 		handle = null;
-	}
-
-	override fn peek() dchar
-	{
-		c: i32 = fgetc(handle);
-		ungetc(c, handle);
-		return cast(dchar) c;
 	}
 
 	override fn get() dchar

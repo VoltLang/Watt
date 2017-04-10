@@ -106,11 +106,6 @@ public:
 	abstract fn close();
 
 	/**
-	 * Returns the character that will be retrieved by get().
-	 */
-	abstract fn peek() dchar;
-
-	/**
 	 * Read a single character from the source.
 	 */
 	abstract fn get() dchar;
