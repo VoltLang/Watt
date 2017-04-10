@@ -13,8 +13,13 @@ public import watt.io.streams.fd;
 public import watt.io.streams.stdc;
 
 
-alias InputFileStream = InputStdcStream;
-alias OutputFileStream = OutputStdcStream;
+version (Posix) {
+	alias InputFileStream = InputFDStream;
+	alias OutputFileStream = OutputFDStream;
+} else version (CRuntime_All) {
+	alias InputFileStream = InputStdcStream;
+	alias OutputFileStream = OutputStdcStream;
+}
 
 /**
  * OutputStreams write data to some sink (a file, a console, etc)
