@@ -43,12 +43,6 @@ global this()
 	}
 }
 
-global ~this()
-{
-	if (output !is null) { output.flush(); }
-	if (error !is null) { error.flush(); }
-}
-
 fn write(s: const(char)[])
 {
 	output.write(s);
