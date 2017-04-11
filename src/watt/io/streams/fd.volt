@@ -42,8 +42,10 @@ public:
 
 	override fn close()
 	{
-		.close(fd);
-		fd = -1;
+		if (fd >= 0) {
+			.close(fd);
+			fd = -1;
+		}
 	}
 
 	@property override fn isOpen() bool
@@ -114,8 +116,10 @@ public:
 
 	override fn close()
 	{
-		.close(fd);
-		fd = -1;
+		if (fd >= 0) {
+			.close(fd);
+			fd = -1;
+		}
 	}
 
 	@property override fn isOpen() bool

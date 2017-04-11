@@ -30,8 +30,10 @@ public:
 
 	override fn close()
 	{
-		fclose(handle);
-		handle = null;
+		if (handle !is null) {
+			fclose(handle);
+			handle = null;
+		}
 	}
 
 	@property override fn isOpen() bool
@@ -74,8 +76,10 @@ public:
 
 	override fn close()
 	{
-		fclose(handle);
-		handle = null;
+		if (handle !is null) {
+			fclose(handle);
+			handle = null;
+		}
 	}
 
 	@property override fn isOpen() bool
