@@ -13,15 +13,20 @@ import watt.io.streams : OutputStream, InputStream;
 
 
 /**
+ * Size of the internal read/write buffer.
+ */
+enum BufferSize = 1024;
+
+/**
  * An OutputStream in which the sink is a file.
  */
 final class OutputFDStream : OutputStream
 {
 private:
-	enum Total = 32;
-	enum Max = Total - 1;
+	/// Always reserve one slot for put.
+	enum Max = BufferSize - 1;
 	mCur: size_t;
-	mBuf: u8[Total];
+	mBuf: u8[BufferSize];
 
 
 public:
@@ -93,7 +98,7 @@ public:
 class InputFDStream : InputStream
 {
 private:
-	mBuf: u8[32];
+	mBuf: u8[BufferSize];
 	mStart: size_t;
 	mCur: size_t;
 
