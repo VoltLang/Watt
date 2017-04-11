@@ -6,42 +6,11 @@ module watt.io.std;
 version (CRuntime_All || Posix):
 
 import core.varargs: va_list, va_start, va_end;
+import watt.io.streams;
 
-version (Posix) {
-	import core.c.posix.unistd : STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO;
-	import watt.io.streams.fd : OutputFDStream, InputFDStream;
-
-	global output: OutputFDStream;
-	global error: OutputFDStream;
-	global input: InputFDStream;
-
-} else {
-	import watt.io.streams.stdc : OutputStdcStream, InputStdcStream;
-	import core.c.stdio: stdout, stderr, stdin;
-
-	global output: OutputStdcStream;
-	global error: OutputStdcStream;
-	global input: InputStdcStream;
-}
-
-global this()
-{
-	version (Posix) {
-		output = new OutputFDStream(null);
-		error = new OutputFDStream(null);
-		input = new InputFDStream(null);
-		output.fd = STDOUT_FILENO;
-		error.fd = STDERR_FILENO;
-		input.fd = STDIN_FILENO;
-	} else {
-		output = new OutputStdcStream(null);
-		error = new OutputStdcStream(null);
-		input = new InputStdcStream(null);
-		output.handle = stdout;
-		error.handle = stderr;
-		input.handle = stdin;
-	}
-}
+global output: OutputFileStream;
+global error: OutputFileStream;
+global input: InputFileStream;
 
 fn write(s: const(char)[])
 {
@@ -87,4 +56,29 @@ fn writefln(s: const(char)[], ...)
 fn readln() string
 {
 	return input.readln();
+}
+
+
+private:
+version (Posix) {
+	import core.c.posix.unistd : STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO;
+} else {
+	import core.c.stdio : stdout, stderr, stdin;
+}
+
+global this()
+{
+	output = new OutputFileStream(null);
+	error = new OutputFileStream(null);
+	input = new InputFileStream(null);
+
+	version (Posix) {
+		output.fd = STDOUT_FILENO;
+		error.fd = STDERR_FILENO;
+		input.fd = STDIN_FILENO;
+	} else {
+		output.handle = stdout;
+		error.handle = stderr;
+		input.handle = stdin;
+	}
 }
