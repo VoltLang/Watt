@@ -234,25 +234,29 @@ private fn formatHex(sink: Sink, ref vl: va_list, id: TypeInfo)
 	ul: u64;
 	switch (id.type) {
 	case Type.I8:
-		ul = cast(u64)va_arg!i8(vl);
+		// Unsigned to not sign extend.
+		ul = va_arg!u8(vl);
 		break;
 	case Type.U8:
-		ul = cast(u64)va_arg!u8(vl);
+		ul = va_arg!u8(vl);
 		break;
 	case Type.I16:
-		ul = cast(u64)va_arg!i16(vl);
+		// Unsigned to not sign extend.
+		ul = va_arg!u16(vl);
 		break;
 	case Type.U16:
-		ul = cast(u64)va_arg!u16(vl);
+		ul = va_arg!u16(vl);
 		break;
 	case Type.I32:
-		ul = cast(u64)va_arg!i32(vl);
+		// Unsigned to not sign extend.
+		ul = va_arg!u32(vl);
 		break;
 	case Type.U32:
-		ul = cast(u64)va_arg!u32(vl);
+		ul = va_arg!u32(vl);
 		break;
 	case Type.I64:
-		ul = cast(u64)va_arg!i64(vl);
+		// No risk for sign extend but just to skip the cast.
+		ul = va_arg!u64(vl);
 		break;
 	case Type.U64:
 		ul = va_arg!u64(vl);
