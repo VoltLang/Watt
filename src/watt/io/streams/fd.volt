@@ -5,7 +5,7 @@ module watt.io.streams.fd;
 
 version (Posix):
 
-import core.c.posix.fcntl : open, O_CREAT, O_WRONLY, O_RDONLY;
+import core.c.posix.fcntl : open, O_CREAT, O_WRONLY, O_RDONLY, O_TRUNC;
 import core.c.posix.unistd : close, write, read;
 import watt.algorithm : min;
 import watt.conv : toStringz;
@@ -42,7 +42,7 @@ public:
 		}
 
 		ptr := toStringz(filename);
-		fd = .open(ptr, O_CREAT | O_WRONLY, 0x1B4 /* 664 */);
+		fd = .open(ptr, O_CREAT | O_TRUNC | O_WRONLY, 0x1B4 /* 664 */);
 	}
 
 	override fn close()
