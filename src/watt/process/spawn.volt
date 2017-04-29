@@ -374,6 +374,7 @@ version (Posix) {
 	{
 		buffer: StringSink;
 		buffer.sink("\"");
+		buffer.sink(moduleName);
 		foreach (arg; args) {
 			buffer.sink("\" \"");
 			buffer.sink(arg);
@@ -461,8 +462,8 @@ version (Posix) {
 
 		pi: PROCESS_INFORMATION;
 
-		moduleName := format("%s\0", name);
-		bRet := CreateProcessA(moduleName.ptr, toArgz(moduleName, args),
+		moduleName := format("%s\0", name).ptr;
+		bRet := CreateProcessA(moduleName, toArgz(name, args),
 			null, null, TRUE, 0, envPtr, null, &si, &pi);
 
 		if (bRet == 0) {
