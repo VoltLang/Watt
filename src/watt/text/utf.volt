@@ -61,11 +61,8 @@ fn validate(s: string) void
 /// Encode c into a given UTF-8 array.
 fn encode(ref buf: char[], c: dchar) void
 {
-	str := .encode(c);
-	newbuf := new char[](buf.length + str.length);
-	newbuf[0 .. buf.length] = buf;
-	newbuf[buf.length .. $] = str;
-	buf = newbuf;
+	tmp: char[6];
+	buf = buf ~ tmp[0 .. encodeNoGC(ref tmp, c)];
 }
 
 /// Encode a unicode array into utf8
@@ -78,68 +75,32 @@ fn encode(arr: dchar[]) string
 	return cast(string)buf;
 }
 
+fn encode(arr: char[], ref index: size_t, c: dchar)
+{
+	if (arr.length < index + 6) {
+		throw new MalformedUTF8Exception("destination buffer does not have enough space.");
+	}
+
+	ptr := cast(char[6]*)&arr[index];
+	index += encodeNoGC(ref *ptr, c);
+}
+
 /// Encode c as UTF-8.
 fn encode(c: dchar) string
 {
-	ret: string;
-	fn dgt(s: SinkArg) void {
-		ret = new string(s);
-	}
+	tmp: char[6];
+	return new string(tmp[0 .. encodeNoGC(ref tmp, c)]);
+}
 
-	encode(dgt, c);
-	return ret;
+fn encode(dgt: Sink, c: dchar) void
+{
+	tmp: char[6];
+	dgt(tmp[0 .. encodeNoGC(ref tmp, c)]);
 }
 
 /// Encode c as UTF-8.
-fn encode(dgt: Sink, c: dchar) void
-{
-	buf: char[6];
-	cval := cast(uint) c;
-
-	fn readU8(a: u32, b: u32) u8
-	{
-		_byte := cast(u8) (a | (cval & b));
-		cval = cval >> 6;
-		return _byte;
-	}
-
-	if (cval <= 0x7F) {
-		buf[0] = cast(char) c;
-		return dgt(buf[0 .. 1]);
-	} else if (cval >= 0x80 && cval <= 0x7FF) {
-		buf[1] = readU8(0x0080, 0x003F);
-		buf[0] = readU8(0x00C0, 0x001F);
-		return dgt(buf[0 .. 2]);
-	} else if (cval >= 0x800 && cval <= 0xFFFF) {
-		buf[2] = readU8(0x0080, 0x003F);
-		buf[1] = readU8(0x0080, 0x003F);
-		buf[0] = readU8(0x00E0, 0x000F);
-		return dgt(buf[0 .. 3]);
-	} else if (cval >= 0x10000 && cval <= 0x1FFFFF) {
-		buf[3] = readU8(0x0080, 0x003F);
-		buf[2] = readU8(0x0080, 0x003F);
-		buf[1] = readU8(0x0080, 0x003F);
-		buf[0] = readU8(0x00F0, 0x000E);
-		return dgt(buf[0 .. 4]);
-	} else if (cval >= 0x200000 && cval <= 0x3FFFFFF) {
-		buf[4] = readU8(0x0080, 0x003F);
-		buf[3] = readU8(0x0080, 0x003F);
-		buf[2] = readU8(0x0080, 0x003F);
-		buf[1] = readU8(0x0080, 0x003F);
-		buf[0] = readU8(0x00F8, 0x0007);
-		return dgt(buf[0 .. 5]);
-	} else if (cval >= 0x4000000 && cval <= 0x7FFFFFFF) {
-		buf[5] = readU8(0x0080, 0x003F);
-		buf[4] = readU8(0x0080, 0x003F);
-		buf[3] = readU8(0x0080, 0x003F);
-		buf[2] = readU8(0x0080, 0x003F);
-		buf[1] = readU8(0x0080, 0x003F);
-		buf[0] = readU8(0x00FC, 0x0001);
-		return dgt(buf[0 .. 6]);
-	} else {
-		throw new MalformedUTF8Exception("encode: unsupported codepoint range");
-	}
-}
+/// Needs to be called nogc due to overload bug.
+alias encodeNoGC = vrt_encode_static_u8;
 
 version (Windows) {
 
