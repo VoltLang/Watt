@@ -68,7 +68,7 @@ public:
 		}
 	}
 
-	override fn write(s: const(char)[])
+	override fn write(s: scope const(char)[])
 	{
 		ptr := cast(u8*)s.ptr;
 		size := s.length;

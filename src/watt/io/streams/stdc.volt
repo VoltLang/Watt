@@ -46,7 +46,7 @@ public:
 		fputc(cast(i32) c, handle);
 	}
 
-	override fn write(s: const(char)[])
+	override fn write(s: scope const(char)[])
 	{
 		fwrite(cast(void*)s.ptr, 1, s.length, handle);
 	}
