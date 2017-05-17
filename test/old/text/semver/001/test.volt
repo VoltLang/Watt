@@ -59,14 +59,13 @@ fn testComparison()
 
 	i: size_t = 0;
 	while (i < testSemVers.length - 1) {
-		//retval := testSemVers[i] < testSemVers[i+1];
-		retval := testSemVers[i].opCmp(testSemVers[i+1]) < 0;
+		retval := testSemVers[i] < testSemVers[i+1];
 		assert(retval);
 		i++;
 	}
 	sva := new SemVer("1.0.0+blah");
 	svb := new SemVer("1.0.0+blam");
-	assert(sva.opCmp(svb) == 0);
+	assert(sva == svb);
 }
 
 fn main() i32
