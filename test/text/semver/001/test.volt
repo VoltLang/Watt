@@ -14,7 +14,7 @@ fn parseTest()
 		"1.0.0-alpha.1",
 	];
 	foreach (ts; testStrings) {
-		sv := new SemVer(ts);
+		sv := new Release(ts);
 		assert(sv.toString() == ts);
 	}
 }
@@ -33,7 +33,7 @@ fn ensureFailure()
 		"1.2.",
 	];
 	foreach (ts; testStrings) {
-		retval := SemVer.isValid(ts);
+		retval := Release.isValid(ts);
 		assert(!retval);
 	}
 }
@@ -42,17 +42,17 @@ fn testComparison()
 {
 	// This list should be in ascending order.
 	testSemVers := [
-		new SemVer("1.0.0-alpha"),
-		new SemVer("1.0.0-alpha.1"),
-		new SemVer("1.0.0-alpha.beta"),
-		new SemVer("1.0.0-beta"),
-		new SemVer("1.0.0-beta.2"),
-		new SemVer("1.0.0-beta.11"),
-		new SemVer("1.0.0-rc.1"),
-		new SemVer("1.0.0"),
-		new SemVer("1.1.0"),
-		new SemVer("1.1.1"),
-		new SemVer("2.0.0"),
+		new Release("1.0.0-alpha"),
+		new Release("1.0.0-alpha.1"),
+		new Release("1.0.0-alpha.beta"),
+		new Release("1.0.0-beta"),
+		new Release("1.0.0-beta.2"),
+		new Release("1.0.0-beta.11"),
+		new Release("1.0.0-rc.1"),
+		new Release("1.0.0"),
+		new Release("1.1.0"),
+		new Release("1.1.1"),
+		new Release("2.0.0"),
 	];
 
 	i: size_t = 0;
@@ -61,8 +61,8 @@ fn testComparison()
 		assert(retval);
 		i++;
 	}
-	sva := new SemVer("1.0.0+blah");
-	svb := new SemVer("1.0.0+blam");
+	sva := new Release("1.0.0+blah");
+	svb := new Release("1.0.0+blam");
 	assert(sva == svb);
 }
 

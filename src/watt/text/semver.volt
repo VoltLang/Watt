@@ -12,7 +12,7 @@ import watt.text.string;
 /**
  * Parses a string into a Semantic Version. (semver.org)
  */
-class SemVer
+class Release
 {
 public:
 	/// <major>.<minor>.<patch>(-<prerelease>)(+<metadata>)
@@ -40,8 +40,8 @@ public:
 	 */
 	local fn isValid(verString: string) bool
 	{
-		// TODO: Make this `new SemVer()` once we can make a private noarg ctor.
-		sv := new SemVer("1.2.3");
+		// TODO: Make this `new Release()` once we can make a private noarg ctor.
+		sv := new Release("1.2.3");
 		return sv.parse(verString);
 	}
 
@@ -54,7 +54,7 @@ public:
 			metadata.length > 0 ? format("+%s", metadata) : "");
 	}
 
-	fn opCmp(b: SemVer) i32
+	fn opCmp(b: Release) i32
 	{
 		retval := componentCheck(this.major, b.major);
 		if (retval != 0) {
@@ -74,7 +74,7 @@ public:
 		return prereleaseCheck(this.prerelease, b.prerelease);
 	}
 
-	fn opEquals(b: SemVer) bool
+	fn opEquals(b: Release) bool
 	{
 		return opCmp(b) == 0;
 	}
