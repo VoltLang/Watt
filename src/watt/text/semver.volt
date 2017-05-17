@@ -74,6 +74,11 @@ public:
 		return prereleaseCheck(this.prerelease, b.prerelease);
 	}
 
+	fn opEquals(b: SemVer) bool
+	{
+		return opCmp(b) == 0;
+	}
+
 private:
 	/// Upon failure, this contains a reason for the user.
 	mFailureString: string;
