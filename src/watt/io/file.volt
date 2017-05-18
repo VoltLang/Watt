@@ -1,4 +1,4 @@
-// Copyright © 2013-2014, Bernard Helyer.
+// Copyright © 2013-2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 module watt.io.file;
 
