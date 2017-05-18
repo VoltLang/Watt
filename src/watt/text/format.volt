@@ -8,6 +8,7 @@ import core.rt.format;
 import watt.conv;
 import watt.text.sink;
 import watt.text.ascii;
+import watt.text.utf;
 
 
 /**
@@ -229,6 +230,13 @@ private fn formatChar(sink: Sink, ref vl: va_list)
 	sink(tmp);
 }
 
+private fn formatDchar(sink: Sink, ref vl: va_list)
+{
+//	tmp: dchar[1];
+//	tmp[0] = va_arg!dchar(vl);
+	sink(encode(va_arg!dchar(vl)));
+}
+
 private fn formatHex(sink: Sink, ref vl: va_list, id: TypeInfo)
 {
 	ul: u64;
@@ -376,6 +384,9 @@ private fn formatType(sink: Sink, ref vl: va_list, id: TypeInfo)
 		break;
 	case Type.Char:
 		formatChar(sink, ref vl);
+		break;
+	case Type.Dchar:
+		formatDchar(sink, ref vl);
 		break;
 	case Type.Function, Type.Delegate, Type.Pointer:
 		formatPointer(sink, ref vl);
