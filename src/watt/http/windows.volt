@@ -104,11 +104,6 @@ public:
 		return new string((cast(char*)mData)[0 .. mDataSize]);
 	}
 
-	fn getHeaders() string
-	{
-		return new string(mHeader[0 .. mHeaderSize]);
-	}
-
 private:
 	fn fire()
 	{
@@ -195,17 +190,11 @@ private:
 
 	fn readData(size: size_t)
 	{
-		WaitForSingleObject(mReadMutex, INFINITE);
-		scope (exit) ReleaseMutex(mReadMutex);
-
 		mData = realloc(mData, mDataSize + size);
 		if (!WinHttpReadData(mReq, mData + mDataSize,
 		    cast(DWORD)size, null)) {
 			raiseError();
 		}
-
-		// Update the total size.
-		mDataSize += size;
 	}
 
 	fn cleanup()
@@ -263,6 +252,8 @@ extern(Windows) fn callbackFunction(
 	}
 
 	req := cast(Request)dwContext;
+	WaitForSingleObject(req.mReadMutex, INFINITE);
+	scope (exit) ReleaseMutex(req.mReadMutex);
 	switch (dwInternetStatus) {
 	case WINHTTP_CALLBACK_STATUS_SENDREQUEST_COMPLETE:
 		req.receive();
@@ -274,9 +265,11 @@ extern(Windows) fn callbackFunction(
 		req.readData(*cast(LPDWORD)lpvStatusInformation);
 		break;
 	case WINHTTP_CALLBACK_STATUS_READ_COMPLETE:
+		req.mDataSize += dwStatusInformationLength;
 		if (dwStatusInformationLength == 0) {
 			req.raiseCompleted();
 		} else {
+
 			req.queryData();
 		}
 		break;
