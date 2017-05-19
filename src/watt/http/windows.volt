@@ -73,12 +73,15 @@ private:
 	mDebug: char*;
 	mDebugSize: size_t;
 
+	mReadMutex: HANDLE;
+
 public:
 	this(http: Http)
 	{
 		assert(http !is null);
 		this.mHttp = http;
 		http.mNew ~= this;
+		mReadMutex = CreateMutexA(null, FALSE, null);
 	}
 
 	~this()
@@ -93,11 +96,17 @@ public:
 		if (mDebug !is null) {
 			free(cast(void*)mDebug);
 		}
+		CloseHandle(mReadMutex);
 	}
 
 	fn getString() string
 	{
 		return new string((cast(char*)mData)[0 .. mDataSize]);
+	}
+
+	fn getHeaders() string
+	{
+		return new string(mHeader[0 .. mHeaderSize]);
 	}
 
 private:
@@ -186,10 +195,8 @@ private:
 
 	fn readData(size: size_t)
 	{
-		if (size == 0) {
-			raiseCompleted();
-			return;
-		}
+		WaitForSingleObject(mReadMutex, INFINITE);
+		scope (exit) ReleaseMutex(mReadMutex);
 
 		mData = realloc(mData, mDataSize + size);
 		if (!WinHttpReadData(mReq, mData + mDataSize,
@@ -268,7 +275,7 @@ extern(Windows) fn callbackFunction(
 		break;
 	case WINHTTP_CALLBACK_STATUS_READ_COMPLETE:
 		if (dwStatusInformationLength == 0) {
-			req.raiseError();
+			req.raiseCompleted();
 		} else {
 			req.queryData();
 		}
