@@ -28,6 +28,13 @@ public:
 		}
 	}
 
+	this(filename: const(char)[], flags: const(char)[])
+	{
+		if (filename.length > 0u) {
+			handle = fopen(toStringz(filename), toStringz(flags));
+		}
+	}
+
 	override fn close()
 	{
 		if (handle !is null) {
