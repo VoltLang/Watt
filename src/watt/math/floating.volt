@@ -15,9 +15,23 @@ extern(C) fn cos(f64) f64;
 extern(C) fn cosf(f32) f32;
 alias cos = cosf;
 
+extern(C) fn tan(f64) f64;
+extern(C) fn tanf(f32) f32;
+alias tan = tanf;
+
 extern(C) fn sqrt(f64) f64;
 extern(C) fn sqrtf(f32) f32;
 alias sqrt = sqrtf;
+
+fn radians(degs: f64) f64
+{
+	return (PI * degs) / 180.0;
+}
+
+fn degrees(rads: f64) f64
+{
+	return (180.0 * rads) / PI;
+}
 
 @mangledName("llvm.floor.f32") fn floor(f32) f32;
 @mangledName("llvm.floor.f64") fn floor(f64) f64;
