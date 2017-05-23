@@ -33,21 +33,25 @@ fn rawToBrief(doc: string) string
 
 fn rawToFull(doc: string, sink: Sink) bool
 {
-	// TODO
-	sink(doc);
-
+	dummy: bool;
+	sink(cleanComment(doc, out dummy));
 	return true;
 }
 
 fn rawToBrief(doc: string, sink: Sink) bool
 {
-	// TODO
-	index := indexOf(".", doc);
+	tmp := rawToFull(doc);
+
+	index := indexOf(tmp, ".");
 	if (index < 0) {
 		return false;
 	}
 
-	sink(doc[0 .. index + 1]);
+	// TODO do more cleaning.
+	// Like turn all whitespace into a single whitespace.
+	tmp = strip(tmp[0 .. index + 1]);
+
+	sink(tmp);
 	return true;
 }
 
