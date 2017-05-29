@@ -111,3 +111,36 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 
 	return sink.toString();
 }
+
+interface DocSink
+{
+	/// Signals the start of a brief comment section.
+	fn briefStart(sink: Sink);
+	/// The content of a brief comment section.
+	fn briefContent(d: string, sink: Sink);
+	/// Signals the end of a brief comment section.
+	fn briefEnd(sink: Sink);
+
+	/// Signals the start of a param comment section.
+	fn paramStart(arg: string, sink: Sink);
+	/// The content of a param comment section.
+	fn paramContent(d: string, sink: Sink);
+	/// Signals the end of a param comment section.
+	fn paramEnd(sink: Sink);
+
+	/// Signals the start of the full content.
+	fn start(sink: Sink);
+	/// A text portion of the comment.
+	fn content(d: string, sink: Sink);
+	/// Signals the end of the full content.
+	fn end(sink: Sink);
+
+	// p comment section.
+	fn p(d: string, sink: Sink);
+	// link comment section.
+	fn link(link: string, sink: Sink);
+}
+
+fn parse(src: string, dsink: DocSink, sink: Sink)
+{
+}
