@@ -158,22 +158,27 @@ fn parse(src: string, dsink: DocSink, sink: Sink)
 private fn commandLoop(src: string, dsink: DocSink, sink: Sink, contentDg: dg(string, Sink), ref i: size_t)
 {
 	while (i < src.length) {
-		fn cond(c: dchar) bool { return c == '@' || c == '/'; }
+		fn cond(c: dchar) bool { return c == '@'; }
 		preCommand := decodeUntil(src, ref i, cond);
 		if (preCommand.length > 0) {
 			contentDg(preCommand, sink);
 		}
-		i++;  // skip '@' or '/'
+		i++;  // skip '@'
 		if (i >= src.length) {
+			if (i - 1 < src.length) {
+				contentDg("@", sink);
+			}
 			break;
 		}
 		command := getWord(src, ref i);
-		handleCommand(src, command, dsink, sink, ref i);
+		if (!handleCommand(src, command, dsink, sink, ref i)) {
+			contentDg("@" ~ command, sink);
+		}
 	}
 }
 
-/// Dispatch a command to its handler.
-private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sink, ref i: size_t)
+/// Dispatch a command to its handler. Returns: true if handled.
+private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sink, ref i: size_t) bool
 {
 	switch (command) {
 	case "p": handleCommandP(src, dsink, sink, ref i); break;
@@ -183,8 +188,9 @@ private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sin
 	case "param[in]": handleCommandParam(src, "in", dsink, sink, ref i); break;
 	case "param[in,out]": handleCommandParam(src, "in,out", dsink, sink, ref i); break;
 	case "param[out]": handleCommandParam(src, "out", dsink, sink, ref i); break;
-	default: break;
+	default: return false;
 	}
+	return true;
 }
 
 /// Parse an <at>p command.
@@ -204,7 +210,7 @@ private fn handleCommandP(src: string, dsink: DocSink, sink: Sink, ref i: size_t
 private fn handleCommandLink(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
 {
 	eatWhitespace(src, ref i);
-	fn cond(c: dchar) bool { return c == '@' || c == '/'; }
+	fn cond(c: dchar) bool { return c == '@'; }
 	preCommand := decodeUntil(src, ref i, cond);
 	i++;  // skip '@' etc
 	command := getWord(src, ref i);
