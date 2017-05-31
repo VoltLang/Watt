@@ -208,8 +208,8 @@ private fn handleCommandLink(src: string, dsink: DocSink, sink: Sink, ref i: siz
 	preCommand := decodeUntil(src, ref i, cond);
 	i++;  // skip '@' etc
 	command := getWord(src, ref i);
-	if (command != "endlink") {
-		throw new Exception("expected @endlink");
+	if (command != "endlink" || i >= src.length) {
+		return;
 	}
 	dsink.link(preCommand, sink);
 }
