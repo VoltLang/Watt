@@ -191,10 +191,12 @@ private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sin
 private fn handleCommandP(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
 {
 	eatWhitespace(src, ref i);
+	arg: string;
 	if (i >= src.length) {
-		throw new Exception("expected p argument");
+		arg = "";
+	} else {
+		arg = getWord(src, ref i);
 	}
-	arg := getWord(src, ref i);
 	dsink.p(arg, sink);
 }
 
