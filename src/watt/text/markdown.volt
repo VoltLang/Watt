@@ -1774,6 +1774,7 @@ private class LinkRefs
 			}
 			ln = stripLeft(ln);
 
+			title: string;
 			if (ln.length >= 1 && titleChar == '?') {
 				if (ln[0] == '(' || ln[0] == '\"' || ln[0] == '\'') {
 					lookingForTitle = true;
@@ -1808,7 +1809,6 @@ private class LinkRefs
 				lookingForTitle = false;
 			}
 
-			title: string;
 			stripped := ln.stripRight();
 			if (stripped.length >= 1 && stripped[$-1] == titleChar) {
 				titleBuf = cast(char[])format("%s%s", titleBuf, stripped[0 .. $-1]);
