@@ -1,4 +1,4 @@
-/**
+/*!
 	Markdown parser implementation
 	Copyright: © 2012-2015 RejectedSoftware e.K.
 	License:
@@ -41,7 +41,7 @@ import watt.text.html;
 		detect inline HTML tags
 */
 
-/// Returns false if str contains a character that's not in chars.
+//! Returns false if str contains a character that's not in chars.
 fn allOf(str: string, chars: string) bool
 {
 	foreach (c: dchar; str) {
@@ -52,7 +52,7 @@ fn allOf(str: string, chars: string) bool
 	return true;
 }
 
-/// Returns true if str contains any characters in chars.
+//! Returns true if str contains any characters in chars.
 fn anyOf(str: string, chars: string) bool
 {
 	foreach (c: dchar; str) {
@@ -63,7 +63,7 @@ fn anyOf(str: string, chars: string) bool
 	return false;
 }
 
-/// Returns how many of chr str starts with.
+//! Returns how many of chr str starts with.
 fn countLeading(str: string, chr: dchar) size_t
 {
 	foreach (i, c: dchar; str) {
@@ -74,8 +74,8 @@ fn countLeading(str: string, chr: dchar) size_t
 	return str.length;
 }
 
-/// Finds the index of the closing bracket if str starts with [, (, <, or {.
-/// -1 on failure.
+//! Finds the index of the closing bracket if str starts with [, (, <, or {.
+//! -1 on failure.
 private fn matchBracket(str: string, nested: bool = true) ptrdiff_t
 {
 	if (str.length < 2) {
@@ -150,7 +150,7 @@ fn backslashEscape(str: string) string
 }
 
 
-/** Returns a Markdown filtered HTML string.
+/*! Returns a Markdown filtered HTML string.
 */
 fn filterMarkdown(str: string, flags: MarkdownFlags) string
 {
@@ -158,7 +158,7 @@ fn filterMarkdown(str: string, flags: MarkdownFlags) string
 	settings.flags = flags;
 	return filterMarkdown(str, settings);
 }
-/// ditto
+//! ditto
 fn filterMarkdown(str: string, settings: scope MarkdownSettings = null) string
 {
 	dst: StringSink;
@@ -168,7 +168,7 @@ fn filterMarkdown(str: string, settings: scope MarkdownSettings = null) string
 
 
 
-/** Markdown filters the given string and writes the corresponding HTML to an output range.
+/*! Markdown filters the given string and writes the corresponding HTML to an output range.
 */
 fn filterMarkdown(dgt: Sink, src: string, flags: MarkdownFlags)
 {
@@ -176,7 +176,7 @@ fn filterMarkdown(dgt: Sink, src: string, flags: MarkdownFlags)
 	settings.flags = flags;
 	filterMarkdown(dgt, src, settings);
 }
-/// ditto
+//! ditto
 fn filterMarkdown(dgt: Sink, src: string, settings: scope MarkdownSettings = null)
 {
 	defsettings := new MarkdownSettings();
@@ -195,13 +195,13 @@ fn filterMarkdown(dgt: Sink, src: string, settings: scope MarkdownSettings = nul
 }
 
 final class MarkdownSettings {
-	/// Controls the capabilities of the parser.
+	//! Controls the capabilities of the parser.
 	flags: MarkdownFlags = MarkdownFlags.voltDefault;
 
-	/// Heading tags will start at this level.
+	//! Heading tags will start at this level.
 	headingBaseLevel: size_t = 1;
 
-	/// Called for every link/image URL to perform arbitrary transformations.
+	//! Called for every link/image URL to perform arbitrary transformations.
 	urlFilter: dg (url_or_path: string, is_image: bool) string;
 }
 
@@ -862,7 +862,7 @@ private fn skipText(ref lines: Line[], indent: IndentType[]) string[]
 	assert(false);
 }
 
-/// private
+//! private
 private fn writeBlock(dgt: Sink, ref block: const Block, links: LinkRefs, settings: scope MarkdownSettings, fromOrdered: bool = false)
 {
 	final switch (block.type) {
@@ -948,7 +948,7 @@ private fn writeMarkdownEscaped(dgt: Sink, ref block: const Block, in links: Lin
 	if (lines.length) dgt("\n");
 }
 
-/// private
+//! private
 private fn writeMarkdownEscaped(dgt: Sink, ln: string, linkrefs: LinkRefs, settings: scope MarkdownSettings)
 {
 	fn filterLink(lnk: string, is_image: bool) string {

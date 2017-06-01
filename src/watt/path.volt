@@ -38,7 +38,7 @@ import watt.io.file: exists;
 import watt.text.format : format;
 
 
-/**
+/*!
  * Used to seperate directory in a path.
  */
 version (Windows) {
@@ -47,7 +47,7 @@ version (Windows) {
 	enum string dirSeparator = "/";
 }
 
-/**
+/*!
  * Used to seperate entries in the PATH environment variable.
  */
 version (Windows) {
@@ -56,7 +56,7 @@ version (Windows) {
 	enum string pathSeparator = ":";
 }
 
-/**
+/*!
  * mkdir creates a single given directory.
  *
  * Existence is not treated as failure.
@@ -72,7 +72,7 @@ fn mkdir(dir: const(char)[])
 	}
 }
 
-/**
+/*!
  * Given a path, mkdirP will create any intermediate directories that
  * need to be created -- separating the path with '/' on posix platforms,
  * '/' and '\' on Windows platforms.
@@ -116,7 +116,7 @@ fn removeTrailingSlashes(ref s: string)
 	}
 }
 
-/**
+/*!
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html,
  * with a few additions when handling drives and multiple path separator types on Windows.
  */
@@ -168,7 +168,7 @@ fn dirName(path: const(char)[]) string
 	return format("%s%s", drive, path);
 }
 
-/**
+/*!
  * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html.
  * with a few additions when handling drives and multiple path separator types on Windows.
  */
@@ -254,7 +254,7 @@ fn fullPath(file: string) string
 	return ret;
 }
 
-/**
+/*!
  * Return the path to the executable.
  */
 fn getExecFile() string
@@ -292,7 +292,7 @@ fn getExecFile() string
 	return new string(stack[0 .. cast(size_t)ret]);
 }
 
-/**
+/*!
  * Return the path to the dir that the executable is in.
  */
 fn getExecDir() string

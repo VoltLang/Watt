@@ -7,7 +7,7 @@ import watt.text.sink;
 import watt.text.ascii;
 
 
-/**
+/*!
  * Surround the string with " and escape " and / with /.
  */
 fn escapeAndAddQuotation(sink: Sink, str: SinkArg) void
@@ -23,7 +23,7 @@ fn escapeAndAddQuotation(sink: Sink, str: SinkArg) void
 	sink(`"`);
 }
 
-/**
+/*!
  * Returns a textual representation of the command and args
  * that can be passed to "/bin/sh -c".
  */
@@ -41,7 +41,7 @@ fn toArgsPosix(cmd: SinkArg, args: SinkArg[]) char*
 	return sink.toChar().ptr;
 }
 
-/**
+/*!
  * State for parsing 
  */
 private enum ArgumentParseState {
@@ -51,7 +51,7 @@ private enum ArgumentParseState {
 	IGNORE,     // Inside a " field (add whitespace).
 }
 
-/**
+/*!
  * Parser a string as a series of arguments, just like bash/make does.
  */
 fn parseArguments(str: SinkArg) string[]

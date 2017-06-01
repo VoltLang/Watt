@@ -3,10 +3,10 @@
 module watt.math.random;
 
 
-/// Default RandomGenerator.
+//! Default RandomGenerator.
 alias RandomGenerator = MersenneTwisterEngine;
 
-/// Mersenne Twister engine, adapted from Phobos's std.random.
+//! Mersenne Twister engine, adapted from Phobos's std.random.
 struct MersenneTwisterEngine
 {
 public:
@@ -43,9 +43,9 @@ public:
 	enum u32 temperingC  = MT_C;
 	enum u32 temperingL  = MT_L;
 
-	/// Smallest generated value.
+	//! Smallest generated value.
 	enum u32 min = 0;
-	/// Largest generated value.
+	//! Largest generated value.
 	// u32.max >>> (uint.sizeof * 8 - w)
 	enum u32 max = 0xFFFFFFFFU;//_FFFFFFFFU;
 	enum u32 defaultSeed = 5489U;
@@ -64,7 +64,7 @@ public:
 		popFront();
 	}
 
-	/// Advances the generator.
+	//! Advances the generator.
 	fn popFront()
 	{
 		if (!inited) {
@@ -105,7 +105,7 @@ public:
 		_y = cast(u32) y;
 	}
 
-	/// Returns the current random value.
+	//! Returns the current random value.
 	@property fn front() u32
 	{
 		if (!inited) {

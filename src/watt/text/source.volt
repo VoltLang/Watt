@@ -11,17 +11,17 @@ import watt.text.format: format;
 class Source
 {
 public:
-	/// The location of the current character @p front.
+	//! The location of the current character @p front.
 	loc: Location;
 
-	/// @see empty.
+	//! @see empty.
 	alias eof = empty;
 
 private:
 	mSrc: SimpleSource;
 
 public:
-	/**
+	/*!
 	 * Sets the source to string and the current location
 	 * and validate it as a utf8 source.
 	 *
@@ -42,7 +42,7 @@ public:
 		loc.line = 1;
 	}
 
-	/**
+	/*!
 	 * Have we reached EOF, if we have current = dchar.init.
 	 */
 	final @property fn empty() dchar
@@ -50,7 +50,7 @@ public:
 		return mSrc.empty;
 	}
 
-	/**
+	/*!
 	 * Returns the current utf8 char.
 	 *
 	 * Side-effects:
@@ -61,7 +61,7 @@ public:
 		return mSrc.mChar;
 	}
 
-	/**
+	/*!
 	 * Returns the following utf8 char after front.
 	 *
 	 * Side-effects:
@@ -72,7 +72,7 @@ public:
 		return mSrc.following;
 	}
 
-	/**
+	/*!
 	 * Advance the source one character.
 	 *
 	 * Side-effects:
@@ -96,7 +96,7 @@ public:
 		loc.column++;
 	}
 
-	/**
+	/*!
 	 * Advance the source n character.
 	 *
 	 * Side-effects:
@@ -116,7 +116,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * Used to skip whitespace in the source file,
 	 * as defined by watt.text.ascii.isWhite.
 	 *
@@ -130,7 +130,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * Skips till character after next end of line or eof.
 	 *
 	 * Side-effects:
@@ -145,7 +145,7 @@ public:
 		} while (!eof && d != '\n');
 	}
 
-	/**
+	/*!
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
@@ -174,7 +174,7 @@ public:
 	}
 }
 
-/**
+/*!
  * A simple container for iterating over UTF-8 source code.
  *
  * Assumes the given source is valid UTF-8.
@@ -182,19 +182,19 @@ public:
 struct SimpleSource
 {
 public:
-	/// Source code, assumed to be validated utf8.
+	//! Source code, assumed to be validated utf8.
 	mSrc: string;
-	/// Pointer into the string for the next character.
+	//! Pointer into the string for the next character.
 	mNextIndex: size_t;
-	/// The index for mChar
+	//! The index for mChar
 	mLastIndex: size_t;
-	/// The current unicode character.
+	//! The current unicode character.
 	mChar: dchar;
 
-	/// @see empty.
+	//! @see empty.
 	alias eof = empty;
 
-	/// Have we reached EOF, if we have front = dchar.init.
+	//! Have we reached EOF, if we have front = dchar.init.
 	empty: bool;
 
 public:
@@ -213,7 +213,7 @@ public:
 		return mSrc;
 	}
 
-	/**
+	/*!
 	 * Returns the current utf8 char.
 	 *
 	 * Side-effects:
@@ -224,7 +224,7 @@ public:
 		return mChar;
 	}
 
-	/**
+	/*!
 	 * Returns the following utf8 char after front.
 	 *
 	 * Side-effects:
@@ -236,7 +236,7 @@ public:
 		return decodeChar(ref dummy);
 	}
 
-	/**
+	/*!
 	 * Advance the source one character.
 	 *
 	 * Side-effects:
@@ -259,7 +259,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * Advance the source n character.
 	 *
 	 * Side-effects:
@@ -279,7 +279,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
@@ -311,7 +311,7 @@ public:
 		return c;
 	}
 
-	/**
+	/*!
 	 * Decodes a single utf8 code point at index in the given source.
 	 */
 	fn decodeChar(ref index: size_t) dchar
@@ -324,7 +324,7 @@ public:
 	}
 }
 
-/**
+/*!
  * Struct representing a location in a source file.
  *
  * This was pretty much stolen wholesale from Daniel Keep.
@@ -343,7 +343,7 @@ public:
 		return format("%s:%s:%s", filename, line, column);
 	}
 
-	/**
+	/*!
 	 * Difference between two locations.
 	 * end - begin == begin ... end
 	 * @see difference
@@ -353,7 +353,7 @@ public:
 		return difference(ref this, ref begin, ref begin);
 	}
 
-	/**
+	/*!
 	 * Difference between two locations.
 	 * end - begin == begin ... end
 	 * On mismatch of filename or if begin is after

@@ -17,7 +17,7 @@ fn normalizePath(path: SinkArg) string
 	}
 }
 
-/**
+/*!
  * Given a path, return a path that could be a subpath.
  *
  * A full path under windows contains a drive letter and a colon before '\'.

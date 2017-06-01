@@ -17,7 +17,7 @@ import watt.text.string;
 import watt.text.sink;
 
 
-/**
+/*!
  * Returns an environment that is a copy of the running process environment.
  */
 version(Posix) fn retrieveEnvironment() Environment
@@ -46,7 +46,7 @@ version(Posix) fn retrieveEnvironment() Environment
 	return env;
 }
 
-/**
+/*!
  * Returns an environment that is a copy of the running process environment.
  */
 version(Windows) fn retrieveEnvironment() Environment
@@ -116,7 +116,7 @@ public:
 
 version (OSX) {
 
-	/// TODO Remove this from iOS, or apps gets rejected.
+	//! TODO Remove this from iOS, or apps gets rejected.
 	extern(C) fn _NSGetEnviron() char*** ;
 
 	@property fn environ() char**

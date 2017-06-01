@@ -1,7 +1,7 @@
 // See copyright just below.
 module watt.license;
 
-/**
+/*!
  * This is the license for the watt libray.
  */
 enum string license = `

@@ -17,7 +17,7 @@ private extern(C) {
 	fn strspn(str1: const(char)*, str2: const(char)*) size_t;
 }
 
-/**
+/*!
  * Exception thrown when an error occurs during building.
  */
 class BuilderException : util.JSONException
@@ -38,27 +38,27 @@ enum Type
 	ARRAY
 }
 
-/**
+/*!
  * Events which will be produced by *JSON.get*.
  */
 enum Event
 {
-	START, ///< The first event, marks the start of the JSON data.
-	END, ///< The last event, marks the end of the JSON data.
-	ERROR, ///< Event which will occour if invalid JSON is encountered.
+	START, //!< The first event, marks the start of the JSON data.
+	END, //!< The last event, marks the end of the JSON data.
+	ERROR, //!< Event which will occour if invalid JSON is encountered.
 
-	NULL, ///< A null was encountered.
-	BOOLEAN, ///< A boolean was encountered.
-	NUMBER, ///< A number was encountered.
-	STRING, ///< A string was encountered.
-	OBJECT_START, ///< The start of a JSON object was encountered.
-	OBJECT_KEY, ///< A JSON object key was encountered (this is a string and still needs to be unescaped).
-	OBJECT_END, ///< The end of a JSON object was encountered.
-	ARRAY_START, ///< The start of a JSON array was encountered.
-	ARRAY_END ///< The end of a JSON array was encountered.
+	NULL, //!< A null was encountered.
+	BOOLEAN, //!< A boolean was encountered.
+	NUMBER, //!< A number was encountered.
+	STRING, //!< A string was encountered.
+	OBJECT_START, //!< The start of a JSON object was encountered.
+	OBJECT_KEY, //!< A JSON object key was encountered (this is a string and still needs to be unescaped).
+	OBJECT_END, //!< The end of a JSON object was encountered.
+	ARRAY_START, //!< The start of a JSON array was encountered.
+	ARRAY_END //!< The end of a JSON array was encountered.
 }
 
-/**
+/*!
  * Turn a *Event* into a human readable string.
  */
 fn eventToString(event: Event) string
@@ -82,13 +82,13 @@ fn eventToString(event: Event) string
 	assert(false);
 }
 
-/**
+/*!
  * Main class for parsing JSON.
  */
 class SAX
 {
 public:
-	ignoreGarbage: bool; ///< Ignore garbage/left over data after the root element is parsed.
+	ignoreGarbage: bool; //!< Ignore garbage/left over data after the root element is parsed.
 
 protected:
 	source: InputStream; //< Input source.
@@ -105,7 +105,7 @@ protected:
 	lastError: string; //< last error.
 
 public:
-	/**
+	/*!
 	 * Creates a JSON object from an InputStream.
 	 */
 	this(source: InputStream, bufferSize: size_t = 65536, reallocSize: size_t = 16384) {
@@ -116,7 +116,7 @@ public:
 		this.state.push(State.START);
 	}
 
-	/**
+	/*!
 	 * Creates a JSON object from an array.
 	 */
 	this(data: const(u8)[])
@@ -130,7 +130,7 @@ public:
 		this.state.push(State.START);
 	}
 
-	/**
+	/*!
 	 * Creates a JSON object from a string.
 	 */
 	this(data: const(char)[])
@@ -138,7 +138,7 @@ public:
 		this(cast(const(u8)[])data);
 	}
 
-	/**
+	/*!
 	 * Continues parsing the input data and call the callback with the appropriate data.
 	 *
 	 * *data* is a slice to an internal buffer and will only be valid until the next
@@ -544,7 +544,7 @@ protected:
 	}
 }
 
-/**
+/*!
  * The main class to build/write JSON.
  */
 class Builder
@@ -561,7 +561,7 @@ protected:
 	state: ParserStack;
 
 public:
-	/**
+	/*!
 	 * Creates a new *JSONBuilder* object.
 	 *
 	 * *prettyPrint*: If true emit formatted JSON
@@ -579,7 +579,7 @@ public:
 		this.state.push(State.START);
 	}
 
-	/**
+	/*!
 	 * Writes a null value.
 	 */
 	fn buildNull()
@@ -588,7 +588,7 @@ public:
 		output.write("null");
 	}
 
-	/**
+	/*!
 	 * Writes a number.
 	 */
 	fn buildNumber(number: f64)
@@ -608,7 +608,7 @@ public:
 		output.write(buf[0 .. len]);
 	}
 
-	/**
+	/*!
 	 * Writes a number.
 	 */
 	fn buildNumber(number: i32)
@@ -616,7 +616,7 @@ public:
 		buildNumber(cast(i64)number);
 	}
 
-	/**
+	/*!
 	 * Writes a number.
 	 */
 	fn buildNumber(number: i64)
@@ -629,7 +629,7 @@ public:
 		output.write(buf[0 .. len]);
 	}
 
-	/**
+	/*!
 	 * Writes a string, if *escape* is *true* (default) the string will
 	 * be escaped, set this to false if you want to write an already escaped string.
 	 */
@@ -645,7 +645,7 @@ public:
 		output.write("\"");
 	}
 
-	/**
+	/*!
 	 * Writes a boolean.
 	 */
 	fn buildBoolean(b: bool)
@@ -658,7 +658,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * Writes the start of a JSON object.
 	 * JSON keys are expected to be built with *buildString*.
 	 */
@@ -670,7 +670,7 @@ public:
 		++indentLevel;
 	}
 
-	/**
+	/*!
 	 * Writes the end of a JSON object.
 	 */
 	fn buildObjectEnd()
@@ -691,7 +691,7 @@ public:
 		output.write("}");
 	}
 
-	/**
+	/*!
 	 * Writes the start of a JSON array.
 	 */
 	fn buildArrayStart()
@@ -701,7 +701,7 @@ public:
 		++indentLevel;
 	}
 
-	/**
+	/*!
 	 * Writes the end of a JSON array.
 	 */
 	fn buildArrayEnd()
@@ -722,7 +722,7 @@ public:
 		output.write("]");
 	}
 
-	/**
+	/*!
 	 * Finalizes the JSON, this is optional but recommended to call,
 	 * it checks for malformed JSON and writes an additional newline
 	 * if *prettyPrint* is enabled.

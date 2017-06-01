@@ -24,7 +24,7 @@ class FileException : Exception
 	}
 }
 
-/**
+/*!
  * Read the contents of the file pointed to by filename into a string with no verification.
  */
 fn read(filename: string) void[]
@@ -64,7 +64,7 @@ fn read(filename: string) void[]
 	return cast(void[]) buf;
 }
 
-/**
+/*!
  * Returns true if path matches pattern.
  *
  * Supports '*' and '?' wild cards. '*' matches zero or more characters, and '?' matches a single character.
@@ -164,7 +164,7 @@ version (Windows) fn searchDir(dirName: string, glob: string, dgt: scope dg (str
 	} while (true);
 }
 
-/**
+/*!
  * Returns true if a path exists and is not a directory.
  */
 fn isFile(path: scope const(char)[]) bool
@@ -172,7 +172,7 @@ fn isFile(path: scope const(char)[]) bool
 	return exists(path) && !isDir(path);
 }
 
-/**
+/*!
  * Returns true if a given directory exists.
  */
 fn isDir(path: scope const(char)[]) bool
@@ -197,7 +197,7 @@ fn isDir(path: scope const(char)[]) bool
 	}
 }
 
-/**
+/*!
  * Returns true if a given file exists.
  */
 fn exists(filename: const(char)[]) bool
@@ -210,7 +210,7 @@ fn exists(filename: const(char)[]) bool
 	return true;
 }
 
-/**
+/*!
  * Deletes a file.
  */
 fn remove(filename: const(char)[])

@@ -18,7 +18,7 @@ version(Windows) {
 
 	alias getOutput = getOutputWindows;
 
-	/**
+	/*!
 	 * Run the given command and read back the output into a string.
 	 * Waits for the command to complete before returning.
 	 */
@@ -86,7 +86,7 @@ version(Posix) {
 
 	alias getOutput = getOutputPosix;
 
-	/**
+	/*!
 	 * Run the given command and read back the output into a string.
 	 * Waits for the command to complete before returning.
 	 */

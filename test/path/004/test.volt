@@ -30,7 +30,7 @@ global cleantests: string[][] = [
 	// Remove doubled slash
 	["abc//def//ghi", "abc/def/ghi"],
 	["//abc", "/abc"],
-	["///abc", "/abc"],
+	["//!abc", "/abc"],
 	["//abc//", "/abc"],
 	["abc//", "abc"],
 

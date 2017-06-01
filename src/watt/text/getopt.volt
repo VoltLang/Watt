@@ -12,7 +12,7 @@ import watt.text.string;
 import watt.text.utf;
 
 
-/// An exception thrown on errors.
+//! An exception thrown on errors.
 class GetoptException : Exception
 {
 	this(msg: string)
@@ -21,7 +21,7 @@ class GetoptException : Exception
 	}
 }
 
-/// Removes up to two leading dashes from a string.
+//! Removes up to two leading dashes from a string.
 private fn removeDashes(s: string) string
 {
 	if (s.length == 0 || (s.length == 1 && s[0] == '-') || (s.length == 2 && s == "--")) {
@@ -36,21 +36,21 @@ private fn removeDashes(s: string) string
 	}
 }
 
-/// Remove an element from an array and update a given index.
+//! Remove an element from an array and update a given index.
 private fn remove(ref args: string[], ref index: size_t)
 {
 	args = args[0 .. index] ~ args[index + 1 .. $];
 	index -= 1;
 }
 
-/// Remove two elemeents starting from index.
+//! Remove two elemeents starting from index.
 private fn removeTwo(ref args: string[], ref index: size_t)
 {
 	args = args[0 .. index] ~ args[index + 2 .. $];
 	index -= 2;
 }
 
-/// Get all the flags described by a description, throws GetoptException on error.
+//! Get all the flags described by a description, throws GetoptException on error.
 private fn parseDescription(description: string) string[]
 {
 	flags := split(description, '|');
@@ -60,7 +60,7 @@ private fn parseDescription(description: string) string[]
 	return flags;
 }
 
-/// If s has an equals character, return everything to the right of it. Otherwise, "".
+//! If s has an equals character, return everything to the right of it. Otherwise, "".
 private fn equalParameter(s: string) string
 {
 	i: size_t;
@@ -115,7 +115,7 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
 	}
 }
 
-/**
+/*!
  * If a flag (described in description, separated by | characters) shows up in args[1 .. $], an argument is parsed
  * and put into _string. Both the flag and argument are then removed from args.
  * String arguments can be supplied in multiple ways:
@@ -129,7 +129,7 @@ fn getopt(ref args: string[], description: string, ref _string: string)
 	getoptImpl(ref args, description, dgt);
 }
 
-/// The same as getopt with string, but the result is passed through watt.conv.toInt.
+//! The same as getopt with string, but the result is passed through watt.conv.toInt.
 fn getopt(ref args: string[], description: string, ref _int: i32)
 {
 	fn dgt(arg: string)
@@ -143,7 +143,7 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
 	getopt(ref args, description, dgt);
 }
 
-/**
+/*!
  * Given an array of strings, args, and a list of strings separated by a | character, description,
  * remove any strings in args[1 .. $] that start with '-' and contain any of the description strings.
  * Sets _bool to true if args was modified.
@@ -154,19 +154,19 @@ fn getopt(ref args: string[], description: string, ref _bool: bool)
 	getoptImpl(ref args, description, dgt);
 }
 
-/// Calls a delegate each time the flag appears.
+//! Calls a delegate each time the flag appears.
 fn getopt(ref args: string[], description: string, dgt: scope dg ())
 {
 	getoptImpl(ref args, description, dgt);
 }
 
-/// Calls a delegate with argument each time the flag appears.
+//! Calls a delegate with argument each time the flag appears.
 fn getopt(ref args: string[], description: string, dgt: scope dg (string))
 {
 	getoptImpl(ref args, description, dgt);
 }
 
-/**
+/*!
  * Returns the first element in args[1 .. $] that starts with a -, or an empty string otherwise.
  * This is intended for error handling purposes:
  *     auto flag = remainingOptions(args);

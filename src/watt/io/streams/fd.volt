@@ -12,18 +12,18 @@ import watt.conv : toStringz;
 import watt.io.streams : OutputStream, InputStream;
 
 
-/**
+/*!
  * Size of the internal read/write buffer.
  */
 enum BufferSize = 1024;
 
-/**
+/*!
  * An OutputStream in which the sink is a file.
  */
 final class OutputFDStream : OutputStream
 {
 private:
-	/// Always reserve one slot for put.
+	//! Always reserve one slot for put.
 	enum Max = BufferSize - 1;
 	mCur: size_t;
 	mBuf: u8[BufferSize];
@@ -92,7 +92,7 @@ public:
 	}
 }
 
-/**
+/*!
  * An InputStream in which the source is a file.
  */
 class InputFDStream : InputStream

@@ -36,7 +36,7 @@ private fn enforceJEx(b: bool, msg: string = "Json type enforce failure.",
 	}
 }
 
-/**
+/*!
  * Represents a JSON value.
  */
 struct Value
@@ -54,7 +54,7 @@ struct Value
 	private _array: Value[];
 	private object: Value[string];
 
-	/**
+	/*!
 	 * Returns the DomType of the value stored in this node.
 	 */
 	fn type() DomType
@@ -62,7 +62,7 @@ struct Value
 		return _type;
 	}
 
-	/**
+	/*!
 	 * Test whether the type is null.
 	 */
 	fn isNull() bool
@@ -70,7 +70,7 @@ struct Value
 		return _type == DomType.NULL;
 	}
 
-	/**
+	/*!
 	 * Set the type to null.
 	 */
 	fn setNull()
@@ -78,7 +78,7 @@ struct Value
 		_type = DomType.NULL;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.BOOLEAN.
 	 */
 	fn boolean() bool
@@ -87,7 +87,7 @@ struct Value
 		return store.boolean;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.BOOLEAN.
 	 */
 	fn boolean(b: bool)
@@ -96,7 +96,7 @@ struct Value
 		store.boolean = b;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.STRING.
 	 */
 	fn str() string
@@ -105,7 +105,7 @@ struct Value
 		return store.str;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.STRING.
 	 */
 	fn str(s: string)
@@ -114,7 +114,7 @@ struct Value
 		store.str = s;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.LONG.
 	 */
 	fn integer() i64
@@ -123,7 +123,7 @@ struct Value
 		return store.integer;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.LONG.
 	 */
 	fn integer(l: i64)
@@ -132,7 +132,7 @@ struct Value
 		store.integer = l;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.ULONG.
 	 */
 	fn unsigned() u64
@@ -141,7 +141,7 @@ struct Value
 		return store.unsigned;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.ULONG.
 	 */
 	fn unsigned(l: u64)
@@ -150,7 +150,7 @@ struct Value
 		store.unsigned = l;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.DOUBLE.
 	 */
 	fn floating() f64
@@ -159,7 +159,7 @@ struct Value
 		return store.floating;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.DOUBLE.
 	 */
 	fn floating(d: f64)
@@ -168,7 +168,7 @@ struct Value
 		store.floating = d;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.ARRAY.
 	 */
 	fn array() Value[]
@@ -177,7 +177,7 @@ struct Value
 		return _array;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.ARRAY.
 	 */
 	fn array(array: Value[])
@@ -186,7 +186,7 @@ struct Value
 		_array = array;
 	}
 
-	/**
+	/*!
 	 * Add value to the array.
 	 */
 	fn arrayAdd(val: Value)
@@ -195,7 +195,7 @@ struct Value
 		_array ~= val;
 	}
 
-	/**
+	/*!
 	 * Set type as DomType.ARRAY.
 	 */
 	fn setArray()
@@ -203,7 +203,7 @@ struct Value
 		_type = DomType.ARRAY;
 	}
 
-	/**
+	/*!
 	 * Getter for DomType.OBJECT.
 	 */
 	fn lookupObjectKey(s: string) Value
@@ -222,7 +222,7 @@ struct Value
 		return (s in object) !is null;
 	}
 
-	/**
+	/*!
 	 * Setter for DomType.OBJECT.
 	 */
 	fn setObjectKey(s: string, v: Value)
@@ -231,7 +231,7 @@ struct Value
 		object[s] = v;
 	}
 
-	/**
+	/*!
 	 * Set type as DomType.OBJECT.
 	 */
 	fn setObject()

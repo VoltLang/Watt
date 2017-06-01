@@ -3,14 +3,14 @@
 module watt.math.floating;
 
 
-/**
+/*!
  * The number PI as a constant.
  * Can't fit more bits into floats and double, yes really.
  * @{
  */
 enum f32 PIf = 3.141592653589793238462643383279502884197169399375105820974944;
 enum f64 PI = 3.141592653589793238462643383279502884197169399375105820974944;
-/// @}
+//! @}
 
 extern(C) fn sin(f64) f64;
 extern(C) fn sinf(f32) f32;

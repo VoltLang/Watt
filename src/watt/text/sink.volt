@@ -4,13 +4,13 @@ module watt.text.sink;
 
 static import core.rt.format;
 
-/// The one true sink definition.
+//! The one true sink definition.
 alias Sink = core.rt.format.Sink;
 
-/// The argument to the one true sink.
+//! The argument to the one true sink.
 alias SinkArg = core.rt.format.SinkArg;
 
-/// A sink to create long strings.
+//! A sink to create long strings.
 struct StringSink
 {
 private:
@@ -63,7 +63,7 @@ public:
 		return new char[](mArr[0 .. mLength]);
 	}
 
-	/**
+	/*!
 	 * Safely get the backing storage from the sink without coping.
 	 */
 	fn toSink(sink: Sink) void

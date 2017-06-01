@@ -10,7 +10,7 @@ import watt.text.format : format;
 import watt.text.sink : StringSink;
 
 
-/**
+/*!
  * Split string s by a given delimiter.
  * Examples:
  *   split("a=b", '=') ["a", "b"]
@@ -35,7 +35,7 @@ fn split(s: string, delimiter: dchar) string[]
 	return strings;
 }
 
-/**
+/*!
  * Split string s by \n, \r, and \r\n.
  */
 fn splitLines(s: string) string[]
@@ -61,7 +61,7 @@ fn splitLines(s: string) string[]
 	return strings;
 }
 
-/**
+/*!
  * Remove whitespace before and after, as defined by watt.ascii.isWhite.
  * Examples:
  *   strip("  apple  ") -> "apple"
@@ -84,7 +84,7 @@ fn strip(str: const(char)[]) string
 	return start == stop ? null : str[start .. stop];
 }
 
-/**
+/*!
  * Remove leading whitespace, as defined by watt.ascii.isWhite.
  */
 fn stripLeft(str: const(char)[]) string
@@ -97,7 +97,7 @@ fn stripLeft(str: const(char)[]) string
 	return null;
 }
 
-/**
+/*!
  * Remove trailing whitespace, as defined by watt.ascii.isWhite.
  */
 fn stripRight(str: string) string
@@ -110,7 +110,7 @@ fn stripRight(str: string) string
 	return null;
 }
 
-/// Returns how many times c occurs in s.
+//! Returns how many times c occurs in s.
 fn count(str: string, c: dchar) size_t
 {
 	n, i: size_t;
@@ -122,7 +122,7 @@ fn count(str: string, c: dchar) size_t
 	return n;
 }
 
-/**
+/*!
  * Returns the index of the first place c occurs in str,
  * or -1 if it doesn't occur.
  */
@@ -141,7 +141,7 @@ fn indexOf(str: const(char)[], c: dchar) ptrdiff_t
 	return -1;
 }
 
-/**
+/*!
  * Returns the index of the last place c occurs in str,
  * or -1 otherwise.
  */
@@ -155,7 +155,7 @@ fn lastIndexOf(str: const(char)[], c: dchar) ptrdiff_t
 	return -1;
 }
 
-/**
+/*!
  * If the substring sub occurs in s, returns the index where it occurs.
  * Otherwise, it returns -1.
  */
@@ -181,7 +181,7 @@ fn indexOf(str: const(char)[], sub: const(char)[]) ptrdiff_t
 	return -1;
 }
 
-/**
+/*!
  * Returns the index in which s first occurs in ss, or -1.
  */
 fn indexOf(ss: const(char)[][], str: const(char)[]) ptrdiff_t
@@ -194,7 +194,7 @@ fn indexOf(ss: const(char)[][], str: const(char)[]) ptrdiff_t
 	return -1;
 }
 
-/**
+/*!
  * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
  */
 fn replace(str: const(char)[], from: const(char)[], to: const(char)[]) string
@@ -246,7 +246,7 @@ fn endsWith(str: const(char)[], ends: const(char)[][]...) int
 	return result;
 }
 
-/// Join an array of strings into one, separated by sep.
+//! Join an array of strings into one, separated by sep.
 fn join(ss: const(char)[][], sep: const(char)[] = "") string
 {
 	outs: StringSink;

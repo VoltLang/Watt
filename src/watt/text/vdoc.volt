@@ -1,7 +1,7 @@
 // Copyright © 2014-2017, Bernard Helyer.
 // Copyright © 2014-2017, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-/**
+/*!
  * Doccomment parsing and cleaning code.
  */
 module watt.text.vdoc;
@@ -57,7 +57,7 @@ fn rawToBrief(doc: string, sink: Sink) bool
 	return true;
 }
 
-/**
+/*!
  * Take a doc comment and remove comment cruft from it.
  */
 fn cleanComment(comment: string, out isBackwardsComment: bool) string
@@ -70,11 +70,11 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 	}
 
 	commentChar: char;
-	if (comment[0..2] == "**") {
+	if (comment[0..2] == "*!") {
 		commentChar = '*';
-	} else if (comment[0..2] == "++") {
+	} else if (comment[0..2] == "+!") {
 		commentChar = '+';
-	} else if (comment[0..2] == "//") {
+	} else if (comment[0..2] == "/!") {
 		commentChar = '/';
 	} else {
 		return comment;
@@ -83,6 +83,9 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 	ignoreWhitespace := true;
 	foreach (i, c: dchar; comment) {
 		if (i == comment.length - 1 && commentChar != '/' && c == '/') {
+			continue;
+		}
+		if (i == 1 && c == '!') {
 			continue;
 		}
 		if (i == 2 && c == '<') {
@@ -114,28 +117,28 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 	return sink.toString();
 }
 
-/// Interface for doc string consumers.
+//! Interface for doc string consumers.
 interface DocSink
 {
-	/// Signals the start of a brief comment section.
+	//! Signals the start of a brief comment section.
 	fn briefStart(sink: Sink);
-	/// The content of a brief comment section.
+	//! The content of a brief comment section.
 	fn briefContent(d: string, sink: Sink);
-	/// Signals the end of a brief comment section.
+	//! Signals the end of a brief comment section.
 	fn briefEnd(sink: Sink);
 
-	/// Signals the start of a param comment section.
+	//! Signals the start of a param comment section.
 	fn paramStart(direction: string, arg: string, sink: Sink);
-	/// The content of a param comment section.
+	//! The content of a param comment section.
 	fn paramContent(d: string, sink: Sink);
-	/// Signals the end of a param comment section.
+	//! Signals the end of a param comment section.
 	fn paramEnd(sink: Sink);
 
-	/// Signals the start of the full content.
+	//! Signals the start of the full content.
 	fn start(sink: Sink);
-	/// A text portion of the comment.
+	//! A text portion of the comment.
 	fn content(d: string, sink: Sink);
-	/// Signals the end of the full content.
+	//! Signals the end of the full content.
 	fn end(sink: Sink);
 
 	// p comment section.
@@ -144,7 +147,7 @@ interface DocSink
 	fn link(link: string, sink: Sink);
 }
 
-/// Given a doc string input, call dsink methods with the given sink as an argument.
+//! Given a doc string input, call dsink methods with the given sink as an argument.
 fn parse(src: string, dsink: DocSink, sink: Sink)
 {
 	dsink.start(sink);
@@ -154,7 +157,7 @@ fn parse(src: string, dsink: DocSink, sink: Sink)
 	dsink.end(sink);
 }
 
-/// Loop over src, calling contentDg as appropriate, and handleCommand for commands.
+//! Loop over src, calling contentDg as appropriate, and handleCommand for commands.
 private fn commandLoop(src: string, dsink: DocSink, sink: Sink, contentDg: dg(string, Sink), ref i: size_t)
 {
 	while (i < src.length) {
@@ -177,7 +180,7 @@ private fn commandLoop(src: string, dsink: DocSink, sink: Sink, contentDg: dg(st
 	}
 }
 
-/// Dispatch a command to its handler. Returns: true if handled.
+//! Dispatch a command to its handler. Returns: true if handled.
 private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sink, ref i: size_t) bool
 {
 	switch (command) {
@@ -193,7 +196,7 @@ private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sin
 	return true;
 }
 
-/// Parse an <at>p command.
+//! Parse an <at>p command.
 private fn handleCommandP(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
 {
 	eatWhitespace(src, ref i);
@@ -206,7 +209,7 @@ private fn handleCommandP(src: string, dsink: DocSink, sink: Sink, ref i: size_t
 	dsink.p(arg, sink);
 }
 
-/// Parse an <at>link command.
+//! Parse an <at>link command.
 private fn handleCommandLink(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
 {
 	eatWhitespace(src, ref i);
@@ -220,7 +223,7 @@ private fn handleCommandLink(src: string, dsink: DocSink, sink: Sink, ref i: siz
 	dsink.link(preCommand, sink);
 }
 
-/// Parse an <at>param command.
+//! Parse an <at>param command.
 private fn handleCommandParam(src: string, direction: string, dsink: DocSink, sink: Sink, ref i: size_t)
 {
 	eatWhitespace(src, ref i);
@@ -236,7 +239,7 @@ private fn handleCommandParam(src: string, direction: string, dsink: DocSink, si
 	dsink.paramEnd(sink);
 }
 
-/// Parse an <at>brief command.
+//! Parse an <at>brief command.
 private fn handleCommandBrief(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
 {
 	dsink.briefStart(sink);
@@ -250,7 +253,7 @@ private fn handleCommandBrief(src: string, dsink: DocSink, sink: Sink, ref i: si
 	dsink.briefEnd(sink);
 }
 
-/// Decode until we're at the end of the string, or an empty line.
+//! Decode until we're at the end of the string, or an empty line.
 private fn getParagraph(src: string, ref i: size_t) string
 {
 	lastChar: dchar;
@@ -270,21 +273,21 @@ private fn getParagraph(src: string, ref i: size_t) string
 	return paragraph;
 }
 
-/// Decode until we're at the end of the string, or a non word character.
+//! Decode until we're at the end of the string, or a non word character.
 private fn getWord(src: string, ref i: size_t) string
 {
 	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
 	return decodeUntil(src, ref i, cond);
 }
 
-/// Decode until we're at the end of the string, or a non isWhite character.
+//! Decode until we're at the end of the string, or a non isWhite character.
 private fn eatWhitespace(src: string, ref i: size_t)
 {
 	fn cond(c: dchar) bool { return !isWhite(c); }
 	decodeUntil(src, ref i, cond);
 }
 
-/// Decode until cond is true, or we're out of string.
+//! Decode until cond is true, or we're out of string.
 private fn decodeUntil(src: string, ref i: size_t, cond: dg(dchar) bool) string
 {
 	origin := i;

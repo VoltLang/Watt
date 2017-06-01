@@ -240,7 +240,7 @@ fn charToString(c: dchar) const(char)[]
 	return cast(const(char)[]) buf;
 }
 
-/// Returns an upper case hex string from the given unsigned long.
+//! Returns an upper case hex string from the given unsigned long.
 fn toStringHex(val: u64) const(char)[]
 {
 	ret: string;
@@ -251,7 +251,7 @@ fn toStringHex(val: u64) const(char)[]
 	return ret;
 }
 
-/// Given a u8, return a binary string.
+//! Given a u8, return a binary string.
 fn toStringBinary(val: u8) const(char)[]
 {
 	str := new char[](8);
@@ -262,7 +262,7 @@ fn toStringBinary(val: u8) const(char)[]
 	return cast(const(char)[])str;
 }
 
-/// Given a u16, return a binary string.
+//! Given a u16, return a binary string.
 fn toStringBinary(val: u16) const(char)[]
 {
 	str := new char[](16);
@@ -273,7 +273,7 @@ fn toStringBinary(val: u16) const(char)[]
 	return cast(const(char)[])str;
 }
 
-/// Given a u32, return a binary string.
+//! Given a u32, return a binary string.
 fn toStringBinary(val: u32) const(char)[]
 {
 	str := new char[](32);
@@ -284,7 +284,7 @@ fn toStringBinary(val: u32) const(char)[]
 	return cast(const(char)[])str;
 }
 
-/// Given a u64, return a binary string.
+//! Given a u64, return a binary string.
 fn toStringBinary(val: u64) const(char)[]
 {
 	str := new char[](64);
@@ -295,31 +295,31 @@ fn toStringBinary(val: u64) const(char)[]
 	return cast(const(char)[])str;
 }
 
-/// Given an i8, return a binary string.
+//! Given an i8, return a binary string.
 fn toStringBinary(val: i8) const(char)[]
 {
 	return toStringBinary(cast(u8)val);
 }
 
-/// Given an i16, return a binary string.
+//! Given an i16, return a binary string.
 fn toStringBinary(val: i16) const(char)[]
 {
 	return toStringBinary(cast(u16)val);
 }
 
-/// Given an i32, return a binary string.
+//! Given an i32, return a binary string.
 fn toStringBinary(val: i32) const(char)[]
 {
 	return toStringBinary(cast(u32)val);
 }
 
-/// Given an i64, return a binary string.
+//! Given an i64, return a binary string.
 fn toStringBinary(val: i64) const(char)[]
 {
 	return toStringBinary(cast(u64)val);
 }
 
-/**
+/*!
  * Given a Volt string s, return a pointer to a nul terminated string.
  */
 fn toStringz(s: const(char)[]) const(char)*
@@ -330,7 +330,7 @@ fn toStringz(s: const(char)[]) const(char)*
 	return cast(const(char)*) cstr.ptr;
 }
 
-/**
+/*!
  * Given a nul terminated string s, return a Volt string.
  */
 fn toString(s: scope const(char)*) string

@@ -39,7 +39,7 @@ fn decode(str: string, ref index: size_t) dchar
 	return vrt_decode_u8_d(str, ref index);
 }
 
-/// Return how many codepoints are in a given UTF-8 string.
+//! Return how many codepoints are in a given UTF-8 string.
 fn count(s: string) size_t
 {
 	i, length: size_t;
@@ -58,14 +58,14 @@ fn validate(s: string) void
 	}
 }
 
-/// Encode c into a given UTF-8 array.
+//! Encode c into a given UTF-8 array.
 fn encode(ref buf: char[], c: dchar) void
 {
 	tmp: char[6];
 	buf = buf ~ tmp[0 .. encodeNoGC(ref tmp, c)];
 }
 
-/// Encode a unicode array into utf8
+//! Encode a unicode array into utf8
 fn encode(arr: dchar[]) string
 {
 	buf: char[];
@@ -85,7 +85,7 @@ fn encode(arr: char[], ref index: size_t, c: dchar)
 	index += encodeNoGC(ref *ptr, c);
 }
 
-/// Encode c as UTF-8.
+//! Encode c as UTF-8.
 fn encode(c: dchar) string
 {
 	tmp: char[6];
@@ -98,8 +98,8 @@ fn encode(dgt: Sink, c: dchar) void
 	dgt(tmp[0 .. encodeNoGC(ref tmp, c)]);
 }
 
-/// Encode c as UTF-8.
-/// Needs to be called nogc due to overload bug.
+//! Encode c as UTF-8.
+//! Needs to be called nogc due to overload bug.
 alias encodeNoGC = vrt_encode_static_u8;
 
 version (Windows) {

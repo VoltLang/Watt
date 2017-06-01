@@ -9,13 +9,13 @@ import watt.text.ascii;
 import watt.text.format;
 import watt.text.string;
 
-/**
+/*!
  * Parses a string into a Semantic Version. (semver.org)
  */
 class Release
 {
 public:
-	/// <major>.<minor>.<patch>(-<prerelease>)(+<metadata>)
+	//! <major>.<minor>.<patch>(-<prerelease>)(+<metadata>)
 	major: i32;
 	minor: i32;
 	patch: i32;
@@ -23,7 +23,7 @@ public:
 	metadata: string;
 
 public:
-	/**
+	/*!
 	 * Parse a SemVer from a given string.
 	 * Throws: Exception on malformed input.
 	 */
@@ -35,7 +35,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * Returns true if the given string is a valid semver string.
 	 */
 	local fn isValid(verString: string) bool
@@ -80,7 +80,7 @@ public:
 	}
 
 private:
-	/// Upon failure, this contains a reason for the user.
+	//! Upon failure, this contains a reason for the user.
 	mFailureString: string;
 
 private:

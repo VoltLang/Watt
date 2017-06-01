@@ -10,7 +10,7 @@ import watt.text.ascii: isDigit, isHexDigit, HEX_DIGITS;
 import watt.conv: toLong, toUlong, toLower;
 
 
-/**
+/*!
  * Base Exception for the whole json module.
  */
 class JSONException : Exception
@@ -21,7 +21,7 @@ class JSONException : Exception
 	}
 }
 
-/**
+/*!
  * Exception thrown when an error occurs during parsing.
  */
 class ParseException : JSONException
@@ -32,7 +32,7 @@ class ParseException : JSONException
 	}
 }
 
-/**
+/*!
  * Returns true if data contains a non-digit, character.
  * If signed is false, '-' will make this function return false.
  */
@@ -46,7 +46,7 @@ fn canBeInteger(data: const(char)[], signed: bool) bool
 	return true;
 }
 
-/**
+/*!
  * Parse a ulong from a JSON number string.
  * Returns true if a double was parsed, false otherwise.
  */
@@ -59,7 +59,7 @@ fn parseUlong(data: const(char)[], out l: u64) bool
 	return true;
 }
 
-/**
+/*!
  * Parse a long from a JSON number string.
  * Returns true if a double was parsed, false otherwise.
  */
@@ -72,7 +72,7 @@ fn parseLong(data: const(char)[], out l: i64) bool
 	return true;
 }
 
-/**
+/*!
  * Parse a double from a JSON number string.
  *
  * Returns true if a double was parsed, false otherwise.
@@ -83,7 +83,7 @@ fn parseDouble(data: const(char)[], out d: f64) bool
 	return parseDouble(data, out d, ref buffer);
 }
 
-/**
+/*!
  * Parse a double from a JSON number string, using a pre allocated buffer,
  * resizing it if needed.
  *
@@ -110,7 +110,7 @@ fn parseBool(data: const(char)[]) bool
 	return toLower(data) == "true";
 }
 
-/**
+/*!
  * Unescape a JSON string and return it.
  */
 fn unescapeString(str: const(char)[]) const(char)[]
@@ -125,7 +125,7 @@ fn unescapeString(str: const(u8)[]) const(char)[]
 	return unescapeString(cast(const(char)[])str, ref buffer);
 }
 
-/**
+/*!
  * Unescape a JSON string and return it, using a pre allocated buffer and
  * resizing it if needed.
  */
@@ -226,7 +226,7 @@ private fn simpleCharToHex(c: char, buffer: char*)
     buffer[1] = HEX_DIGITS[c & 0x0F];
 }
 
-/**
+/*!
  * Escapes a JSON string and returns it.
  */
 fn escapeString(str: const(char)[]) const(char)[]
@@ -235,7 +235,7 @@ fn escapeString(str: const(char)[]) const(char)[]
 	return escapeString(str, ref buffer);
 }
 
-/**
+/*!
  * Escapes a JSON string and returns it, using a pre allocated buffer and
  * resizing it if needed.
  */

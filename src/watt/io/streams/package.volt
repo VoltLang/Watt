@@ -21,29 +21,29 @@ version (Posix) {
 	alias OutputFileStream = OutputStdcStream;
 }
 
-/**
+/*!
  * OutputStreams write data to some sink (a file, a console, etc)
  * in characters.
  */
 abstract class OutputStream
 {
 public:
-	/**
+	/*!
 	 * Close the stream.
 	 */
 	abstract fn close();
 
-	/**
+	/*!
 	 * Returns true if the stream is open.
 	 */
 	@property abstract fn isOpen() bool;
 
-	/**
+	/*!
 	 * Write a single character out to the sink.
 	 */
 	abstract fn put(c: dchar);
 
-	/**
+	/*!
 	 * Write a series of characters to the sink.
 	 */
 	fn write(s: scope const(char)[])
@@ -53,7 +53,7 @@ public:
 		}
 	}
 
-	/**
+	/*!
 	 * After this call has completed, the state of this stream's
 	 * sink should match the data committed to it.
 	 */
@@ -66,7 +66,7 @@ public:
 	 *
 	 */
 
-	/**
+	/*!
 	 * Write a series of characters then a newline.
 	 */
 	fn writeln(s: const(char)[])
@@ -108,28 +108,28 @@ public:
 	}
 }
 
-/**
+/*!
  * InputStreams read data from some source (a file, a device, etc)
  */
 abstract class InputStream
 {
 public:
-	/**
+	/*!
 	 * Close the input stream.
 	 */
 	abstract fn close();
 
-	/**
+	/*!
 	 * Returns true if the stream is open.
 	 */
 	@property abstract fn isOpen() bool;
 
-	/**
+	/*!
 	 * Read a single character from the source.
 	 */
 	abstract fn get() dchar;
 
-	/**
+	/*!
 	 * Read as much data as possible into buffer.
 	 * A slice to the input buffer is returned. The returned slice
 	 * will be shorter than buffer if EOF was encountered before the
@@ -137,7 +137,7 @@ public:
 	 */
 	abstract fn read(buffer: u8[]) u8[];
 
-	/**
+	/*!
 	 * Returns true if the stream indicates that there is no more data.
 	 * This may never be true, depending on the source.
 	 */
@@ -150,7 +150,7 @@ public:
 	 *
 	 */
 
-	/**
+	/*!
 	 * Read input until a newline character is encountered.
 	 *
 	 * The newline is discarded.

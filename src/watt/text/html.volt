@@ -8,7 +8,7 @@ import watt.text.sink: Sink, StringSink;
 import watt.text.string: indexOf;
 
 
-/**
+/*!
  * Returns the HTML escaped version of a given string.
  * According to the OWASP rules.
  */
@@ -19,7 +19,7 @@ fn htmlEscape(str: string) string
 	return dst.toString();
 }
 
-/**
+/*!
  * Writes the HTML escaped version of a given string to the given dgt.
  * According to the OWASP rules:
  */
@@ -59,7 +59,7 @@ fn htmlEscape(dgt: Sink, str: string)
 	}
 }
 
-/**
+/*!
  * Returns the HTML escaped version of a given string, ignoring any html tags.
  */
 fn htmlEscapeIgnoreTags(str: string) string
@@ -69,7 +69,7 @@ fn htmlEscapeIgnoreTags(str: string) string
 	return dst.toString();
 }
 
-/**
+/*!
  * Writes the HTML escaped version of a given string to
  * the given dgt, ignoring any tags.
  */
@@ -126,7 +126,7 @@ fn htmlEscapeIgnoreTags(dgt: Sink, str: string)
 	}
 }
 
-/**
+/*!
  * Escape every single character.
  */
 fn htmlEscapeAll(str: string) string
@@ -136,7 +136,7 @@ fn htmlEscapeAll(str: string) string
 	return dst.toString();
 }
 
-/**
+/*!
  * Escape every single character.
  */
 fn htmlEscapeAll(dgt: Sink, str: string)

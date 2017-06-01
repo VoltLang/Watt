@@ -155,7 +155,7 @@ private:
 		curl_multi_add_handle(mHttp.mMulti, mEasy);
 	}
 
-	/**
+	/*!
 	 * Data going from this process to the host.
 	 */
 	extern(C) global fn myRead(buffer: void*, size: size_t,
@@ -165,7 +165,7 @@ private:
 		return size * nitems;
 	}
 
-	/**
+	/*!
 	 * Data comming from the host to this process.
 	 */
 	extern(C) global fn myWrite(buffer: void*, size: size_t,

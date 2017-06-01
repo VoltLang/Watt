@@ -3,7 +3,7 @@ module watt.text.diff;
 import watt.io.std;
 import watt.text.string;
 
-/**
+/*!
  * Print the difference between two strings, line-by-line, to stdout.
  */
 fn diff(a: const(char)[], b: const(char)[]) void
@@ -33,7 +33,7 @@ fn printDiff(c :size_t[], w: size_t,
 	}
 }
 
-/**
+/*!
  * Generate a longest common substring (LCS) matrix.
  * c contains the values, w contains the width of the matrix.
  */

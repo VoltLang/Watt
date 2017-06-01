@@ -11,7 +11,7 @@ import watt.conv : toStringz;
 import watt.io.streams : OutputStream, InputStream;
 
 
-/**
+/*!
  * An OutputStream in which the sink is a file.
  */
 class OutputStdcStream : OutputStream
@@ -64,7 +64,7 @@ public:
 	}
 }
 
-/**
+/*!
  * An InputStream in which the source is a file.
  */
 class InputStdcStream : InputStream

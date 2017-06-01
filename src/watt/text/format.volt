@@ -11,7 +11,7 @@ import watt.text.ascii;
 import watt.text.utf;
 
 
-/**
+/*!
  * Formats various arguments into a string by interpreting formatString.
  *
  * Format specifiers are specified with the character '%'.
@@ -48,7 +48,7 @@ fn format(formatString: const(char)[], ...) string
 	return sink.toString();
 }
 
-/// Same as above.
+//! Same as above.
 fn format(sink: Sink, formatString: const(char)[], ...)
 {
 	vl: va_list;

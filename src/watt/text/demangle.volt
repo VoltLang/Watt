@@ -1,6 +1,6 @@
 // Copyright © 2016, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/volt/license.d (BOOST ver. 1.0).
-/**
+/*!
  * Functions for demangling Volt mangled symbols.
  */
 module watt.text.demangle;
@@ -12,7 +12,7 @@ import watt.text.ascii : isDigit;
 import watt.text.sink : StringSink;
 import watt.text.format : format;
 
-/**
+/*!
  * Demangle a given mangled name.
  * Throws: core.exception.Exception if 'mangledName' is not a valid Volt mangled name.
  * Returns: a string containing the demangled version of mangledName.
@@ -22,7 +22,7 @@ fn demangle(mangledName: const(char)[]) string
 	return demangleImpl(mangledName:mangledName, abridged:false);
 }
 
-/**
+/*!
  * Demangle a given mangled name, but omit redundant information.
  */
 fn demangleShort(mangledName: const(char)[]) string
@@ -74,7 +74,7 @@ fn demangleImpl(mangledName: const(char)[], abridged: bool) string
 
 private:
 
-/// If b is true, throw an Exception with msg.
+//! If b is true, throw an Exception with msg.
 fn failIf(b: bool, msg: string)
 {
 	if (b) {
@@ -82,7 +82,7 @@ fn failIf(b: bool, msg: string)
 	}
 }
 
-/// If the front of mangledName isn't str, throw an Exception.
+//! If the front of mangledName isn't str, throw an Exception.
 fn match(ref mangledName: const(char)[], str: string)
 {
 	failIf(mangledName.length < str.length, "input too short");
@@ -90,7 +90,7 @@ fn match(ref mangledName: const(char)[], str: string)
 	failIf(tag != str, format("expected '%s'", str));
 }
 
-/// Return the first n characters of mangledName.
+//! Return the first n characters of mangledName.
 fn getFirst(ref mangledName: const(char)[], n: size_t) const(char)[]
 {
 	failIf(mangledName.length < n, "input too short");
@@ -99,7 +99,7 @@ fn getFirst(ref mangledName: const(char)[], n: size_t) const(char)[]
 	return str;
 }
 
-/**
+/*!
  * Given a mangledName with a digit in front, return the whole number,
  * and remove it from mangledName.
  */
@@ -113,7 +113,7 @@ fn getNumber(ref mangledName: const(char)[]) i32
 	return toInt(digitSink.toString());
 }
 
-/**
+/*!
  * Format the name section (3the3bit4that2is4like4this) to sink,
  * and remove it from mangledName.
  */
@@ -146,7 +146,7 @@ fn demangleName(ref sink: StringSink, ref mangledName: const(char)[], abridged: 
 	}
 }
 
-/**
+/*!
  * Format a type from mangledName (e.g. i => i32), add it to the sink,
  * and remove it from mangledName.
  */
