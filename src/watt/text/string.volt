@@ -36,6 +36,34 @@ fn split(s: string, delimiter: dchar) string[]
 }
 
 /*!
+ * Split a string with a string delimiter.
+ */
+fn split(s: string, delimiter: const(char)[]) string[]
+{
+	strings: string[];
+	do {
+		i := s.indexOf(delimiter);
+		if (i < 0) {
+			break;
+		}
+		strings ~= s[0 .. cast(size_t)i];
+		nexti := cast(size_t)i+delimiter.length;
+		if (nexti >= s.length) {
+			break;
+		}
+		s = s[nexti .. $];
+	} while (s.length > 0);
+	if (s.length > 0) {
+		if (s == delimiter) {
+			strings ~= "";
+		} else {
+			strings ~= s;
+		}
+	}
+	return strings;
+}
+
+/*!
  * Split string s by \n, \r, and \r\n.
  */
 fn splitLines(s: string) string[]
