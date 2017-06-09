@@ -40,3 +40,5 @@ fn degrees(rads: f64) f64
 
 @mangledName("llvm.floor.f32") fn floor(f32) f32;
 @mangledName("llvm.floor.f64") fn floor(f64) f64;
+@mangledName("llvm.ceil.f32") fn ceil(f32) f32;
+@mangledName("llvm.ceil.f64") fn ceil(f64) f64;
