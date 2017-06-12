@@ -1551,7 +1551,14 @@ private fn parseLink(ref str: string, ref dst: Link, linkrefs: LinkRefs) bool {
 			dst.url = dst.url[1 .. $-1];
 		pstr = pstr[cidx+1 .. $];
 	} else if (dst.text.length > 0) {
-		refid = dst.text;
+		// [Some Title][Some Tag]
+		if (pstr.length > 2 && pstr[0] == '[') {
+			cidx = pstr.matchBracket();
+			if (cidx < 1) return false;
+			inner := pstr[1 .. cidx];
+			pstr = pstr[cidx+1 .. $];
+			refid = inner;
+		}
 	} else {
 		if (pstr.length < 2) return false;
 		if (pstr[0] == ' ') pstr = pstr[1 .. $];
