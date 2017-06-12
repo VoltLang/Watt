@@ -29,5 +29,7 @@ fn main() i32
 		"<blockquote><pre><code>this\n</code></pre></blockquote>\n");
 	assert(filterMarkdown(">     this\n    is code") ==
 		"<blockquote><pre><code>this\n</code></pre></blockquote>\n<pre><code>is code\n</code></pre>");
+	assert(filterMarkdown("[A B C][ABC]\n\n[ABC]: a_link.com") ==
+		"<p><a href=\"a_link.com\">A B C</a>\n</p>\n");
 	return 0;
 }
