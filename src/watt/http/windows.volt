@@ -131,7 +131,7 @@ private:
 
 		bResults = WinHttpSendRequest(
 			mReq, WINHTTP_NO_ADDITIONAL_HEADERS, 0,
-			WINHTTP_NO_REQUEST_DATA, 0, 0, cast(DWORD_PTR)this);
+			WINHTTP_NO_REQUEST_DATA, 0, 0, cast(DWORD_PTR)cast(void*)this);
 		if (!bResults) {
 			return raiseError();
 		}
