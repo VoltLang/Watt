@@ -1,5 +1,6 @@
 // Copyright © 2015-2016, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! A psuedo-random number generator.
 module watt.math.random;
 
 
@@ -54,6 +55,10 @@ public:
 	_y: u32;// = cast(u32) -1;
 
 public:
+	/*!
+	 * Seed this generator with the given 32 bit value.
+	 * See @p watt.io.seed for ways to get a good random seed.
+	 */
 	fn seed(value: u32 = 5489U/*defaultSeed*/)
 	{
 		mt[0] = value;
@@ -114,16 +119,23 @@ public:
 		return _y;
 	}
 
+	//! Return a copy of this generator in its current state.
 	@property fn save() MersenneTwisterEngine
 	{
 		return this;
 	}
 
+	//! Is this generator out of numbers? Always false.
 	@property fn empty() bool
 	{
 		return false;
 	}
 
+	/*!
+	 * Generate an integer.
+	 * @return A value >= to @p lower and < @p upper.
+	 * @{
+	 */
 	fn uniformU32(lower: u32, upper: u32) u32
 	{
 		base: u32 = front;
@@ -135,7 +147,9 @@ public:
 	{
 		return cast(i32)uniformU32(cast(u32)lower, cast(u32)upper);
 	}
+	//! @}
 
+	//! Generate a random string @p length long.
 	fn randomString(length: size_t) string
 	{
 		str := new char[](length);

@@ -1,6 +1,7 @@
 // Copyright © 2013, Jakob Bornecrantz.
 // Copyright © 2013, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for starting a process.
 module watt.process.spawn;
 
 version (Windows || Posix):
@@ -28,6 +29,9 @@ import watt.path: dirSeparator, pathSeparator;
 import watt.conv;
 
 
+/*!
+ * Serves as a handle to a spawned process.
+ */
 class Pid
 {
 public:
@@ -54,6 +58,7 @@ public:
 		this.osHandle = osHandle;
 	}
 
+	//! Wait for this process to finish, and get the return value.
 	fn wait() i32
 	{
 		version (Posix) {
@@ -79,6 +84,7 @@ class ProcessException : Exception
 	}
 }
 
+//! Search the CWD and PATH for the given command.
 fn getCommandFromName(name: string) string
 {
 	if (name is null) {
@@ -99,6 +105,10 @@ fn getCommandFromName(name: string) string
 	return cmd;
 }
 
+/*!
+ * Start a process from the executable @p name and with the given @p args.
+ * @{
+ */
 version (CRuntime_All)
 fn spawnProcess(name: string, args: string[]) Pid
 {
@@ -159,11 +169,13 @@ fn spawnProcess(name: string, args: string[],
 	pid := spawnProcessWindows(cmd, args, _stdin, _stdout, _stderr, env);
 	return new Pid(pid);
 }
+//! @}
 
 private {
 	extern(C) fn getenv(ident: scope const(char)*) char*;
 }
 
+//! Search a PATH string for a command. If one is not given, PATH will be retrieved and used.
 fn searchPath(cmd: string, path: string = null) string
 {
 	if (path is null) {
@@ -185,6 +197,7 @@ fn searchPath(cmd: string, path: string = null) string
 	return null;
 }
 
+//! Get an environmental variable, or null if it doesn't exist.
 fn getEnv(env: string) string
 {
 	ptr := getenv(toStringz(env));
@@ -195,6 +208,7 @@ fn getEnv(env: string) string
 	}
 }
 
+//! Run a command through the libc system function.
 fn system(name: string) i32
 {
 	return csystem(toStringz(name));

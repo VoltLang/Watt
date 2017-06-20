@@ -1,5 +1,6 @@
 // Copyright © 2016, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for parsing a command string.
 module watt.process.cmd;
 
 import watt.text.utf;

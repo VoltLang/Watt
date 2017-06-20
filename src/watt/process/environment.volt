@@ -1,5 +1,6 @@
 // Copyright © 2016, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for dealing with environmental variables.
 module watt.process.environment;
 
 version (Windows || Posix):
@@ -82,6 +83,9 @@ version(Windows) fn retrieveEnvironment() Environment
 	return env;
 }
 
+/*!
+ * Holds the values for an environment.
+ */
 class Environment
 {
 public:
@@ -89,11 +93,13 @@ public:
 
 
 public:
+	//! Is the given key set?
 	fn isSet(key: string) bool
 	{
 		return (toUpper(key) in store) !is null;
 	}
 
+	//! Get the given key, or return null.
 	fn getOrNull(key: string) string
 	{
 		r := toUpper(key) in store;
@@ -103,11 +109,13 @@ public:
 		return null;
 	}
 
+	//! Set a key in this environment. Does not affect the OS environment.
 	fn set(key: string, value: string) void
 	{
 		store[toUpper(key)] = value;
 	}
 
+	//! Remove a key from the environment.
 	fn remove(key: string) void
 	{
 		store.remove(toUpper(key));

@@ -1,13 +1,14 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Parse a JSON file into memory.
 module watt.text.json.dom;
 
 import watt.text.format;
 import watt.text.json.util;
 import watt.text.json.sax;
 
-
+//! Thrown upon a parsing error.
 class DOMException : JSONException
 {
 	this(msg: string, location: string = __LOCATION__)
@@ -216,6 +217,9 @@ struct Value
 		return *p;
 	}
 
+	/*!
+	 * Determines if this is an object with the given key.
+	 */
 	fn hasObjectKey(s: string) bool
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
@@ -239,12 +243,18 @@ struct Value
 		_type = DomType.OBJECT;
 	}
 
+	/*!
+	 * If this is an object, retrieves the keys it has.
+	 */
 	fn keys() string[]
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
 		return object.keys;
 	}
 
+	/*!
+	 * If this is an object, retrieves the values it has.
+	 */
 	fn values() Value[]
 	{
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
@@ -254,6 +264,7 @@ struct Value
 
 private enum LONG_MAX = 9223372036854775807UL;
 
+//! Parse a JSON string.
 fn parse(s: string) Value
 {
 	val: Value;

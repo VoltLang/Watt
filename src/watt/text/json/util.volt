@@ -1,6 +1,7 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Useful functions when dealing with JSON.
 module watt.text.json.util;
 
 import core.exception;
@@ -105,6 +106,9 @@ fn parseDouble(data: const(char)[], out d: f64, ref buffer: char[]) bool
 	return true;
 }
 
+/*!
+ * Return the boolean value of a string.
+ */
 fn parseBool(data: const(char)[]) bool
 {
 	return toLower(data) == "true";
@@ -112,6 +116,7 @@ fn parseBool(data: const(char)[]) bool
 
 /*!
  * Unescape a JSON string and return it.
+ * @{
  */
 fn unescapeString(str: const(char)[]) const(char)[]
 {
@@ -124,6 +129,7 @@ fn unescapeString(str: const(u8)[]) const(char)[]
 	buffer: char[];
 	return unescapeString(cast(const(char)[])str, ref buffer);
 }
+//! @}
 
 /*!
  * Unescape a JSON string and return it, using a pre allocated buffer and

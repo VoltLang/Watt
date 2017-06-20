@@ -1,5 +1,6 @@
 // Copyright © 2016, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for dealing with pipes.
 module watt.process.pipe;
 
 version (Windows || Posix):
