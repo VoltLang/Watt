@@ -1,5 +1,6 @@
 // Copyright © 2013-2015, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Define an IO stream interface.
 module watt.io.streams;
 
 import core.typeinfo;
@@ -82,6 +83,10 @@ public:
 	}
 
 
+	/*!
+	 * Write a formatted string.
+	 * See @p watt.text.format for format string details.
+	 */
 	fn writef(formatString: const(char)[], ...)
 	{
 		vl: va_list;
@@ -97,6 +102,10 @@ public:
 		put('\n');
 	}
 
+	/*!
+	 * Write a formatted string and then a newline.
+	 * See @p watt.text.format for format string details.
+	 */
 	fn writefln(formatString: const(char)[], ...)
 	{
 		vl: va_list;
