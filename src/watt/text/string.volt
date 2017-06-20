@@ -10,6 +10,11 @@ import watt.text.format : format;
 import watt.text.sink : StringSink;
 
 
+//! Helper alias for string args that are scoped.
+alias StrArg = scope const(char)[];
+//! Helper alias for string array args that are scoped.
+alias StrArrayArg = scope const(char)[][];
+
 /*!
  * Split string s by a given delimiter.
  * Examples:
@@ -38,7 +43,7 @@ fn split(s: string, delimiter: dchar) string[]
 /*!
  * Split a string with a string delimiter.
  */
-fn split(s: string, delimiter: const(char)[]) string[]
+fn split(s: string, delimiter: StrArg) string[]
 {
 	strings: string[];
 	do {
@@ -95,7 +100,7 @@ fn splitLines(s: string) string[]
  *   strip("  apple  ") -> "apple"
  *   strip("  apple  pie  ") -> "apple pie"
  */
-fn strip(str: const(char)[]) string
+fn strip(str: StrArg) string
 {
 	start: size_t;
 	stop := str.length;
@@ -115,7 +120,7 @@ fn strip(str: const(char)[]) string
 /*!
  * Remove leading whitespace, as defined by watt.ascii.isWhite.
  */
-fn stripLeft(str: const(char)[]) string
+fn stripLeft(str: string) string
 {
 	foreach (i, dchar c; str) {
 		if (!isWhite(c)) {
@@ -139,7 +144,7 @@ fn stripRight(str: string) string
 }
 
 //! Returns how many times c occurs in s.
-fn count(str: string, c: dchar) size_t
+fn count(str: StrArg, c: dchar) size_t
 {
 	n, i: size_t;
 	while (i < str.length) {
@@ -154,7 +159,7 @@ fn count(str: string, c: dchar) size_t
  * Returns the index of the first place c occurs in str,
  * or -1 if it doesn't occur.
  */
-fn indexOf(str: const(char)[], c: dchar) ptrdiff_t
+fn indexOf(str: StrArg, c: dchar) ptrdiff_t
 {
 	i, oldi: size_t;
 	while (i < str.length) {
@@ -173,7 +178,7 @@ fn indexOf(str: const(char)[], c: dchar) ptrdiff_t
  * Returns the index of the last place c occurs in str,
  * or -1 otherwise.
  */
-fn lastIndexOf(str: const(char)[], c: dchar) ptrdiff_t
+fn lastIndexOf(str: StrArg, c: dchar) ptrdiff_t
 {
 	foreach_reverse (i, dchar e; str) {
 		if (e == c) {
@@ -187,7 +192,7 @@ fn lastIndexOf(str: const(char)[], c: dchar) ptrdiff_t
  * If the substring sub occurs in s, returns the index where it occurs.
  * Otherwise, it returns -1.
  */
-fn indexOf(str: const(char)[], sub: const(char)[]) ptrdiff_t
+fn indexOf(str: StrArg, sub: StrArg) ptrdiff_t
 {
 	if (sub.length == 0) {
 		return -1;
@@ -212,7 +217,7 @@ fn indexOf(str: const(char)[], sub: const(char)[]) ptrdiff_t
 /*!
  * Returns the index in which s first occurs in ss, or -1.
  */
-fn indexOf(ss: const(char)[][], str: const(char)[]) ptrdiff_t
+fn indexOf(ss: StrArrayArg, str: StrArg) ptrdiff_t
 {
 	foreach (i, e; ss) {
 		if (e == str) {
@@ -225,7 +230,7 @@ fn indexOf(ss: const(char)[][], str: const(char)[]) ptrdiff_t
 /*!
  * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
  */
-fn replace(str: const(char)[], from: const(char)[], to: const(char)[]) string
+fn replace(str: StrArg, from: StrArg, to: StrArg) string
 {
 	sink: StringSink;
 	result: string;
@@ -246,7 +251,7 @@ fn replace(str: const(char)[], from: const(char)[], to: const(char)[]) string
 }
 
 //! Returns non-zero if @p str starts with one of the strings given by @p beginnings.
-fn startsWith(str: const(char)[], beginnings: const(char)[][]...) int
+fn startsWith(str: StrArg, beginnings: StrArrayArg...) int
 {
 	result: int;
 	foreach (beginning; beginnings) {
@@ -261,7 +266,7 @@ fn startsWith(str: const(char)[], beginnings: const(char)[][]...) int
 }
 
 //! Returns non-zero if @p str ends with one of the strings given by @p ends.
-fn endsWith(str: const(char)[], ends: const(char)[][]...) int
+fn endsWith(str: StrArg, ends: StrArrayArg...) int
 {
 	result: int;
 	foreach (end; ends) {
@@ -276,7 +281,7 @@ fn endsWith(str: const(char)[], ends: const(char)[][]...) int
 }
 
 //! Join an array of strings into one, separated by sep.
-fn join(ss: const(char)[][], sep: const(char)[] = "") string
+fn join(ss: StrArrayArg, sep: StrArg = "") string
 {
 	outs: StringSink;
 	foreach (i, e; ss) {
