@@ -1,6 +1,9 @@
 // Copyright © 2013-2017, Bernard Helyer.  All rights reserved.
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+/*!
+ * Streams that interact with *nix FDs.
+ */
 module watt.io.streams.fd;
 
 version (Posix):
@@ -30,10 +33,12 @@ private:
 
 
 public:
+	//! The file descriptor this stream wraps.
 	fd: i32;
 
 
 public:
+	//! Construct a new @p OutputFDStream from a filename.
 	this(filename: const(char)[])
 	{
 		if (filename.length <= 0) {
@@ -45,6 +50,7 @@ public:
 		fd = .open(ptr, O_CREAT | O_TRUNC | O_WRONLY, 0x1B4 /* 664 */);
 	}
 
+	//! Close the underlying file descriptor.
 	override fn close()
 	{
 		if (fd >= 0) {
@@ -53,11 +59,13 @@ public:
 		}
 	}
 
+	//! Is this a valid stream?
 	@property override fn isOpen() bool
 	{
 		return fd >= 0;
 	}
 
+	//! Output @p c to the stream.
 	override fn put(c: dchar)
 	{
 		// We can always put the char in the buffer.
@@ -68,6 +76,7 @@ public:
 		}
 	}
 
+	//! Write @p s to the stream.
 	override fn write(s: scope const(char)[])
 	{
 		ptr := cast(u8*)s.ptr;
@@ -81,6 +90,7 @@ public:
 		}
 	}
 
+	//! Ensure that all buffered output is written.
 	override fn flush()
 	{
 		if (mCur <= 0) {
@@ -104,10 +114,12 @@ private:
 
 
 public:
+	//! The underlying file descriptor.
 	fd: i32;
 
 
 public:
+	//! Construct a new @p InputFDStream from a filename.
 	this(filename: const(char)[])
 	{
 		if (filename.length <= 0) {
@@ -119,6 +131,7 @@ public:
 		fd = .open(ptr, O_CREAT | O_RDONLY, 0x1B4 /* 664 */);
 	}
 
+	//! Close the underlying file descriptor.
 	override fn close()
 	{
 		if (fd >= 0) {
@@ -127,11 +140,13 @@ public:
 		}
 	}
 
+	//! Is this wrapping a valid file descriptor?
 	@property override fn isOpen() bool
 	{
 		return fd >= 0;
 	}
 
+	//! Read the first character from the file descriptor.
 	override fn get() dchar
 	{
 		if (mStart >= mCur) {
@@ -144,6 +159,10 @@ public:
 		}
 	}
 
+	/*!
+	 * Read from the stream into @p buffer.
+	 * @return A slice of the buffer actually used.
+	 */
 	override fn read(buffer: u8[]) u8[]
 	{
 		used: size_t;
@@ -171,6 +190,7 @@ public:
 		return buffer[0 .. used];
 	}
 
+	//! Has this descriptor reached EOF?
 	override fn eof() bool
 	{
 		if (mStart < mCur) {
