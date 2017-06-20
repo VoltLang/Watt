@@ -1,5 +1,8 @@
 // Copyright © 2013-2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+/*!
+ * Simple filesystem operation functions.
+ */
 module watt.io.file;
 
 import core.exception;
@@ -16,6 +19,9 @@ version (Windows) {
 }
 
 
+/*!
+ * Exception thrown upon failure of file functions.
+ */
 class FileException : Exception
 {
 	this(msg: string)
@@ -25,7 +31,15 @@ class FileException : Exception
 }
 
 /*!
- * Read the contents of the file pointed to by filename into a string with no verification.
+ * Read a file into an array.
+ * Read the contents of the file pointed to by @p filename into a @p void[] array.
+ * The intepretation is left up to the caller.
+ * (That is to say, you have to cast it to a @p u8[] or @p string, as your use case
+ * demands). The entire file is read at once, so be wary of using this function for
+ * very large files.
+ * @param filename The filename to read.
+ * @return The entire contents of the file.
+ * @throw FileException The file cannot be read.
  */
 fn read(filename: string) void[]
 {
@@ -35,28 +49,28 @@ fn read(filename: string) void[]
 	cstr := toStringz(filename);
 	fp := fopen(cstr, "rb");
 	if (fp is null) {
-		throw new Exception(format("Couldn't open file '%s' for reading.", filename));
+		throw new FileException(format("Couldn't open file '%s' for reading.", filename));
 	}
 
 	if (fseek(fp, 0, SEEK_END) != 0) {
 		fclose(fp);
-		throw new Exception("fseek failure.");
+		throw new FileException("fseek failure.");
 	}
 
 	size: size_t = cast(size_t) ftell(fp);
 	if (size == cast(size_t) -1) {
-		throw new Exception("ftell failure.");
+		throw new FileException("ftell failure.");
 	}
 
 	if (fseek(fp, 0, SEEK_SET) != 0) {
 		fclose(fp);
-		throw new Exception("fseek failure.");
+		throw new FileException("fseek failure.");
 	}
 
 	buf := new char[](size);
 	bytesRead: size_t = fread(cast(void*)buf.ptr, 1, size, fp);
 	if (bytesRead != size) {
-		throw new Exception("read failure.");
+		throw new FileException("read failure.");
 	}
 
 	fclose(fp);
@@ -65,8 +79,7 @@ fn read(filename: string) void[]
 }
 
 /*!
- * Returns true if path matches pattern.
- *
+ * Check if @p path matches @p pattern.
  * Supports '*' and '?' wild cards. '*' matches zero or more characters, and '?' matches a single character.
  */
 fn globMatch(path: string, pattern: string) bool
@@ -114,12 +127,21 @@ fn globMatch(path: string, pattern: string) bool
 	return pathIndex == path.length;
 }
 
-version (Posix) fn searchDir(dirName: string, glob: string, dgt: scope dg (string))
+/*!
+ * Call @p dgt for every file in @p dirName that matches @p glob.
+ * @throw FileException If @p dirName could not be opened.
+ */
+fn searchDir(dirName: string, glob: string, dgt: scope dg(string))
+{
+	searchDirImpl(dirName, glob, dgt);
+}
+
+private version (Posix) fn searchDirImpl(dirName: string, glob: string, dgt: scope dg (string))
 {
 	dp: dirent*;
 	dirp := opendir(toStringz(dirName));
 	if (dirp is null) {
-		throw new Exception(format("Couldn't open directory '%s'.", dirName));
+		throw new FileException(format("Couldn't open directory '%s'.", dirName));
 	}
 
 	do {
@@ -135,7 +157,7 @@ version (Posix) fn searchDir(dirName: string, glob: string, dgt: scope dg (strin
 	closedir(dirp);
 }
 
-version (Windows) fn searchDir(dirName: string, glob: string, dgt: scope dg (string))
+private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: scope dg (string))
 {
 	findData: WIN32_FIND_DATA;
 	handle := FindFirstFileA(toStringz(format("%s/*", dirName)), &findData);  // Use our own globbing function.
@@ -144,7 +166,7 @@ version (Windows) fn searchDir(dirName: string, glob: string, dgt: scope dg (str
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
 			return;
 		}
-		throw new Exception(format("FindFirstFile failure: %s", GetLastError()));
+		throw new FileException(format("FindFirstFile failure: %s", GetLastError()));
 	}
 
 	do {
@@ -158,14 +180,14 @@ version (Windows) fn searchDir(dirName: string, glob: string, dgt: scope dg (str
 			if (error == ERROR_NO_MORE_FILES) {
 				break;
 			} else {
-				throw new Exception(format("FindNextFile failure: %s", error));
+				throw new FileException(format("FindNextFile failure: %s", error));
 			}
 		}
 	} while (true);
 }
 
 /*!
- * Returns true if a path exists and is not a directory.
+ * Determine if @p path is exists and is not a directory.
  */
 fn isFile(path: scope const(char)[]) bool
 {
@@ -173,7 +195,7 @@ fn isFile(path: scope const(char)[]) bool
 }
 
 /*!
- * Returns true if a given directory exists.
+ * Determine if @p path exists and is a directory.
  */
 fn isDir(path: scope const(char)[]) bool
 {
@@ -198,7 +220,7 @@ fn isDir(path: scope const(char)[]) bool
 }
 
 /*!
- * Returns true if a given file exists.
+ * Determine if @p filename exists.
  */
 fn exists(filename: const(char)[]) bool
 {
@@ -211,7 +233,8 @@ fn exists(filename: const(char)[]) bool
 }
 
 /*!
- * Deletes a file.
+ * Delete the file given by @p filename.
+ * @throw FileException if the file could not be deleted.
  */
 fn remove(filename: const(char)[])
 {
