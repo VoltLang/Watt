@@ -1,5 +1,6 @@
 // Copyright © 2011-2013, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Load functions from shared objects.
 module watt.library;
 
 import watt.conv : toStringz;
@@ -45,6 +46,7 @@ private:
 	}
 
 public:
+	//! Given a list of shared objects, return the first one that loads, or null.
 	global fn loads(files: string[]) Library
 	{
 		for (i: size_t; i < files.length; i++) {
@@ -64,6 +66,7 @@ public:
 
 	version (Windows) {
 
+		//! Create a Library from a path to a DLL.
 		global fn load(filename: string) Library
 		{
 			ptr: void* = LoadLibraryA(toStringz(filename));
@@ -75,11 +78,13 @@ public:
 			return new Library(ptr);
 		}
 
+		//! Return a pointer to the requested symbol name.
 		final fn symbol(symbol: string) void*
 		{
 			return GetProcAddress(ptr, toStringz(symbol));
 		}
 
+		//! Release the library.
 		final fn free()
 		{
 			if (ptr !is null) {
@@ -90,6 +95,7 @@ public:
 
 	} else version (Posix) {
 
+		//! Create a Library from a path to a shared object.
 		global fn load(filename: string) Library
 		{
 			p := dlopen(toStringz(filename), RTLD_NOW | RTLD_GLOBAL);
@@ -101,11 +107,13 @@ public:
 			return new Library(p);
 		}
 
+		//! Return a pointer to the requested symbol name.
 		final fn symbol(symbol: string) void*
 		{
 			return dlsym(ptr, toStringz(symbol));
 		}
 
+		//! Close the library.
 		final fn free()
 		{
 			if (ptr !is null) {

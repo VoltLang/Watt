@@ -1,5 +1,6 @@
 // Copyright © 2013-2014, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for converting one thing into another.
 module watt.conv;
 
 import core.exception;
@@ -13,6 +14,7 @@ import watt.text.utf: encode;
 import watt.text.sink: StringSink;
 
 
+//! Thrown if a conversion couldn't be performed.
 class ConvException : Exception
 {
 	this(msg: string)
@@ -21,6 +23,7 @@ class ConvException : Exception
 	}
 }
 
+//! Return @p s as lowercase, where possible.
 fn toLower(s: string) string
 {
 	dst: StringSink;
@@ -37,6 +40,7 @@ fn toLower(s: string) string
 	return dst.toString();
 }
 
+//! Return @p s as uppercase, where possible.
 fn toUpper(s: string) string
 {
 	ns := new char[](s.length);
@@ -46,6 +50,7 @@ fn toUpper(s: string) string
 	return cast(string) ns;
 }
 
+//! Return a string as u64.
 fn toUlong(s: const(char)[], base: i32 = 10) u64
 {
 	if (base > 10 || base <= 0) {
@@ -78,6 +83,7 @@ fn toUlong(s: const(char)[], base: i32 = 10) u64
 	return integer;
 }
 
+//! Return a string as an i64.
 fn toLong(s: const(char)[], base: i32 = 10) i64
 {
 	multiply: i64 = 1;
@@ -89,30 +95,35 @@ fn toLong(s: const(char)[], base: i32 = 10) i64
 	return v * multiply;
 }
 
+//! Return a string as an i32.
 fn toInt(s: const(char)[], base: i32 = 10) i32
 {
 	v := toLong(s, base);
 	return cast(i32)v;
 }
 
+//! Return a string as a u32.
 fn toUint(s: const(char)[], base: i32 = 10) u32
 {
 	v := toUlong(s, base);
 	return cast(u32)v;
 }
 
+//! Return a string as an f32.
 fn toFloat(s: string) f32
 {
 	cstr: const(char)* = toStringz(s);
 	return strtof(cstr, null);
 }
 
+//! Return a string as an f64.
 fn toDouble(s: string) f64
 {
 	cstr: const(char)* = toStringz(s);
 	return strtod(cstr, null);
 }
 
+//! Return a u8 as a string.
 fn toString(val: u8) const(char)[]
 {
 	ret: string;
@@ -123,6 +134,7 @@ fn toString(val: u8) const(char)[]
 	return ret;
 }
 
+//! Return an i8 as a string.
 fn toString(val: i8) const(char)[]
 {
 	ret: string;
@@ -133,6 +145,7 @@ fn toString(val: i8) const(char)[]
 	return ret;
 }
 
+//! Return a u16 as a string.
 fn toString(val: u16) const(char)[]
 {
 	ret: string;
@@ -143,6 +156,7 @@ fn toString(val: u16) const(char)[]
 	return ret;
 }
 
+//! Return an i16 as a string.
 fn toString(val: i16) const(char)[]
 {
 	ret: string;
@@ -153,6 +167,7 @@ fn toString(val: i16) const(char)[]
 	return ret;
 }
 
+//! Return a u32 as a string.
 fn toString(val: u32) const(char)[]
 {
 	ret: string;
@@ -163,6 +178,7 @@ fn toString(val: u32) const(char)[]
 	return ret;
 }
 
+//! Return an i32 as a string.
 fn toString(val: i32) const(char)[]
 {
 	ret: string;
@@ -173,6 +189,7 @@ fn toString(val: i32) const(char)[]
 	return ret;
 }
 
+//! Return a u64 as a string.
 fn toString(val: u64) const(char)[]
 {
 	ret: string;
@@ -183,6 +200,7 @@ fn toString(val: u64) const(char)[]
 	return ret;
 }
 
+//! Return an i64 as a string.
 fn toString(val: i64) const(char)[]
 {
 	ret: string;
@@ -193,6 +211,7 @@ fn toString(val: i64) const(char)[]
 	return ret;
 }
 
+//! Return an f32 as a string.
 fn toString(f: f32) const(char)[]
 {
 	ret: string;
@@ -206,6 +225,7 @@ fn toString(f: f32) const(char)[]
 	return ret;
 }
 
+//! Return an f64 as a string.
 fn toString(f: f64) const(char)[]
 {
 	ret: string;
@@ -219,17 +239,20 @@ fn toString(f: f64) const(char)[]
 	return ret;
 }
 
+//! Return a pointer as a string.
 fn toString(p: void*) const(char)[]
 {
 	u := cast(size_t) p;
 	return format("%s", toStringHex(u));
 }
 
+//! Return a boolean as "true" or "false".
 fn toString(b: bool) const(char)[]
 {
 	return b ? "true": "false";
 }
 
+//! Return a dchar as a string.
 fn charToString(c: dchar) const(char)[]
 {
 	if ((cast(u32) c) >= 255) {
@@ -348,6 +371,7 @@ fn toString(s: scope const(char)*) string
 	return cast(string) str;
 }
 
+//! Return a nul terminated C string as a Volt string.
 fn toString(s: const(char)*) string
 {
 	if (s is null) {

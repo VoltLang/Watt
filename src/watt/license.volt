@@ -1,4 +1,5 @@
 // See copyright just below.
+//! Ensures the license is embedded in binaries.
 module watt.license;
 
 /*!

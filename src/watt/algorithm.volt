@@ -1,3 +1,4 @@
+//! Generally applicable algorithms.
 module watt.algorithm;
 
 
@@ -16,6 +17,7 @@ fn runSort(numElements: size_t, cmp: CmpDg, swap: SwapDg)
 	qsort(0, numElements-1, cmp, swap);
 }
 
+//! Sort an array of integers in place.
 fn sort(ints: i32[])
 {
 	fn cmp(ia: size_t, ib: size_t) bool
@@ -40,51 +42,61 @@ fn sort(ints: i32[])
  *
  */
 
+//! Return the maximum of two values.
 fn max(a: i32, b: i32) i32
 {
 	return a > b ? a: b;
 }
 
+//! Return the minimum of two values.
 fn min(a: i32, b: i32) i32
 {
 	return a < b ? a: b;
 }
 
+//! Return the maximum of two values.
 fn max(a: i64, b: i64) i64
 {
 	return a > b ? a: b;
 }
 
+//! Return the minimum of two values.
 fn min(a: i64, b: i64) i64
 {
 	return a < b ? a: b;
 }
 
+//! Return the maximum of two values.
 fn max(a: u32, b: u32) u32
 {
 	return a > b ? a: b;
 }
 
+//! Return the minimum of two values.
 fn min(a: u32, b: u32) u32
 {
 	return a < b ? a: b;
 }
 
+//! Return the maximum of two values.
 fn max(a: u64, b: u64) u64
 {
 	return a > b ? a: b;
 }
 
+//! Return the minimum of two values.
 fn min(a: u64, b: u64) u64
 {
 	return a < b ? a: b;
 }
 
+//! Return the maximum of two values.
 fn max(a: f64, b: f64) f64
 {
 	return a > b ? a: b;
 }
 
+//! Return the minimum of two values.
 fn min(a: f64, b: f64) f64
 {
 	return a < b ? a: b;

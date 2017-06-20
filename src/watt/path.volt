@@ -1,6 +1,7 @@
 // Copyright © 2013-2016, Bernard Helyer.  All rights reserved.
 // Copyright © 2015-2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Simple functions for dealing with paths.
 module watt.path;
 
 version (Windows || Posix):
@@ -87,7 +88,9 @@ fn mkdirP(dir: const(char)[])
 	mkdir(dir);
 }
 
-
+/*!
+ * If c is a path separator character for this platform, return true.
+ */
 fn isSlash(c: char) bool
 {
 	version (Windows) {
@@ -97,6 +100,9 @@ fn isSlash(c: char) bool
 	}
 }
 
+/*!
+ * Returns how many path separators are in the given string.
+ */
 fn countSlashes(s: const(char)[]) size_t
 {
 	count: size_t;
@@ -109,6 +115,9 @@ fn countSlashes(s: const(char)[]) size_t
 	return count;
 }
 
+/*!
+ * Remove any trailing path separators from @p s.
+ */
 fn removeTrailingSlashes(ref s: string)
 {
 	while (s.length > 0 && isSlash(s[$-1])) {
@@ -206,6 +215,9 @@ fn baseName(path: const(char)[], suffix: const(char)[] = "") string
 	return path;
 }
 
+/*!
+ * Return the file extension of a path, or an empty string.
+ */
 fn extension(path: const(char)[]) string
 {
 	i := lastIndexOf(path, '.');
@@ -216,6 +228,9 @@ fn extension(path: const(char)[]) string
 	return new string(path[i .. $]);
 }
 
+/*!
+ * Get a temporary filename in the temp directory.
+ */
 fn temporaryFilename(extension: string = "", subdir: string = "") string
 {
 	rng: RandomGenerator;
@@ -240,6 +255,9 @@ fn temporaryFilename(extension: string = "", subdir: string = "") string
 	return filename;
 }
 
+/*!
+ * Given a path, return an absolute path.
+ */
 fn fullPath(file: string) string
 {
 	version (Posix) {
