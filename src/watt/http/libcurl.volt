@@ -1,5 +1,6 @@
 // Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
+//! A simple binding for libcurl.
 module watt.http.libcurl;
 
 version (!Windows):
