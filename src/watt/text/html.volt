@@ -1,6 +1,7 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for dealing with HTML.
 module watt.text.html;
 
 import watt.conv: toString, toUint;

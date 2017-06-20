@@ -1,6 +1,6 @@
 // Copyright © 2014-2015, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-// String utilities.
+//! String utilities.
 module watt.text.string;
 
 import core.exception;
@@ -245,7 +245,7 @@ fn replace(str: const(char)[], from: const(char)[], to: const(char)[]) string
 	return sink.toString();
 }
 
-
+//! Returns non-zero if @p str starts with one of the strings given by @p beginnings.
 fn startsWith(str: const(char)[], beginnings: const(char)[][]...) int
 {
 	result: int;
@@ -260,6 +260,7 @@ fn startsWith(str: const(char)[], beginnings: const(char)[][]...) int
 	return result;
 }
 
+//! Returns non-zero if @p str ends with one of the strings given by @p ends.
 fn endsWith(str: const(char)[], ends: const(char)[][]...) int
 {
 	result: int;

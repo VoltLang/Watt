@@ -1,5 +1,6 @@
 // Copyright © 2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
+//! Parse semantic version strings.
 module watt.text.semver;
 
 import core.exception;

@@ -1,5 +1,6 @@
 // Copyright © 2013, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
+//! Functions for dealing with unicode.
 module watt.text.utf;
 
 import core.rt.misc;
@@ -50,6 +51,7 @@ fn count(s: string) size_t
 	return length;
 }
 
+//! Throws a MalformedUTF8Exception if @p s is not valid UTF-8.
 fn validate(s: string) void
 {
 	i: size_t;
@@ -75,6 +77,7 @@ fn encode(arr: dchar[]) string
 	return cast(string)buf;
 }
 
+//! Encode @p c as UTF-8 and add it to @p arr, starting at @p index.
 fn encode(arr: char[], ref index: size_t, c: dchar)
 {
 	if (arr.length < index + 6) {
@@ -92,6 +95,7 @@ fn encode(c: dchar) string
 	return new string(tmp[0 .. encodeNoGC(ref tmp, c)]);
 }
 
+//! Add @p c to a sink.
 fn encode(dgt: Sink, c: dchar) void
 {
 	tmp: char[6];

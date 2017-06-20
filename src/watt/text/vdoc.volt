@@ -12,7 +12,7 @@ import watt.text.sink;
 import watt.text.utf;
 import watt.text.ascii;
 
-
+//! Return @p doc as a fully cleaned comment.
 fn rawToFull(doc: string) string
 {
 	s: StringSink;
@@ -23,6 +23,7 @@ fn rawToFull(doc: string) string
 	return null;
 }
 
+//! Return the brief of @p doc, cleaned.
 fn rawToBrief(doc: string) string
 {
 	s: StringSink;
@@ -33,6 +34,7 @@ fn rawToBrief(doc: string) string
 	return null;
 }
 
+//! Clean @p doc, and call @p sink on the result.
 fn rawToFull(doc: string, sink: Sink) bool
 {
 	dummy: bool;
@@ -40,6 +42,7 @@ fn rawToFull(doc: string, sink: Sink) bool
 	return true;
 }
 
+//! Clean the brief of @p doc, and call @p sink on the result.
 fn rawToBrief(doc: string, sink: Sink) bool
 {
 	tmp := rawToFull(doc);

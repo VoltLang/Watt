@@ -24,6 +24,7 @@
 		DEALINGS IN THE SOFTWARE.
 	Authors: Sönke Ludwig
 */
+//! Parse markdown into HTML.
 module watt.text.markdown;
 
 import watt.io;  // TODO: Remove

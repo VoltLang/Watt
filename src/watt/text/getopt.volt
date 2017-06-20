@@ -1,6 +1,6 @@
 // Copyright © 2014-2015, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-// Command line options parser.
+//! Command line options parser.
 module watt.text.getopt;
 
 import core.exception;

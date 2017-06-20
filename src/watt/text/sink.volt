@@ -1,5 +1,6 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! A sink that deals with strings.
 module watt.text.sink;
 
 static import core.rt.format;
@@ -22,6 +23,7 @@ private:
 	enum size_t maxSize = 2048;
 
 public:
+	//! Add @p str to this sink.
 	fn sink(str: SinkArg) void
 	{
 		newSize := str.length + mLength;
@@ -53,11 +55,13 @@ public:
 		mArr = n;
 	}
 
+	//! Get the contents of this sink as a string.
 	fn toString() string
 	{
 		return new string(mArr[0 .. mLength]);
 	}
 
+	//! Get the contents of this sink as a mutable array of characters.
 	fn toChar() char[]
 	{
 		return new char[](mArr[0 .. mLength]);
@@ -71,6 +75,7 @@ public:
 		return sink(mArr[0 .. mLength]);
 	}
 
+	//! Clear this sink.
 	fn reset() void
 	{
 		mArr = null;

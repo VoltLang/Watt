@@ -1,5 +1,6 @@
 // Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+//! Functions for dealing with path strings.
 module watt.text.path;
 
 import core.exception;
@@ -8,6 +9,11 @@ import watt.text.format;
 import watt.text.string;
 import watt.path;
 
+/*!
+ * Given a path, return a representation of that path that is universal.
+ * That is to say, given two paths to the same location (from the same starting point),
+ * normalizePath(A) == normalizePath(B).
+ */
 fn normalizePath(path: SinkArg) string
 {
 	version (Windows) {

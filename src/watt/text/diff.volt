@@ -1,3 +1,4 @@
+//! Functions dealing with differences between strings.
 module watt.text.diff;
 
 import watt.io.std;

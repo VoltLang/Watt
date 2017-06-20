@@ -1,3 +1,4 @@
+//! String formatting functions.
 module watt.text.format;
 
 import core.object;
