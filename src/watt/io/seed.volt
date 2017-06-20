@@ -1,10 +1,22 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+/*!
+ * Get a seed value from the hardware.
+ */
 module watt.io.seed;
 
 import core.exception;
 import core.c.windows.windows;
+
+/*!
+ * Get a random @p u32.
+ * @return A random @p u32, suitable for seeding a random number generator.
+ */
+fn getHardwareSeedU32() u32
+{
+	return getHardwareSeedU32Impl();
+}
 
 version (Windows) {
 	alias HCRYPTPROV = size_t*;
@@ -14,7 +26,7 @@ version (Windows) {
 	enum PROV_RSA_FULL = 1;
 	enum CRYPT_NEWKEYSET = 0x00000008;
 
-	fn getHardwareSeedU32() u32
+	fn getHardwareSeedU32Impl() u32
 	{
 		buf := new u32[](1);
 		hcpov: HCRYPTPROV;
@@ -30,7 +42,7 @@ version (Windows) {
 } else version (OSX || Linux) {
 	private import watt.io.streams: InputFileStream;
 
-	fn getHardwareSeedU32() u32
+	fn getHardwareSeedU32Impl() u32
 	{
 		ifs := new InputFileStream("/dev/urandom");
 		ret: u32;
