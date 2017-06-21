@@ -3,12 +3,14 @@
 //! Windows implementation of Http requests.
 module watt.http.windows;
 
+import watt.http : HttpInterface, RequestInterface;
+
 version(Windows):
 
 import core.c.windows;
 
 
-class Http
+class Http : HttpInterface
 {
 private:
 	hSession: HINTERNET;
@@ -26,12 +28,12 @@ public:
 			WINHTTP_FLAG_ASYNC);
 	}
 
-	fn isEmpty() bool
+	override fn isEmpty() bool
 	{
 		return mNew.length == 0 && mReqs.length == 0;
 	}
 
-	fn perform()
+	override fn perform()
 	{
 		foreach(req; mNew) {
 			req.fire();
@@ -50,14 +52,8 @@ public:
 	}
 }
 
-class Request
+class Request : RequestInterface
 {
-public:
-	server: string;
-	url: string;
-	port: u16;
-	secure: bool;
-
 private:
 	mHttp: Http;
 	mCon, mReq: HINTERNET;
@@ -83,6 +79,7 @@ public:
 		this.mHttp = http;
 		http.mNew ~= this;
 		mReadMutex = CreateMutexA(null, FALSE, null);
+		super(http);
 	}
 
 	~this()
@@ -100,7 +97,7 @@ public:
 		CloseHandle(mReadMutex);
 	}
 
-	fn getString() string
+	override fn getString() string
 	{
 		return new string((cast(char*)mData)[0 .. mDataSize]);
 	}

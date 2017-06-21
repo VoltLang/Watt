@@ -9,10 +9,11 @@ import core.c.stdlib : realloc, free;
 
 import watt.io : output;
 
+import watt.http : HttpInterface, RequestInterface;
 import watt.http.libcurl;
 
 
-class Http
+class Http : HttpInterface
 {
 private:
 	mMulti: CURLM*;
@@ -37,12 +38,12 @@ public:
 		}
 	}
 
-	fn isEmpty() bool
+	override fn isEmpty() bool
 	{
 		return mNew.length == 0 && mReqs.length == 0;
 	}
 
-	fn perform()
+	override fn perform()
 	{
 		if (mMulti is null) {
 			return;
@@ -91,14 +92,8 @@ public:
 	}
 }
 
-class Request
+class Request : RequestInterface
 {
-public:
-	server: string;
-	url: string;
-	port: u16;
-	secure: bool;
-
 private:
 	mHttp: Http;
 	mEasy: CURL*;
@@ -115,6 +110,7 @@ public:
 	{
 		mHttp = http;
 		http.mNew ~= this;
+		super(http);
 	}
 
 	~this()
@@ -126,7 +122,7 @@ public:
 		}
 	}
 
-	fn getString() string
+	override fn getString() string
 	{
 		return new string((cast(char*)mData)[0 .. mDataSize]);
 	}
