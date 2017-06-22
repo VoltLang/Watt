@@ -15,6 +15,7 @@ import watt.text.utf;
 //! An exception thrown on errors.
 class GetoptException : Exception
 {
+	//! Construct a GetoptException with an error message.
 	this(msg: string)
 	{
 		super(msg);
