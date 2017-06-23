@@ -5,6 +5,7 @@ module watt.text.sink;
 
 static import core.rt.format;
 
+
 //! The one true sink definition.
 alias Sink = core.rt.format.Sink;
 
