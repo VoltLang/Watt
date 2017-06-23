@@ -144,9 +144,9 @@ interface DocSink
 	//! Signals the end of the full content.
 	fn end(sink: Sink);
 
-	// p comment section.
+	//! p comment section.
 	fn p(d: string, sink: Sink);
-	// link comment section.
+	//! link comment section.
 	fn link(link: string, sink: Sink);
 }
 
