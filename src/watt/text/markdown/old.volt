@@ -25,7 +25,7 @@
 	Authors: Sönke Ludwig
 */
 //! Parse markdown into HTML.
-module watt.text.markdown;
+module watt.text.markdown.old;
 
 import watt.io;  // TODO: Remove
 import watt.algorithm: min;
