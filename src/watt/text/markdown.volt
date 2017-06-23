@@ -75,7 +75,7 @@ fn countLeading(str: string, chr: dchar) size_t
 	return str.length;
 }
 
-//! Finds the index of the closing bracket if str starts with [, (, <, or {.
+//! Finds the index of the closing bracket if str starts with &#91;, (, <, or {.
 //! -1 on failure.
 private fn matchBracket(str: string, nested: bool = true) ptrdiff_t
 {
