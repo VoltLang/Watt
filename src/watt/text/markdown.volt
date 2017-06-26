@@ -1719,6 +1719,9 @@ private class LinkRefs
 					do {
 						indices ~= lnidx;
 						lnidx++;
+						if (lnidx >= lines.length - 1) {
+							break;
+						}
 						ln = strip(lines[lnidx]);
 						if (ln.indexOf("]") < 0) {
 							refid = format("%s%s", refid, ln);
