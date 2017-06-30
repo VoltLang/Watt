@@ -192,12 +192,7 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 fn handleCommandP(ref p: Parser, sink: Sink)
 {
 	p.eatWhitespace();
-	arg: string;
-	if (p.src.eof) {
-		arg = "";
-	} else {
-		arg = p.getWord();
-	}
+	arg := p.getLinkWord();
 	p.dsink.p(p.state, arg, sink);
 }
 
@@ -271,6 +266,39 @@ fn getWord(ref p: Parser) string
 {
 	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
 	return p.decodeUntil(cond);
+}
+
+/*!
+ * Get a link word, alpha num with dots in them.
+ *
+ * Trailing dots are not included.
+ */
+fn getLinkWord(ref p: Parser) string
+{
+	origin := p.src.save();
+	while (!p.src.eof && p.isFrontLinkWord()) {
+		p.src.popFront();
+	}
+	return p.src.sliceFrom(origin);
+}
+
+//! My we are awfully specific.
+fn isFrontLinkWord(ref p: Parser) bool
+{
+	// Is the front character alpha num then its a link word.
+	c := p.src.front;
+	if (isAlphaNum(c)) {
+		return true;
+	}
+
+	// Is the next characters .[alphanum] ?
+	if (c != '.') {
+		return false;
+	}
+
+	bool dummy;
+	c = p.src.lookahead(1, out dummy);
+	return isAlphaNum(c);
 }
 
 //! Decode until we're at the end of the string, or a non isWhite character.
