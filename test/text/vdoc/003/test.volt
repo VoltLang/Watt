@@ -61,7 +61,7 @@ public:
 		check(Section.Type.BriefEnd, "");
 	}
 
-	override fn paramStart(direction: string, arg: string, sink: Sink)
+	override fn paramStart(sink: Sink, direction: string, arg: string)
 	{
 		check(Section.Type.ParamStart, direction ~ arg);
 	}
@@ -81,7 +81,7 @@ public:
 		check(Section.Type.End, "");
 	}
 
-	override fn content(state: vdoc.DocState, d: string, sink: Sink)
+	override fn content(sink: Sink, state: vdoc.DocState, d: string)
 	{
 		final switch (state) with (vdoc.DocState) {
 		case Content: check(Section.Type.Content, d); break;
@@ -90,18 +90,23 @@ public:
 		}
 	}
 
-	override fn p(state: vdoc.DocState, d: string, sink: Sink)
+	override fn p(sink: Sink, state: vdoc.DocState, d: string)
 	{
 		check(Section.Type.P, d);
 	}
 
-	override fn link(state: vdoc.DocState, link: string, sink: Sink)
+	override fn link(sink: Sink, state: vdoc.DocState, target: string, text: string)
 	{
-		check(Section.Type.Link, link);
+		check(Section.Type.Link, target);
 	}
+
+	override fn defgroup(sink: Sink, group: string, text: string) { }
+	override fn ingroup(sink: Sink, group: string) { }
+
 
 private:
 	mSequence: Section[];
+
 
 private:
 	fn check(type: Section.Type, val: string)
