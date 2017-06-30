@@ -90,7 +90,7 @@ interface DocSink
 	fn briefEnd(sink: Sink);
 
 	//! Signals the start of a param comment section.
-	fn paramStart(direction: string, arg: string, sink: Sink);
+	fn paramStart(sink: Sink, direction: string, arg: string);
 	//! Signals the end of a param comment section.
 	fn paramEnd(sink: Sink);
 
@@ -100,11 +100,11 @@ interface DocSink
 	fn end(sink: Sink);
 
 	//! Regular text content.
-	fn content(state: DocState, d: string, sink: Sink);
+	fn content(sink: Sink, state: DocState, d: string);
 	//! p comment section.
-	fn p(state: DocState, d: string, sink: Sink);
+	fn p(sink: Sink, state: DocState, d: string);
 	//! link comment section.
-	fn link(state: DocState, link: string, sink: Sink);
+	fn link(sink: Sink, state: DocState, target: string, text: string);
 }
 
 //! Given a doc string input, call dsink methods with the given sink as an argument.
@@ -150,7 +150,7 @@ fn commandLoop(ref p: Parser, sink: Sink)
 
 		preCommand := p.decodeUntil(cond);
 		if (preCommand.length > 0) {
-			p.dsink.content(p.state, preCommand, sink);
+			p.dsink.content(sink, p.state, preCommand);
 		}
 
 		last := p.src.front;
@@ -159,15 +159,15 @@ fn commandLoop(ref p: Parser, sink: Sink)
 		if (p.src.eof) {
 			// Just so we don't drop the last '@' in the source.
 			if (last == '@') {
-				p.dsink.content(p.state, "@", sink);
+				p.dsink.content(sink, p.state, "@");
 			}
 			break;
 		}
 
 		command := p.getWord();
 		if (!p.handleCommand(sink, command)) {
-			p.dsink.content(p.state, "@", sink);
-			p.dsink.content(p.state, command, sink);
+			p.dsink.content(sink, p.state, "@");
+			p.dsink.content(sink, p.state, command);
 		}
 	}
 }
@@ -193,7 +193,7 @@ fn handleCommandP(ref p: Parser, sink: Sink)
 {
 	p.eatWhitespace();
 	arg := p.getLinkWord();
-	p.dsink.p(p.state, arg, sink);
+	p.dsink.p(sink, p.state, arg);
 }
 
 //! Parse an <at>link command.
@@ -207,7 +207,8 @@ fn handleCommandLink(ref p: Parser, sink: Sink)
 	if (command != "endlink" || p.src.eof) {
 		return;
 	}
-	p.dsink.link(p.state, preCommand, sink);
+
+	p.dsink.link(sink, p.state, preCommand, preCommand);
 }
 
 //! Parse an <at>param command.
@@ -222,7 +223,7 @@ fn handleCommandParam(ref p: Parser, sink: Sink, direction: string)
 	sub: Parser;
 	sub.setup(ref p, paramParagraph, DocState.Param);
 
-	sub.dsink.paramStart(direction, arg, sink);
+	sub.dsink.paramStart(sink, direction, arg);
 	sub.commandLoop(sink);
 	sub.dsink.paramEnd(sink);
 }
