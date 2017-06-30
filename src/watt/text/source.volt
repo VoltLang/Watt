@@ -9,17 +9,24 @@ import watt.text.ascii: isWhite;
 import watt.text.format: format;
 
 
+/*!
+ * A container for iterating over UTF-8 source code.
+ *
+ * Assumes the given source is valid UTF-8.
+ */
 class Source
 {
 public:
 	//! The location of the current character @p front.
 	loc: Location;
-
 	//! @see empty.
 	alias eof = empty;
 
+
 private:
+	//! Base source.
 	mSrc: SimpleSource;
+
 
 public:
 	/*!
@@ -27,10 +34,10 @@ public:
 	 * and validate it as a utf8 source.
 	 *
 	 * Side-effects:
-	 *   Puts all the other fields into known good states.
+	 *   - Puts all the other fields into known good states.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 */
 	this(s: string, filename: string)
 	{
@@ -55,7 +62,7 @@ public:
 	 * Returns the current utf8 char.
 	 *
 	 * Side-effects:
-	 *   None.
+	 *   - None.
 	 */
 	final @property fn front() dchar
 	{
@@ -66,7 +73,7 @@ public:
 	 * Returns the following utf8 char after front.
 	 *
 	 * Side-effects:
-	 *   None.
+	 *   - None.
 	 */
 	final @property fn following() dchar
 	{
@@ -77,13 +84,13 @@ public:
 	 * Advance the source one character.
 	 *
 	 * Side-effects:
-	 *   @p eof set to true if we have reached the EOF.
-	 *   @p mSrc.mChar is set to the returned character if not at EOF.
-	 *   @p mSrc.mNextIndex advanced to the end of the given character.
-	 *   @p mSrc.mLastIndex points to the index of the current character.
+	 *   - @p eof set to true if we have reached the EOF.
+	 *   - @p mSrc.mChar is set to the returned character if not at EOF.
+	 *   - @p mSrc.mNextIndex advanced to the end of the given character.
+	 *   - @p mSrc.mLastIndex points to the index of the current character.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 */
 	fn popFront()
 	{
@@ -101,13 +108,13 @@ public:
 	 * Advance the source n character.
 	 *
 	 * Side-effects:
-	 *   @p eof set to true if we have reached the EOF.
-	 *   @p mSrc.mChar is set to the current character if not at EOF.
-	 *   @p mSrc.mNextIndex advanced to the end of the given character.
-	 *   @p mSrc.mLastIndex points to the index of the current character.
+	 *   - @p eof set to true if we have reached the EOF.
+	 *   - @p mSrc.mChar is set to the current character if not at EOF.
+	 *   - @p mSrc.mNextIndex advanced to the end of the given character.
+	 *   - @p mSrc.mLastIndex points to the index of the current character.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 */
 	fn popFrontN(n: size_t)
 	{
@@ -122,7 +129,7 @@ public:
 	 * as defined by watt.text.ascii.isWhite.
 	 *
 	 * Side-effects:
-	 *   @arg @see popFront
+	 *   - @see popFront.
 	 */
 	final fn skipWhitespace()
 	{
@@ -135,7 +142,7 @@ public:
 	 * Skips till character after next end of line or eof.
 	 *
 	 * Side-effects:
-	 *   @arg @see popFront
+	 *   - @see popFront.
 	 */
 	fn skipEndOfLine()
 	{
@@ -151,13 +158,13 @@ public:
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 *
 	 * Side-effects:
-	 *   None.
+	 *   - None.
 	 *
 	 * Returns:
-	 *   Unicode char at @p n or @p dchar.init at EOF.
+	 *   - Unicode char at @p n or @p dchar.init at EOF.
 	 */
 	final fn lookahead(n: size_t, out lookaheadEOF: bool) dchar
 	{
@@ -182,23 +189,27 @@ public:
  */
 struct SimpleSource
 {
-public:
+private:
 	//! Source code, assumed to be validated utf8.
 	mSrc: string;
 	//! Pointer into the string for the next character.
 	mNextIndex: size_t;
-	//! The index for mChar
+	//! The index for mChar.
 	mLastIndex: size_t;
 	//! The current unicode character.
 	mChar: dchar;
 
+
+public:
 	//! @see empty.
 	alias eof = empty;
 
 	//! Have we reached EOF, if we have front = dchar.init.
 	empty: bool;
 
+
 public:
+	//! Setup this simple source and return the full source.
 	@property fn source(src: string) string
 	{
 		mSrc = src;
@@ -209,6 +220,7 @@ public:
 		return src;
 	}
 
+	//! Return the full source.
 	@property fn source() string
 	{
 		return mSrc;
@@ -218,7 +230,7 @@ public:
 	 * Returns the current utf8 char.
 	 *
 	 * Side-effects:
-	 *   None.
+	 *   - None.
 	 */
 	@property fn front() dchar
 	{
@@ -229,7 +241,7 @@ public:
 	 * Returns the following utf8 char after front.
 	 *
 	 * Side-effects:
-	 *   None.
+	 *   - None.
 	 */
 	@property fn following() dchar
 	{
@@ -241,13 +253,13 @@ public:
 	 * Advance the source one character.
 	 *
 	 * Side-effects:
-	 *   @p eof set to true if we have reached the EOF.
-	 *   @p mChar is set to the current character if not at EOF.
-	 *   @p mNextIndex advanced to the end of the given character.
-	 *   @p mLastIndex points to the index of the current character.
+	 *   - @p eof set to true if we have reached the EOF.
+	 *   - @p mChar is set to the current character if not at EOF.
+	 *   - @p mNextIndex advanced to the end of the given character.
+	 *   - @p mLastIndex points to the index of the current character.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 */
 	fn popFront()
 	{
@@ -264,13 +276,13 @@ public:
 	 * Advance the source n character.
 	 *
 	 * Side-effects:
-	 *   @p eof set to true if we have reached the EOF.
-	 *   @p mChar is set to the current character if not at EOF.
-	 *   @p mNextIndex advanced to the end of the given character.
-	 *   @p mLastIndex points to the index of the current character.
+	 *   - @p eof set to true if we have reached the EOF.
+	 *   - @p mChar is set to the current character if not at EOF.
+	 *   - @p mNextIndex advanced to the end of the given character.
+	 *   - @p mLastIndex points to the index of the current character.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 */
 	fn popFrontN(n: size_t)
 	{
@@ -285,13 +297,13 @@ public:
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
 	 * Throws:
-	 *   UtfException if the source is not valid utf8.
+	 *   - UtfException if the source is not valid utf8.
 	 *
 	 * Side-effects:
-	 *   None.
+	 *   - None.
 	 *
 	 * Returns:
-	 *   Unicode char at @p n or @p dchar.init at empty.
+	 *   - Unicode char at @p n or @p dchar.init at empty.
 	 */
 	fn lookahead(n: size_t, out lookaheadEmpty: bool) dchar
 	{
@@ -314,6 +326,12 @@ public:
 
 	/*!
 	 * Decodes a single utf8 code point at index in the given source.
+	 *
+	 * Side-effects:
+	 *   - None.
+	 *
+	 * Returns:
+	 *   - Unicode char at @p index or @p dchar.init if out of bound.
 	 */
 	fn decodeChar(ref index: size_t) dchar
 	{
@@ -333,12 +351,18 @@ public:
 struct Location
 {
 public:
+	//! The file from pointed to this locatiom.
 	filename: string;
+	//! Line number starting at 1.
 	line: size_t;
+	//! Column starting at 1.
 	column: size_t;
+	//! Length in characers.
 	length: size_t;
 
+
 public:
+	//! Format into a @p location string.
 	fn toString() string
 	{
 		return format("%s:%s:%s", filename, line, column);
@@ -383,6 +407,7 @@ public:
 		return loc;
 	}
 
+	//! @see difference.
 	fn spanTo(ref end: Location)
 	{
 		if (line <= end.line && column < end.column) {
