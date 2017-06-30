@@ -73,144 +73,182 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 	return sink.toString();
 }
 
+enum DocState
+{
+	Content,
+	Brief,
+	Param,
+}
+
 //! Interface for doc string consumers.
 interface DocSink
 {
 	//! Signals the start of a brief comment section.
 	fn briefStart(sink: Sink);
-	//! The content of a brief comment section.
-	fn briefContent(d: string, sink: Sink);
 	//! Signals the end of a brief comment section.
 	fn briefEnd(sink: Sink);
 
 	//! Signals the start of a param comment section.
 	fn paramStart(direction: string, arg: string, sink: Sink);
-	//! The content of a param comment section.
-	fn paramContent(d: string, sink: Sink);
 	//! Signals the end of a param comment section.
 	fn paramEnd(sink: Sink);
 
 	//! Signals the start of the full content.
 	fn start(sink: Sink);
-	//! A text portion of the comment.
-	fn content(d: string, sink: Sink);
 	//! Signals the end of the full content.
 	fn end(sink: Sink);
 
+	//! Regular text content.
+	fn content(state: DocState, d: string, sink: Sink);
 	//! p comment section.
-	fn p(d: string, sink: Sink);
+	fn p(state: DocState, d: string, sink: Sink);
 	//! link comment section.
-	fn link(link: string, sink: Sink);
+	fn link(state: DocState, link: string, sink: Sink);
 }
 
 //! Given a doc string input, call dsink methods with the given sink as an argument.
 fn parse(src: string, dsink: DocSink, sink: Sink)
 {
-	dsink.start(sink);
-	i: size_t;
-	fn content(s: string, snk: Sink) { dsink.content(s, snk); }
-	commandLoop(src, dsink, sink, content, ref i);
+	p: Parser;
+	p.setup(src, dsink, DocState.Content);
+
+	p.dsink.start(sink);
+	p.commandLoop(sink);
 	dsink.end(sink);
 }
 
-//! Loop over src, calling contentDg as appropriate, and handleCommand for commands.
-private fn commandLoop(src: string, dsink: DocSink, sink: Sink, contentDg: dg(string, Sink), ref i: size_t)
+
+private:
+
+//! Internal private parser struct.
+struct Parser
 {
-	while (i < src.length) {
+	src: string;
+	i: size_t;
+	dsink: DocSink;
+	state: DocState;
+
+
+	fn setup(ref old: Parser, src: string, state: DocState)
+	{
+		setup(src, old.dsink, state);
+	}
+
+	fn setup(src: string, dsink: DocSink, state: DocState)
+	{
+		this.src = src;
+		this.dsink = dsink;
+		this.state = state;
+		this.i = 0u;
+	}
+}
+
+//! Loop over src, calling contentDg as appropriate, and handleCommand for commands.
+fn commandLoop(ref p: Parser, sink: Sink)
+{
+	while (p.i < p.src.length) {
 		fn cond(c: dchar) bool { return c == '@'; }
-		preCommand := decodeUntil(src, ref i, cond);
+
+		preCommand := p.decodeUntil(cond);
 		if (preCommand.length > 0) {
-			contentDg(preCommand, sink);
+			p.dsink.content(p.state, preCommand, sink);
 		}
-		i++;  // skip '@'
-		if (i >= src.length) {
-			if (i - 1 < src.length) {
-				contentDg("@", sink);
+
+		p.i++;  // skip '@'
+
+		if (p.i >= p.src.length) {
+			// Just so we don't drop the '@'
+			if (p.i - 1 < p.src.length) {
+				p.dsink.content(p.state, "@", sink);
 			}
+
 			break;
 		}
-		command := getWord(src, ref i);
-		if (!handleCommand(src, command, dsink, sink, ref i)) {
-			contentDg("@" ~ command, sink);
+
+		command := p.getWord();
+		if (!p.handleCommand(sink, command)) {
+			p.dsink.content(p.state, "@", sink);
+			p.dsink.content(p.state, command, sink);
 		}
 	}
 }
 
 //! Dispatch a command to its handler. Returns: true if handled.
-private fn handleCommand(src: string, command: string, dsink: DocSink, sink: Sink, ref i: size_t) bool
+fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 {
 	switch (command) {
-	case "p": handleCommandP(src, dsink, sink, ref i); break;
-	case "link": handleCommandLink(src, dsink, sink, ref i); break;
-	case "brief": handleCommandBrief(src, dsink, sink, ref i); break;
-	case "param": handleCommandParam(src, "", dsink, sink, ref i); break;
-	case "param[in]": handleCommandParam(src, "in", dsink, sink, ref i); break;
-	case "param[in,out]": handleCommandParam(src, "in,out", dsink, sink, ref i); break;
-	case "param[out]": handleCommandParam(src, "out", dsink, sink, ref i); break;
+	case "p": p.handleCommandP(sink); break;
+	case "link": p.handleCommandLink(sink); break;
+	case "brief": p.handleCommandBrief(sink); break;
+	case "param": p.handleCommandParam(sink, ""); break;
+	case "param[in]": p.handleCommandParam(sink, "in"); break;
+	case "param[in,out]": p.handleCommandParam(sink, "in,out"); break;
+	case "param[out]": p.handleCommandParam(sink, "out"); break;
 	default: return false;
 	}
 	return true;
 }
 
 //! Parse an <at>p command.
-private fn handleCommandP(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
+fn handleCommandP(ref p: Parser, sink: Sink)
 {
-	eatWhitespace(src, ref i);
+	p.eatWhitespace();
 	arg: string;
-	if (i >= src.length) {
+	if (p.i >= p.src.length) {
 		arg = "";
 	} else {
-		arg = getWord(src, ref i);
+		arg = p.getWord();
 	}
-	dsink.p(arg, sink);
+	p.dsink.p(p.state, arg, sink);
 }
 
 //! Parse an <at>link command.
-private fn handleCommandLink(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
+fn handleCommandLink(ref p: Parser, sink: Sink)
 {
-	eatWhitespace(src, ref i);
+	p.eatWhitespace();
 	fn cond(c: dchar) bool { return c == '@'; }
-	preCommand := decodeUntil(src, ref i, cond);
-	i++;  // skip '@' etc
-	command := getWord(src, ref i);
-	if (command != "endlink" || i >= src.length) {
+	preCommand := p.decodeUntil(cond);
+	p.i++;  // skip '@' etc
+	command := p.getWord();
+	if (command != "endlink" || p.i >= p.src.length) {
 		return;
 	}
-	dsink.link(preCommand, sink);
+	p.dsink.link(p.state, preCommand, sink);
 }
 
 //! Parse an <at>param command.
-private fn handleCommandParam(src: string, direction: string, dsink: DocSink, sink: Sink, ref i: size_t)
+fn handleCommandParam(ref p: Parser, sink: Sink, direction: string)
 {
-	eatWhitespace(src, ref i);
-	arg := getWord(src, ref i);
-	dsink.paramStart(direction, arg, sink);
-	eatWhitespace(src, ref i);
-	paramParagraph := getParagraph(src, ref i);
+	p.eatWhitespace();
+	arg := p.getWord();
+	p.eatWhitespace();
+	paramParagraph := p.getParagraph();
 
-	subIndex: size_t;
-	fn content(s: string, snk: Sink) { dsink.paramContent(s, snk); }
-	commandLoop(paramParagraph, dsink, sink, content, ref subIndex);
 
-	dsink.paramEnd(sink);
+	sub: Parser;
+	sub.setup(ref p, paramParagraph, DocState.Param);
+
+	sub.dsink.paramStart(direction, arg, sink);
+	sub.commandLoop(sink);
+	sub.dsink.paramEnd(sink);
 }
 
 //! Parse an <at>brief command.
-private fn handleCommandBrief(src: string, dsink: DocSink, sink: Sink, ref i: size_t)
+fn handleCommandBrief(ref p: Parser, sink: Sink)
 {
-	dsink.briefStart(sink);
-	eatWhitespace(src, ref i);
-	briefParagraph := getParagraph(src, ref i);
+	p.eatWhitespace();
+	briefParagraph := p.getParagraph();
 
-	subIndex: size_t;
-	fn content(s: string, snk: Sink) { dsink.briefContent(s, snk); }
-	commandLoop(briefParagraph, dsink, sink, content, ref subIndex);
+	sub: Parser;
+	sub.setup(ref p, briefParagraph, DocState.Brief);
 
-	dsink.briefEnd(sink);
+	sub.dsink.briefStart(sink);
+	sub.commandLoop(sink);
+	sub.dsink.briefEnd(sink);
 }
 
 //! Decode until we're at the end of the string, or an empty line.
-private fn getParagraph(src: string, ref i: size_t) string
+fn getParagraph(ref p: Parser) string
 {
 	lastChar: dchar;
 	fn cond(c: dchar) bool
@@ -221,39 +259,39 @@ private fn getParagraph(src: string, ref i: size_t) string
 		lastChar = c;
 		return false;
 	}
-	paragraph := decodeUntil(src, ref i, cond);
+	paragraph := p.decodeUntil(cond);
 	if (paragraph.length > 0 && paragraph[$-1] == '\n') {
 		paragraph = paragraph[0 .. $-1];  // eat the \n on the end.
-		i++;  // and don't include a \n in the remainder.
+		p.i++;  // and don't include a \n in the remainder.
 	}
 	return paragraph;
 }
 
 //! Decode until we're at the end of the string, or a non word character.
-private fn getWord(src: string, ref i: size_t) string
+fn getWord(ref p: Parser) string
 {
 	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
-	return decodeUntil(src, ref i, cond);
+	return p.decodeUntil(cond);
 }
 
 //! Decode until we're at the end of the string, or a non isWhite character.
-private fn eatWhitespace(src: string, ref i: size_t)
+fn eatWhitespace(ref p: Parser)
 {
 	fn cond(c: dchar) bool { return !isWhite(c); }
-	decodeUntil(src, ref i, cond);
+	p.decodeUntil(cond);
 }
 
 //! Decode until cond is true, or we're out of string.
-private fn decodeUntil(src: string, ref i: size_t, cond: dg(dchar) bool) string
+fn decodeUntil(ref p: Parser, cond: dg(dchar) bool) string
 {
-	origin := i;
-	while (i < src.length) {
-		prevIndex := i;
-		c := decode(src, ref i);
+	origin := p.i;
+	while (p.i < p.src.length) {
+		prevIndex := p.i;
+		c := decode(p.src, ref p.i);
 		if (cond(c)) {
-			i = prevIndex;
+			p.i = prevIndex;
 			break;
 		}
 	}
-	return src[origin .. i];
+	return p.src[origin .. p.i];
 }

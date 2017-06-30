@@ -56,11 +56,6 @@ public:
 		check(Section.Type.BriefStart, "");
 	}
 
-	override fn briefContent(d: string, sink: Sink)
-	{
-		check(Section.Type.BriefContent, d);
-	}
-
 	override fn briefEnd(sink: Sink)
 	{
 		check(Section.Type.BriefEnd, "");
@@ -69,11 +64,6 @@ public:
 	override fn paramStart(direction: string, arg: string, sink: Sink)
 	{
 		check(Section.Type.ParamStart, direction ~ arg);
-	}
-
-	override fn paramContent(d: string, sink: Sink)
-	{
-		check(Section.Type.ParamContent, d);
 	}
 
 	override fn paramEnd(sink: Sink)
@@ -86,22 +76,26 @@ public:
 		check(Section.Type.Start, "");
 	}
 
-	override fn content(d: string, sink: Sink)
-	{
-		check(Section.Type.Content, d);
-	}
-
 	override fn end(sink: Sink)
 	{
 		check(Section.Type.End, "");
 	}
 
-	override fn p(d: string, sink: Sink)
+	override fn content(state: vdoc.DocState, d: string, sink: Sink)
+	{
+		final switch (state) with (vdoc.DocState) {
+		case Content: check(Section.Type.Content, d); break;
+		case Brief: check(Section.Type.BriefContent, d); break;
+		case Param: check(Section.Type.ParamContent, d); break;
+		}
+	}
+
+	override fn p(state: vdoc.DocState, d: string, sink: Sink)
 	{
 		check(Section.Type.P, d);
 	}
 
-	override fn link(link: string, sink: Sink)
+	override fn link(state: vdoc.DocState, link: string, sink: Sink)
 	{
 		check(Section.Type.Link, link);
 	}
