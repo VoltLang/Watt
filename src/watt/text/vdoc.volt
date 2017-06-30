@@ -8,6 +8,7 @@ module watt.text.vdoc;
 
 import core.exception;
 import watt.text.string;
+import watt.text.source;
 import watt.text.sink;
 import watt.text.utf;
 import watt.text.ascii;
@@ -123,10 +124,9 @@ private:
 //! Internal private parser struct.
 struct Parser
 {
-	src: string;
-	i: size_t;
 	dsink: DocSink;
 	state: DocState;
+	src: SimpleSource;
 
 
 	fn setup(ref old: Parser, src: string, state: DocState)
@@ -136,17 +136,16 @@ struct Parser
 
 	fn setup(src: string, dsink: DocSink, state: DocState)
 	{
-		this.src = src;
+		this.src.source = src;
 		this.dsink = dsink;
 		this.state = state;
-		this.i = 0u;
 	}
 }
 
 //! Loop over src, calling contentDg as appropriate, and handleCommand for commands.
 fn commandLoop(ref p: Parser, sink: Sink)
 {
-	while (p.i < p.src.length) {
+	while (!p.src.eof) {
 		fn cond(c: dchar) bool { return c == '@'; }
 
 		preCommand := p.decodeUntil(cond);
@@ -154,14 +153,14 @@ fn commandLoop(ref p: Parser, sink: Sink)
 			p.dsink.content(p.state, preCommand, sink);
 		}
 
-		p.i++;  // skip '@'
+		last := p.src.front;
+		p.src.popFront();
 
-		if (p.i >= p.src.length) {
-			// Just so we don't drop the '@'
-			if (p.i - 1 < p.src.length) {
+		if (p.src.eof) {
+			// Just so we don't drop the last '@' in the source.
+			if (last == '@') {
 				p.dsink.content(p.state, "@", sink);
 			}
-
 			break;
 		}
 
@@ -194,7 +193,7 @@ fn handleCommandP(ref p: Parser, sink: Sink)
 {
 	p.eatWhitespace();
 	arg: string;
-	if (p.i >= p.src.length) {
+	if (p.src.eof) {
 		arg = "";
 	} else {
 		arg = p.getWord();
@@ -208,9 +207,9 @@ fn handleCommandLink(ref p: Parser, sink: Sink)
 	p.eatWhitespace();
 	fn cond(c: dchar) bool { return c == '@'; }
 	preCommand := p.decodeUntil(cond);
-	p.i++;  // skip '@' etc
+	p.src.popFront();
 	command := p.getWord();
-	if (command != "endlink" || p.i >= p.src.length) {
+	if (command != "endlink" || p.src.eof) {
 		return;
 	}
 	p.dsink.link(p.state, preCommand, sink);
@@ -262,7 +261,7 @@ fn getParagraph(ref p: Parser) string
 	paragraph := p.decodeUntil(cond);
 	if (paragraph.length > 0 && paragraph[$-1] == '\n') {
 		paragraph = paragraph[0 .. $-1];  // eat the \n on the end.
-		p.i++;  // and don't include a \n in the remainder.
+		p.src.popFront(); // and don't include a \n in the remainder.
 	}
 	return paragraph;
 }
@@ -284,14 +283,9 @@ fn eatWhitespace(ref p: Parser)
 //! Decode until cond is true, or we're out of string.
 fn decodeUntil(ref p: Parser, cond: dg(dchar) bool) string
 {
-	origin := p.i;
-	while (p.i < p.src.length) {
-		prevIndex := p.i;
-		c := decode(p.src, ref p.i);
-		if (cond(c)) {
-			p.i = prevIndex;
-			break;
-		}
+	origin := p.src.save();
+	while (!p.src.eof && !cond(p.src.front)) {
+		p.src.popFront();
 	}
-	return p.src[origin .. p.i];
+	return p.src.sliceFrom(origin);
 }
