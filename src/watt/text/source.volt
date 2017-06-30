@@ -171,14 +171,27 @@ public:
 		return mSrc.lookahead(n, out lookaheadEOF);
 	}
 
+	/*!
+	 * Return the index of the current character.
+	 *
+	 * Side-effects:
+	 *   - None.
+	 */
 	final fn save() size_t
 	{
-		return mSrc.mLastIndex;
+		return mSrc.save();
 	}
 
+	/*!
+	 * Slices the source from the given mark to (but not including) the
+	 * current character. Use @p save for indicies.
+	 *
+	 * Side-effects:
+	 *   - None.
+	 */
 	final fn sliceFrom(mark: size_t) string
 	{
-		return mSrc.mSrc[mark .. mSrc.mLastIndex];
+		return mSrc.sliceFrom(mark);
 	}
 }
 
@@ -322,6 +335,47 @@ public:
 			}
 		}
 		return c;
+	}
+
+	/*!
+	 * Used to skip whitespace in the source file,
+	 * as defined by watt.text.ascii.isWhite.
+	 *
+	 * Side-effects:
+	 *   - @see popFront.
+	 */
+	fn skipWhitespace()
+	{
+		while (!empty && isWhite(front)) {
+			popFront();
+		}
+	}
+
+	/*!
+	 * Return the index of the current character.
+	 *
+	 * Side-effects:
+	 *   - None.
+	 */
+	fn save() size_t
+	{
+		return mLastIndex;
+	}
+
+	/*!
+	 * Slices the source from the given mark to (but not including) the
+	 * current character. Use @p save for indicies.
+	 *
+	 * Side-effects:
+	 *   - None.
+	 */
+	fn sliceFrom(mark: size_t) string
+	{
+		if (mark < mLastIndex) {
+			return mSrc[mark .. mLastIndex];
+		} else {
+			return null;
+		}
 	}
 
 	/*!
