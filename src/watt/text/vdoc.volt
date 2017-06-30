@@ -105,6 +105,11 @@ interface DocSink
 	fn p(sink: Sink, state: DocState, d: string);
 	//! link comment section.
 	fn link(sink: Sink, state: DocState, target: string, text: string);
+
+	//! The ingroup command.
+	fn defgroup(sink: Sink, group: string, text: string);
+	//! The ingroup command, may get called multiple times.
+	fn ingroup(sink: Sink, group: string);
 }
 
 //! Given a doc string input, call dsink methods with the given sink as an argument.
@@ -184,6 +189,8 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 	case "param[in]": p.handleCommandParam(sink, "in"); break;
 	case "param[in,out]": p.handleCommandParam(sink, "in,out"); break;
 	case "param[out]": p.handleCommandParam(sink, "out"); break;
+	case "ingroup": p.handleCommandInGroup(sink); break;
+	case "defgroup": p.handleCommandDefGroup(sink); break;
 	default: return false;
 	}
 	return true;
@@ -254,6 +261,39 @@ fn handleCommandBrief(ref p: Parser, sink: Sink)
 	sub.dsink.briefEnd(sink);
 }
 
+//! Parse an <at>defgroup command.
+fn handleCommandDefGroup(ref p: Parser, sink: Sink)
+{
+	str := p.getRestOfLine();
+
+	sub: Parser;
+	sub.setup(ref p, str, p.state);
+
+	sub.eatWhitespace();
+	group := sub.getWord();
+	text := sub.getRestOfLine();
+	sub.dsink.defgroup(sink, group, text);
+}
+
+//! Parse an <at>ingroup command.
+fn handleCommandInGroup(ref p: Parser, sink: Sink)
+{
+	str := p.getRestOfLine();
+
+	sub: Parser;
+	sub.setup(ref p, str, p.state);
+
+	while (true) {
+		sub.eatWhitespace();
+		group := sub.getWord();
+		if (group !is null) {
+			sub.dsink.ingroup(sink, group);
+		} else {
+			break;
+		}
+	}
+}
+
 //! Decode until we're at the end of the string, or an empty line.
 fn getParagraph(ref p: Parser) string
 {
@@ -279,6 +319,20 @@ fn getWord(ref p: Parser) string
 {
 	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
 	return p.decodeUntil(cond);
+}
+
+/*!
+ * Get the rest of this line, newline is included.
+ */
+fn getRestOfLine(ref p: Parser) string
+{
+	origin := p.src.save();
+	while (!p.src.eof && p.src.front != '\n') {
+		p.src.popFront();
+	}
+	p.src.popFront();
+	ret := p.src.sliceFrom(origin);
+	return ret;
 }
 
 /*!
