@@ -200,15 +200,18 @@ fn handleCommandP(ref p: Parser, sink: Sink)
 fn handleCommandLink(ref p: Parser, sink: Sink)
 {
 	p.eatWhitespace();
+	target := p.getLinkWord();
+
 	fn cond(c: dchar) bool { return c == '@'; }
 	preCommand := p.decodeUntil(cond);
+
 	p.src.popFront();
 	command := p.getWord();
 	if (command != "endlink" || p.src.eof) {
 		return;
 	}
 
-	p.dsink.link(sink, p.state, preCommand, preCommand);
+	p.dsink.link(sink, p.state, target, preCommand);
 }
 
 //! Parse an <at>param command.
