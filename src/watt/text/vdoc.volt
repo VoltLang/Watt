@@ -177,6 +177,7 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 {
 	switch (command) {
 	case "p": p.handleCommandP(sink); break;
+	case "ref": p.handleCommandRef(sink); break;
 	case "link": p.handleCommandLink(sink); break;
 	case "brief": p.handleCommandBrief(sink); break;
 	case "param": p.handleCommandParam(sink, ""); break;
@@ -194,6 +195,14 @@ fn handleCommandP(ref p: Parser, sink: Sink)
 	p.eatWhitespace();
 	arg := p.getLinkWord();
 	p.dsink.p(sink, p.state, arg);
+}
+
+//! Parse an <at>ref command.
+fn handleCommandRef(ref p: Parser, sink: Sink)
+{
+	p.eatWhitespace();
+	target := p.getLinkWord();
+	p.dsink.link(sink, p.state, target, null);
 }
 
 //! Parse an <at>link command.
