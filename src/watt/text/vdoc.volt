@@ -177,6 +177,21 @@ fn commandLoop(ref p: Parser, sink: Sink)
 	}
 }
 
+//! Does the given command break a paragraph.
+fn isBreakingCommand(command: string) bool
+{
+	switch (command) {
+	case "param", "param[in]", "param[in,out]", "param[out]":
+	case "ingroup", "defgroup":
+	case "brief":
+		return true;
+	case "p", "ref", "link":
+		return false;
+	default:
+		return false;
+	}
+}
+
 //! Dispatch a command to its handler. Returns: true if handled.
 fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 {
@@ -300,13 +315,41 @@ fn getParagraph(ref p: Parser) string
 	lastChar: dchar;
 	fn cond(c: dchar) bool
 	{
+		if (c == '@') {
+			return true;
+		}
+
 		if (lastChar == '\n' && c == '\n') {
 			return true;
 		}
 		lastChar = c;
 		return false;
 	}
-	paragraph := p.decodeUntil(cond);
+
+	origin := p.src.save();
+
+	// This loop checks for any commands that breaks paragraphs.
+	while (true) {
+		p.decodeUntil(cond);
+
+		if (p.src.front == '@') {
+			reset := p.src;
+			p.src.popFront();
+			command := p.getWord();
+			p.src = reset;
+
+			if (isBreakingCommand(command)) {
+				break;
+			}
+
+			// Skip the '@' and let it continue.
+			p.src.popFront();
+		} else {
+			break;
+		}
+	}
+
+	paragraph := p.src.sliceFrom(origin);
 	if (paragraph.length > 0 && paragraph[$-1] == '\n') {
 		paragraph = paragraph[0 .. $-1];  // eat the \n on the end.
 		p.src.popFront(); // and don't include a \n in the remainder.
