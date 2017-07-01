@@ -309,8 +309,13 @@ fn handleCommandInGroup(ref p: Parser, sink: Sink)
 	}
 }
 
-//! Decode until we're at the end of the string, or an empty line.
 fn getParagraph(ref p: Parser) string
+{
+	return p.src.getParagraph();
+}
+
+//! Decode until we're at the end of the string, or an empty line.
+fn getParagraph(ref src: SimpleSource) string
 {
 	lastChar: dchar;
 	fn cond(c: dchar) bool
@@ -326,56 +331,69 @@ fn getParagraph(ref p: Parser) string
 		return false;
 	}
 
-	origin := p.src.save();
+	origin := src.save();
 
 	// This loop checks for any commands that breaks paragraphs.
 	while (true) {
-		p.decodeUntil(cond);
+		src.decodeUntil(cond);
 
-		if (p.src.front == '@') {
-			reset := p.src;
-			p.src.popFront();
-			command := p.getWord();
-			p.src = reset;
+		if (src.front == '@') {
+			tmp := src;
+			tmp.popFront();
+			command := tmp.getWord();
 
 			if (isBreakingCommand(command)) {
 				break;
 			}
 
 			// Skip the '@' and let it continue.
-			p.src.popFront();
+			src.popFront();
 		} else {
 			break;
 		}
 	}
 
-	paragraph := p.src.sliceFrom(origin);
+	paragraph := src.sliceFrom(origin);
 	if (paragraph.length > 0 && paragraph[$-1] == '\n') {
 		paragraph = paragraph[0 .. $-1];  // eat the \n on the end.
-		p.src.popFront(); // and don't include a \n in the remainder.
+		src.popFront(); // and don't include a \n in the remainder.
 	}
+
 	return paragraph;
 }
 
-//! Decode until we're at the end of the string, or a non word character.
 fn getWord(ref p: Parser) string
 {
-	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
-	return p.decodeUntil(cond);
+	return p.src.getWord();
 }
 
-/*!
- * Get the rest of this line, newline is included.
- */
+//! Decode until we're at the end of the string, or a non word character.
+fn getWord(ref src: SimpleSource) string
+{
+	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
+	return src.decodeUntil(cond);
+}
+
 fn getRestOfLine(ref p: Parser) string
 {
-	origin := p.src.save();
-	while (!p.src.eof && p.src.front != '\n') {
-		p.src.popFront();
+	return p.src.getRestOfLine();
+}
+
+//! Get the rest of this line, newline is included.
+fn getRestOfLine(ref src: SimpleSource) string
+{
+	origin := src.save();
+	while (!src.eof && src.front != '\n') {
+		src.popFront();
 	}
-	p.src.popFront();
-	ret := p.src.sliceFrom(origin);
+	src.popFront();
+	ret := src.sliceFrom(origin);
 	return ret;
+}
+
+fn getLinkWord(ref p: Parser) string
+{
+	return p.src.getLinkWord();
 }
 
 /*!
@@ -383,20 +401,20 @@ fn getRestOfLine(ref p: Parser) string
  *
  * Trailing dots are not included.
  */
-fn getLinkWord(ref p: Parser) string
+fn getLinkWord(ref src: SimpleSource) string
 {
-	origin := p.src.save();
-	while (!p.src.eof && p.isFrontLinkWord()) {
-		p.src.popFront();
+	origin := src.save();
+	while (!src.eof && src.isFrontLinkWord()) {
+		src.popFront();
 	}
-	return p.src.sliceFrom(origin);
+	return src.sliceFrom(origin);
 }
 
 //! My we are awfully specific.
-fn isFrontLinkWord(ref p: Parser) bool
+fn isFrontLinkWord(ref src: SimpleSource) bool
 {
 	// Is the front character alpha num then its a link word.
-	c := p.src.front;
+	c := src.front;
 	if (isAlphaNum(c)) {
 		return true;
 	}
@@ -407,23 +425,33 @@ fn isFrontLinkWord(ref p: Parser) bool
 	}
 
 	bool dummy;
-	c = p.src.lookahead(1, out dummy);
+	c = src.lookahead(1, out dummy);
 	return isAlphaNum(c);
 }
 
-//! Decode until we're at the end of the string, or a non isWhite character.
 fn eatWhitespace(ref p: Parser)
 {
+	p.src.eatWhitespace();
+}
+
+//! Decode until we're at the end of the string, or a non isWhite character.
+fn eatWhitespace(ref src: SimpleSource)
+{
 	fn cond(c: dchar) bool { return !isWhite(c); }
-	p.decodeUntil(cond);
+	src.decodeUntil(cond);
+}
+
+fn decodeUntil(ref p: Parser, cond: dg(dchar) bool) string
+{
+	return decodeUntil(ref p.src, cond);
 }
 
 //! Decode until cond is true, or we're out of string.
-fn decodeUntil(ref p: Parser, cond: dg(dchar) bool) string
+fn decodeUntil(ref src: SimpleSource, cond: dg(dchar) bool) string
 {
-	origin := p.src.save();
-	while (!p.src.eof && !cond(p.src.front)) {
-		p.src.popFront();
+	origin := src.save();
+	while (!src.eof && !cond(src.front)) {
+		src.popFront();
 	}
-	return p.src.sliceFrom(origin);
+	return src.sliceFrom(origin);
 }
