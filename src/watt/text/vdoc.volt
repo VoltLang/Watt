@@ -78,6 +78,7 @@ enum DocState
 {
 	Content,
 	Brief,
+	Sa,
 	Param,
 	Return,
 }
@@ -94,6 +95,11 @@ interface DocSink
 	fn briefStart(sink: Sink);
 	//! Signals the end of a brief comment section.
 	fn briefEnd(sink: Sink);
+
+	//! Signals the start of a see also section.
+	fn saStart(sink: Sink);
+	//! Signals the end of a see also section.
+	fn saEnd(sink: Sink);
 
 	//! Signals the start of a param comment section.
 	fn paramStart(sink: Sink, direction: string, arg: string);
@@ -191,6 +197,7 @@ fn isBreakingCommand(command: string) bool
 	case "ingroup", "defgroup":
 	case "brief":
 	case "return":
+	case "see", "sa":
 		return true;
 	case "p", "ref", "link":
 		return false;
@@ -207,6 +214,7 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 	case "ref": p.handleCommandRef(sink); break;
 	case "link": p.handleCommandLink(sink); break;
 	case "brief": p.handleCommandBrief(sink); break;
+	case "see", "sa": p.handleCommandSa(sink); break;
 	case "return": p.handleCommandReturn(sink); break;
 	case "param": p.handleCommandParam(sink, ""); break;
 	case "param[in]": p.handleCommandParam(sink, "in"); break;
@@ -251,6 +259,19 @@ fn handleCommandLink(ref p: Parser, sink: Sink)
 	}
 
 	p.dsink.link(sink, p.state, target, preCommand);
+}
+
+//! Parse an <at>param command.
+fn handleCommandSa(ref p: Parser, sink: Sink)
+{
+	paragraph := p.getParagraph();
+
+	sub: Parser;
+	sub.setup(ref p, paragraph, DocState.Sa);
+
+	sub.dsink.saStart(sink);
+	sub.commandLoop(sink);
+	sub.dsink.saEnd(sink);
 }
 
 //! Parse an <at>param command.
