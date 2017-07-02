@@ -87,6 +87,7 @@ public:
 		case Content: check(Section.Type.Content, d); break;
 		case Brief: check(Section.Type.BriefContent, d); break;
 		case Param: check(Section.Type.ParamContent, d); break;
+		case Return: break; // TODO
 		}
 	}
 
@@ -102,6 +103,8 @@ public:
 
 	override fn defgroup(sink: Sink, group: string, text: string) { }
 	override fn ingroup(sink: Sink, group: string) { }
+	override fn returnStart(sink: Sink) { }
+	override fn returnEnd(sink: Sink) { }
 
 
 private:

@@ -79,11 +79,17 @@ enum DocState
 	Content,
 	Brief,
 	Param,
+	Return,
 }
 
 //! Interface for doc string consumers.
 interface DocSink
 {
+	//! Signals the start of the full content.
+	fn start(sink: Sink);
+	//! Signals the end of the full content.
+	fn end(sink: Sink);
+
 	//! Signals the start of a brief comment section.
 	fn briefStart(sink: Sink);
 	//! Signals the end of a brief comment section.
@@ -94,10 +100,10 @@ interface DocSink
 	//! Signals the end of a param comment section.
 	fn paramEnd(sink: Sink);
 
-	//! Signals the start of the full content.
-	fn start(sink: Sink);
-	//! Signals the end of the full content.
-	fn end(sink: Sink);
+	//! Signals the start of a param comment section.
+	fn returnStart(sink: Sink);
+	//! Signals the end of a param comment section.
+	fn returnEnd(sink: Sink);
 
 	//! Regular text content.
 	fn content(sink: Sink, state: DocState, d: string);
@@ -184,6 +190,7 @@ fn isBreakingCommand(command: string) bool
 	case "param", "param[in]", "param[in,out]", "param[out]":
 	case "ingroup", "defgroup":
 	case "brief":
+	case "return":
 		return true;
 	case "p", "ref", "link":
 		return false;
@@ -200,6 +207,7 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 	case "ref": p.handleCommandRef(sink); break;
 	case "link": p.handleCommandLink(sink); break;
 	case "brief": p.handleCommandBrief(sink); break;
+	case "return": p.handleCommandReturn(sink); break;
 	case "param": p.handleCommandParam(sink, ""); break;
 	case "param[in]": p.handleCommandParam(sink, "in"); break;
 	case "param[in,out]": p.handleCommandParam(sink, "in,out"); break;
@@ -260,6 +268,23 @@ fn handleCommandParam(ref p: Parser, sink: Sink, direction: string)
 	sub.dsink.paramStart(sink, direction, arg);
 	sub.commandLoop(sink);
 	sub.dsink.paramEnd(sink);
+}
+
+//! Parse an <at>return command.
+fn handleCommandReturn(ref p: Parser, sink: Sink)
+{
+	p.eatWhitespace();
+	arg := p.getWord();
+	p.eatWhitespace();
+	paramParagraph := p.getParagraph();
+
+
+	sub: Parser;
+	sub.setup(ref p, paramParagraph, DocState.Return);
+
+	sub.dsink.returnStart(sink);
+	sub.commandLoop(sink);
+	sub.dsink.returnEnd(sink);
 }
 
 //! Parse an <at>brief command.
