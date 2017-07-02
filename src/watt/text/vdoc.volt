@@ -354,9 +354,16 @@ fn getParagraph(ref src: SimpleSource) string
 	}
 
 	paragraph := src.sliceFrom(origin);
-	if (paragraph.length > 0 && paragraph[$-1] == '\n') {
-		paragraph = paragraph[0 .. $-1];  // eat the \n on the end.
-		src.popFront(); // and don't include a \n in the remainder.
+
+	if (paragraph.length > 1 && paragraph[$-1] == '\n') {
+		// eat the \n on the end.
+		paragraph = paragraph[0 .. $-1];
+
+		// If we didn't end on a command don't
+		// include a \n in the remainder.
+		if (src.front != '@') {
+			src.popFront();
+		}
 	}
 
 	return paragraph;
