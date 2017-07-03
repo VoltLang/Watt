@@ -37,34 +37,55 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 		return comment;
 	}
 
+
+	whiteCal := u32.max;
+	whiteNum := 1u; // One extra
+	calibrating := true;
 	ignoreWhitespace := true;
 	foreach (i, c: dchar; comment) {
 		if (i == comment.length - 1 && commentChar != '/' && c == '/') {
 			continue;
 		}
-		if (i == 1 && c == '!') {
-			continue;
-		}
-		if (i == 2 && c == '<') {
-			isBackwardsComment = true;
-			continue;  // Skip the '<'.
-		}
+
 		switch (c) {
-		case '*', '+', '/':
-			if (c == commentChar && ignoreWhitespace) {
+		case '<':
+			if (whiteNum < whiteCal) {
+				isBackwardsComment = true;
+				whiteNum += 1;
 				break;
 			}
 			goto default;
-		case ' ', '\t':
-			if (!ignoreWhitespace) {
+		case '!':
+			if (whiteNum < whiteCal) {
+				whiteNum += 1;
+				break;
+			}
+			goto default;
+		case '*', '+', '/':
+			if (c == commentChar && ignoreWhitespace) {
+				whiteNum += 1;
+				break;
+			}
+			goto default;
+		case '\t':
+			whiteNum += 7;
+			goto case;
+		case ' ':
+			whiteNum += 1;
+			if (!ignoreWhitespace || whiteNum > whiteCal) {
 				goto default;
 			}
 			break;
 		case '\n':
 			ignoreWhitespace = true;
 			encode(output, '\n');
+			whiteNum = 0;
 			break;
 		default:
+			if (calibrating) {
+				whiteCal = whiteNum;
+				calibrating = false;
+			}
 			ignoreWhitespace = false;
 			encode(output, c);
 			break;
