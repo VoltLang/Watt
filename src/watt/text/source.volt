@@ -33,11 +33,9 @@ public:
 	 * Sets the source to string and the current location
 	 * and validate it as a utf8 source.
 	 *
-	 * Side-effects:
-	 *   - Puts all the other fields into known good states.
+	 * @SideEffects Puts all the other fields into known good states.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Throws UtfException if the source is not valid utf8.
 	 */
 	this(s: string, filename: string)
 	{
@@ -61,8 +59,7 @@ public:
 	/*!
 	 * Returns the current utf8 char.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	final @property fn front() dchar
 	{
@@ -72,8 +69,7 @@ public:
 	/*!
 	 * Returns the following utf8 char after front.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	final @property fn following() dchar
 	{
@@ -83,14 +79,12 @@ public:
 	/*!
 	 * Advance the source one character.
 	 *
-	 * Side-effects:
-	 *   - @p eof set to true if we have reached the EOF.
-	 *   - @p mSrc.mChar is set to the returned character if not at EOF.
-	 *   - @p mSrc.mNextIndex advanced to the end of the given character.
-	 *   - @p mSrc.mLastIndex points to the index of the current character.
+	 * @SideEffect @p eof set to true if we have reached the EOF.
+	 * @SideEffect @p mSrc.mChar is set to the returned character if not at EOF.
+	 * @SideEffect @p mSrc.mNextIndex advanced to the end of the given character.
+	 * @SideEffect @p mSrc.mLastIndex points to the index of the current character.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Throws UtfException if the source is not valid utf8.
 	 */
 	fn popFront()
 	{
@@ -107,14 +101,12 @@ public:
 	/*!
 	 * Advance the source n character.
 	 *
-	 * Side-effects:
-	 *   - @p eof set to true if we have reached the EOF.
-	 *   - @p mSrc.mChar is set to the current character if not at EOF.
-	 *   - @p mSrc.mNextIndex advanced to the end of the given character.
-	 *   - @p mSrc.mLastIndex points to the index of the current character.
+	 * @SideEffect @p eof set to true if we have reached the EOF.
+	 * @SideEffect @p mSrc.mChar is set to the current character if not at EOF.
+	 * @SideEffect @p mSrc.mNextIndex advanced to the end of the given character.
+	 * @SideEffect @p mSrc.mLastIndex points to the index of the current character.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Throws UtfException if the source is not valid utf8.
 	 */
 	fn popFrontN(n: size_t)
 	{
@@ -128,8 +120,7 @@ public:
 	 * Used to skip whitespace in the source file,
 	 * as defined by watt.text.ascii.isWhite.
 	 *
-	 * Side-effects:
-	 *   - @see popFront.
+	 * @SideEffects See @ref popFront.
 	 */
 	final fn skipWhitespace()
 	{
@@ -141,8 +132,7 @@ public:
 	/*!
 	 * Skips till character after next end of line or eof.
 	 *
-	 * Side-effects:
-	 *   - @see popFront.
+	 * @SideEffects See @ref popFront.
 	 */
 	fn skipEndOfLine()
 	{
@@ -157,14 +147,11 @@ public:
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Throws UtfException if the source is not valid utf8.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 *
-	 * Returns:
-	 *   - Unicode char at @p n or @p dchar.init at EOF.
+	 * @Returns Unicode char at @p n or @p dchar.init at EOF.
 	 */
 	final fn lookahead(n: size_t, out lookaheadEOF: bool) dchar
 	{
@@ -174,8 +161,7 @@ public:
 	/*!
 	 * Return the index of the current character.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	final fn save() size_t
 	{
@@ -186,8 +172,7 @@ public:
 	 * Slices the source from the given mark to (but not including) the
 	 * current character. Use @p save for indicies.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	final fn sliceFrom(mark: size_t) string
 	{
@@ -242,8 +227,7 @@ public:
 	/*!
 	 * Returns the current utf8 char.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	@property fn front() dchar
 	{
@@ -253,8 +237,7 @@ public:
 	/*!
 	 * Returns the following utf8 char after front.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	@property fn following() dchar
 	{
@@ -265,14 +248,12 @@ public:
 	/*!
 	 * Advance the source one character.
 	 *
-	 * Side-effects:
-	 *   - @p eof set to true if we have reached the EOF.
-	 *   - @p mChar is set to the current character if not at EOF.
-	 *   - @p mNextIndex advanced to the end of the given character.
-	 *   - @p mLastIndex points to the index of the current character.
+	 * @SideEffect @p eof set to true if we have reached the EOF.
+	 * @SideEffect @p mChar is set to the current character if not at EOF.
+	 * @SideEffect @p mNextIndex advanced to the end of the given character.
+	 * @SideEffect @p mLastIndex points to the index of the current character.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Throws UtfException if the source is not valid utf8.
 	 */
 	fn popFront()
 	{
@@ -288,14 +269,12 @@ public:
 	/*!
 	 * Advance the source n character.
 	 *
-	 * Side-effects:
-	 *   - @p eof set to true if we have reached the EOF.
-	 *   - @p mChar is set to the current character if not at EOF.
-	 *   - @p mNextIndex advanced to the end of the given character.
-	 *   - @p mLastIndex points to the index of the current character.
+	 * @SideEffect @p eof set to true if we have reached the EOF.
+	 * @SideEffect @p mChar is set to the current character if not at EOF.
+	 * @SideEffect @p mNextIndex advanced to the end of the given character.
+	 * @SideEffect @p mLastIndex points to the index of the current character.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Throws UtfException if the source is not valid utf8.
 	 */
 	fn popFrontN(n: size_t)
 	{
@@ -309,14 +288,11 @@ public:
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
-	 * Throws:
-	 *   - UtfException if the source is not valid utf8.
+	 * @Returns Unicode char at @p n or @p dchar.init at empty.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @Throws UtfException if the source is not valid utf8.
 	 *
-	 * Returns:
-	 *   - Unicode char at @p n or @p dchar.init at empty.
+	 * @SideEffects None.
 	 */
 	fn lookahead(n: size_t, out lookaheadEmpty: bool) dchar
 	{
@@ -341,8 +317,7 @@ public:
 	 * Used to skip whitespace in the source file,
 	 * as defined by watt.text.ascii.isWhite.
 	 *
-	 * Side-effects:
-	 *   - @see popFront.
+	 * @SideEffects See @ref popFront.
 	 */
 	fn skipWhitespace()
 	{
@@ -354,8 +329,7 @@ public:
 	/*!
 	 * Return the index of the current character.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	fn save() size_t
 	{
@@ -366,8 +340,7 @@ public:
 	 * Slices the source from the given mark to (but not including) the
 	 * current character. Use @p save for indicies.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 */
 	fn sliceFrom(mark: size_t) string
 	{
@@ -381,11 +354,9 @@ public:
 	/*!
 	 * Decodes a single utf8 code point at index in the given source.
 	 *
-	 * Side-effects:
-	 *   - None.
+	 * @SideEffects None.
 	 *
-	 * Returns:
-	 *   - Unicode char at @p index or @p dchar.init if out of bound.
+	 * @Returns Unicode char at @p index or @p dchar.init if out of bound.
 	 */
 	fn decodeChar(ref index: size_t) dchar
 	{
@@ -461,7 +432,7 @@ public:
 		return loc;
 	}
 
-	//! @see difference.
+	//! See @ref difference.
 	fn spanTo(ref end: Location)
 	{
 		if (line <= end.line && column < end.column) {
