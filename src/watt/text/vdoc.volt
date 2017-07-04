@@ -7,6 +7,7 @@
 module watt.text.vdoc;
 
 import core.exception;
+import watt.conv;
 import watt.text.string;
 import watt.text.source;
 import watt.text.sink;
@@ -107,6 +108,8 @@ enum DocSection
 {
 	SeeAlso,
 	Return,
+	SideEffect,
+	Throw,
 }
 
 //! Interface for doc string consumers.
@@ -213,11 +216,14 @@ fn commandLoop(ref p: Parser, sink: Sink)
 //! Does the given command break a paragraph.
 fn isBreakingCommand(command: string) bool
 {
+	command = toLower(command);
 	switch (command) {
 	case "param", "param[in]", "param[in,out]", "param[out]":
 	case "ingroup", "defgroup":
 	case "brief":
-	case "return":
+	case "return", "returns":
+	case "throw", "throws":
+	case "se", "sideeffect", "sideeffects":
 	case "see", "sa":
 		return true;
 	case "p", "ref", "link":
@@ -230,19 +236,26 @@ fn isBreakingCommand(command: string) bool
 //! Dispatch a command to its handler. Returns: true if handled.
 fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 {
+	command = toLower(command);
 	switch (command) {
 	case "p": p.handleCommandP(sink); break;
 	case "ref": p.handleCommandRef(sink); break;
 	case "link": p.handleCommandLink(sink); break;
 	case "brief": p.handleCommandBrief(sink); break;
-	case "see", "sa": p.handleCommandSection(sink, DocSection.SeeAlso); break;
-	case "return": p.handleCommandSection(sink, DocSection.Return); break;
 	case "param": p.handleCommandParam(sink, ""); break;
 	case "param[in]": p.handleCommandParam(sink, "in"); break;
 	case "param[in,out]": p.handleCommandParam(sink, "in,out"); break;
 	case "param[out]": p.handleCommandParam(sink, "out"); break;
 	case "ingroup": p.handleCommandInGroup(sink); break;
 	case "defgroup": p.handleCommandDefGroup(sink); break;
+	case "see", "sa":
+		p.handleCommandSection(sink, DocSection.SeeAlso); break;
+	case "return", "returns":
+		p.handleCommandSection(sink, DocSection.Return); break;
+	case "throw", "throws":
+		p.handleCommandSection(sink, DocSection.Throw); break;
+	case "se", "sideeffect", "sideeffects":
+		p.handleCommandSection(sink, DocSection.SideEffect); break;
 	default: return false;
 	}
 	return true;
