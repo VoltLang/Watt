@@ -99,8 +99,13 @@ enum DocState
 {
 	Content,
 	Brief,
-	Sa,
 	Param,
+	Section,
+}
+
+enum DocSection
+{
+	SeeAlso,
 	Return,
 }
 
@@ -117,20 +122,15 @@ interface DocSink
 	//! Signals the end of a brief comment section.
 	fn briefEnd(sink: Sink);
 
-	//! Signals the start of a see also section.
-	fn saStart(sink: Sink);
-	//! Signals the end of a see also section.
-	fn saEnd(sink: Sink);
-
 	//! Signals the start of a param comment section.
 	fn paramStart(sink: Sink, direction: string, arg: string);
 	//! Signals the end of a param comment section.
 	fn paramEnd(sink: Sink);
 
-	//! Signals the start of a param comment section.
-	fn returnStart(sink: Sink);
-	//! Signals the end of a param comment section.
-	fn returnEnd(sink: Sink);
+	//! Signals the start of a section, these are never nested.
+	fn sectionStart(sink: Sink, sec: DocSection);
+	//! Signals the end of a section, these are never nested.
+	fn sectionEnd(sink: Sink, sec: DocSection);
 
 	//! Regular text content.
 	fn content(sink: Sink, state: DocState, d: string);
@@ -139,7 +139,7 @@ interface DocSink
 	//! link comment section.
 	fn link(sink: Sink, state: DocState, target: string, text: string);
 
-	//! The ingroup command.
+	//! The defgroup command.
 	fn defgroup(sink: Sink, group: string, text: string);
 	//! The ingroup command, may get called multiple times.
 	fn ingroup(sink: Sink, group: string);
@@ -235,8 +235,8 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 	case "ref": p.handleCommandRef(sink); break;
 	case "link": p.handleCommandLink(sink); break;
 	case "brief": p.handleCommandBrief(sink); break;
-	case "see", "sa": p.handleCommandSa(sink); break;
-	case "return": p.handleCommandReturn(sink); break;
+	case "see", "sa": p.handleCommandSection(sink, DocSection.SeeAlso); break;
+	case "return": p.handleCommandSection(sink, DocSection.Return); break;
 	case "param": p.handleCommandParam(sink, ""); break;
 	case "param[in]": p.handleCommandParam(sink, "in"); break;
 	case "param[in,out]": p.handleCommandParam(sink, "in,out"); break;
@@ -282,17 +282,17 @@ fn handleCommandLink(ref p: Parser, sink: Sink)
 	p.dsink.link(sink, p.state, target, preCommand);
 }
 
-//! Parse an <at>param command.
-fn handleCommandSa(ref p: Parser, sink: Sink)
+//! Parse a generic section command.
+fn handleCommandSection(ref p: Parser, sink: Sink, sec: DocSection)
 {
 	paragraph := p.getParagraph();
 
 	sub: Parser;
-	sub.setup(ref p, paragraph, DocState.Sa);
+	sub.setup(ref p, paragraph, DocState.Section);
 
-	sub.dsink.saStart(sink);
+	sub.dsink.sectionStart(sink, sec);
 	sub.commandLoop(sink);
-	sub.dsink.saEnd(sink);
+	sub.dsink.sectionEnd(sink, sec);
 }
 
 //! Parse an <at>param command.
@@ -310,23 +310,6 @@ fn handleCommandParam(ref p: Parser, sink: Sink, direction: string)
 	sub.dsink.paramStart(sink, direction, arg);
 	sub.commandLoop(sink);
 	sub.dsink.paramEnd(sink);
-}
-
-//! Parse an <at>return command.
-fn handleCommandReturn(ref p: Parser, sink: Sink)
-{
-	p.eatWhitespace();
-	arg := p.getWord();
-	p.eatWhitespace();
-	paramParagraph := p.getParagraph();
-
-
-	sub: Parser;
-	sub.setup(ref p, paramParagraph, DocState.Return);
-
-	sub.dsink.returnStart(sink);
-	sub.commandLoop(sink);
-	sub.dsink.returnEnd(sink);
 }
 
 //! Parse an <at>brief command.
