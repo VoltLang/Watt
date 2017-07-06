@@ -24,7 +24,7 @@ fn htmlEscape(str: string) string
  * Writes the HTML escaped version of a given string to the given dgt.
  * According to the OWASP rules:
  */
-fn htmlEscape(dgt: Sink, str: string)
+fn htmlEscape(dgt: Sink, str: string, ignore: string = "")
 {
 	i, org: size_t;
 	// This is okay because we don't escape UTF-8 codes.
@@ -35,6 +35,9 @@ fn htmlEscape(dgt: Sink, str: string)
 			i++;
 			continue;
 		case '\'', '"', '<', '>', '&':
+			if (ignore.indexOf(ch) >= 0) {
+				goto default;
+			}
 			break;
 		}
 
