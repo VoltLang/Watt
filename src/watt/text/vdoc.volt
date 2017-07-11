@@ -265,7 +265,7 @@ fn handleCommand(ref p: Parser, sink: Sink, command: string) bool
 fn handleCommandP(ref p: Parser, sink: Sink)
 {
 	p.eatWhitespace();
-	arg := p.getLinkWord();
+	arg := p.getThing();
 	p.dsink.p(sink, p.state, arg);
 }
 
@@ -440,7 +440,34 @@ fn getWord(ref p: Parser) string
 //! Decode until we're at the end of the string, or a non word character.
 fn getWord(ref src: SimpleSource) string
 {
-	fn cond(c: dchar) bool { return !isAlphaNum(c) && c != '[' && c != ']'; }
+	fn cond(c: dchar) bool { 
+		switch (c) {
+		case '[', ']', '_': return false;
+		default: return !isAlphaNum(c);
+		}
+	}
+	return src.decodeUntil(cond);
+}
+
+fn getThing(ref p: Parser) string
+{
+	return p.src.getThing();
+}
+
+/*!
+ * Decode until we're at the end of the string, or a non thing character.
+ *
+ * A thing is very losely defined as a character string that could be
+ * ident or type. Whitespace will always abort parsing as well as ':'.
+ */
+fn getThing(ref src: SimpleSource) string
+{
+	fn cond(c: dchar) bool { 
+		switch (c) {
+		case ':': return true;
+		default: return isWhite(c);
+		}
+	}
 	return src.decodeUntil(cond);
 }
 
