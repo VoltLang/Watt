@@ -5,9 +5,7 @@ module watt.conv;
 
 import core.exception;
 import core.rt.format;
-import core.c.stdlib: strtof, strtod;
-import core.c.stdio: snprintf;
-import core.c.string: strlen;
+
 import watt.text.ascii: isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
 import watt.text.format: format;
 import watt.text.utf: encode;
@@ -107,20 +105,6 @@ fn toUint(s: const(char)[], base: i32 = 10) u32
 {
 	v := toUlong(s, base);
 	return cast(u32)v;
-}
-
-//! Return a string as an f32.
-fn toFloat(s: string) f32
-{
-	cstr: const(char)* = toStringz(s);
-	return strtof(cstr, null);
-}
-
-//! Return a string as an f64.
-fn toDouble(s: string) f64
-{
-	cstr: const(char)* = toStringz(s);
-	return strtod(cstr, null);
 }
 
 //! Return a u8 as a string.
@@ -353,36 +337,43 @@ fn toStringz(s: const(char)[]) const(char)*
 	return cast(const(char)*) cstr.ptr;
 }
 
-/*!
- * Given a nul terminated string s, return a Volt string.
- */
-fn toString(s: scope const(char)*) string
-{
-	if (s is null) {
-		return null;
-	}
-	len := strlen(cast(const(char)*)s);
-	if (len == 0) {
-		return null;
+version (CRuntime_All) {
+
+	import core.c.string : strlen;
+	import core.c.stdlib : strtof, strtod;
+
+	/*!
+	 * Given a nul terminated string s, return a Volt string.
+	 */
+	fn toString(s: scope const(char)*) string
+	{
+		if (s is null) {
+			return null;
+		}
+
+		len := strlen(cast(const(char)*)s);
+
+		if (len == 0) {
+			return null;
+		}
+
+		str := new char[](len);
+		str[] = s[0 .. str.length];
+		return cast(string) str;
 	}
 
-	str := new char[](len);
-	str[] = s[0 .. str.length];
-	return cast(string) str;
-}
-
-//! Return a nul terminated C string as a Volt string.
-fn toString(s: const(char)*) string
-{
-	if (s is null) {
-		return null;
-	}
-	len := strlen(s);
-	if (len == 0) {
-		return null;
+	//! Return a string as an f32.
+	fn toFloat(s: string) f32
+	{
+		cstr: const(char)* = toStringz(s);
+		return strtof(cstr, null);
 	}
 
-	str := new char[](len);
-	str[] = s[0 .. str.length];
-	return cast(string) str;
+	//! Return a string as an f64.
+	fn toDouble(s: string) f64
+	{
+		cstr: const(char)* = toStringz(s);
+		return strtod(cstr, null);
+	}
+
 }
