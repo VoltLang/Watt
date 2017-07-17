@@ -3,4 +3,20 @@
 //! Main importer for markdown parser.
 module watt.text.markdown;
 
-public import watt.text.markdown.old : filterMarkdown, MarkdownFlags;
+import watt.text.sink : Sink;
+
+import watt.text.markdown.parser;
+import watt.text.markdown.html;
+
+
+fn filterMarkdown(src: string) string
+{
+	doc := parse(src);
+	return printHtml(doc);
+}
+
+fn filterMarkdown(sink: Sink, src: string)
+{
+	doc := parse(src);
+	printHtml(doc, sink);
+}
