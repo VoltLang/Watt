@@ -122,7 +122,7 @@ fn strip(str: StrArg) string
  */
 fn stripLeft(str: string) string
 {
-	foreach (i, dchar c; str) {
+	foreach (i, char c; str) {
 		if (!isWhite(c)) {
 			return str[i .. $];
 		}
@@ -135,7 +135,7 @@ fn stripLeft(str: string) string
  */
 fn stripRight(str: string) string
 {
-	foreach_reverse (i, dchar c; str) {
+	foreach_reverse (i, char c; str) {
 		if (!isWhite(c)) {
 			return str[0 .. i+1];
 		}
