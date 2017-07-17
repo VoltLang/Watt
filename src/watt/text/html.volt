@@ -6,7 +6,7 @@ module watt.text.html;
 
 import watt.conv: toString, toUint;
 import watt.text.sink: Sink, StringSink;
-import watt.text.string: indexOf;
+import watt.text.string: indexOf, replace;
 
 
 /*!
@@ -18,6 +18,16 @@ fn htmlEscape(str: string) string
 	dst: StringSink;
 	htmlEscape(dst.sink, str);
 	return dst.toString();
+}
+
+fn htmlUnescape(str: string) string
+{
+	str = str.replace("&#39;", "\'");
+	str = str.replace("&quot;", "\"");
+	str = str.replace("&lt;", "<");
+	str = str.replace("&gt;", ">");
+	str = str.replace("&amp;", "&");
+	return str;
 }
 
 /*!

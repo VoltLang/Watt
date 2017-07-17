@@ -32,6 +32,10 @@ fn toLower(s: string) string
 		case 'Α': dst.sink("α"); break;
 		case 'Γ': dst.sink("γ"); break;
 		case 'Ω': dst.sink("ω"); break;
+		case 'О': dst.sink("о"); break;
+		case 'Л': dst.sink("л"); break;
+		case 'П': dst.sink("п"); break;
+		case 'Й': dst.sink("й"); break;
 		default: dst.sink(encode(asciiToLower(c))); break;
 		}
 	}
