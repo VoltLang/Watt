@@ -4,6 +4,7 @@
 //! A class for dealing with a file from the perspective of a compiler.
 module watt.text.source;
 
+import watt.io;
 import watt.text.utf: decode;
 import watt.text.ascii: isWhite;
 import watt.text.format: format;
@@ -178,6 +179,14 @@ public:
 	{
 		return mSrc.sliceFrom(mark);
 	}
+
+	/*!
+	 * Slice the source from @p a to @p b.
+	 */
+	final fn slice(a: size_t, b: size_t) string
+	{
+		return mSrc.slice(a, b);
+	}
 }
 
 /*!
@@ -346,6 +355,18 @@ public:
 	{
 		if (mark < mLastIndex) {
 			return mSrc[mark .. mLastIndex];
+		} else {
+			return null;
+		}
+	}
+
+	/*!
+	 * Slices two points.
+	 */
+	fn slice(a: size_t, b: size_t) string
+	{
+		if (a+mLastIndex < mSrc.length && b+mLastIndex < mSrc.length && b > a) {
+			return mSrc[a+mLastIndex .. b+mLastIndex];
 		} else {
 			return null;
 		}
