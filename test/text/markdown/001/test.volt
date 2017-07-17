@@ -13,8 +13,6 @@ fn main() i32
 //		== "<p>their <a href=\"http://www.brew.sh\">install\ninstructions</a> and\n</p>\n");
 	assert(filterMarkdown("[![Build Status](https://travis-ci.org/rejectedsoftware/vibe.d.png)](https://travis-ci.org/rejectedsoftware/vibe.d)")
 		== "<p><a href=\"https://travis-ci.org/rejectedsoftware/vibe.d\"><img src=\"https://travis-ci.org/rejectedsoftware/vibe.d.png\" alt=\"Build Status\"></a>\n</p>\n");
-	auto res = filterMarkdown("hello\nworld", MarkdownFlags.forumDefault);
-	assert(res == "<p>hello<br>world\n</p>\n", res);
 	assert(filterMarkdown("\tthis\n\tis\n\tcode") ==
 		"<pre><code>this\nis\ncode\n</code></pre>");
 	assert(filterMarkdown("    this\n    is\n    code") ==
