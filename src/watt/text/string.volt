@@ -53,8 +53,11 @@ fn split(s: string, delimiter: StrArg) string[]
 		}
 		strings ~= s[0 .. cast(size_t)i];
 		nexti := cast(size_t)i+delimiter.length;
-		if (nexti >= s.length) {
+		if (nexti > s.length) {
 			break;
+		}
+		if (nexti == s.length) {
+			strings ~= "";
 		}
 		s = s[nexti .. $];
 	} while (s.length > 0);
