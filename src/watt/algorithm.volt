@@ -66,10 +66,7 @@ fn max(a: u64, b: u64) u64
 	return a > b ? a: b;
 }
 
-fn max(a: f64, b: f64) f64
-{
-	return a > b ? a: b;
-}
+@mangledName("llvm.maxnum.f64") fn max(f64, f64) f64;
 //! @}
 
 /*!
@@ -96,10 +93,7 @@ fn min(a: u64, b: u64) u64
 	return a < b ? a: b;
 }
 
-fn min(a: f64, b: f64) f64
-{
-	return a < b ? a: b;
-}
+@mangledName("llvm.minnum.f64") fn min(f64, f64) f64;
 //! @}
 
 
