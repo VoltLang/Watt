@@ -67,6 +67,7 @@ fn degrees(rads: f64) f64
 @mangledName("llvm.floor.f32") fn floor(f32) f32;
 @mangledName("llvm.floor.f64") fn floor(f64) f64;
 //! @}
+
 /*!
  * Round a value up.
  * @{
@@ -74,10 +75,30 @@ fn degrees(rads: f64) f64
 @mangledName("llvm.ceil.f32") fn ceil(f32) f32;
 @mangledName("llvm.ceil.f64") fn ceil(f64) f64;
 //! @}
+
 /*!
  * Round a value to the nearest integer.
  * @{
  */
 @mangledName("llvm.round.f32") fn round(f32) f32;
 @mangledName("llvm.round.f64") fn round(f64) f64;
+//! @}
+
+/*!
+ * Raise the value to the given (positive or negative) power.
+ *
+ * @param value The value to power.
+ * @param power Number to reaise the value with.
+ * @{
+ */
+@mangledName("llvm.pow.f32") fn pow(value: f32, power: f32) f32;
+@mangledName("llvm.pow.f64") fn pow(value: f64, power: f64) f64;
+//! @}
+
+/*!
+ * Return the absolute of value.
+ * @{
+ */
+@mangledName("llvm.fabs.f32") fn abs(f32) f32;
+@mangledName("llvm.fabs.f64") fn abs(f64) f64;
 //! @}
