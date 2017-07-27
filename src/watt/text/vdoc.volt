@@ -77,6 +77,11 @@ fn cleanComment(comment: string, out isBackwardsComment: bool) string
 				goto default;
 			}
 			break;
+		case '\r':
+			ignoreWhitespace = true;
+			encode(output, '\r');
+			whiteNum = 0;
+			break;
 		case '\n':
 			ignoreWhitespace = true;
 			encode(output, '\n');
