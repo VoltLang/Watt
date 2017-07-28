@@ -1,6 +1,6 @@
 // Copyright © 2013-2014, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Functions for converting one thing into another.
+//! Functions dealing with converting strings to integers, integers to strings, integers to different types of integers, and so on.
 module watt.conv;
 
 import core.exception;

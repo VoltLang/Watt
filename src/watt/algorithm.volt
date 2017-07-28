@@ -1,4 +1,4 @@
-//! Generally applicable algorithms.
+//! Functions implementing generally applicable algorithms.
 module watt.algorithm;
 
 

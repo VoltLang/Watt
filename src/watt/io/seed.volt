@@ -2,7 +2,7 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 /*!
- * Get a seed value from the hardware.
+ * Get a seed value from the hardware that is suitable for seeding a random number generator.
  */
 module watt.io.seed;
 

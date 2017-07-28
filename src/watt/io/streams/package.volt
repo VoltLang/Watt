@@ -1,6 +1,6 @@
 // Copyright © 2013-2015, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Define an IO stream interface.
+//! Define an IO stream interface. (Interfaces for reading and writing to things, one character at a time.)
 module watt.io.streams;
 
 import core.typeinfo;

@@ -1,7 +1,7 @@
 // Copyright © 2013-2016, Bernard Helyer.  All rights reserved.
 // Copyright © 2015-2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Simple functions for dealing with paths.
+//! Simple functions for dealing with paths, finding the path to the currently running executable, returning the extension of a filename, getting a full path from a relative path, and so on.
 module watt.path;
 
 version (Windows || Posix):

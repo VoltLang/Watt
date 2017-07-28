@@ -1,6 +1,6 @@
 // Copyright © 2013, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-//! Functions for dealing with unicode.
+//! Functions for decoding and encoding unicode strings and characters.
 module watt.text.utf;
 
 import core.rt.misc;

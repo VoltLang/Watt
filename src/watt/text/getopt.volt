@@ -1,6 +1,6 @@
 // Copyright © 2014-2015, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-//! Command line options parser.
+//! A suite of functions for processing command line arguments in a simple way.
 module watt.text.getopt;
 
 import core.exception;

@@ -2,6 +2,7 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 /*!
  * Simple filesystem operation functions.
+ * Functions for reading an entire file into memory, check if a file exists, deleting a file, searching a directory for a file, and so on.
  */
 module watt.io.file;
 

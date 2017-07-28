@@ -3,7 +3,7 @@
 // Copyright © 2010-2012, Kato Shoichi.  All rights reserved.
 // See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
 /*!
- * Get timing information from the OS.
+ * Get precise timing information from the OS.
  */
 module watt.io.monotonic;
 

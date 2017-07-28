@@ -1,6 +1,6 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! A sink that deals with strings.
+//! Facility for building long strings of text efficiently.
 module watt.text.sink;
 
 static import core.rt.format;
