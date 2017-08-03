@@ -9,6 +9,9 @@ import watt.markdown.parser;
 import watt.markdown.html;
 
 
+/*!
+ * Given a markdown string, return a string of HTML.
+ */
 fn filterMarkdown(src: string) string
 {
 	doc := parse(src);
