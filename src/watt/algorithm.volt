@@ -2,9 +2,9 @@
 module watt.algorithm;
 
 
-//! Takes to indicies of elements to compare.
+//! Takes two indices of elements to compare.
 alias CmpDg = scope dg(size_t, size_t) bool;
-//! Takes to indicies of elements to swap.
+//! Takes two indices of elements to swap.
 alias SwapDg = scope dg(size_t, size_t);
 
 /*!
