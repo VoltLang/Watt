@@ -40,7 +40,7 @@ import watt.text.format : format;
 
 
 /*!
- * Used to seperate directory in a path.
+ * The string that separates directories in a path.
  */
 version (Windows) {
 	enum string dirSeparator = "\\";
@@ -49,7 +49,7 @@ version (Windows) {
 }
 
 /*!
- * Used to seperate entries in the PATH environment variable.
+ * The string that separates entries in the PATH environment variable.
  */
 version (Windows) {
 	enum string pathSeparator = ";";
@@ -58,9 +58,9 @@ version (Windows) {
 }
 
 /*!
- * mkdir creates a single given directory.
- *
- * Existence is not treated as failure.
+ * Create a directory.  
+ * If the given directory exists, this function succeeds.
+ * @param dir The path to the new directory to make.
  */
 fn mkdir(dir: const(char)[])
 {
@@ -74,9 +74,9 @@ fn mkdir(dir: const(char)[])
 }
 
 /*!
- * Given a path, mkdirP will create any intermediate directories that
- * need to be created -- separating the path with '/' on posix platforms,
- * '/' and '\' on Windows platforms.
+ * Create a directory and any intermediate directories.  
+ * Uses the dirSeparator string for the appropriate platform.
+ * @param dir The path string to make.
  */
 fn mkdirP(dir: const(char)[])
 {
@@ -89,7 +89,10 @@ fn mkdirP(dir: const(char)[])
 }
 
 /*!
- * If c is a path separator character for this platform, return true.
+ * Is @p c a path separator for this platform?  
+ * This is different to checking against `dirSeparator` because
+ * Windows allows both forward and backward slashes in paths,
+ * whereas *nix only allows forward ones.
  */
 fn isSlash(c: char) bool
 {
@@ -101,7 +104,7 @@ fn isSlash(c: char) bool
 }
 
 /*!
- * Returns how many path separators are in the given string.
+ * Count how many path separators are in a given string.
  */
 fn countSlashes(s: const(char)[]) size_t
 {
@@ -126,8 +129,8 @@ fn removeTrailingSlashes(ref s: string)
 }
 
 /*!
- * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html,
- * with a few additions when handling drives and multiple path separator types on Windows.
+ * Return the directory portion of a pathname.  
+ * An implementation of <http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html>.
  */
 fn dirName(path: const(char)[]) string
 {
@@ -178,8 +181,10 @@ fn dirName(path: const(char)[]) string
 }
 
 /*!
- * An implementation of http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html.
- * with a few additions when handling drives and multiple path separator types on Windows.
+ * Return the non-directory portion of a pathname.  
+ * An implementation of <http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html>.
+ * @param path The path to retrieve the non-directory portion from.
+ * @param suffix If the extracted portion of the path ends in this, remove it.
  */
 fn baseName(path: const(char)[], suffix: const(char)[] = "") string
 {
@@ -229,7 +234,7 @@ fn extension(path: const(char)[]) string
 }
 
 /*!
- * Get a temporary filename in the temp directory.
+ * Get a temporary filename in the temp directory for the current platform.
  */
 fn temporaryFilename(extension: string = "", subdir: string = "") string
 {
@@ -256,7 +261,10 @@ fn temporaryFilename(extension: string = "", subdir: string = "") string
 }
 
 /*!
- * Given a path, return an absolute path.
+ * Given a path, return an absolute path.  
+ * Relative to the current working directory.
+ * @param file The filename to get an absolute path to.
+ * @return The full path to `file`.
  */
 fn fullPath(file: string) string
 {
@@ -273,7 +281,7 @@ fn fullPath(file: string) string
 }
 
 /*!
- * Return the path to the executable.
+ * Get the path to the executable.  
  */
 fn getExecFile() string
 {
@@ -311,7 +319,9 @@ fn getExecFile() string
 }
 
 /*!
- * Return the path to the dir that the executable is in.
+ * Get the directory that the current executable is in.  
+ * This is not the same as the current working directory of the process,
+ * this is the path to the directory the executable is physically in.
  */
 fn getExecDir() string
 {
