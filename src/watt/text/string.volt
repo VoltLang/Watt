@@ -16,11 +16,11 @@ alias StrArg = scope const(char)[];
 alias StrArrayArg = scope const(char)[][];
 
 /*!
- * Split string s by a given delimiter.
- * Examples:
- *   split("a=b", '=') ["a", "b"]
- *   split("a = b", '=') ["a ", " b"]
- *   split("a=b", '@') []
+ * Split string s by a given delimiter.  
+ * ### Examples
+ *     split("a=b", '=') ["a", "b"]
+ *     split("a = b", '=') ["a ", " b"]
+ *     split("a=b", '@') []
  */
 fn split(s: string, delimiter: dchar) string[]
 {
@@ -41,7 +41,7 @@ fn split(s: string, delimiter: dchar) string[]
 }
 
 /*!
- * Split a string with a string delimiter.
+ * Split `s` with a string delimiter.
  */
 fn split(s: string, delimiter: StrArg) string[]
 {
@@ -72,7 +72,7 @@ fn split(s: string, delimiter: StrArg) string[]
 }
 
 /*!
- * Split string s by \n, \r, and \r\n.
+ * Split `s` by \n, \r, and \r\n.
  */
 fn splitLines(s: string) string[]
 {
@@ -98,10 +98,10 @@ fn splitLines(s: string) string[]
 }
 
 /*!
- * Remove whitespace before and after, as defined by watt.ascii.isWhite.
- * Examples:
- *   strip("  apple  ") -> "apple"
- *   strip("  apple  pie  ") -> "apple pie"
+ * Remove whitespace before and after `str`, as defined by `watt.ascii.isWhite`.
+ * ### Examples
+ *     strip("  apple  ") -> "apple"
+ *     strip("  apple  pie  ") -> "apple pie"
  */
 fn strip(str: StrArg) string
 {
@@ -121,7 +121,7 @@ fn strip(str: StrArg) string
 }
 
 /*!
- * Remove leading whitespace, as defined by watt.ascii.isWhite.
+ * Remove leading whitespace from `str`, as defined by `watt.ascii.isWhite`.
  */
 fn stripLeft(str: string) string
 {
@@ -134,7 +134,7 @@ fn stripLeft(str: string) string
 }
 
 /*!
- * Remove trailing whitespace, as defined by watt.ascii.isWhite.
+ * Remove trailing whitespace, as defined by `watt.ascii.isWhite`.
  */
 fn stripRight(str: string) string
 {
@@ -146,7 +146,7 @@ fn stripRight(str: string) string
 	return null;
 }
 
-//! Returns how many times c occurs in s.
+//! Return how many times `c` occurs in `s`.
 fn count(str: StrArg, c: dchar) size_t
 {
 	n, i: size_t;
@@ -159,8 +159,8 @@ fn count(str: StrArg, c: dchar) size_t
 }
 
 /*!
- * Returns the index of the first place c occurs in str,
- * or -1 if it doesn't occur.
+ * Returns the index of the first place `c` occurs in `str`,
+ * or `-1` if it doesn't at all.
  */
 fn indexOf(str: StrArg, c: dchar) ptrdiff_t
 {
@@ -178,8 +178,7 @@ fn indexOf(str: StrArg, c: dchar) ptrdiff_t
 }
 
 /*!
- * Returns the index of the last place c occurs in str,
- * or -1 otherwise.
+ * Returns the index of the last place `c` occurs in `str`, -1 otherwise.
  */
 fn lastIndexOf(str: StrArg, c: dchar) ptrdiff_t
 {
@@ -192,8 +191,8 @@ fn lastIndexOf(str: StrArg, c: dchar) ptrdiff_t
 }
 
 /*!
- * If the substring sub occurs in s, returns the index where it occurs.
- * Otherwise, it returns -1.
+ * If the substring `sub` occurs in `s`, return the index where it occurs.
+ * Otherwise, return `-1`.
  */
 fn indexOf(str: StrArg, sub: StrArg) ptrdiff_t
 {
@@ -218,7 +217,7 @@ fn indexOf(str: StrArg, sub: StrArg) ptrdiff_t
 }
 
 /*!
- * Returns the index in which s first occurs in ss, or -1.
+ * Return the index in which `s` first occurs in `ss`, or `-1`.
  */
 fn indexOf(ss: StrArrayArg, str: StrArg) ptrdiff_t
 {
@@ -231,7 +230,8 @@ fn indexOf(ss: StrArrayArg, str: StrArg) ptrdiff_t
 }
 
 /*!
- * Returns a copy of s with occurences of from replaced with to, or s if nothing from does not occur.
+ * Returns a copy of `s` with occurences of `from` replaced with `to`, or `s` on its own
+ * if `from` does not occur.
  */
 fn replace(str: StrArg, from: StrArg, to: StrArg) string
 {
@@ -253,7 +253,7 @@ fn replace(str: StrArg, from: StrArg, to: StrArg) string
 	return sink.toString();
 }
 
-//! Returns non-zero if @p str starts with one of the strings given by @p beginnings.
+//! Returns a non-zero value if @p str starts with one of the strings given by @p beginnings.
 fn startsWith(str: StrArg, beginnings: StrArrayArg...) int
 {
 	result: int;
@@ -283,7 +283,7 @@ fn endsWith(str: StrArg, ends: StrArrayArg...) int
 	return result;
 }
 
-//! Join an array of strings into one, separated by sep.
+//! Join an array of strings into one string, separated by `sep`.
 fn join(ss: StrArrayArg, sep: StrArg = "") string
 {
 	outs: StringSink;

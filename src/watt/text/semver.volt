@@ -11,7 +11,7 @@ import watt.text.format;
 import watt.text.string;
 
 /*!
- * Parses a string into a Semantic Version. (semver.org)
+ * Parses a string into a [Semantic Version](semver.org).
  */
 class Release
 {
@@ -47,6 +47,11 @@ public:
 	}
 
 public:
+	/*!
+	 * Get a string representation of this semver string.
+	 *
+	 *     major.minor.patch(-prerelease)(+metadata)
+	 */
 	override fn toString() string
 	{
 		return format("%s.%s.%s%s%s",
@@ -55,6 +60,9 @@ public:
 			metadata.length > 0 ? format("+%s", metadata) : "");
 	}
 
+	/*!
+	 * Compare this release to another.
+	 */
 	fn opCmp(b: Release) i32
 	{
 		retval := componentCheck(this.major, b.major);
@@ -75,13 +83,14 @@ public:
 		return prereleaseCheck(this.prerelease, b.prerelease);
 	}
 
+	//! Test this release for equality with another.
 	fn opEquals(b: Release) bool
 	{
 		return opCmp(b) == 0;
 	}
 
 private:
-	//! Upon failure, this contains a reason for the user.
+	// Upon failure, this contains a reason for the user.
 	mFailureString: string;
 
 private:

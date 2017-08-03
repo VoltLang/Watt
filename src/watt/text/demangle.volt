@@ -13,9 +13,10 @@ import watt.text.sink : StringSink;
 import watt.text.format : format;
 
 /*!
- * Demangle a given mangled name.
- * Throws: core.exception.Exception if 'mangledName' is not a valid Volt mangled name.
- * Returns: a string containing the demangled version of mangledName.
+ * Demangle a given mangled name.  
+ * Throws core.exception.Exception if `mangledName` is not a valid Volt mangled name.
+ * @param mangledName The name to demangle.
+ * @return A string containing the demangled version of mangledName.
  */
 fn demangle(mangledName: const(char)[]) string
 {

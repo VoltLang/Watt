@@ -6,13 +6,13 @@ module watt.text.sink;
 static import core.rt.format;
 
 
-//! The one true sink definition.
+//! A `Sink` is a type that accepts strings and concatenates them efficiently.
 alias Sink = core.rt.format.Sink;
 
-//! The argument to the one true sink.
+//! A `SinkArg` is shorthand for the string argument to a `Sink`.
 alias SinkArg = core.rt.format.SinkArg;
 
-//! A sink to create long strings.
+//! Helps construct long strings efficiently.
 struct StringSink
 {
 private:
@@ -69,7 +69,7 @@ public:
 	}
 
 	/*!
-	 * Safely get the backing storage from the sink without coping.
+	 * Safely get the backing storage from the sink without copying.
 	 */
 	fn toSink(sink: Sink) void
 	{

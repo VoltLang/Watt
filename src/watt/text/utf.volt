@@ -27,14 +27,6 @@ private fn readU8(str: string, ref index: size_t) u8
 	return str[index++];
 }
 
-/*
-private fn readChar(str string, ref index: size_t) dchar
-{
-	u8 b = readU8(str, ref index);
-	return cast(dchar)(b & cast(u8)~ONE_BYTE_MASK);
-}
-*/
-
 fn decode(str: string, ref index: size_t) dchar
 {
 	return vrt_decode_u8_d(str, ref index);

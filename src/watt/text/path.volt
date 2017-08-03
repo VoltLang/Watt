@@ -10,7 +10,7 @@ import watt.text.string;
 import watt.path;
 
 /*!
- * Given a path, return a representation of that path that is universal.
+ * Given a path, return a representation of that path that is universal.  
  * That is to say, given two paths to the same location (from the same starting point),
  * normalizePath(A) == normalizePath(B).
  */
@@ -39,11 +39,13 @@ fn makePathAppendable(s: string) string
 	}
 }
 
+//! Normalize a path using POSIX rules, regardless of the current platform.
 fn normalizePathPosix(path: SinkArg) string
 {
 	return normalizePathImpl(path, false);
 }
 
+//! Normalize a path using Windows rules, regardless of the current platform.
 fn normalizePathWindows(path: SinkArg) string
 {
 	return normalizePathImpl(path, true);

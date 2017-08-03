@@ -20,6 +20,11 @@ fn htmlEscape(str: string) string
 	return dst.toString();
 }
 
+/*!
+ * Given an HTML escaped string `str`, unescape that string.
+ * ### Examples
+ *     htmlUnescape("&quot;hello world&quot;");  // Returns "hello world"
+ */
 fn htmlUnescape(str: string) string
 {
 	str = str.replace("&#39;", "\'");

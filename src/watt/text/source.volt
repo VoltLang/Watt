@@ -25,13 +25,13 @@ public:
 
 
 private:
-	//! Base source.
+	// Base source.
 	mSrc: SimpleSource;
 
 
 public:
 	/*!
-	 * Sets the source to string and the current location
+	 * Sets this Source to `s` and the current location
 	 * and validate it as a utf8 source.
 	 *
 	 * @SideEffects Puts all the other fields into known good states.
@@ -197,13 +197,13 @@ public:
 struct SimpleSource
 {
 private:
-	//! Source code, assumed to be validated utf8.
+	// Source code, assumed to be validated utf8.
 	mSrc: string;
-	//! Pointer into the string for the next character.
+	// Pointer into the string for the next character.
 	mNextIndex: size_t;
-	//! The index for mChar.
+	// The index for mChar.
 	mLastIndex: size_t;
-	//! The current unicode character.
+	// The current unicode character.
 	mChar: dchar;
 
 
