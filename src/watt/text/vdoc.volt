@@ -463,14 +463,18 @@ fn getThing(ref p: Parser) string
  * Decode until we're at the end of the string, or a non thing character.
  *
  * A thing is very losely defined as a character string that could be
- * ident or type. Whitespace will always abort parsing as well as ':'.
+ * ident or type. So `f32[4]` is a thing, as is `arr[4].field`. But
+ * from `foo.` only `foo` is a thing, notince trainling `.` not included.
  */
 fn getThing(ref src: SimpleSource) string
 {
 	fn cond(c: dchar) bool { 
 		switch (c) {
-		case ':': return true;
-		default: return isWhite(c);
+		case '.':
+			f := src.following;
+			return !isAlpha(f) && f != '_';
+		case '[', ']', '_': return false;
+		default: return !isAlphaNum(c);
 		}
 	}
 	return src.decodeUntil(cond);
