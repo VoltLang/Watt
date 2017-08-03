@@ -2,7 +2,7 @@
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Useful functions when dealing with JSON.
-module watt.text.json.util;
+module watt.json.util;
 
 import core.exception;
 import core.c.stdlib: strtod;

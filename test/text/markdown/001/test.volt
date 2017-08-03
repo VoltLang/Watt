@@ -3,7 +3,7 @@ module test;
 import io = watt.io;
 
 import watt.text.diff;
-import watt.text.markdown;
+import watt.markdown;
 
 
 global ok: i32;

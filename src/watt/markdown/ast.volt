@@ -1,7 +1,7 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Main importer for markdown parser.
-module watt.text.markdown.ast;
+module watt.markdown.ast;
 
 import watt.text.sink : Sink;
 

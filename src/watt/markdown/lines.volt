@@ -1,11 +1,11 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Split a file into line objects..
-module watt.text.markdown.lines;
+module watt.markdown.lines;
 
 import watt.io;
 import watt.algorithm;
-import watt.text.markdown.util;
+import watt.markdown.util;
 import watt.text.string : wattSplit = splitLines, wattStrip = strip,
 	wattReplace = replace;
 import watt.text.ascii;

@@ -1,15 +1,15 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Markdown parser.
-module watt.text.markdown.parser;
+module watt.markdown.parser;
 
 import watt.algorithm : min;
 import watt.conv;
 import watt.io;
-import watt.text.markdown.ast;
-import watt.text.markdown.util;
-import watt.text.markdown.phase2;
-import watt.text.markdown.lines;
+import watt.markdown.ast;
+import watt.markdown.util;
+import watt.markdown.phase2;
+import watt.markdown.lines;
 import watt.text.utf;
 import watt.text.string;
 import watt.text.ascii;

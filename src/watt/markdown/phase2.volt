@@ -1,13 +1,13 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Perform inline translation (headings, links, etc) on partially parsed Markdown.
-module watt.text.markdown.phase2;
+module watt.markdown.phase2;
 
 import watt.algorithm;
 import watt.io;
-import watt.text.markdown.ast;
-import watt.text.markdown.util;
-import watt.text.markdown.parser;
+import watt.markdown.ast;
+import watt.markdown.util;
+import watt.markdown.parser;
 import watt.text.sink;
 import watt.text.string;
 import watt.text.utf;

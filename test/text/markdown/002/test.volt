@@ -1,6 +1,6 @@
 module test;
 
-import watt.text.markdown;
+import watt.markdown;
 
 
 fn main() i32

@@ -1,13 +1,13 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Markdown HTML printer.
-module watt.text.markdown.html;
+module watt.markdown.html;
 
 import watt.text.format : format;
 import watt.text.sink : StringSink, Sink;
 import watt.text.html : htmlEscape, htmlUnescape;
 import watt.text.string;
-import watt.text.markdown.ast;
+import watt.markdown.ast;
 
 
 //! Print the given Markdown document in html format and return it as a string.

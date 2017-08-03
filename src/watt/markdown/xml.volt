@@ -1,11 +1,11 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Xml exporter of ast, used for debugging.
-module watt.text.markdown.xml;
+module watt.markdown.xml;
 
 import watt.text.format : format;
 import watt.text.sink : StringSink, Sink;
-import watt.text.markdown.ast;
+import watt.markdown.ast;
 
 
 //! Print the document as a xml ast, return it as a string.

@@ -2,11 +2,11 @@
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Parse a JSON file into memory.
-module watt.text.json.dom;
+module watt.json.dom;
 
 import watt.text.format;
-import watt.text.json.util;
-import watt.text.json.sax;
+import watt.json.util;
+import watt.json.sax;
 
 //! Thrown upon a parsing error.
 class DOMException : JSONException

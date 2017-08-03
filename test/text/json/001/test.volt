@@ -2,7 +2,7 @@
 module test;
 
 import watt.io;
-import watt.text.json;
+import watt.json;
 
 fn main() i32
 {

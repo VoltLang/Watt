@@ -2,7 +2,7 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 //! Parse JSON as a stream.
-module watt.text.json.sax;
+module watt.json.sax;
 
 import core.c.stdio: snprintf;
 import watt.io.std;
@@ -11,7 +11,7 @@ import watt.text.ascii: isWhite, isDigit;
 import watt.text.string: indexOf;
 import watt.text.format: format;
 import watt.math: isinf, isnan;
-import util = watt.text.json.util;
+import util = watt.json.util;
 
 private extern(C) {
 	fn strcat(dest: char*, src: const(char)*) char*;

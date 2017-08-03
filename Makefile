@@ -2,7 +2,7 @@
 # Intended for Digital Mars Make and GNU Make.
 
 VOLT=volt
-SRC=src\watt\*.volt src\watt\io\*.volt src\watt\io\streams\*.volt src\watt\text\*.volt src\watt\math\*.volt src\watt\text\json\*.volt src\watt\process\*.volt src\watt\http\*.volt
+SRC=src\watt\*.volt src\watt\io\*.volt src\watt\io\streams\*.volt src\watt\text\*.volt src\watt\math\*.volt src\watt\json\*.volt src\watt\markdown\*.volt src\watt\process\*.volt src\watt\http\*.volt
 
 all:
 	mkdir bin
