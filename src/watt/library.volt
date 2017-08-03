@@ -36,6 +36,9 @@ version(Windows) {
 
 }
 
+/*!
+ * Represents a loadable module.
+ */
 class Library
 {
 private:
@@ -46,7 +49,14 @@ private:
 	}
 
 public:
-	//! Given a list of shared objects, return the first one that loads, or null.
+
+	/*!
+	 * Given a list of shared objects, return the first one that loads.
+	 *
+	 * @param files A list of shared objects to try and open.
+	 * @return A `Library` instance from the first element of `files` that loads,
+	 * or `null` if every element failed to load.
+	 */
 	global fn loads(files: string[]) Library
 	{
 		for (i: size_t; i < files.length; i++) {
