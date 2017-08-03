@@ -8,9 +8,12 @@ alias CmpDg = scope dg(size_t, size_t) bool;
 alias SwapDg = scope dg(size_t, size_t);
 
 /*!
- * Runs a sorting algorithm on the given delegates.
- *
- * They are given indicies on an array you manage.
+ * Sort something via delegates.
+ * @param numElements The number of elements being sorted.
+ * @param cmp A delegate that takes two indices. Compare two elements,
+ * return true if the first parameter should be given precedence over
+ * the second.
+ * @param swap A delegate that gives two indices to swap.
  */
 fn runSort(numElements: size_t, cmp: CmpDg, swap: SwapDg)
 {
@@ -99,7 +102,7 @@ fn min(a: u64, b: u64) u64
 
 /*
  *
- * Sort helpers.
+ * Sort implementation.
  *
  */
 
