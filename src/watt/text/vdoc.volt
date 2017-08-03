@@ -462,9 +462,9 @@ fn getThing(ref p: Parser) string
 /*!
  * Decode until we're at the end of the string, or a non thing character.
  *
- * A thing is very losely defined as a character string that could be
- * ident or type. So `f32[4]` is a thing, as is `arr[4].field`. But
- * from `foo.` only `foo` is a thing, notince trainling `.` not included.
+ * A thing is very losely defined as a character string that could be ident or
+ * type. So `f32[4]` is a thing, as is `arr[4].field`. But from `foo.` only
+ * `foo` is a thing, notince that trailing `.` is not included.
  */
 fn getThing(ref src: SimpleSource) string
 {
