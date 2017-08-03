@@ -12,7 +12,9 @@ import watt.text.utf: encode;
 import watt.text.sink: StringSink;
 
 
-//! Thrown if a conversion couldn't be performed.
+/*!
+ * Exception that is thrown when a conversion fails.
+ */
 class ConvException : Exception
 {
 	this(msg: string)
@@ -21,7 +23,15 @@ class ConvException : Exception
 	}
 }
 
-//! Return @p s as lowercase, where possible.
+/*!
+ * Return the lowercase version of a string.  
+ * If a character in `s` can be represented as a lower case letter
+ * of some description, it is replaced with such. Otherwise, it remains
+ * intact.  
+ * ### Examples
+ *     toLower("APPLE");  // returns "apple"
+ *     toLower("BA(NA)NA 32%");  // returns "ba(na)na 32%"
+ */
 fn toLower(s: string) string
 {
 	dst: StringSink;
@@ -42,7 +52,14 @@ fn toLower(s: string) string
 	return dst.toString();
 }
 
-//! Return @p s as uppercase, where possible.
+/*!
+ * Return the uppercase version of a string.  
+ * If a character in `s` can be represented with an uppercase letter,
+ * that letter is replaced with such. Otherwise, the character remains
+ * intact.  
+ * ### Examples
+ *      toUpper("hellO THERE 32");  // returns "HELLO THERE 32"
+ */
 fn toUpper(s: string) string
 {
 	ns := new char[](s.length);
@@ -52,7 +69,12 @@ fn toUpper(s: string) string
 	return cast(string) ns;
 }
 
-//! Return a string as u64.
+/*!
+ * Parse `s` as an integer, and return it as a `u64`.  
+ * Throws a `ConvException` if `s` could not be converted.
+ * @param s The string to convert.
+ * @param base The base of `s`. 10 is the default.
+ */
 fn toUlong(s: const(char)[], base: i32 = 10) u64
 {
 	if (base > 10 || base <= 0) {
@@ -85,7 +107,12 @@ fn toUlong(s: const(char)[], base: i32 = 10) u64
 	return integer;
 }
 
-//! Return a string as an i64.
+/*!
+ * Parse `s` as an integer, and return it as an `i64`.  
+ * Throws a `ConvException` if `s` could not be converted.
+ * @param s The string to convert.
+ * @param base The base of `s`. 10 is the default.
+ */
 fn toLong(s: const(char)[], base: i32 = 10) i64
 {
 	multiply: i64 = 1;
@@ -97,21 +124,35 @@ fn toLong(s: const(char)[], base: i32 = 10) i64
 	return v * multiply;
 }
 
-//! Return a string as an i32.
+/*!
+ * Parse `s` as an integer, and return it as an `i32`.  
+ * Throws a `ConvException` if `s` could not be converted.
+ * @param s The string to convert.
+ * @param base The base of `s`. 10 is the default.
+ */
 fn toInt(s: const(char)[], base: i32 = 10) i32
 {
 	v := toLong(s, base);
 	return cast(i32)v;
 }
 
-//! Return a string as a u32.
+/*!
+ * Parse `s` as an integer, and return it as a `u32`.  
+ * Throws a `ConvException` if `s` could not be converted.
+ * @param s The string to convert.
+ * @param base The base of `s`. 10 is the default.
+ */
 fn toUint(s: const(char)[], base: i32 = 10) u32
 {
 	v := toUlong(s, base);
 	return cast(u32)v;
 }
 
-//! Return a u8 as a string.
+/*!
+ * Get a string from a given `u8`.
+ * ### Examples
+ *     toString(32);  // returns "32"
+ */
 fn toString(val: u8) const(char)[]
 {
 	ret: string;
@@ -122,7 +163,7 @@ fn toString(val: u8) const(char)[]
 	return ret;
 }
 
-//! Return an i8 as a string.
+//! Return an `i8` as a string.
 fn toString(val: i8) const(char)[]
 {
 	ret: string;
@@ -133,7 +174,7 @@ fn toString(val: i8) const(char)[]
 	return ret;
 }
 
-//! Return a u16 as a string.
+//! Return a `u16` as a string.
 fn toString(val: u16) const(char)[]
 {
 	ret: string;
@@ -144,7 +185,7 @@ fn toString(val: u16) const(char)[]
 	return ret;
 }
 
-//! Return an i16 as a string.
+//! Return an `i16` as a string.
 fn toString(val: i16) const(char)[]
 {
 	ret: string;
@@ -155,7 +196,7 @@ fn toString(val: i16) const(char)[]
 	return ret;
 }
 
-//! Return a u32 as a string.
+//! Return a `u32` as a string.
 fn toString(val: u32) const(char)[]
 {
 	ret: string;
@@ -166,7 +207,7 @@ fn toString(val: u32) const(char)[]
 	return ret;
 }
 
-//! Return an i32 as a string.
+//! Return an `i32` as a string.
 fn toString(val: i32) const(char)[]
 {
 	ret: string;
@@ -177,7 +218,7 @@ fn toString(val: i32) const(char)[]
 	return ret;
 }
 
-//! Return a u64 as a string.
+//! Return a `u64` as a string.
 fn toString(val: u64) const(char)[]
 {
 	ret: string;
@@ -188,7 +229,7 @@ fn toString(val: u64) const(char)[]
 	return ret;
 }
 
-//! Return an i64 as a string.
+//! Return an `i64` as a string.
 fn toString(val: i64) const(char)[]
 {
 	ret: string;
@@ -199,7 +240,7 @@ fn toString(val: i64) const(char)[]
 	return ret;
 }
 
-//! Return an f32 as a string.
+//! Return an `f32` as a string.
 fn toString(f: f32) const(char)[]
 {
 	ret: string;
@@ -213,7 +254,7 @@ fn toString(f: f32) const(char)[]
 	return ret;
 }
 
-//! Return an f64 as a string.
+//! Return an `f64` as a string.
 fn toString(f: f64) const(char)[]
 {
 	ret: string;
@@ -234,13 +275,13 @@ fn toString(p: void*) const(char)[]
 	return format("%s", toStringHex(u));
 }
 
-//! Return a boolean as "true" or "false".
+//! Return a `bool` as "true" or "false".
 fn toString(b: bool) const(char)[]
 {
 	return b ? "true": "false";
 }
 
-//! Return a dchar as a string.
+//! Return a `dchar` as a string.
 fn charToString(c: dchar) const(char)[]
 {
 	if ((cast(u32) c) >= 255) {
@@ -262,7 +303,7 @@ fn toStringHex(val: u64) const(char)[]
 	return ret;
 }
 
-//! Given a u8, return a binary string.
+//! Given a `u8`, return a binary string.
 fn toStringBinary(val: u8) const(char)[]
 {
 	str := new char[](8);
@@ -273,7 +314,7 @@ fn toStringBinary(val: u8) const(char)[]
 	return cast(const(char)[])str;
 }
 
-//! Given a u16, return a binary string.
+//! Given a `u16`, return a binary string.
 fn toStringBinary(val: u16) const(char)[]
 {
 	str := new char[](16);
@@ -284,7 +325,7 @@ fn toStringBinary(val: u16) const(char)[]
 	return cast(const(char)[])str;
 }
 
-//! Given a u32, return a binary string.
+//! Given a `u32`, return a binary string.
 fn toStringBinary(val: u32) const(char)[]
 {
 	str := new char[](32);
@@ -295,7 +336,7 @@ fn toStringBinary(val: u32) const(char)[]
 	return cast(const(char)[])str;
 }
 
-//! Given a u64, return a binary string.
+//! Given a `u64`, return a binary string.
 fn toStringBinary(val: u64) const(char)[]
 {
 	str := new char[](64);
@@ -306,32 +347,33 @@ fn toStringBinary(val: u64) const(char)[]
 	return cast(const(char)[])str;
 }
 
-//! Given an i8, return a binary string.
+//! Given an `i8`, return a binary string.
 fn toStringBinary(val: i8) const(char)[]
 {
 	return toStringBinary(cast(u8)val);
 }
 
-//! Given an i16, return a binary string.
+//! Given an `i16`, return a binary string.
 fn toStringBinary(val: i16) const(char)[]
 {
 	return toStringBinary(cast(u16)val);
 }
 
-//! Given an i32, return a binary string.
+//! Given an `i32`, return a binary string.
 fn toStringBinary(val: i32) const(char)[]
 {
 	return toStringBinary(cast(u32)val);
 }
 
-//! Given an i64, return a binary string.
+//! Given an `i64`, return a binary string.
 fn toStringBinary(val: i64) const(char)[]
 {
 	return toStringBinary(cast(u64)val);
 }
 
 /*!
- * Given a Volt string s, return a pointer to a nul terminated string.
+ * Given a Volt string s, return a pointer to a null terminated string.  
+ * This is for interfacing with C libraries.
  */
 fn toStringz(s: const(char)[]) const(char)*
 {
@@ -347,7 +389,7 @@ version (CRuntime_All) {
 	import core.c.stdlib : strtof, strtod;
 
 	/*!
-	 * Given a nul terminated string s, return a Volt string.
+	 * Given a null terminated string s, return a Volt string.
 	 */
 	fn toString(s: scope const(char)*) string
 	{
@@ -366,14 +408,14 @@ version (CRuntime_All) {
 		return cast(string) str;
 	}
 
-	//! Return a string as an f32.
+	//! Return a string as an `f32`.
 	fn toFloat(s: string) f32
 	{
 		cstr: const(char)* = toStringz(s);
 		return strtof(cstr, null);
 	}
 
-	//! Return a string as an f64.
+	//! Return a string as an `f64`.
 	fn toDouble(s: string) f64
 	{
 		cstr: const(char)* = toStringz(s);
