@@ -1,9 +1,7 @@
 // Copyright © 2013-2017, Bernard Helyer.  All rights reserved.
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-/*!
- * Functions to handle input and output to standard streams.
- */
+//! Defines standard streams, and some simple utility functions.
 module watt.io.std;
 
 version (CRuntime_All || Posix):
@@ -11,22 +9,17 @@ version (CRuntime_All || Posix):
 import core.varargs: va_list, va_start, va_end;
 import watt.io.streams;
 
-/*!
- * An @p OutputFileStream that outputs to @p stdout.
- */
+//! An `OutputFileStream` that outputs to `stdout`.
 global output: OutputFileStream;
-/*!
- * An @p OutputFileStream that outputs to @p stderr.
- */
+//! An `OutputFileStream` that outputs to `stderr`.
 global error: OutputFileStream;
-/*!
- * An @p InputFileStream that reads from @p stdin.
- */
+//! An `InputFileStream` that reads from `stdin`.
 global input: InputFileStream;
 
 /*!
- * Write @p s to @p output. Same as output.writeln.
- * @param[in] s An array of characters to be written to output.
+ * Write `s` to `output`.  
+ * Same as `output.write(s)`.
+ * @Param s An array of characters to be written to `output`.
  */
 fn write(s: const(char)[])
 {
@@ -34,9 +27,9 @@ fn write(s: const(char)[])
 }
 
 /*!
- * Write @p s to @p output, then write a newline character to @p output.
- * Same as output.writeln.
- * @param[in] s An array of characters to be written to @p output, before a newline.
+ * Write `s` to `output`, then write a newline character.  
+ * Same as `output.writeln(s)`.
+ * @Param s An array of characters to be written to `output`, before a newline.
  */
 fn writeln(s: const(char)[])
 {
@@ -44,9 +37,9 @@ fn writeln(s: const(char)[])
 }
 
 /*!
- * Write the string representation of an @p i32 to @p output.
- * Same as output.writefln("%s", i).
- * @param[in] i An @p i32 to write to @p output.
+ * Write the string representation of an `i32` to `output`.  
+ * Same as `output.writefln("%s", i)`.
+ * @Param i An `i32` to write to `output`.
  */
 fn writeln(i: i32)
 {
@@ -54,9 +47,9 @@ fn writeln(i: i32)
 }
 
 /*!
- * Write the string representation of a @p bool to @p output.
- * Same as output.writefln("%s", b).
- * @param[in] b A @p bool to write to @p output.
+ * Write the string representation of a `bool` to `output`.  
+ * Same as `output.writefln("%s", b)`.
+ * @Param b A `bool` to write to `output`.
  */
 fn writeln(b: bool)
 {
@@ -64,8 +57,8 @@ fn writeln(b: bool)
 }
 
 /*!
- * Write a newline to @output.
- * Same as output.writeln("").
+ * Write a newline to `output`.  
+ * Same as `output.writeln("")`.
  */
 fn writeln()
 {
@@ -73,10 +66,10 @@ fn writeln()
 }
 
 /*!
- * Format a string and write it to @p output.
- * See @p watt.text.format for format string documentation.
- * Same as output.writef(s, ...).
- * @param[in] s The format string.
+ * Format a string and write it to `output`.  
+ * See `watt.text.format` for format string documentation.  
+ * Same as `output.writef(s, ...)`.
+ * @Param s The format string.
  */
 fn writef(s: const(char)[], ...)
 {
@@ -87,10 +80,10 @@ fn writef(s: const(char)[], ...)
 }
 
 /*!
- * Format a string, write it to @p output, then output a newline.
- * See @p watt.text.format for format string documentation.
- * Same as output.writefln(s, ...).
- * @param[in] s The format string.
+ * Format a string, write it to `output`, then output a newline.  
+ * See `watt.text.format` for format string documentation.  
+ * Same as `output.writefln(s, ...)`.
+ * @Param s The format string.
  */
 fn writefln(s: const(char)[], ...)
 {
@@ -101,12 +94,14 @@ fn writefln(s: const(char)[], ...)
 }
 
 /*!
- * Read text from @p input.
- * @p readln blocks until the enter key has been pressed, and the
+ * Read text from `input`.
+ *
+ * Blocks until the enter key has been pressed, and the
  * text entered is returned. The newline character is not included
  * in the returned string.
- * Same as input.readln().
- * @return The text that was input on @p input, not including the newline.
+ *
+ * Same as `input.readln()`.
+ * @Returns The text that was input on `input`, not including the newline.
  */
 fn readln() string
 {
