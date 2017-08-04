@@ -14,11 +14,13 @@ Always try and think about what kind of questions someone unfamiliar with the mo
 
 ## Use Examples
 
-If a function is complicated, or even if it isn't, one of the most useful forms of documentation can be a few simple examples. Use markdown's headings to denote these, and then place a codeblock after that heading:
+If a function is complicated, or even if it isn't, one of the most useful forms of documentation can be a few simple examples. Use markdown's headings to denote these, and then place a volt codefence after that heading:
 
     ### Examples
-        doubleOpposite(32, "cat");  // Returns "64 dog"
-        doubleOpposite(6, "red");   // Returns "12 blue"
+    ```volt
+    doubleOpposite(32, "cat");  // Returns "64 dog"
+    doubleOpposite(6, "red");   // Returns "12 blue"
+    ```
 
 The heading should always be "Examples", (or "Example" if there is only one), and always use third level headings. Don't over do examples, but don't be afraid to add them. Use your best judgement.
 
