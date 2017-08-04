@@ -22,11 +22,16 @@ If a function is complicated, or even if it isn't, one of the most useful forms 
 
 The heading should always be "Examples", even if there is only one, and always use third level headings. Don't over do examples, but don't be afraid to add them. Use your best judgement.
 
-## Documentation Is At Minimum A Brief
+## Documentation Is At Least A Brief Or Return Documentation
 
 The shortest form of acceptable documentation (other than none) is a single sentence that describes what a function does. If this is all the documentation is, then use of single line comments is acceptable.
 
     //! Double an integer and get the opposite of a word.
+
+For simple query functions, you can often get away with no brief; just an `@returns` command.
+
+    //! @returns `true` if gravity applies to this object.
+    fn isAffectedByGravity() bool { ...
 
 If there is additional documentation, use a block comment (`/*!`) and the additional content doesn't come in the form of doxygen commands (`@return`, `@throw`, etc), end the first sentence line with two trailing spaces and continue writing on the next line.
 
@@ -71,3 +76,7 @@ In Markdown, if you \`wrap\` a word in backticks, it gets turned into a `<code>`
 ## Use Correct Grammar And Spelling
 
 Try your best, at least. Prefer British English spelling/grammar where possible, for uniformity with the rest of Volt.
+
+## Assorted Tips
+
+- Don't restate the type of a thing in the comment documenting that thing.
