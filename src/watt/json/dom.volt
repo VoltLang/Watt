@@ -1,7 +1,7 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Parse a JSON file into memory.
+//! Parse a [JSON](http://www.json.org) file into memory.
 module watt.json.dom;
 
 import watt.text.format;
@@ -17,15 +17,24 @@ class DOMException : JSONException
 	}
 }
 
+//! Identifies the JSON type of a `Value`.
 enum DomType
 {
+	//! A JSON value of `null`.
 	NULL,
+	//! A JSON value of `true` or `false`.
 	BOOLEAN,
+	//! A JSON value of a number with a decimal portion.
 	DOUBLE,
+	//! A JSON value of a signed integer.
 	LONG,
+	//! A JSON value of an unsigned integer.
 	ULONG,
+	//! A JSON string.
 	STRING,
+	//! A JSON object, everything between {}.
 	OBJECT,
+	//! A JSON array, everything between \[\].
 	ARRAY
 }
 
@@ -38,7 +47,7 @@ private fn enforceJEx(b: bool, msg: string = "Json type enforce failure.",
 }
 
 /*!
- * Represents a JSON value.
+ * A JSON value.
  */
 struct Value
 {
@@ -56,7 +65,7 @@ struct Value
 	private object: Value[string];
 
 	/*!
-	 * Returns the DomType of the value stored in this node.
+	 * @Returns The `DomType` of the value stored in this node.
 	 */
 	fn type() DomType
 	{
@@ -64,7 +73,8 @@ struct Value
 	}
 
 	/*!
-	 * Test whether the type is null.
+	 * Is this `Value` a JSON null type?
+	 * @Returns `true` if this is a null.
 	 */
 	fn isNull() bool
 	{
@@ -80,7 +90,8 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.BOOLEAN.
+	 * Get this as a boolean value.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.BOOLEAN`.
 	 */
 	fn boolean() bool
 	{
@@ -89,7 +100,7 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.BOOLEAN.
+	 * Set this `Value` as a `DomType.BOOLEAN`, and give it the value `b`.
 	 */
 	fn boolean(b: bool)
 	{
@@ -98,7 +109,8 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.STRING.
+	 * Get this as a string value.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.STRING`.
 	 */
 	fn str() string
 	{
@@ -107,7 +119,7 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.STRING.
+	 * Set this `Value` as a `DomType.STRING`, and give it the value `s`.
 	 */
 	fn str(s: string)
 	{
@@ -116,7 +128,8 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.LONG.
+	 * Get this as an integer value.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.LONG`.
 	 */
 	fn integer() i64
 	{
@@ -125,7 +138,7 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.LONG.
+	 * Set this `Value` as a `DomType.LONG`, and give it the value `l`.
 	 */
 	fn integer(l: i64)
 	{
@@ -134,7 +147,8 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.ULONG.
+	 * Get this as an unsigned integer value.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.ULONG`.
 	 */
 	fn unsigned() u64
 	{
@@ -143,7 +157,7 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.ULONG.
+	 * Set this `Value` as a `DomType.ULONG`, and give it the value `l`.
 	 */
 	fn unsigned(l: u64)
 	{
@@ -152,7 +166,8 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.DOUBLE.
+	 * Get this as a floating point value.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.DOUBLE`.
 	 */
 	fn floating() f64
 	{
@@ -161,7 +176,7 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.DOUBLE.
+	 * Set this `Value` as a `DomType.DOUBLE`, and give it the value `d`.
 	 */
 	fn floating(d: f64)
 	{
@@ -170,7 +185,8 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.ARRAY.
+	 * Get this as an array of `Value`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.ARRAY`.
 	 */
 	fn array() Value[]
 	{
@@ -179,7 +195,7 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.ARRAY.
+	 * Set this `Value` as a `DomType.ARRAY`, and give it the value `array`.
 	 */
 	fn array(array: Value[])
 	{
@@ -188,7 +204,8 @@ struct Value
 	}
 
 	/*!
-	 * Add value to the array.
+	 * Add `val` to this `Value`'s array.
+	 * @Throws `DOMException` if this is not a `DomType.ARRAY`.
 	 */
 	fn arrayAdd(val: Value)
 	{
@@ -197,7 +214,7 @@ struct Value
 	}
 
 	/*!
-	 * Set type as DomType.ARRAY.
+	 * Set type as `DomType.ARRAY`.
 	 */
 	fn setArray()
 	{
@@ -205,7 +222,9 @@ struct Value
 	}
 
 	/*!
-	 * Getter for DomType.OBJECT.
+	 * Retrieve a key from this `Value`.
+	 * @Throws `DOMException` if the lookup fails, or if this `Value` is not a
+	 * `DomType.OBJECT`.
 	 */
 	fn lookupObjectKey(s: string) Value
 	{
@@ -218,7 +237,9 @@ struct Value
 	}
 
 	/*!
-	 * Determines if this is an object with the given key.
+	 * Does this object have a key `s`?
+	 * @Returns `true` if this `Value` has the given key.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.OBJECT`.
 	 */
 	fn hasObjectKey(s: string) bool
 	{
@@ -227,16 +248,18 @@ struct Value
 	}
 
 	/*!
-	 * Setter for DomType.OBJECT.
+	 * Set this `Value` as an object, and set a key.
+	 * @Param k The key to set.
+	 * @Param v The value to associate with `k`.
 	 */
-	fn setObjectKey(s: string, v: Value)
+	fn setObjectKey(k: string, v: Value)
 	{
 		_type = DomType.OBJECT;
-		object[s] = v;
+		object[k] = v;
 	}
 
 	/*!
-	 * Set type as DomType.OBJECT.
+	 * Set type as `DomType.OBJECT`.
 	 */
 	fn setObject()
 	{
@@ -244,7 +267,8 @@ struct Value
 	}
 
 	/*!
-	 * If this is an object, retrieves the keys it has.
+	 * Retrieve all the keys associated with this `Value`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.OBJECT`.
 	 */
 	fn keys() string[]
 	{
@@ -253,7 +277,8 @@ struct Value
 	}
 
 	/*!
-	 * If this is an object, retrieves the values it has.
+	 * Retrieve all the values associated with this `Value`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.OBJECT`.
 	 */
 	fn values() Value[]
 	{
@@ -264,7 +289,7 @@ struct Value
 
 private enum LONG_MAX = 9223372036854775807UL;
 
-//! Parse a JSON string.
+//! Parse a JSON string into a `Value`.
 fn parse(s: string) Value
 {
 	val: Value;

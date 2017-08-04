@@ -12,7 +12,7 @@ import watt.conv: toLong, toUlong, toLower;
 
 
 /*!
- * Base Exception for the whole json module.
+ * Base `Exception` for the whole json package.
  */
 class JSONException : Exception
 {
@@ -23,7 +23,7 @@ class JSONException : Exception
 }
 
 /*!
- * Exception thrown when an error occurs during parsing.
+ * `Exception` thrown when an error occurs during parsing.
  */
 class ParseException : JSONException
 {
@@ -34,8 +34,8 @@ class ParseException : JSONException
 }
 
 /*!
- * Returns true if data contains a non-digit, character.
- * If signed is false, '-' will make this function return false.
+ * @Param signed If `false`, '-' will make this function return `false`.
+ * @Returns `true` if `data` contains a non-digit character.
  */
 fn canBeInteger(data: const(char)[], signed: bool) bool
 {
@@ -48,8 +48,8 @@ fn canBeInteger(data: const(char)[], signed: bool) bool
 }
 
 /*!
- * Parse a ulong from a JSON number string.
- * Returns true if a double was parsed, false otherwise.
+ * Parse a `u64` from a JSON number string.  
+ * @Returns `true` if a double was parsed.
  */
 fn parseUlong(data: const(char)[], out l: u64) bool
 {
@@ -61,8 +61,8 @@ fn parseUlong(data: const(char)[], out l: u64) bool
 }
 
 /*!
- * Parse a long from a JSON number string.
- * Returns true if a double was parsed, false otherwise.
+ * Parse an `i64` from a JSON number string.
+ * Returns `true` if a double was parsed.
  */
 fn parseLong(data: const(char)[], out l: i64) bool
 {
@@ -76,7 +76,7 @@ fn parseLong(data: const(char)[], out l: i64) bool
 /*!
  * Parse a double from a JSON number string.
  *
- * Returns true if a double was parsed, false otherwise.
+ * Returns `true` if a double was parsed, `false` otherwise.
  */
 fn parseDouble(data: const(char)[], out d: f64) bool
 {
@@ -88,7 +88,7 @@ fn parseDouble(data: const(char)[], out d: f64) bool
  * Parse a double from a JSON number string, using a pre allocated buffer,
  * resizing it if needed.
  *
- * Returns true if a double was parsed, false otherwise.
+ * Returns `true` if a double was parsed, `false` otherwise.
  */
 fn parseDouble(data: const(char)[], out d: f64, ref buffer: char[]) bool
 {
@@ -233,7 +233,7 @@ private fn simpleCharToHex(c: char, buffer: char*)
 }
 
 /*!
- * Escapes a JSON string and returns it.
+ * Escape a JSON string and return it.
  */
 fn escapeString(str: const(char)[]) const(char)[]
 {
@@ -242,7 +242,7 @@ fn escapeString(str: const(char)[]) const(char)[]
 }
 
 /*!
- * Escapes a JSON string and returns it, using a pre allocated buffer and
+ * Escape a JSON string and return it, using a pre allocated buffer and
  * resizing it if needed.
  */
 fn escapeString(str: const(char)[], ref buffer: char[]) const(char)[]

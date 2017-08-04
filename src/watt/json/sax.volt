@@ -1,7 +1,7 @@
 // Copyright © 2015, David Herberth.  All rights reserved.
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Parse JSON as a stream.
+//! Parse [JSON](http://www.json.org) as a stream.
 module watt.json.sax;
 
 import core.c.stdio: snprintf;
@@ -29,13 +29,20 @@ class BuilderException : util.JSONException
 	}
 }
 
+//! Type of a JSON value.
 enum Type
 {
+	//! A JSON `null` value.
 	NULL,
+	//! A JSON `true` or `false` value.
 	BOOLEAN,
+	//! A JSON number.
 	NUMBER,
+	//! A JSON string.
 	STRING,
+	//! A JSON object, everything between {}.
 	OBJECT,
+	//! A JSON array, everything between \[\].
 	ARRAY
 }
 
@@ -60,7 +67,7 @@ enum Event
 }
 
 /*!
- * Turn a *Event* into a human readable string.
+ * Turn an `Event` into a human readable string.
  */
 fn eventToString(event: Event) string
 {
@@ -84,7 +91,7 @@ fn eventToString(event: Event) string
 }
 
 /*!
- * Main class for parsing JSON.
+ * Parses JSON.
  */
 class SAX
 {
@@ -107,7 +114,7 @@ protected:
 
 public:
 	/*!
-	 * Creates a JSON object from an InputStream.
+	 * Creates a JSON object from an `InputStream`.
 	 */
 	this(source: InputStream, bufferSize: size_t = 65536, reallocSize: size_t = 16384) {
 		this.source = source;
@@ -140,11 +147,12 @@ public:
 	}
 
 	/*!
-	 * Continues parsing the input data and call the callback with the appropriate data.
+	 * Continues parsing the input data and calsl the callback with
+	 * the appropriate data.
 	 *
-	 * *data* is a slice to an internal buffer and will only be valid until the next
-	 * *get* call. strings and numbers still need to be further processed e.g. throught
-	 * *parseNumber* and *unescapeString*.
+	 * `data` is a slice to an internal buffer and will only be valid
+	 * until the next `get` call. Strings and numbers still need to be
+	 * further processed. e.g. through `parseNumber` and `unescapeString`.
 	 */
 	fn get(callback: scope dg (event: Event, data: const(u8)[]))
 	{
@@ -563,10 +571,12 @@ protected:
 
 public:
 	/*!
-	 * Creates a new *JSONBuilder* object.
+	 * Creates a new `JSONBuilder` object.
 	 *
-	 * *prettyPrint*: If true emit formatted JSON
-	 * *indent*: Only relevant if *prettyPrint* is enabled, sets the indentation per level.
+	 * @Param output The `OutputStream` to emit to.
+	 * @Param prettyPrint If true emit formatted JSON
+	 * @Param indent: Only relevant if `prettyPrint` is enabled,
+	 * sets the indentation per level.
 	 */
 	this(output: OutputStream, prettyPrint: bool = false, indent: const(char)[] = "    ")
 	{
@@ -631,8 +641,10 @@ public:
 	}
 
 	/*!
-	 * Writes a string, if *escape* is *true* (default) the string will
-	 * be escaped, set this to false if you want to write an already escaped string.
+	 * Writes a string.  
+	 * If `escape` is `true` (default) the string will
+	 * be escaped, set this to `false` if you want to write an
+	 * already escaped strings.
 	 */
 	fn buildString(str: const(char)[], escape: bool = true)
 	{
@@ -660,8 +672,8 @@ public:
 	}
 
 	/*!
-	 * Writes the start of a JSON object.
-	 * JSON keys are expected to be built with *buildString*.
+	 * Writes the start of a JSON object.  
+	 * JSON keys are expected to be built with `buildString`.
 	 */
 	fn buildObjectStart()
 	{
@@ -724,9 +736,10 @@ public:
 	}
 
 	/*!
-	 * Finalizes the JSON, this is optional but recommended to call,
+	 * Finalizes the JSON.  
+	 * This is optional but recommended,
 	 * it checks for malformed JSON and writes an additional newline
-	 * if *prettyPrint* is enabled.
+	 * if `prettyPrint` is enabled.
 	 */
 	fn finalize()
 	{
