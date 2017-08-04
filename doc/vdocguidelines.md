@@ -58,6 +58,14 @@ This forces a hard linebreak and stops the entire comment from running together 
      * @Throws A `ThisIntegerIsTooBigToDoubleException` if `i` is greater than `834`.
      */
 
+If you wish to make a larger break (an entire blank line) between paragraphs, you can simply enter a blank line, the trailing spaces are not needed in this case.
+
+    /*!
+     * This is the first paragraph, with no trailing spaces.
+     * 
+     * And this the second paragraph, that is displayed after a blank line.
+     */
+
 ## Documentation Is Made Of Sentences, And Sentences Start With A Capital And End With A Full Stop
 
 This one sounds simple, and it is. Documentation is a series of sentences, and sentences follow the standard English form. In particular, this includes after commands.
