@@ -92,3 +92,4 @@ Try your best, at least. Prefer British English spelling/grammar where possible,
 - Don't restate the type of a thing in the comment documenting that thing.
 - Use uppercase commands, and the versions that end in 's' (@Param, @Returns, @Throws, etc).
 - @Throw commands take a typename, and typenames are always wrapped in backticks.
+- ``s/@Returns `true` if blah, `false` otherwise/@Returns `true` if blah./g`` 
