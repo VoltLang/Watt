@@ -20,7 +20,7 @@ version(Windows) {
 	alias getOutput = getOutputWindows;
 
 	/*!
-	 * Run the given command and read back the output into a string.
+	 * Run the given command and read back the output into a string.  
 	 * Waits for the command to complete before returning.
 	 */
 	fn getOutputWindows(cmd: string, args: string[]) string
@@ -88,7 +88,7 @@ version(Posix) {
 	alias getOutput = getOutputPosix;
 
 	/*!
-	 * Run the given command and read back the output into a string.
+	 * Run the given command and read back the output into a string.  
 	 * Waits for the command to complete before returning.
 	 */
 	fn getOutputPosix(cmd: string, args: string[]) string

@@ -9,7 +9,7 @@ import watt.text.ascii;
 
 
 /*!
- * Surround the string with " and escape " and / with /.
+ * Surround the string with " and escape " and /.
  */
 fn escapeAndAddQuotation(sink: Sink, str: SinkArg) void
 {
@@ -25,7 +25,7 @@ fn escapeAndAddQuotation(sink: Sink, str: SinkArg) void
 }
 
 /*!
- * Returns a textual representation of the command and args
+ * Returns a textual representation of `cmd` and `args`
  * that can be passed to "/bin/sh -c".
  */
 fn toArgsPosix(cmd: SinkArg, args: SinkArg[]) char*
@@ -53,7 +53,7 @@ private enum ArgumentParseState {
 }
 
 /*!
- * Parser a string as a series of arguments, just like bash/make does.
+ * Parse a string as a series of arguments, just like bash/make does.
  */
 fn parseArguments(str: SinkArg) string[]
 {

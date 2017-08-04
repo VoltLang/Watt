@@ -87,8 +87,8 @@ fn degrees(rads: f64) f64
 /*!
  * Raise the value to the given (positive or negative) power.
  *
- * @param value The value to power.
- * @param power Number to reaise the value with.
+ * @Param value The value to power.
+ * @Param power Number to reaise the value with.
  * @{
  */
 @mangledName("llvm.pow.f32") fn pow(value: f32, power: f32) f32;
@@ -96,7 +96,7 @@ fn degrees(rads: f64) f64
 //! @}
 
 /*!
- * Return the absolute of value.
+ * @Returns the absolute value of the given argument.
  * @{
  */
 @mangledName("llvm.fabs.f32") fn abs(f32) f32;

@@ -84,7 +84,7 @@ class ProcessException : Exception
 	}
 }
 
-//! Search the CWD and PATH for the given command.
+//! Search the current working directory and PATH for the given command.
 fn getCommandFromName(name: string) string
 {
 	if (name is null) {
@@ -106,7 +106,7 @@ fn getCommandFromName(name: string) string
 }
 
 /*!
- * Start a process from the executable @p name and with the given @p args.
+ * Start a process from the executable `name` and with the given `args`.
  * @{
  */
 version (CRuntime_All)
@@ -197,7 +197,7 @@ fn searchPath(cmd: string, path: string = null) string
 	return null;
 }
 
-//! Get an environmental variable, or null if it doesn't exist.
+//! Get an environmental variable, or `""` if it doesn't exist.
 fn getEnv(env: string) string
 {
 	ptr := getenv(toStringz(env));
@@ -208,7 +208,7 @@ fn getEnv(env: string) string
 	}
 }
 
-//! Run a command through the libc system function.
+//! Run a command through the libc `system` function.
 fn system(name: string) i32
 {
 	return csystem(toStringz(name));

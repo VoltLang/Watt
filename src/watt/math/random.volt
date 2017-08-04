@@ -4,10 +4,12 @@
 module watt.math.random;
 
 
-//! Default RandomGenerator.
+//! Default `RandomGenerator`.
 alias RandomGenerator = MersenneTwisterEngine;
 
-//! Mersenne Twister engine, adapted from Phobos's std.random.
+// Adapted from Phobos's std.random.
+
+//! Mersenne Twister engine.
 struct MersenneTwisterEngine
 {
 public:
@@ -56,8 +58,8 @@ public:
 
 public:
 	/*!
-	 * Seed this generator with the given 32 bit value.
-	 * See @p watt.io.seed for ways to get a good random seed.
+	 * Seed this generator with the given 32 bit value.  
+	 * See `watt.io.seed` for ways to get a good random seed.
 	 */
 	fn seed(value: u32 = 5489U/*defaultSeed*/)
 	{
@@ -110,7 +112,7 @@ public:
 		_y = cast(u32) y;
 	}
 
-	//! Returns the current random value.
+	//! @Returns The current random value.
 	@property fn front() u32
 	{
 		if (!inited) {
@@ -119,13 +121,13 @@ public:
 		return _y;
 	}
 
-	//! Return a copy of this generator in its current state.
+	//! @Returns a copy of this generator in its current state.
 	@property fn save() MersenneTwisterEngine
 	{
 		return this;
 	}
 
-	//! Is this generator out of numbers? Always false.
+	//! Is this generator out of numbers? Always `false`.
 	@property fn empty() bool
 	{
 		return false;
@@ -133,7 +135,7 @@ public:
 
 	/*!
 	 * Generate an integer.
-	 * @return A value >= to @p lower and < @p upper.
+	 * @Returns A value >= to `lower` and < `upper`.
 	 * @{
 	 */
 	fn uniformU32(lower: u32, upper: u32) u32

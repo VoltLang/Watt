@@ -5,8 +5,8 @@ module watt.math.introspection;
 
 
 /*!
- * Is the given value signalling NaN?
- * @return Non-zero if @p d is nan.
+ * Is the given value signalling NaN?  
+ * @Returns Non-zero if `d` is nan.
  * @{
  */
 fn isnan(d: f64) i32
@@ -21,8 +21,8 @@ fn isnan(f: f32) i32
 //! @}
 
 /*!
- * Is the given value signalling infinity?
- * @return Non-zero if @p d is infinite.
+ * Is the given value signalling infinity?  
+ * @Returns Non-zero if `d` is infinite.
  * @{
  */
 fn isinf(d: f64) i32
