@@ -20,7 +20,7 @@ If a function is complicated, or even if it isn't, one of the most useful forms 
         doubleOpposite(32, "cat");  // Returns "64 dog"
         doubleOpposite(6, "red");   // Returns "12 blue"
 
-The heading should always be "Examples", even if there is only one, and always use third level headings. Don't over do examples, but don't be afraid to add them. Use your best judgement.
+The heading should always be "Examples", (or "Example" if there is only one), and always use third level headings. Don't over do examples, but don't be afraid to add them. Use your best judgement.
 
 ## Documentation Is At Least A Brief Or Return Documentation
 
