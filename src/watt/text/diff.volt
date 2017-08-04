@@ -6,8 +6,8 @@ import watt.text.string;
 
 /*!
  * Print the difference between two strings, line-by-line, to stdout.
- * @param a The first string to compare.
- * @param b The second string to compare.
+ * @Param a The first string to compare.
+ * @Param b The second string to compare.
  */
 fn diff(a: const(char)[], b: const(char)[]) void
 {
