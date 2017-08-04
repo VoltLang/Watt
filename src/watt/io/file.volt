@@ -2,7 +2,9 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 /*!
  * Simple filesystem operation functions.
- * Functions for reading an entire file into memory, check if a file exists, deleting a file, searching a directory for a file, and so on.
+ *
+ * Functions for reading an entire file into memory, to check if a file exists,
+ * for deleting a file, searching a directory for a file, and so on.
  */
 module watt.io.file;
 
@@ -21,7 +23,7 @@ version (Windows) {
 
 
 /*!
- * Exception thrown upon failure of file functions.
+ * An `Exception` thrown upon failure of this module's functions.
  */
 class FileException : Exception
 {
@@ -32,15 +34,20 @@ class FileException : Exception
 }
 
 /*!
- * Read a file into an array.
- * Read the contents of the file pointed to by @p filename into a @p void[] array.
+ * Read a file into an array.  
+ * Read the contents of the file pointed to by `filename` into a `void[]` array.
  * The intepretation is left up to the caller.
- * (That is to say, you have to cast it to a @p u8[] or @p string, as your use case
- * demands). The entire file is read at once, so be wary of using this function for
+ *
+ * For example, if you want to treat the data as a string:
+ * ```volt
+ * str := cast(string)read("file.txt");
+ * ```
+ *
+ * The entire file is read into memory at once, so be wary of using this function for
  * very large files.
- * @param filename The filename to read.
- * @return The entire contents of the file.
- * @throw FileException The file cannot be read.
+ * @Param filename The filename to read.
+ * @Returns The entire contents of the file.
+ * @Throws `FileException` If the file cannot be read.
  */
 fn read(filename: string) void[]
 {
@@ -80,8 +87,19 @@ fn read(filename: string) void[]
 }
 
 /*!
- * Check if @p path matches @p pattern.
- * Supports '*' and '?' wild cards. '*' matches zero or more characters, and '?' matches a single character.
+ * Check if `path` matches `pattern`.  
+ * `pattern` is treated as a regular string except for two special characters:
+ * - `*` matches zero or more characters.
+ * - `?` matches a single character.
+ * ### Examples
+ * ```volt
+ * globMatch("file.txt", "file.txt");       // true
+ * globMatch("file.txt", "file.txtextra");  // false
+ * globMatch("file.txt", "*.txt");          // true
+ * globMatch("file.txt", "*.???");          // true
+ * globMatch("file.txt", "*.??");           // false
+ * ```
+ * @Returns `true` if `pattern` matches `path`.
  */
 fn globMatch(path: string, pattern: string) bool
 {
@@ -129,8 +147,14 @@ fn globMatch(path: string, pattern: string) bool
 }
 
 /*!
- * Call @p dgt for every file in @p dirName that matches @p glob.
- * @throw FileException If @p dirName could not be opened.
+ * Call a delegate for file in a directory that matches a given pattern.  
+ * @Param dirName The directory to search the contents of.
+ * @Param glob The pattern to check every entry in `dirName` against.
+ * The matching rules are the same as the `pattern` parameter of
+ * the `globMatch` function.
+ * @Param dgt A delegate that is called with every path in `dirName` that
+ * matches `glob`.
+ * @Throws `FileException` If `dirName` could not be opened or read.
  */
 fn searchDir(dirName: string, glob: string, dgt: scope dg(string))
 {
@@ -188,7 +212,9 @@ private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: s
 }
 
 /*!
- * Determine if @p path is exists and is not a directory.
+ * Is a given path a file?  
+ * For example, a directory would not be classified as a file.
+ * @Returns `true` if `path` points to a file.
  */
 fn isFile(path: scope const(char)[]) bool
 {
@@ -196,7 +222,9 @@ fn isFile(path: scope const(char)[]) bool
 }
 
 /*!
- * Determine if @p path exists and is a directory.
+ * Is a given path a directory?  
+ * For example, a file is not a directory.
+ * @Returns `true` if `path` points to a directory.
  */
 fn isDir(path: scope const(char)[]) bool
 {
@@ -221,11 +249,12 @@ fn isDir(path: scope const(char)[]) bool
 }
 
 /*!
- * Determine if @p filename exists.
+ * Does a given path exist?
+ * @Returns `true` if `path` exists.
  */
-fn exists(filename: const(char)[]) bool
+fn exists(path: const(char)[]) bool
 {
-	fp := fopen(toStringz(filename), "r");
+	fp := fopen(toStringz(path), "r");
 	if (fp is null) {
 		return false;
 	}
@@ -234,12 +263,17 @@ fn exists(filename: const(char)[]) bool
 }
 
 /*!
- * Delete the file given by @p filename.
- * @throw FileException if the file could not be deleted.
+ * Delete a file pointed to by a given path.
+ *
+ * This could fail for a number of reasons.  
+ * As the functions in this module are intended to be simple,
+ * more detailed failure information is not available. If you need
+ * more information, use the functions provided by your operating system.
+ * @Throws `FileException` if the file could not be deleted for some reason.
  */
-fn remove(filename: const(char)[])
+fn remove(path: const(char)[])
 {
-	if (unlink(toStringz(filename)) != 0) {
+	if (unlink(toStringz(path)) != 0) {
 		throw new FileException("couldn't delete file");
 	}
 }
