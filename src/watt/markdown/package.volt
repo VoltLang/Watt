@@ -1,6 +1,6 @@
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Main importer for markdown parser.
+//! Parse markdown.
 module watt.markdown;
 
 import watt.text.sink : Sink;
@@ -18,6 +18,9 @@ fn filterMarkdown(src: string) string
 	return printHtml(doc);
 }
 
+/*!
+ * Given a markdown string, put a string of HTML in `sink`.
+ */
 fn filterMarkdown(sink: Sink, src: string)
 {
 	doc := parse(src);
