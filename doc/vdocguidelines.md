@@ -90,3 +90,5 @@ Try your best, at least. Prefer British English spelling/grammar where possible,
 ## Assorted Tips
 
 - Don't restate the type of a thing in the comment documenting that thing.
+- Use uppercase commands, and the versions that end in 's' (@Param, @Returns, @Throws, etc).
+- @Throw commands take a typename, and typenames are always wrapped in backticks.
