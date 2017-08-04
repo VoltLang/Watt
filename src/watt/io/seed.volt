@@ -2,7 +2,8 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 /*!
- * Get a seed value from the hardware that is suitable for seeding a random number generator.
+ * Get a random 32 bit number from the Operating System.  
+ * This number is ideal for seeding random number generators.
  */
 module watt.io.seed;
 
@@ -10,8 +11,11 @@ import core.exception;
 import core.c.windows.windows;
 
 /*!
- * Get a random @p u32.
- * @return A random @p u32, suitable for seeding a random number generator.
+ * Get a random unsigned 32 bit integer.
+ *
+ * This is sourced from the hardware or a strong source provided
+ * by the Operating System, where possible. Intended to be used for
+ * random number generator seed values.
  */
 fn getHardwareSeedU32() u32
 {
