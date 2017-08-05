@@ -1,7 +1,7 @@
 // Copyright © 2015, David Herberth.  All rights reserved.
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Parse [JSON](http://www.json.org) as a stream.
+//! Parse JSON as a stream.
 module watt.json.sax;
 
 import core.c.stdio: snprintf;
