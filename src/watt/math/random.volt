@@ -34,6 +34,13 @@ alias RandomGenerator = MersenneTwisterEngine;
 struct MersenneTwisterEngine
 {
 public:
+	//! Smallest generated value.
+	enum u32 min = 0;
+	//! Largest generated value.
+	// u32.max >>> (uint.sizeof * 8 - w)
+	enum u32 max = 0xFFFFFFFFU;//_FFFFFFFFU;
+
+private:
 	enum u32 MT_W = 32U;
 	enum u32 MT_SZ = 4U;
 	enum u32 MT_N = 624U;
@@ -66,16 +73,6 @@ public:
 	enum u32 temperingT  = MT_T;
 	enum u32 temperingC  = MT_C;
 	enum u32 temperingL  = MT_L;
-
-	//! Smallest generated value.
-	enum u32 min = 0;
-	//! Largest generated value.
-	// u32.max >>> (uint.sizeof * 8 - w)
-	enum u32 max = 0xFFFFFFFFU;//_FFFFFFFFU;
-	enum u32 defaultSeed = 5489U;
-
-public:
-	_y: u32;// = cast(u32) -1;
 
 public:
 	/*!
@@ -266,7 +263,8 @@ public:
 	}
 
 private:
-	private mt: u32[624/*MT_N*/];
-	private mti: u32;// = cast(uint) -1;
-	private inited: bool;
+	mt: u32[624/*MT_N*/];
+	mti: u32;// = cast(uint) -1;
+	inited: bool;
+	_y: u32;// = cast(u32) -1;
 }
