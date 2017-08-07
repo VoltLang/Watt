@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 # Style Guide
 
 ## Why?

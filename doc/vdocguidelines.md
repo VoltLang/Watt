@@ -1,3 +1,7 @@
+---
+layout: page
+---
+
 # VDoc Style Guide
 
 Volt, by default, provides you with VDoc for automatic documentation generation. VDoc is an unholy combination of doxygen and markdown. This document won't get into the details of either; see the existing documentation for real world examples. What we're concerned with here is consitency amongst official Volt projects. Independent projects can follow these, but are certainly under no compulsion to do so.
