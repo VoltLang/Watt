@@ -1,0 +1,56 @@
+---
+layout: page
+title: Welcome to Watt
+---
+
+<h1>Watt, Volt's Standard Library</h1>
+<p>Watt is a collection of modules that are useful enough, and used often enough, that they are shipped with the Volt compiler. Together they make up Volt's standard library.</p>
+<p>The library is divided into modules and packages, described below.</p>
+
+<h2>Package <code>watt.*</code></h2>
+<p>The <code>watt</code> package contains all other packages, and is home to some modules that are very widely used.</p>
+<ul>
+	<li><p><a href='{{ "watt.algorithm" | vdoc_find_url }}'>watt.algorithm</a> contains functions implementing fundamental algorithms, and often used utility functions, like <code>max</code> and <code>min</code>.</p></li>
+	<li><p><a href='{{ "watt.conv" | vdoc_find_url }}'>watt.conv</a> contains functions dealing with converting strings to integers, integers to strings, integers to different types of integers, and so on.</p></li>
+	<li><p><a href='{{ "watt.path" | vdoc_find_url }}'>watt.path</a> assists in dealing with paths; finding the path to the currently running executable, returning the extension of a filename, getting a full path from a relative path, and so on.</p></li>
+	<li><p><a href='{{ "watt.http" | vdoc_find_url }}'>watt.http</a> is a package module (a package that can be imported as if it were a module) that provides a simple interface for using HTTP.</p></li>
+	<li><p><a href='{{ "watt.process" | vdoc_find_url }}'>watt.process</a> is a package module that provides facilities for spawning new processes, reading environmental variables, running and capturing the output of a command.</p></li>
+	<li><p><a href='{{ "watt.json" | vdoc_find_url }}'>watt.json</a> is a package module that contains a DOM and SAX parser for <a href="http://www.json.org">JSON</a> text.</p></li>
+	<li><p><a href='{{ "watt.markdown" | vdoc_find_url }}'>watt.markdown</a> is a package module that contains a <a href="https://www.commonmark.org">CommonMark</a> Markdown parser.</p></li>
+</ul>
+
+<h2>Package <code>watt.io.*</code></h2>
+<p>The <code>watt.io</code> package contains modules that deal with <strong>i</strong>nput and <strong>o</strong>utput intended for use or consumption by humans.</p>
+<ul>
+	<li><p><a href='{{ "watt.io.file" | vdoc_find_url }}'>watt.io.file</a> contains simple functions for dealing with files. Functions for reading an entire file into memory, check if a file exists, deleting a file, searching a directory for a file, and so on.</p></li>
+	<li><p><a href='{{ "watt.io.monotonic" | vdoc_find_url }}'>watt.io.monotonic</a> contains functions for getting precise timing information from the OS.</p></li>
+	<li><p><a href='{{ "watt.io.seed" | vdoc_find_url }}'>watt.io.seed</a> contains the function <code>getHardwareSeedU32</code>, that gets a random seed number from the OS that is suitable for seeding a random number generator.</p></li>
+	<li><p><a href='{{ "watt.io.std" | vdoc_find_url }}'>watt.io.std</a> contains the declarations of the standard output, input, and error streams, and some global shortcut functions for dealing with them, like <code>writeln</code> and <code>readln</code>.
+	<li><p><a href='{{ "watt.io.streams" | vdoc_find_url }}'>watt.io.streams</a> is a package module that provides a stream interface (interfaces for reading and writing to things, one character at a time), and provides implementations based on C's <code>FILE</code> pointers, and posix file descriptors.</p></li>
+</ul>
+
+<h2>Package <code>watt.math.*</code></h2>
+<p>The <code>watt.math</code> package contains modules that deal with numbers.</p>
+<ul>
+	<li><p><a href='{{ "watt.math.floating" | vdoc_find_url }}'>watt.math.floating</a> is imported by <code>math</code>'s package module, and contains most of the 'normal' math constant and functions; <code>sin</code>, <code>sqrt</code>, <code>PI</code>, etc.</p></li>
+	<li><p><a href='{{ "watt.math.introspection" | vdoc_find_url }}'>watt.math.introspection</a> is imported by <code>math</code>'s package module, and contains some functions for detecting 'special' floating point values like infinity, and NaN.</p></li>
+	<li><p><a href='{{ "watt.math.random" | vdoc_find_url }}'>watt.math.random</a> contains a psuedo-random number generator.</p></li>
+</ul>
+
+<h2>Package <code>watt.text.*</code></h2>
+<p>The <code>watt.text</code> package contains modules that process text of various formats and purposes.</p>
+<ul>
+	<li><p><a href='{{ "watt.text.ascii" | vdoc_find_url }}'>watt.text.ascii</a> contains functions that classify characters that fall in the ASCII range.</p></li>
+	<li><p><a href='{{ "watt.text.demangle" | vdoc_find_url }}'>watt.text.demangle</a> contains functions for demangling Volt symbols.</p></li>
+	<li><p><a href='{{ "watt.text.diff" | vdoc_find_url }}'>watt.text.diff</a> processes two strings and outputs the difference between the two.</p></li>
+	<li><p><a href='{{ "watt.text.format" | vdoc_find_url }}'>watt.text.format</a> contains the function <code>format</code>, a function that allows a string to be formatted according to input and a format string.</p></li>
+	<li><p><a href='{{ "watt.text.getopt" | vdoc_find_url }}'>watt.text.getopt</a> contains a suite of functions for processing command line arguments in a simple way.</p></li>
+	<li><p><a href='{{ "watt.text.html" | vdoc_find_url }}'>watt.text.html</a> contains some functions for dealing with HTML text.</p></li>
+	<li><p><a href='{{ "watt.text.path" | vdoc_find_url }}'>watt.text.path</a> is a module that normalises file path strings.</p></li>
+	<li><p><a href='{{ "watt.text.semver" | vdoc_find_url }}'>watt.text.semver</a> is a module that provides facilities for parsing <a href="http://www.semver.org">Semantic Versioning</a> strings.</p></li>
+	<li><p><a href='{{ "watt.text.sink" | vdoc_find_url }}'>watt.text.sink</a> provides a facility for building long strings of text efficiently.</p></li>
+	<li><p><a href='{{ "watt.text.source" | vdoc_find_url }}'>watt.text.source</a> contains a <code>Source</code> class intended for computer language processing applications' parsing/lexing phases.</p></li>
+	<li><p><a href='{{ "watt.text.string" | vdoc_find_url }}'>watt.text.string</a> has multiple functions dealing with simple string processing operations, like stripping, replacing and finding substrings, and so on.</p></li>
+	<li><p><a href='{{ "watt.text.utf" | vdoc_find_url }}'>watt.text.utf</a> has functions for decoding and encoding UTF-8 strings and characters.</p></li>
+	<li><p><a href='{{ "watt.text.vdoc" | vdoc_find_url }}'>watt.text.vdoc</a> has functions for dealing with vdoc (Volt's documentation comment syntax) strings.</p></li>
+</ul>
