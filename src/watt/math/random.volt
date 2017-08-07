@@ -1,6 +1,23 @@
 // Copyright © 2015-2016, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! A psuedo-random number generator.
+/*!
+ * A psuedo-random number generator.
+ *
+ * A [psuedorandom number generator](https://en.wikipedia.org/wiki/Pseudorandom_number_generator)
+ * generates a sequence of numbers that appear to be random.  
+ * The generator in this module is instanced, not global. That is to say, you declare a `struct`,
+ * and it holds the RNG state:
+ * ```volt
+ * rng: RandomGenerator;
+ * rng.seed(32);
+ * val := rnd.uniformI32(0, 100);
+ * ```
+ * Given the same seed, a RNG should generate the same sequence of numbers. Often, the output of
+ * the C library function `time` is used to get a random seed value, but this is often not ideal.
+ * Operating Systems usually provide hardware randomness, or at least stronger randomness, and
+ * using that generator to get a seed value is recommended.  
+ * See the module [watt.io.seed](mod_watt.io.seed.html) for a function for retrieving a value for the seed.
+ */
 module watt.math.random;
 
 
@@ -9,7 +26,10 @@ alias RandomGenerator = MersenneTwisterEngine;
 
 // Adapted from Phobos's std.random.
 
-//! Mersenne Twister engine.
+/*!
+ * A generator implemented with the [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister)
+ * algorithm.
+ */
 struct MersenneTwisterEngine
 {
 public:
@@ -58,8 +78,22 @@ public:
 
 public:
 	/*!
-	 * Seed this generator with the given 32 bit value.  
-	 * See `watt.io.seed` for ways to get a good random seed.
+	 * Seed this generator with the given 32 bit value.
+	 *
+	 * The seed value determines the consequent values retrieved from this generator.
+	 * Given two generators with the same seed, and the same generation functions
+	 * (`uniformI32`, etc), both generators will generate the same values.  
+	 * See [watt.io.seed](mod_watt.io.seed.html) for ways to get a good random seed.
+	 * ### Example
+	 * ```volt
+	 * rnga: MersenneTwisterEngine;
+	 * rnga.seed(42);
+	 * rngb: MersenneTwisterEngine;
+	 * rngb.seed(42);
+	 * assert(rnga.front == rngb.front);
+	 * rnga.popFront(); rngb.popFront();
+	 * assert(rnga.front == rngb.front);
+	 * ```
 	 */
 	fn seed(value: u32 = 5489U/*defaultSeed*/)
 	{
@@ -71,7 +105,18 @@ public:
 		popFront();
 	}
 
-	//! Advances the generator.
+	/*!
+	 * Advance this generator.
+	 *
+	 * Changes the value of `front`.
+	 * ### Example
+	 * ```volt
+	 * rng: RandomGenerator;
+	 * a := rng.front;
+	 * rng.popFront();
+	 * assert(a != rng.front);  // Probably true. Maybe not.
+	 * ```
+	 */
 	fn popFront()
 	{
 		if (!inited) {
@@ -112,7 +157,18 @@ public:
 		_y = cast(u32) y;
 	}
 
-	//! @Returns The current random value.
+	/*!
+	 * This generator's current value.
+	 *
+	 * Calling this multiple times
+	 * without calling `popFront` will result in the same value.
+	 * ### Example
+	 * ```volt
+	 * rng: RandomGenerator;
+	 * assert(rng.front == rng.front);
+	 * ```
+	 * @Returns The current random value.
+	 */
 	@property fn front() u32
 	{
 		if (!inited) {
@@ -121,22 +177,41 @@ public:
 		return _y;
 	}
 
-	//! @Returns a copy of this generator in its current state.
+	/*!
+	 * Copy this generator.
+	 *
+	 * Generators are `struct`s, so mutating the value returned by this
+	 * function (through `popFront`, etc) will not modify the original generator.  
+	 * ### Example
+	 * ```volt
+	 * rng: RandomGenerator;
+	 * rng2 := rng.save();
+	 * while (rng2.front == rng.front) rng2.popFront();
+	 * assert(rng2.front != rng.front);
+	 * ```
+	 * @Returns a copy of this generator in its current state.
+	 */
 	@property fn save() MersenneTwisterEngine
 	{
 		return this;
 	}
 
-	//! Is this generator out of numbers? Always `false`.
+	/*!
+	 * Is this generator out of values?
+	 *
+	 * This will never be `true` in any current implementation.
+	 */
 	@property fn empty() bool
 	{
 		return false;
 	}
 
 	/*!
-	 * Generate an integer.
-	 * @Returns A value >= to `lower` and < `upper`.
-	 * @{
+	 * Generate a `u32` value within a range.
+	 *
+	 * Note that `lower` is inclusive, `upper` is exclusive.  
+	 * @SideEffects The generator is advanced. (`front` will change).
+	 * @Returns A value greater than or equal to `lower` but less than `upper`.
 	 */
 	fn uniformU32(lower: u32, upper: u32) u32
 	{
@@ -145,13 +220,27 @@ public:
 		return cast(u32)(lower + (upper - lower) * cast(f64)(base - RandomGenerator.min) / (RandomGenerator.max - RandomGenerator.min));
 	}
 
+	/*!
+	 * Generate an `i32` value within a range.
+	 *
+	 * Note that `lower` is inclusive, `upper` is exclusive.
+	 * @SideEffects The generator is advanced. (`front` will change).
+	 * @Returns A value greater than or equal to `lower` but less than `upper`.
+	 */
 	fn uniformI32(lower: i32, upper: i32) i32
 	{
 		return cast(i32)uniformU32(cast(u32)lower, cast(u32)upper);
 	}
-	//! @}
 
-	//! Generate a random string @p length long.
+	/*!
+	 * Generate a random `string`.
+	 *
+	 * The `string` will be comprised of digits and letters (upper and lowercase) in equal
+	 * distribution.
+	 * @Param length The length of the `string` to generate, in characters.
+	 * @SideEffects The generator is advanced `length` times.
+	 * @Returns A `string` that is `length` characters long.
+	 */
 	fn randomString(length: size_t) string
 	{
 		str := new char[](length);
