@@ -118,7 +118,8 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
 
 /*!
  * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
- * and put into `_string`. Both the flag and argument are then removed from `args`.  
+ * and put into `_string`. Both the flag and argument are then removed from `args`.
+ *
  * String arguments can be supplied in multiple ways:
  *  - By being the next element: `["--string", "foo"] // _string is assigned "foo".`
  *  - By being divided by an = character: `["--string=foo"] // _string is assigned "foo".`
@@ -146,7 +147,8 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
 
 /*!
  * Given an array of strings, args, and a list of strings separated by a | character, description,
- * remove any strings in `args[1 .. $]` that start with '-' and contain any of the description strings.  
+ * remove any strings in `args[1 .. $]` that start with '-' and contain any of the description strings.
+ *
  * Sets `_bool` to `true` if `args` was modified.
  */
 fn getopt(ref args: string[], description: string, ref _bool: bool)
@@ -168,7 +170,8 @@ fn getopt(ref args: string[], description: string, dgt: scope dg (string))
 }
 
 /*!
- * Returns the first element in `args[1 .. $]` that starts with a -, or an empty string otherwise.  
+ * Returns the first element in `args[1 .. $]` that starts with a -, or an empty string otherwise.
+ *
  * This is intended for error handling purposes:
  *
  *      auto flag = remainingOptions(args);

@@ -25,6 +25,7 @@ alias ticks = vrt_monotonic_ticks;
 
 /*!
  * Convert a time from one frequency to another.
+ *
  * ### Example
  * ```volt
  * origin := ticks();

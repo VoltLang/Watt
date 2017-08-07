@@ -38,6 +38,7 @@ fn printDiff(c :size_t[], w: size_t,
 
 /*!
  * Generate a longest common substring (LCS) matrix.
+ *
  * c contains the values, w contains the width of the matrix.
  */
 fn lcs(a: const(char)[][], b: const(char)[][],

@@ -95,7 +95,7 @@ fn encode(dgt: Sink, c: dchar) void
 }
 
 //! Encode c as UTF-8.
-//! Needs to be called nogc due to overload bug.
+// Needs to be called nogc due to overload bug.
 alias encodeNoGC = vrt_encode_static_u8;
 
 version (Windows) {

@@ -1,7 +1,8 @@
 // Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
 /*!
- * Provides a simple interface for making HTTP requests.  
+ * Provides a simple interface for making HTTP requests.
+ *
  * `HttpInterface` and `RequestInterface` are implemented with classes
  * with the names `Http` and `Request`, respectively. This is to allow
  * an different implementation for each platform.
@@ -31,7 +32,8 @@ public:
 	fn isEmpty() bool;
 
 	/*!
-	 * Launch new requests, and mark requests that are complete.  
+	 * Launch new requests, and mark requests that are complete.
+	 *
 	 * Doesn't block if requests are still pending -- check `isEmpty`
 	 * to see if all pending `Request`s are complete.
 	 */
@@ -43,13 +45,15 @@ abstract class RequestInterface
 {
 public:
 	/*!
-	 * The address of the server to connect to.  
+	 * The address of the server to connect to.
+	 *
 	 * This doesn't include the protocol.  
 	 * `"www.example.com"`, not `"http://www.example.com"`.
 	 */
 	server: string;
 	/*!
-	 * The url to connect to on the server.  
+	 * The url to connect to on the server.
+	 *
 	 * So if `server` is `"www.example.com"`, and this is
 	 * set to `"/index.html"`, then this request would look up
 	 * `"www.example.com/index.html"`.

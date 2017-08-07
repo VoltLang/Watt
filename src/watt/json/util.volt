@@ -1,7 +1,7 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Useful functions when dealing with JSON.
+//! Useful functions when dealing with [JSON](http://json.org/).
 module watt.json.util;
 
 import core.exception;
@@ -48,7 +48,8 @@ fn canBeInteger(data: const(char)[], signed: bool) bool
 }
 
 /*!
- * Parse a `u64` from a JSON number string.  
+ * Parse a `u64` from a JSON number string.
+ *
  * @Returns `true` if a double was parsed.
  */
 fn parseUlong(data: const(char)[], out l: u64) bool
@@ -88,7 +89,7 @@ fn parseDouble(data: const(char)[], out d: f64) bool
  * Parse a double from a JSON number string, using a pre allocated buffer,
  * resizing it if needed.
  *
- * Returns `true` if a double was parsed, `false` otherwise.
+ * @Returns `true` if a double was parsed.
  */
 fn parseDouble(data: const(char)[], out d: f64, ref buffer: char[]) bool
 {
@@ -107,7 +108,7 @@ fn parseDouble(data: const(char)[], out d: f64, ref buffer: char[]) bool
 }
 
 /*!
- * Return the boolean value of a string.
+ * @Returns the boolean value of a string.
  */
 fn parseBool(data: const(char)[]) bool
 {

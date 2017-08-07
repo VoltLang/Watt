@@ -49,7 +49,8 @@ abstract class OutputStream
 {
 public:
 	/*!
-	 * Close the stream.  
+	 * Close the stream.
+	 *
 	 * This calls `flush`, so there is no need to do it before closing:
 	 * ```volt
 	 * ofs.put('A');
@@ -60,7 +61,8 @@ public:
 	abstract fn close();
 
 	/*!
-	 * Determine the stream state.  
+	 * Determine the stream state.
+	 *
 	 * If an `OutputStream` is 'open', it is connected to a valid destination,
 	 * and is ready to write input.
 	 * @Returns `true` if this stream is open.
@@ -68,7 +70,8 @@ public:
 	@property abstract fn isOpen() bool;
 
 	/*!
-	 * Write a single character out to the sink.  
+	 * Write a single character out to the sink.
+	 *
 	 * This interface does not guarantee that writes will happen immediately,
 	 * just that they happen in order. Call `flush` if you need to ensure that
 	 * pending output has been written.
@@ -76,7 +79,8 @@ public:
 	abstract fn put(c: dchar);
 
 	/*!
-	 * Write a series of characters to the sink.  
+	 * Write a series of characters to the sink.
+	 *
 	 * This is the same as calling `put` in a loop.
 	 */
 	fn write(s: scope const(char)[])
@@ -87,7 +91,8 @@ public:
 	}
 
 	/*!
-	 * Ensure that all pending writes (from the `put` and `write` functions) are completed.  
+	 * Ensure that all pending writes (from the `put` and `write` functions) are completed.
+	 *
 	 * This call will block until all pending writes are completed.
 	 */
 	abstract fn flush();
@@ -98,7 +103,8 @@ public:
 	 */
 
 	/*!
-	 * Write a series of characters then a newline.  
+	 * Write a series of characters then a newline.
+	 *
 	 * This is the same as calling `write`, then `put('\n')`.
 	 */
 	fn writeln(s: const(char)[])
@@ -115,7 +121,8 @@ public:
 
 
 	/*!
-	 * Write a formatted string.  
+	 * Write a formatted string.
+	 *
 	 * See `watt.text.format` for format string details.
 	 */
 	fn writef(formatString: const(char)[], ...)
@@ -134,7 +141,8 @@ public:
 	}
 
 	/*!
-	 * Write a formatted string and then a newline.  
+	 * Write a formatted string and then a newline.
+	 *
 	 * See `watt.text.format` for format string details.  
 	 * This is the same as calling `writef`, then `put`.
 	 */
@@ -156,13 +164,15 @@ abstract class InputStream
 {
 public:
 	/*!
-	 * Close this stream.  
+	 * Close this stream.
+	 *
 	 * A closed stream will read no more data.
 	 */
 	abstract fn close();
 
 	/*!
-	 * Determine this stream's state.  
+	 * Determine this stream's state.
+	 *
 	 * An `InputStream` is open if it has a valid connection to the source.
 	 * @Returns `true` if this stream is open.
 	 */
@@ -170,12 +180,14 @@ public:
 
 	/*!
 	 * Read a single character from the source.
+	 *
 	 * @Returns The character that was read.
 	 */
 	abstract fn get() dchar;
 
 	/*!
-	 * Read as much data as possible into buffer.  
+	 * Read as much data as possible into buffer.
+	 *
 	 * This function does not allocate additional memory into `buffer`;
 	 * if a zero length array is given to `buffer`, no data will be read.
 	 * @Returns A slice into the input buffer. This slice could be shorter
@@ -184,7 +196,8 @@ public:
 	abstract fn read(buffer: u8[]) u8[];
 
 	/*!
-	 * Is the source out of data?  
+	 * Is the source out of data?
+	 *
 	 * This may never be true, depending on the source.
 	 * @Returns `true` if there is no more data to read.
 	 */
@@ -196,7 +209,8 @@ public:
 	 */
 
 	/*!
-	 * Read input until a newline character is encountered.  
+	 * Read input until a newline character is encountered.
+	 *
 	 * The newline is not included in the returned data, and the
 	 * newline that terminated this function will not be read by
 	 * further calls to `get`.

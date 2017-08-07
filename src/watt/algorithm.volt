@@ -11,7 +11,7 @@ alias SwapDg = scope dg(size_t, size_t);
  * Sort something via delegates.
  * @param numElements The number of elements being sorted.
  * @param cmp A delegate that takes two indices. Compare two elements,
- * return true if the first parameter should be given precedence over
+ * @return `true` if the first parameter should be given precedence over
  * the second.
  * @param swap A delegate that gives two indices to swap.
  */

@@ -13,7 +13,7 @@ import watt.text.sink: StringSink;
 
 
 /*!
- * Exception that is thrown when a conversion fails.
+ * Thrown when a conversion fails.
  */
 class ConvException : Exception
 {
@@ -24,7 +24,8 @@ class ConvException : Exception
 }
 
 /*!
- * Return the lowercase version of a string.  
+ * Get the lowercase representation of a `string`.
+ *
  * If a character in `s` can be represented as a lower case letter
  * of some description, it is replaced with such. Otherwise, it remains
  * intact.  
@@ -53,7 +54,8 @@ fn toLower(s: string) string
 }
 
 /*!
- * Return the uppercase version of a string.  
+ * Get the uppercase representation of a `string`.
+ *
  * If a character in `s` can be represented with an uppercase letter,
  * that letter is replaced with such. Otherwise, the character remains
  * intact.  
@@ -70,8 +72,8 @@ fn toUpper(s: string) string
 }
 
 /*!
- * Parse `s` as an integer, and return it as a `u64`.  
- * Throws a `ConvException` if `s` could not be converted.
+ * Parse `s` as an integer, and return it as a `u64`.
+ * @Throws `ConvException` if `s` could not be converted.
  * @param s The string to convert.
  * @param base The base of `s`. 10 is the default.
  */
@@ -108,8 +110,8 @@ fn toUlong(s: const(char)[], base: i32 = 10) u64
 }
 
 /*!
- * Parse `s` as an integer, and return it as an `i64`.  
- * Throws a `ConvException` if `s` could not be converted.
+ * Parse `s` as an integer, and return it as an `i64`.
+ * @Throws `ConvException` if `s` could not be converted.
  * @param s The string to convert.
  * @param base The base of `s`. 10 is the default.
  */
@@ -125,8 +127,8 @@ fn toLong(s: const(char)[], base: i32 = 10) i64
 }
 
 /*!
- * Parse `s` as an integer, and return it as an `i32`.  
- * Throws a `ConvException` if `s` could not be converted.
+ * Parse `s` as an integer, and return it as an `i32`.
+ * @Throws `ConvException` if `s` could not be converted.
  * @param s The string to convert.
  * @param base The base of `s`. 10 is the default.
  */
@@ -137,8 +139,8 @@ fn toInt(s: const(char)[], base: i32 = 10) i32
 }
 
 /*!
- * Parse `s` as an integer, and return it as a `u32`.  
- * Throws a `ConvException` if `s` could not be converted.
+ * Parse `s` as an integer, and return it as a `u32`.
+ * @Throws `ConvException` if `s` could not be converted.
  * @param s The string to convert.
  * @param base The base of `s`. 10 is the default.
  */
@@ -372,7 +374,8 @@ fn toStringBinary(val: i64) const(char)[]
 }
 
 /*!
- * Given a Volt string s, return a pointer to a null terminated string.  
+ * Given a Volt string s, return a pointer to a null terminated string.
+ *
  * This is for interfacing with C libraries.
  */
 fn toStringz(s: const(char)[]) const(char)*

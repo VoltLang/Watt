@@ -10,7 +10,8 @@ import watt.text.string;
 import watt.path;
 
 /*!
- * Given a path, return a representation of that path that is universal.  
+ * Given a path, return a representation of that path that is universal.
+ *
  * That is to say, given two paths to the same location (from the same starting point),
  * normalizePath(A) == normalizePath(B).
  */

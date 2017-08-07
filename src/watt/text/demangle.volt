@@ -1,7 +1,8 @@
 // Copyright © 2016, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/volt/license.d (BOOST ver. 1.0).
 /*!
- * Functions for demangling Volt mangled symbols.  
+ * Functions for demangling Volt mangled symbols.
+ *
  * Names of types and functions are processed during compilation,
  * to ensure they are unique. This module contains functions
  * for getting human readable information from these mangled names.

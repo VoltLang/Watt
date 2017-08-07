@@ -161,7 +161,8 @@ public:
 
 	/*!
 	 * Read from the stream into @p buffer.
-	 * @return A slice of the buffer actually used.
+	 *
+	 * @Returns A slice of the buffer actually used.
 	 */
 	override fn read(buffer: u8[]) u8[]
 	{

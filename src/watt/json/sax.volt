@@ -1,7 +1,7 @@
 // Copyright © 2015, David Herberth.  All rights reserved.
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Parse JSON as a stream.
+//! Parse [JSON](http://json.org/) as a stream.
 module watt.json.sax;
 
 import core.c.stdio: snprintf;
@@ -641,7 +641,8 @@ public:
 	}
 
 	/*!
-	 * Writes a string.  
+	 * Writes a string.
+	 *
 	 * If `escape` is `true` (default) the string will
 	 * be escaped, set this to `false` if you want to write an
 	 * already escaped strings.
@@ -672,7 +673,8 @@ public:
 	}
 
 	/*!
-	 * Writes the start of a JSON object.  
+	 * Writes the start of a JSON object.
+	 *
 	 * JSON keys are expected to be built with `buildString`.
 	 */
 	fn buildObjectStart()
@@ -736,7 +738,8 @@ public:
 	}
 
 	/*!
-	 * Finalizes the JSON.  
+	 * Finalizes the JSON.
+	 *
 	 * This is optional but recommended,
 	 * it checks for malformed JSON and writes an additional newline
 	 * if `prettyPrint` is enabled.

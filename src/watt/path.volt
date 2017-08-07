@@ -129,7 +129,8 @@ fn removeTrailingSlashes(ref s: string)
 }
 
 /*!
- * Return the directory portion of a pathname.  
+ * Return the directory portion of a pathname.
+ *
  * An implementation of <http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html>.
  */
 fn dirName(path: const(char)[]) string
@@ -181,7 +182,8 @@ fn dirName(path: const(char)[]) string
 }
 
 /*!
- * Return the non-directory portion of a pathname.  
+ * Return the non-directory portion of a pathname.
+ *
  * An implementation of <http://pubs.opengroup.org/onlinepubs/9699919799/utilities/basename.html>.
  * @param path The path to retrieve the non-directory portion from.
  * @param suffix If the extracted portion of the path ends in this, remove it.
@@ -261,7 +263,8 @@ fn temporaryFilename(extension: string = "", subdir: string = "") string
 }
 
 /*!
- * Given a path, return an absolute path.  
+ * Given a path, return an absolute path.
+ *
  * Relative to the current working directory.
  * @param file The filename to get an absolute path to.
  * @return The full path to `file`.
@@ -319,7 +322,8 @@ fn getExecFile() string
 }
 
 /*!
- * Get the directory that the current executable is in.  
+ * Get the directory that the current executable is in.
+ *
  * This is not the same as the current working directory of the process,
  * this is the path to the directory the executable is physically in.
  */

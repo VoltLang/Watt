@@ -26,7 +26,7 @@ public:
 public:
 	/*!
 	 * Parse a SemVer from a given string.
-	 * Throws: Exception on malformed input.
+	 * @Throws `Exception` on malformed input.
 	 */
 	this(verString: string)
 	{
@@ -37,7 +37,7 @@ public:
 	}
 
 	/*!
-	 * Returns true if the given string is a valid semver string.
+	 * @Returns `true` if the given `string` is a valid semver `string`.
 	 */
 	local fn isValid(verString: string) bool
 	{
@@ -50,6 +50,7 @@ public:
 	/*!
 	 * Get a string representation of this semver string.
 	 *
+	 * The format is as follows:
 	 *     major.minor.patch(-prerelease)(+metadata)
 	 */
 	override fn toString() string

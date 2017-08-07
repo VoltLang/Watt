@@ -11,7 +11,6 @@ import watt.text.string: indexOf, replace;
 
 /*!
  * Returns the HTML escaped version of a given string.
- * According to the OWASP rules.
  */
 fn htmlEscape(str: string) string
 {
@@ -37,7 +36,6 @@ fn htmlUnescape(str: string) string
 
 /*!
  * Writes the HTML escaped version of a given string to the given dgt.
- * According to the OWASP rules:
  */
 fn htmlEscape(dgt: Sink, str: string, ignore: string = "")
 {

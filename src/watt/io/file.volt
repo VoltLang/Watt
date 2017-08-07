@@ -34,7 +34,8 @@ class FileException : Exception
 }
 
 /*!
- * Read a file into an array.  
+ * Read a file into an array.
+ *
  * Read the contents of the file pointed to by `filename` into a `void[]` array.
  * The intepretation is left up to the caller.
  *
@@ -87,7 +88,8 @@ fn read(filename: string) void[]
 }
 
 /*!
- * Check if `path` matches `pattern`.  
+ * Check if `path` matches `pattern`.
+ *
  * `pattern` is treated as a regular string except for two special characters:
  * - `*` matches zero or more characters.
  * - `?` matches a single character.
@@ -147,7 +149,8 @@ fn globMatch(path: string, pattern: string) bool
 }
 
 /*!
- * Call a delegate for file in a directory that matches a given pattern.  
+ * Call a delegate for file in a directory that matches a given pattern.
+ *
  * @Param dirName The directory to search the contents of.
  * @Param glob The pattern to check every entry in `dirName` against.
  * The matching rules are the same as the `pattern` parameter of
@@ -212,7 +215,8 @@ private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: s
 }
 
 /*!
- * Is a given path a file?  
+ * Is a given path a file?
+ *
  * For example, a directory would not be classified as a file.
  * @Returns `true` if `path` points to a file.
  */
@@ -222,7 +226,8 @@ fn isFile(path: scope const(char)[]) bool
 }
 
 /*!
- * Is a given path a directory?  
+ * Is a given path a directory?
+ *
  * For example, a file is not a directory.
  * @Returns `true` if `path` points to a directory.
  */
@@ -250,6 +255,7 @@ fn isDir(path: scope const(char)[]) bool
 
 /*!
  * Does a given path exist?
+ *
  * @Returns `true` if `path` exists.
  */
 fn exists(path: const(char)[]) bool
