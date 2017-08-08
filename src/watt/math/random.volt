@@ -35,7 +35,7 @@ alias RandomGenerator = MersenneTwisterEngine;
 // Adapted from Phobos's std.random.
 
 /*!
- * A generator implemented with the [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister)
+ * A psuedorandom number generator implemented with the [Mersenne Twister](https://en.wikipedia.org/wiki/Mersenne_Twister)
  * algorithm.
  */
 struct MersenneTwisterEngine
@@ -119,7 +119,7 @@ public:
 	 * rng: RandomGenerator;
 	 * a := rng.front;
 	 * rng.popFront();
-	 * assert(a != rng.front);  // Probably true. Maybe not.
+	 * assert(a != rng.front);  // Could very well be true.
 	 * ```
 	 */
 	fn popFront()
