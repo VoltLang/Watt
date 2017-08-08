@@ -22,7 +22,14 @@
 module watt.math.random;
 
 
-//! Default `RandomGenerator`.
+/*!
+ * The default `RandomGenerator`.
+ *
+ * A psuedorandom number generator can be implemented in a variety of different ways.  
+ * The only generator implemented at the moment is one implemented using the Mersenne
+ * Twister algorithm, but if a better algorithm were to be implemented, using `RandomGenerator`
+ * will allow your code to take advantage without changing the generator used manually.
+ */
 alias RandomGenerator = MersenneTwisterEngine;
 
 // Adapted from Phobos's std.random.
