@@ -4,19 +4,22 @@
  * A psuedo-random number generator.
  *
  * A [psuedorandom number generator](https://en.wikipedia.org/wiki/Pseudorandom_number_generator)
- * generates a sequence of numbers.  
- * The numbers give the impression of randomness, and will be uniformly distributed.  
- * The generator in this module is instanced, not global. That is to say, you declare a `struct`,
- * and it holds the RNG state:
+ * generates a sequence of numbers. The numbers give the impression of
+ * randomness, and will be uniformly distributed.
+ *
+ * The generator in this module is instanced, not global. That is to say, you
+ * declare a `struct`, and it holds the RNG state:
  * ```volt
  * rng: RandomGenerator;
  * rng.seed(32);
  * val := rnd.uniformI32(0, 100);
  * ```
+ *
  * Given the same seed, a RNG should generate the same sequence of numbers. Often, the output of
  * the C library function `time` is used to get a random seed value, but this is not ideal.
  * Operating Systems usually provide hardware randomness, or at least stronger randomness, and
- * using that generator to get a seed value is recommended.  
+ * using that generator to get a seed value is recommended.
+ *
  * See the module @ref watt.io.seed for a function for retrieving a value for the seed.
  */
 module watt.math.random;
