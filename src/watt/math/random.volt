@@ -34,9 +34,9 @@ alias RandomGenerator = MersenneTwisterEngine;
 struct MersenneTwisterEngine
 {
 public:
-	//! Smallest generated value.
+	//! The smallest unsigned value this generator can generate.
 	enum u32 min = 0;
-	//! Largest generated value.
+	//! The largest unsigned value this generator can generate.
 	// u32.max >>> (uint.sizeof * 8 - w)
 	enum u32 max = 0xFFFFFFFFU;//_FFFFFFFFU;
 

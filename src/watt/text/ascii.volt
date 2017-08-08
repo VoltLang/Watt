@@ -1,6 +1,6 @@
 // Copyright © 2013, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-//! Functions for classifying characters in the ASCII range.
+//! Functions for classifying `characters` in the ASCII range.
 module watt.text.ascii;
 
 enum HEX_DIGITS = "0123456789ABCDEF";
