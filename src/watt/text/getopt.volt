@@ -1,6 +1,37 @@
 // Copyright © 2014-2015, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-//! A suite of functions for processing command line arguments in a simple way.
+/*!
+ * Process command line arguments.
+ *
+ * The `getopt` modules provides functions that make handling command line options easy.
+ *
+ * The basic approach is to call `getopt` functions with the `args` parameter, a flag description,
+ * and a parameter that determines what `getopt` will do if it finds a matching parameter.  
+ * Matching parameters are removed from the given `args` array. 
+ * 
+ * ```volt
+ * getopt(ref args, "help|h", delegateThatPrintsUsage);
+ * getopt(ref args, "verbose|v", out booleanVariable);
+ * ```
+ *
+ * The flag description format is simple. It's just the flag name:
+ * ```volt
+ * "help"
+ * ```
+ *
+ * You can add aliases to the same flag by separating them with a `|`:
+ * ```volt
+ * "help|usage|?|h"
+ * ```
+ *
+ * Single character flags can be preceded by a a single dash.
+ * If a flag takes an argument, it can be specified multiple ways. A value 
+ * can be separated from the flag by `=`, or whitespace.  
+ * If the flag is a single character, the value can be bundled together:
+ * ```volt
+ * -i32
+ * ```
+ */
 module watt.text.getopt;
 
 import core.exception;
@@ -12,17 +43,15 @@ import watt.text.string;
 import watt.text.utf;
 
 
-//! An exception thrown on errors.
 class GetoptException : Exception
 {
-	//! Construct a GetoptException with an error message.
 	this(msg: string)
 	{
 		super(msg);
 	}
 }
 
-//! Removes up to two leading dashes from a string.
+// Removes up to two leading dashes from a string.
 private fn removeDashes(s: string) string
 {
 	if (s.length == 0 || (s.length == 1 && s[0] == '-') || (s.length == 2 && s == "--")) {
@@ -37,21 +66,21 @@ private fn removeDashes(s: string) string
 	}
 }
 
-//! Remove an element from an array and update a given index.
+// Remove an element from an array and update a given index.
 private fn remove(ref args: string[], ref index: size_t)
 {
 	args = args[0 .. index] ~ args[index + 1 .. $];
 	index -= 1;
 }
 
-//! Remove two elemeents starting from index.
+// Remove two elemeents starting from index.
 private fn removeTwo(ref args: string[], ref index: size_t)
 {
 	args = args[0 .. index] ~ args[index + 2 .. $];
 	index -= 2;
 }
 
-//! Get all the flags described by a description, throws GetoptException on error.
+// Get all the flags described by a description, throws GetoptException on error.
 private fn parseDescription(description: string) string[]
 {
 	flags := split(description, '|');
@@ -61,7 +90,7 @@ private fn parseDescription(description: string) string[]
 	return flags;
 }
 
-//! If s has an equals character, return everything to the right of it. Otherwise, "".
+// If s has an equals character, return everything to the right of it. Otherwise, "".
 private fn equalParameter(s: string) string
 {
 	i: size_t;
@@ -119,11 +148,6 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
 /*!
  * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
  * and put into `_string`. Both the flag and argument are then removed from `args`.
- *
- * String arguments can be supplied in multiple ways:
- *  - By being the next element: `["--string", "foo"] // _string is assigned "foo".`
- *  - By being divided by an = character: `["--string=foo"] // _string is assigned "foo".`
- * If the flag is one character (not counting the -), then it can be bundled into one: `["-s32"] // _string is assigned "32".` 
  */
 fn getopt(ref args: string[], description: string, ref _string: string)
 {
@@ -131,7 +155,11 @@ fn getopt(ref args: string[], description: string, ref _string: string)
 	getoptImpl(ref args, description, dgt);
 }
 
-//! The same as above, but the result is passed through `watt.conv.toInt`.
+/*!
+ * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
+ * and put into `_int`. Both the flag and argument are then removed from `args`.
+ * @Throws `GetoptException` if the argument could not be parsed as an integer.
+ */
 fn getopt(ref args: string[], description: string, ref _int: i32)
 {
 	fn dgt(arg: string)
@@ -146,6 +174,8 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
 }
 
 /*!
+ * Handle a simple boolean flag.
+ *
  * Given an array of strings, args, and a list of strings separated by a | character, description,
  * remove any strings in `args[1 .. $]` that start with '-' and contain any of the description strings.
  *
@@ -157,27 +187,37 @@ fn getopt(ref args: string[], description: string, ref _bool: bool)
 	getoptImpl(ref args, description, dgt);
 }
 
-//! Calls a delegate each time the flag appears.
+/*!
+ * Calls a delegate each time the flag appears.
+ *
+ * The found flags are removed from `args`.
+ */
 fn getopt(ref args: string[], description: string, dgt: scope dg ())
 {
 	getoptImpl(ref args, description, dgt);
 }
 
-//! Calls a delegate with argument each time the flag appears.
+/*!
+ * Calls a delegate with argument each time the flag appears.
+ *
+ * The flag and arguments are removed from the `args` array.
+ */
 fn getopt(ref args: string[], description: string, dgt: scope dg (string))
 {
 	getoptImpl(ref args, description, dgt);
 }
 
 /*!
- * Returns the first element in `args[1 .. $]` that starts with a -, or an empty string otherwise.
+ * Get the first flag in an array of `string`s.
+ *
+ * Gets the first element in `args[1 .. $]` that starts with a -, or an empty string otherwise.
  *
  * This is intended for error handling purposes:
- *
- *      auto flag = remainingOptions(args);
- *      if (flag.length > 0) {
- *          // Error, unknown option flag.
- *      }
+ * ```volt
+ * auto flag = remainingOptions(args);
+ * if (flag.length > 0) {
+ *     writefln("error, unknown flag '%s'", flag);
+ * }
  */
 fn remainingOptions(args: string[]) string
 {
@@ -188,4 +228,3 @@ fn remainingOptions(args: string[]) string
 	}
 	return "";
 }
-
