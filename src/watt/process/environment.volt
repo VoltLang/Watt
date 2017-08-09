@@ -1,6 +1,12 @@
 // Copyright © 2016, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Functions for dealing with environmental variables.
+/*!
+ * Functions for dealing with environmental variables.
+ *
+ * This module reads variables from the external environment,
+ * but doesn't write anything back. Use the appropriate OS functions
+ * for that.
+ */
 module watt.process.environment;
 
 version (Windows || Posix):
@@ -19,7 +25,7 @@ import watt.text.sink;
 
 
 /*!
- * Returns an environment that is a copy of the running process environment.
+ * Returns an environment that is a copy of the running process' environment.
  */
 version(Posix) fn retrieveEnvironment() Environment
 {
@@ -48,7 +54,7 @@ version(Posix) fn retrieveEnvironment() Environment
 }
 
 /*!
- * Returns an environment that is a copy of the running process environment.
+ * Returns an environment that is a copy of the running process' environment.
  */
 version(Windows) fn retrieveEnvironment() Environment
 {
@@ -84,7 +90,12 @@ version(Windows) fn retrieveEnvironment() Environment
 }
 
 /*!
- * Holds the values for an environment.
+ * Holds environment values.
+ *
+ * ### Example
+ * ```volt
+ * env := retrieveEnvironment();
+ * ```
  */
 class Environment
 {
@@ -93,13 +104,31 @@ public:
 
 
 public:
-	//! Is the given key set?
+	/*!
+	 * Is the given key set?
+	 *
+	 * Case insensitive.
+	 *
+	 * ### Example
+	 * ```volt
+	 * assert(env.isSet("PATH") == env.isSet("paTh"));
+	 * ```
+	 */
 	fn isSet(key: string) bool
 	{
 		return (toUpper(key) in store) !is null;
 	}
 
-	//! Get the given key, or return null.
+	/*!
+	 * Get the given key, or return null.
+	 *
+	 * Case insensitive.
+	 *
+	 * ### Example
+	 * ```volt
+	 * home := env.getOrNull("HOME");
+	 * ```
+	 */
 	fn getOrNull(key: string) string
 	{
 		r := toUpper(key) in store;
@@ -109,22 +138,48 @@ public:
 		return null;
 	}
 
-	//! Set a key in this environment. Does not affect the OS environment.
+	/*!
+	 * Set a key in this environment.
+	 *
+	 * This does not change the OS's environment.
+	 * `key` is case insensitive.
+	 *
+	 * ### Example
+	 * ```volt
+	 * env.set("key", "banana");
+	 * assert(env.getOrNull("KEY") == "banana");
+	 * ```
+	 */
 	fn set(key: string, value: string) void
 	{
 		store[toUpper(key)] = value;
 	}
 
-	//! Remove a key from the environment.
+	/*!
+	 * Remove a key from this environment.
+	 *
+	 * This does not change the OS's environment.
+	 * Case insensitive.
+	 *
+	 * ### Example
+	 * ``` volt
+	 * env.set("key", "banana");
+	 * assert(env.getOrNull("key") == "banana");
+	 * env.remove("key");
+	 * assert(env.getOrNull("key") == "");
+	 * ```
+	 */
 	fn remove(key: string) void
 	{
 		store.remove(toUpper(key));
 	}
 }
 
+private:
+
 version (OSX) {
 
-	//! TODO Remove this from iOS, or apps gets rejected.
+	// TODO Remove this from iOS, or apps gets rejected.
 	extern(C) fn _NSGetEnviron() char*** ;
 
 	@property fn environ() char**
