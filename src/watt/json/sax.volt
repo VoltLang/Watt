@@ -1,7 +1,12 @@
 // Copyright © 2015, David Herberth.  All rights reserved.
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Parse [JSON](http://json.org/) as a stream.
+/*! Parse [JSON](http://json.org/) as a stream.
+ *
+ * This parser reads the JSON into memory only as it is parsed.  
+ * This makes it more complicated than the @ref watt.json.dom parser,
+ * but more flexible.
+ */
 module watt.json.sax;
 
 import core.c.stdio: snprintf;
@@ -19,7 +24,7 @@ private extern(C) {
 }
 
 /*!
- * Exception thrown when an error occurs during building.
+ * Thrown when an error occurs during building.
  */
 class BuilderException : util.JSONException
 {
@@ -47,7 +52,7 @@ enum Type
 }
 
 /*!
- * Events which will be produced by *JSON.get*.
+ * Events which will be produced by @ref watt.json.sax.SAX.get.
  */
 enum Event
 {
@@ -91,7 +96,7 @@ fn eventToString(event: Event) string
 }
 
 /*!
- * Parses JSON.
+ * Parses JSON from a given @ref watt.io.streams.InputStream.
  */
 class SAX
 {
@@ -150,9 +155,26 @@ public:
 	 * Continues parsing the input data and calsl the callback with
 	 * the appropriate data.
 	 *
+	 * This is the main entrypoint into the SAX parser. The basic idea
+	 * is that `callback` will be called with 'events' (triggered by pieces
+	 * of JSON).
+	 *
+	 * Here's a simple example that parses an entire file from standard input,
+	 * and does nothing with it.
+	 *
+	 * ```volt
+	 * sax := new Sax(input);  // input is declared in watt.io.std.
+	 * loop := true;
+	 * fn dgt(event: Event, data: const(u8)[]) {
+	 *     loop = event == Event.END || event == Event.ERROR;
+	 * }
+	 * while (loop) sax.get(dgt);
+	 * ```
+	 *
 	 * `data` is a slice to an internal buffer and will only be valid
 	 * until the next `get` call. Strings and numbers still need to be
-	 * further processed. e.g. through `parseNumber` and `unescapeString`.
+	 * further processed. e.g. through @ref watt.json.util.parseDouble and
+	 * @ref watt.json.util.unescapeString.
 	 */
 	fn get(callback: scope dg (event: Event, data: const(u8)[]))
 	{
@@ -555,6 +577,9 @@ protected:
 
 /*!
  * The main class to build/write JSON.
+ *
+ * This is the opposite of `SAX`. Instead of taking input and processing it,
+ * this writes out JSON to a given @ref watt.io.streams.OutputStream.
  */
 class Builder
 {
