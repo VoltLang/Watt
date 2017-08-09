@@ -1,7 +1,7 @@
 // Copyright © 2013-2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 /*!
- * Define stream interfaces for input and output.
+ * Stream interfaces for input and output.
  *
  * A stream is an interface that reads or
  * writes to a destination, one character at a time.
@@ -9,10 +9,9 @@
  * Watt ships with implementations of `OutputFileStream` and `InputFileStream`
  * appropriate for the current platform.
  *
- * However, the intent is that you program to the vanilla `OutputStream` and
- * `InputStream` classes where possible, and then the implementation is not
- * important. For example:
- *
+ * Use the plain `OutputStream` and `InputStream` definition where possible,
+ * and then the implementation is not important.
+ * ### Example
  * ```volt
  * fn outputAnImportantThing(os: OutputStream)
  * ...
@@ -51,7 +50,8 @@ public:
 	/*!
 	 * Close the stream.
 	 *
-	 * This calls `flush`, so there is no need to do it before closing:
+	 * This calls @ref watt.io.streams.OutputStream.flush,
+	 * so there is no need to do it before closing:
 	 * ```volt
 	 * ofs.put('A');
 	 * ofs.flush();  // Unneeded!
@@ -73,15 +73,15 @@ public:
 	 * Write a single character out to the sink.
 	 *
 	 * This interface does not guarantee that writes will happen immediately,
-	 * just that they happen in order. Call `flush` if you need to ensure that
-	 * pending output has been written.
+	 * but they will happen in order. Call @ref watt.io.streams.OutputStream.flush
+	 * if you need to ensure that pending output has been written.
 	 */
 	abstract fn put(c: dchar);
 
 	/*!
 	 * Write a series of characters to the sink.
 	 *
-	 * This is the same as calling `put` in a loop.
+	 * This is the same as calling @ref watt.io.streams.OutputStream.put in a loop.
 	 */
 	fn write(s: scope const(char)[])
 	{
@@ -91,7 +91,8 @@ public:
 	}
 
 	/*!
-	 * Ensure that all pending writes (from the `put` and `write` functions) are completed.
+	 * Ensure that all pending writes (from the @ref watt.io.streams.OutputStream.put
+	 * and @ref watt.io.streams.OutputStream.write functions) are completed.
 	 *
 	 * This call will block until all pending writes are completed.
 	 */
@@ -105,7 +106,7 @@ public:
 	/*!
 	 * Write a series of characters then a newline.
 	 *
-	 * This is the same as calling `write`, then `put('\n')`.
+	 * This is the same as calling @ref watt.io.streams.OutputStream.write, then @ref watt.io.streams.OutputStream.put with `'\n'`.
 	 */
 	fn writeln(s: const(char)[])
 	{
@@ -123,7 +124,7 @@ public:
 	/*!
 	 * Write a formatted string.
 	 *
-	 * See `watt.text.format` for format string details.
+	 * See @ref watt.text.format.format for format string details.
 	 */
 	fn writef(formatString: const(char)[], ...)
 	{
@@ -143,8 +144,8 @@ public:
 	/*!
 	 * Write a formatted string and then a newline.
 	 *
-	 * See `watt.text.format` for format string details.  
-	 * This is the same as calling `writef`, then `put`.
+	 * See @ref watt.text.format.format for format string details.  
+	 * This is the same as calling @ref watt.io.streams.OutputStream.writef, then @ref watt.io.streams.OutputStream.put.
 	 */
 	fn writefln(formatString: const(char)[], ...)
 	{
@@ -198,7 +199,7 @@ public:
 	/*!
 	 * Is the source out of data?
 	 *
-	 * This may never be true, depending on the source.
+	 * This may never be `true`, depending on the source.
 	 * @Returns `true` if there is no more data to read.
 	 */
 	abstract fn eof() bool;
@@ -213,7 +214,7 @@ public:
 	 *
 	 * The newline is not included in the returned data, and the
 	 * newline that terminated this function will not be read by
-	 * further calls to `get`.
+	 * further calls to @ref watt.io.streams.InputStream.get.
 	 * @Returns The data that was read, not including the newline.
 	 */
 	fn readln() string
