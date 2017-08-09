@@ -121,7 +121,7 @@ public:
 	 * Used to skip whitespace in the source file,
 	 * as defined by watt.text.ascii.isWhite.
 	 *
-	 * @SideEffects See @ref popFront.
+	 * @SideEffects See @ref watt.text.source.Source.popFront.
 	 */
 	final fn skipWhitespace()
 	{
@@ -133,7 +133,7 @@ public:
 	/*!
 	 * Skips till character after next end of line or eof.
 	 *
-	 * @SideEffects See @ref popFront.
+	 * @SideEffects See @ref watt.text.source.Source.popFront.
 	 */
 	fn skipEndOfLine()
 	{
@@ -326,7 +326,7 @@ public:
 	 * Used to skip whitespace in the source file,
 	 * as defined by watt.text.ascii.isWhite.
 	 *
-	 * @SideEffects See @ref popFront.
+	 * @SideEffects See @ref watt.text.source.Source.popFront.
 	 */
 	fn skipWhitespace()
 	{
@@ -417,7 +417,7 @@ public:
 	/*!
 	 * Difference between two locations.
 	 * end - begin == begin ... end
-	 * @see difference
+	 * @see watt.text.source.Location.difference
 	 */
 	fn opSub(ref begin: Location) Location
 	{
@@ -453,7 +453,7 @@ public:
 		return loc;
 	}
 
-	//! See @ref difference.
+	//! See @ref watt.text.source.Location.difference.
 	fn spanTo(ref end: Location)
 	{
 		if (line <= end.line && column < end.column) {

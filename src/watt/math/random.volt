@@ -91,7 +91,7 @@ public:
 	 * The seed value determines the consequent values retrieved from this generator.
 	 * Given two generators with the same seed, and the same generation functions
 	 * (`uniformI32`, etc), both generators will generate the same values.  
-	 * See @ref mod_watt.io.seed for ways to get a good random seed.
+	 * See @ref watt.io.seed for ways to get a good random seed.
 	 * ### Example
 	 * ```volt
 	 * rnga: MersenneTwisterEngine;
