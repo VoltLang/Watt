@@ -1,7 +1,18 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Parse a [JSON](http://json.org/) file into memory.
+/*!
+ * Parse a [JSON](http://json.org/) file into memory.
+ *
+ * ### Example
+ * ```volt
+ * val: Value = parse("{}");
+ * ```
+ *
+ * A DOM parser parses an entire file into memory at once.
+ * This is often simpler, but if your files are very large,
+ * you may need to use the SAX parser, see @ref watt.json.sax.
+ */
 module watt.json.dom;
 
 import watt.text.format;
