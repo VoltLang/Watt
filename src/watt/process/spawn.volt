@@ -31,6 +31,9 @@ import watt.conv;
 
 /*!
  * Serves as a handle to a spawned process.
+ *
+ * Usually you will not construct these, but will get
+ * them from @ref watt.process.spawn.spawnProcess.
  */
 class Pid
 {
@@ -58,7 +61,9 @@ public:
 		this.osHandle = osHandle;
 	}
 
-	//! Wait for this process to finish, and get the return value.
+	/*!
+	 * Wait for this process to finish, and get the return value.
+	 */
 	fn wait() i32
 	{
 		version (Posix) {
@@ -107,6 +112,13 @@ fn getCommandFromName(name: string) string
 
 /*!
  * Start a process from the executable `name` and with the given `args`.
+ *
+ * ### Example
+ * ```volt
+ * pid := spawnProcess("volta", ["-c", "test.volt"]);
+ * pid.wait();  // Blocks until the process is finished.
+ * ```
+ *
  * @{
  */
 version (CRuntime_All)
