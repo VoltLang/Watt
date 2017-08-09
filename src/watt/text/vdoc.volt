@@ -2,7 +2,10 @@
 // Copyright © 2014-2017, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 /*!
- * Doccomment parsing and cleaning code.
+ * Volt doccomment parsing and cleaning code.
+ *
+ * VDoc is Volt's default doccomment format. This modules provides utilities
+ * for parsing VDoc strings.
  */
 module watt.text.vdoc;
 
@@ -17,6 +20,9 @@ import watt.text.ascii;
 
 /*!
  * Take a doc comment and remove comment cruft from it.
+ *
+ * 'Comment cruft' are things like `*`, `+`, and `/` for their respective
+ * comment types.
  */
 fn cleanComment(comment: string, out isBackwardsComment: bool) string
 {
@@ -117,7 +123,12 @@ enum DocSection
 	Throw,
 }
 
-//! Interface for doc string consumers.
+/*!
+ * Interface for doc string consumers.
+ *
+ * Implement this class, and pass an instance of your
+ * implementation to the @ref watt.text.vdoc.parse function.
+ */
 interface DocSink
 {
 	//! Signals the start of the full content.
@@ -153,7 +164,17 @@ interface DocSink
 	fn ingroup(sink: Sink, group: string);
 }
 
-//! Given a doc string input, call dsink methods with the given sink as an argument.
+/*!
+ * Given a doc string input, call dsink methods with the given sink as an argument.
+ *
+ * The `sink` argument can be passed as a convenience -- it may be `null`.
+ * ### Example
+ * ```volt
+ * ds: YourDocSinkImplementation;
+ * parse("@p hello", ds, sink);  // ds.start, ds.p, and ds.end, will be called.
+ * ```
+ * 
+ */
 fn parse(src: string, dsink: DocSink, sink: Sink)
 {
 	p: Parser;
