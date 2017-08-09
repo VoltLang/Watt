@@ -1,6 +1,8 @@
 // Copyright © 2013, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-//! Functions for decoding and encoding unicode strings and characters.
+/*!
+ * Functions for decoding and encoding UTF-8 strings and characters.
+ */
 module watt.text.utf;
 
 import core.rt.misc;
@@ -27,12 +29,30 @@ private fn readU8(str: string, ref index: size_t) u8
 	return str[index++];
 }
 
+/*!
+ * Retrieve a UTF-8 character from a particular index.
+ * ### Example
+ * ```volt
+ * str := "このworldは楽しい";
+ * i: size_t;
+ * assert(decode(str, ref i) == 'こ');
+ * assert(i > 1);
+ * ```
+ * @Param str The string to decode from.
+ * @Param index The index to decode from. Will be updated to the next character.
+ */
 fn decode(str: string, ref index: size_t) dchar
 {
 	return vrt_decode_u8_d(str, ref index);
 }
 
-//! Return how many codepoints are in a given UTF-8 string.
+/*!
+ * Determine how many codepoints are in a given UTF-8 string.
+ * ### Example
+ * ```volt
+ * assert(count("この") == 2);
+ * ```
+ */
 fn count(s: string) size_t
 {
 	i, length: size_t;
@@ -52,14 +72,14 @@ fn validate(s: string) void
 	}
 }
 
-//! Encode c into a given UTF-8 array.
+//! Encode `c` onto the end of `buf`.
 fn encode(ref buf: char[], c: dchar) void
 {
 	tmp: char[6];
 	buf = buf ~ tmp[0 .. encodeNoGC(ref tmp, c)];
 }
 
-//! Encode a unicode array into utf8
+//! Encode an array of codepoints into a string.
 fn encode(arr: dchar[]) string
 {
 	buf: char[];
@@ -80,7 +100,7 @@ fn encode(arr: char[], ref index: size_t, c: dchar)
 	index += encodeNoGC(ref *ptr, c);
 }
 
-//! Encode c as UTF-8.
+//! Encode `c` as UTF-8.
 fn encode(c: dchar) string
 {
 	tmp: char[6];
