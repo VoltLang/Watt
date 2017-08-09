@@ -1,7 +1,12 @@
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // Copyright © 2015, David Herberth.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Useful functions when dealing with [JSON](http://json.org/).
+/*!
+ * Useful functions when dealing with [JSON](http://json.org/).
+ *
+ * The @ref watt.json.sax parser doesn't process any of the output
+ * it gives. Use these functions to get data from what it gives you.
+ */
 module watt.json.util;
 
 import core.exception;
