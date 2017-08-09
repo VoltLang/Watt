@@ -4,6 +4,10 @@
 // See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
 /*!
  * Get precise timing information from the OS.
+ *
+ * Precise timing information (exactlty *how* precise varies based on hardware
+ * and operating system) is useful for a number of things; Games, simulations,
+ * profiling, etc.
  */
 module watt.io.monotonic;
 
@@ -16,6 +20,20 @@ global ticksPerSecond: i64;
 
 /*!
  * Get the ticks from the OS in an `i64`.
+ *
+ * One tick value is not useful in isolation, but take a second
+ * and you can tell how many ticks elapsed via simple subtraction.
+ * ### Example
+ * ```volt
+ * a := ticks();
+ * aFunctionThatTakesALongTime();
+ * delta := ticks() - a;
+ * ```
+ *
+ * How many ticks in a second, and the resolution varies from
+ * system to system. Use @ref watt.io.monotonic.ticksPerSecond and
+ * @ref watt.io.monotonic.convClockFreq to turn this into an
+ * understandable value.
  */
 alias ticks = vrt_monotonic_ticks;
 
