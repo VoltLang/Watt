@@ -2,6 +2,17 @@
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
 /*!
  * Simple functions for working with `string` values.
+ *
+ * The functions that return a string, will return a copy --
+ * the original will not be changed.
+ *
+ * ### Example
+ * ```volt
+ * a := " apple ";
+ * b := strip(a);
+ * assert(a == " apple ");
+ * assert(b == "apple");
+ * ```
  */
 module watt.text.string;
 
