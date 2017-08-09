@@ -1,11 +1,11 @@
 // Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
 /*!
- * Provides a simple interface for making HTTP requests.
+ * A simple interface for making HTTP requests.
  *
  * `HttpInterface` and `RequestInterface` are implemented with classes
- * with the names `Http` and `Request`, respectively. This is to allow
- * an different implementation for each platform.
+ * with the names `Http` and `Request`. Import `watt.http`, and it will
+ * import the appropriate implementation for the current platform.
  * ### Example
  * ```volt
  * import watt.http;
@@ -21,9 +21,9 @@
 module watt.http;
 
 /*!
- * Manage multiple HTTP requests.  
- * Every `Request` is create with a reference to an `Http` object,
- * which is in charge of launching the requests.
+ * Manage multiple HTTP requests.
+ *
+ * Handles the launching and tracking of multiple `Requests`.
  */
 interface HttpInterface
 {
