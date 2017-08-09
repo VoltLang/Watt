@@ -4,7 +4,8 @@
 /*!
  * Get a random 32 bit number from the Operating System.
  *
- * This number is ideal for seeding random number generators.
+ * This number is ideal for seeding random number generators,
+ * such as Watt's very own @ref watt.math.random.
  */
 module watt.io.seed;
 
@@ -17,11 +18,19 @@ import core.c.windows.windows;
  * This is sourced from the hardware or a strong source provided
  * by the Operating System, where possible. Intended to be used for
  * random number generator seed values.
+ *
+ * ### Example
+ * ```volt
+ * gen: RandomGenerator;
+ * gen.seed(getHardwareSeedU32());
+ * ```
  */
 fn getHardwareSeedU32() u32
 {
 	return getHardwareSeedU32Impl();
 }
+
+private:
 
 version (Windows) {
 	alias HCRYPTPROV = size_t*;
