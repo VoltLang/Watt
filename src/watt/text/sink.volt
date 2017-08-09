@@ -1,6 +1,16 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Facility for building long strings of text efficiently.
+/*!
+ * Construct long strings of text efficiently.
+ *
+ * The concatenation operator (`~` and `~=`) while convenient, is
+ * not efficient, as it likely causes an allocation each and every
+ * time it occurs.
+ *
+ * The `StringSink` allocates memory in large chunks, reducing the
+ * overall amount of allocation that takes place. Using this if
+ * you are going to be building a lot of strings is recommended.
+ */
 module watt.text.sink;
 
 static import core.rt.format;
@@ -12,7 +22,19 @@ alias Sink = core.rt.format.Sink;
 //! A `SinkArg` is shorthand for the string argument to a `Sink`.
 alias SinkArg = core.rt.format.SinkArg;
 
-//! Helps construct long strings efficiently.
+/*!
+ * Helps construct long strings efficiently.
+ *
+ * ### Example
+ * ```volt
+ * ss: StringSink;
+ * ss.sink("Hello, ");
+ * ss.sink("world.");
+ * assert(ss.toString() == "Hello, world.");
+ * ss.reset();
+ * assert(ss.toString() == "");
+ * ```
+ */
 struct StringSink
 {
 private:
