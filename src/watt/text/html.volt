@@ -1,7 +1,7 @@
 // Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
 // Copyright © 2015, Bernard Helyer.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Functions for dealing with HTML.
+//! Functions for escaping and unescaping HTML.
 module watt.text.html;
 
 import watt.conv: toString, toUint;
@@ -10,7 +10,11 @@ import watt.text.string: indexOf, replace;
 
 
 /*!
- * Returns the HTML escaped version of a given string.
+ * Get the HTML escaped version of a given string.
+ * ### Example
+ * ```volt
+ * htmlEscape(`"richard & friends"`);  // "&quot;richard &amp; friends&quot;"
+ * ```
  */
 fn htmlEscape(str: string) string
 {
@@ -21,8 +25,10 @@ fn htmlEscape(str: string) string
 
 /*!
  * Given an HTML escaped string `str`, unescape that string.
- * ### Examples
- *     htmlUnescape("&quot;hello world&quot;");  // Returns "hello world"
+ * ### Example
+ * ```volt
+ * htmlUnescape("&quot;hello world&quot;");  // Returns "hello world"
+ * ```
  */
 fn htmlUnescape(str: string) string
 {
@@ -77,7 +83,7 @@ fn htmlEscape(dgt: Sink, str: string, ignore: string = "")
 }
 
 /*!
- * Returns the HTML escaped version of a given string, ignoring any html tags.
+ * Returns the HTML escaped version of a given string, ignoring any HTML tags.
  */
 fn htmlEscapeIgnoreTags(str: string) string
 {
@@ -88,7 +94,7 @@ fn htmlEscapeIgnoreTags(str: string) string
 
 /*!
  * Writes the HTML escaped version of a given string to
- * the given dgt, ignoring any tags.
+ * the given dgt, ignoring any HTML tags.
  */
 fn htmlEscapeIgnoreTags(dgt: Sink, str: string)
 {
@@ -154,7 +160,7 @@ fn htmlEscapeAll(str: string) string
 }
 
 /*!
- * Escape every single character.
+ * Escape every single character into a `Sink`.
  */
 fn htmlEscapeAll(dgt: Sink, str: string)
 {
