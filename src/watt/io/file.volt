@@ -1,7 +1,7 @@
 // Copyright © 2013-2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
 /*!
- * Simple filesystem operation functions.
+ * Simple file handling functions.
  *
  * Functions for reading an entire file into memory, to check if a file exists,
  * for deleting a file, searching a directory for a file, and so on.
@@ -22,9 +22,7 @@ version (Windows) {
 }
 
 
-/*!
- * An `Exception` thrown upon failure of this module's functions.
- */
+//! Thrown when a filesystem operation fails.
 class FileException : Exception
 {
 	this(msg: string)
@@ -46,9 +44,9 @@ class FileException : Exception
  *
  * The entire file is read into memory at once, so be wary of using this function for
  * very large files.
- * @Param filename The filename to read.
+ * @Param filename The path to the file to read.
  * @Returns The entire contents of the file.
- * @Throws `FileException` If the file cannot be read.
+ * @Throws `FileException` if the file cannot be read.
  */
 fn read(filename: string) void[]
 {
@@ -149,7 +147,19 @@ fn globMatch(path: string, pattern: string) bool
 }
 
 /*!
- * Call a delegate for file in a directory that matches a given pattern.
+ * Call a delegate for a file in a directory that matches a given pattern.
+ *
+ * ### Example
+ * ```volt
+ * sourceFiles: string[];
+ * fn addFile(s: string) { sourceFiles ~= s; }
+ * searchDir(".", "*.volt", addFile);
+ * ```
+ *
+ * If you are calling this recursively (i.e., calling `searchDir` on directories
+ * in a directory), be aware that the special directories `.` and `..` will make
+ * an appearance if `glob` is `*`, and so your delegate will likely have to special
+ * case them.
  *
  * @Param dirName The directory to search the contents of.
  * @Param glob The pattern to check every entry in `dirName` against.
