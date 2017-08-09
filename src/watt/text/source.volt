@@ -392,7 +392,7 @@ public:
 /*!
  * Struct representing a location in a source file.
  *
- * This was pretty much stolen wholesale from Daniel Keep.
+ * Useful for error messages.
  */
 struct Location
 {
