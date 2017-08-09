@@ -1,4 +1,19 @@
-//! String formatting functions.
+/*!
+ * Structured string formatting.
+ *
+ * This module contains the `format` function, a versatile string formatter.
+ * The `format` function is also used by @ref watt.io.std.writef functions and similar
+ * to handle their formatting.
+ *
+ * The format string syntax is similar to C's `printf`, but requires less explicit
+ * typing. In most cases, `%s` will suffice to do the 'right thing'.
+ *
+ * ### Examples
+ * ```volt
+ * format("Hello %s", "your name");  // "Hello your name"
+ * format("%03s", 32);  // "032"
+ * ```
+ */
 module watt.text.format;
 
 import core.object;
@@ -59,6 +74,12 @@ fn format(sink: Sink, formatString: const(char)[], ...)
 	va_end(vl);
 }
 
+/*!
+ * Format using the above rules, but into a `Sink`, with
+ * an explicit list of `TypeInfo`s, and an explicit `va_list`.
+ *
+ * This allows variadic functions to use `format` to process their input.
+ */
 fn formatImpl(sink: Sink, formatString: const(char)[], ref _typeids: TypeInfo[], ref vl: va_list)
 {
 	formatting: bool;
