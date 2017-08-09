@@ -1,6 +1,11 @@
 // Copyright © 2016, Jakob Bornecrantz.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Functions for parsing a command string.
+/*!
+ * Functions for parsing a command string.
+ *
+ * These don't actually run any commands, but are useful for dealing
+ * with functions that do run a command string.
+ */
 module watt.process.cmd;
 
 import watt.text.utf;
@@ -10,6 +15,15 @@ import watt.text.ascii;
 
 /*!
  * Surround the string with " and escape " and /.
+ *
+ * `str` is surrounded by `"`. Any `"` present in `str` will
+ * be preceded by `\`, as will any `\` characters.
+ *
+ * ### Examples
+ * ```volt
+ * escapeAndAddQuotation(sink, `hello`);     // "hello"
+ * escapeAndAddQuotation(sink, `"hel\lo"`);  // "\"hel\\lo\""
+ * ```
  */
 fn escapeAndAddQuotation(sink: Sink, str: SinkArg) void
 {
@@ -27,6 +41,9 @@ fn escapeAndAddQuotation(sink: Sink, str: SinkArg) void
 /*!
  * Returns a textual representation of `cmd` and `args`
  * that can be passed to "/bin/sh -c".
+ *
+ * Given an array of strings (say from @ref watt.process.cmd.parseArguments)
+ * create a C string with the elements separated by spaces and quotes as appropriate.
  */
 fn toArgsPosix(cmd: SinkArg, args: SinkArg[]) char*
 {
@@ -42,7 +59,7 @@ fn toArgsPosix(cmd: SinkArg, args: SinkArg[]) char*
 	return sink.toChar().ptr;
 }
 
-/*!
+/*
  * State for parsing 
  */
 private enum ArgumentParseState {
@@ -53,7 +70,16 @@ private enum ArgumentParseState {
 }
 
 /*!
- * Parse a string as a series of arguments, just like bash/make does.
+ * Parse a string as a series of arguments, like bash/make does.
+ *
+ * - The words in `str` are split by whitespace.
+ * - Whitespace isn't included unless it's in a string literal,
+ * which uses the `"` character.
+ *
+ * ### Example
+ * ```volt
+ * parseArguments(`a   b	c "d e f"`);  // Returns ["a", "b", "c", "d e f"]
+ * ```
  */
 fn parseArguments(str: SinkArg) string[]
 {
