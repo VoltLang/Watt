@@ -33,10 +33,14 @@ public import watt.io.streams.stdc;
 
 
 version (Posix) {
+	//! An implementation of the `InputStream` for files.
 	alias InputFileStream = InputFDStream;
+	//! An implementation of the `OutputStream` for files.
 	alias OutputFileStream = OutputFDStream;
 } else version (CRuntime_All) {
+	//! An implementation of the `InputStream` for files.
 	alias InputFileStream = InputStdcStream;
+	//! An implementation of the `OutputStream` for files.
 	alias OutputFileStream = OutputStdcStream;
 }
 

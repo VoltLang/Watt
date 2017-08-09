@@ -1,7 +1,25 @@
 // Copyright © 2013-2017, Bernard Helyer.  All rights reserved.
 // Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
-//! Defines standard streams, and some simple utility functions.
+/*!
+ * Standard streams and simple utility functions.
+ *
+ * The global declaration of the @ref watt.io.streams that map
+ * onto the operating system's standard output, input, and error.
+ *
+ * There are also some simple functions declared here. These are
+ * the default `writeln` and friends you use when you import
+ * `watt.io`. The writing functions output to standard output,
+ * and the reading functions read from standard input.
+ *
+ * ### Example
+ * ```volt
+ * // This:
+ * writeln("Hello, world.");
+ * // ...is equivalent to this:
+ * output.writeln("Hello, world.");
+ * ```
+ */
 module watt.io.std;
 
 version (CRuntime_All || Posix):
@@ -9,15 +27,31 @@ version (CRuntime_All || Posix):
 import core.varargs: va_list, va_start, va_end;
 import watt.io.streams;
 
-//! An `OutputFileStream` that outputs to `stdout`.
+/*!
+ * An @ref watt.io.streams.OutputFileStream that outputs to `stdout`.
+ *
+ * This will appear on the console/terminal, if the
+ * application was launched from one.
+ */
 global output: OutputFileStream;
-//! An `OutputFileStream` that outputs to `stderr`.
+/*!
+ * An @ref watt.io.streams.OutputFileStream that outputs to `stderr`.
+ *
+ * Like @ref watt.io.std.output, this will appear on the console,
+ * but is used for errors, and can be redirected separately to output.
+ */
 global error: OutputFileStream;
-//! An `InputFileStream` that reads from `stdin`.
+/*!
+ * An @ref watt.io.streams.InputFileStream that reads from `stdin`.
+ *
+ * This will either read from the user's keyboard, or from a file redirected
+ * to `stdin` by the user.
+ */
 global input: InputFileStream;
 
 /*!
- * Write `s` to `output`.  
+ * Write `s` to `output`.
+ *
  * Same as `output.write(s)`.
  * @Param s An array of characters to be written to `output`.
  */
@@ -27,7 +61,8 @@ fn write(s: const(char)[])
 }
 
 /*!
- * Write `s` to `output`, then write a newline character.  
+ * Write `s` to `output`, then write a newline character.
+ *
  * Same as `output.writeln(s)`.
  * @Param s An array of characters to be written to `output`, before a newline.
  */
@@ -37,7 +72,8 @@ fn writeln(s: const(char)[])
 }
 
 /*!
- * Write the string representation of an `i32` to `output`.  
+ * Write the string representation of an `i32` to `output`.
+ *
  * Same as `output.writefln("%s", i)`.
  * @Param i An `i32` to write to `output`.
  */
@@ -47,7 +83,8 @@ fn writeln(i: i32)
 }
 
 /*!
- * Write the string representation of a `bool` to `output`.  
+ * Write the string representation of a `bool` to `output`.
+ *
  * Same as `output.writefln("%s", b)`.
  * @Param b A `bool` to write to `output`.
  */
@@ -57,7 +94,8 @@ fn writeln(b: bool)
 }
 
 /*!
- * Write a newline to `output`.  
+ * Write a newline to `output`.
+ *
  * Same as `output.writeln("")`.
  */
 fn writeln()
@@ -66,7 +104,8 @@ fn writeln()
 }
 
 /*!
- * Format a string and write it to `output`.  
+ * Format a string and write it to `output`.
+ *
  * See `watt.text.format` for format string documentation.  
  * Same as `output.writef(s, ...)`.
  * @Param s The format string.
@@ -80,7 +119,8 @@ fn writef(s: const(char)[], ...)
 }
 
 /*!
- * Format a string, write it to `output`, then output a newline.  
+ * Format a string, write it to `output`, then output a newline.
+ *
  * See `watt.text.format` for format string documentation.  
  * Same as `output.writefln(s, ...)`.
  * @Param s The format string.
