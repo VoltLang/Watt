@@ -20,7 +20,15 @@ fn runSort(numElements: size_t, cmp: CmpDg, swap: SwapDg)
 	qsort(0, numElements-1, cmp, swap);
 }
 
-//! Sort an array of integers in place.
+/*!
+ * Sort an array of integers in place.
+ * ### Example
+ * ```volt
+ * a := [3, 1, 2];
+ * sort(a);
+ * assert(a == [1, 2, 3]);
+ * ```
+ */
 fn sort(ints: i32[])
 {
 	fn cmp(ia: size_t, ib: size_t) bool
@@ -47,6 +55,12 @@ fn sort(ints: i32[])
 
 /*!
  * Return the maximum of two values.
+ * ### Examples
+ * ```volt
+ * assert(max(32, 16) == 32);
+ * assert(max(32, 32) == 32);
+ * assert(max(-32, 0) == 0);
+ * ```
  * @{
  */
 fn max(a: i32, b: i32) i32
@@ -74,6 +88,12 @@ fn max(a: u64, b: u64) u64
 
 /*!
  * Return the minimum of two values.
+ * ### Examples
+ * ```volt
+ * assert(min(2, 4) == 2);
+ * assert(min(2, 2) == 2);
+ * assert(min(-2, 4) == -2);
+ * ```
  * @{
  */
 fn min(a: i32, b: i32) i32
