@@ -106,7 +106,7 @@ fn splitLines(s: string) string[]
 /*!
  * Remove whitespace before and after `str`.
  * 
- * Whitespace is defined by @ref watt.ascii.isWhite.
+ * Whitespace is defined by @ref watt.text.ascii.isWhite.
  * ### Examples
  *     strip("  apple  ") -> "apple"
  *     strip("  apple  pie  ") -> "apple pie"
@@ -131,7 +131,7 @@ fn strip(str: StrArg) string
 /*!
  * Remove leading whitespace from `str`.
  *
- * Whitespace is defined by @ref watt.ascii.isWhite.
+ * Whitespace is defined by @ref watt.text.ascii.isWhite.
  */
 fn stripLeft(str: string) string
 {
@@ -146,7 +146,7 @@ fn stripLeft(str: string) string
 /*!
  * Remove trailing whitespace.
  * 
- * Whitespace is defined by @ref watt.ascii.isWhite.
+ * Whitespace is defined by @ref watt.text.ascii.isWhite.
  */
 fn stripRight(str: string) string
 {
