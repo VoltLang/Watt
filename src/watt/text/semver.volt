@@ -1,6 +1,19 @@
 // Copyright © 2017, Bernard Helyer.
 // See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
-//! Parse semantic version strings.
+/*!
+ * Parse [Semantic Version](semver.org) strings.
+ *
+ * Semver is very simple, and so is this module.
+ *
+ * ### Example
+ * ```volt
+ * a := new Release("1.0.0+ubuntu");
+ * b := new Release("1.0.0+win32");
+ * c := new Release("1.2.3+ubuntu");
+ * assert(a == b);
+ * assert(c > a && c > b);
+ * ```
+ */
 module watt.text.semver;
 
 import core.exception;
@@ -63,6 +76,9 @@ public:
 
 	/*!
 	 * Compare this release to another.
+	 *
+	 * First `major` is checked, then `minor`, then `patch`.
+	 * If they all match, then `prelease` is compared.
 	 */
 	fn opCmp(b: Release) i32
 	{
@@ -84,7 +100,11 @@ public:
 		return prereleaseCheck(this.prerelease, b.prerelease);
 	}
 
-	//! Test this release for equality with another.
+	/*!
+	 * Test this release for equality with another.
+	 *
+	 * Two versions are equal if everything but their metadata matches.
+	 */
 	fn opEquals(b: Release) bool
 	{
 		return opCmp(b) == 0;
