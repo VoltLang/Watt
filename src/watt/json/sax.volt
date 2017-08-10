@@ -860,7 +860,7 @@ private enum State
 	ARRAY_ITEM, // currently parsing an array and expecting an item
 }
 
-struct ParserStack
+private struct ParserStack
 {
 	data: State[];
 	used: size_t;
