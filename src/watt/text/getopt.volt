@@ -43,6 +43,7 @@ import watt.text.string;
 import watt.text.utf;
 
 
+//! Thrown when arguments are in error.
 class GetoptException : Exception
 {
 	this(msg: string)
