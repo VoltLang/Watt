@@ -106,6 +106,7 @@ fn getCommandFromName(name: string) string
 	return cmd;
 }
 
+version (CRuntime_All) {
 /*!
  * Start a process from the executable `name` and with the given `args`.
  *
@@ -114,16 +115,20 @@ fn getCommandFromName(name: string) string
  * pid := spawnProcess("volta", ["-c", "test.volt"]);
  * pid.wait();  // Blocks until the process is finished.
  * ```
- *
- * @{
  */
-version (CRuntime_All)
 fn spawnProcess(name: string, args: string[]) Pid
 {
 	return spawnProcess(name, args, stdin, stdout, stderr, null);
 }
+}
 
-version (CRuntime_All)
+version (CRuntime_All) {
+/*!
+ * Start a process from an executable.
+ *
+ * Takes an optional environment, and input, output, and error streams.  
+ * If the streams are null, stdin, stdout, and stderr respectively will be used.
+ */
 fn spawnProcess(name: string, args: string[],
                 _stdin: InputStdcStream,
                 _stdout: OutputStdcStream,
@@ -135,8 +140,15 @@ fn spawnProcess(name: string, args: string[],
 	stderrh := _stderr is null ? null : _stderr.handle;
 	return spawnProcess(name, args, stdinh, stdouth, stderrh, env);
 }
+}
 
-version (Posix)
+version (Posix) {
+/*!
+ * Start a process from an executable.
+ *
+ * Takes an optional environment, and input, output, and error streams.  
+ * If the streams are null, stdin, stdout, and stderr respectively will be used.
+ */
 fn spawnProcess(name: string, args: string[],
                 _stdin: InputFDStream,
                 _stdout: OutputFDStream,
@@ -150,8 +162,15 @@ fn spawnProcess(name: string, args: string[],
 	pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
 	return new Pid(pid);
 }
+}
 
-version (Posix && CRuntime_All)
+version (Posix && CRuntime_All) {
+/*!
+ * Start a process from an executable.
+ *
+ * Takes an optional environment, and input, output, and error streams.  
+ * If the streams are null, stdin, stdout, and stderr respectively will be used.
+ */
 fn spawnProcess(name: string, args: string[],
                 _stdin: FILE*,
                 _stdout: FILE*,
@@ -165,8 +184,15 @@ fn spawnProcess(name: string, args: string[],
 	pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
 	return new Pid(pid);
 }
+}
 
-version (Windows && CRuntime_All)
+version (Windows && CRuntime_All) {
+/*!
+ * Start a process from an executable.
+ *
+ * Takes an optional environment, and input, output, and error streams.  
+ * If the streams are null, stdin, stdout, and stderr respectively will be used.
+ */
 fn spawnProcess(name: string, args: string[],
                 _stdin: FILE*,
                 _stdout: FILE*,
@@ -177,7 +203,7 @@ fn spawnProcess(name: string, args: string[],
 	pid := spawnProcessWindows(cmd, args, _stdin, _stdout, _stderr, env);
 	return new Pid(pid);
 }
-//! @}
+}
 
 private {
 	extern(C) fn getenv(ident: scope const(char)*) char*;
@@ -290,7 +316,7 @@ version (Posix) {
 		assert(false);
 	}
 
-	fn toArgz(stack: char[], result: char*[], name: string, args: string[]) void
+	private fn toArgz(stack: char[], result: char*[], name: string, args: string[]) void
 	{
 		resultPos: size_t;
 
@@ -313,7 +339,7 @@ version (Posix) {
 		result[resultPos] = null;
 	}
 
-	fn toEnvz(stack: char[], result: char*[], env: Environment) void
+	private fn toEnvz(stack: char[], result: char*[], env: Environment) void
 	{
 		start, end, resultPos: size_t;
 
@@ -335,7 +361,7 @@ version (Posix) {
 		result[resultPos] = null;
 	}
 
-	fn waitPosix(pid: pid_t) int
+	private fn waitPosix(pid: pid_t) int
 	{
 		status: int;
 
@@ -356,7 +382,7 @@ version (Posix) {
 		assert(false);
 	}
 
-	fn waitManyPosix(out pid: pid_t) i32
+	private fn waitManyPosix(out pid: pid_t) i32
 	{
 		status, result: i32;
 
@@ -379,20 +405,20 @@ version (Posix) {
 		assert(false);
 	}
 
-	fn stopped(status: i32) bool { return (status & 0xff) == 0x7f; }
-	fn signaled(status: i32) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
-	fn exited(status: i32) bool { return (status & 0x7f) == 0; }
+	private fn stopped(status: i32) bool { return (status & 0xff) == 0x7f; }
+	private fn signaled(status: i32) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
+	private fn exited(status: i32) bool { return (status & 0x7f) == 0; }
 
-	fn termsig(status: i32) i32 { return status & 0x7f; }
-	fn exitstatus(status: i32) i32 { return (status & 0xff00) >> 8; }
+	private fn termsig(status: i32) i32 { return status & 0x7f; }
+	private fn exitstatus(status: i32) i32 { return (status & 0xff00) >> 8; }
 
 } else version (Windows) {
 
-	extern (C) fn _fileno(FILE*) i32;
-	extern (C) fn _get_osfhandle(i32) HANDLE;
-	extern (Windows) fn GetStdHandle(const DWORD) HANDLE;
+	private extern (C) fn _fileno(FILE*) i32;
+	private extern (C) fn _get_osfhandle(i32) HANDLE;
+	private extern (Windows) fn GetStdHandle(const DWORD) HANDLE;
 	
-	fn toArgz(moduleName: string, args: string[]) LPSTR
+	private fn toArgz(moduleName: string, args: string[]) LPSTR
 	{
 		buffer: StringSink;
 		buffer.sink("\"");
@@ -405,7 +431,7 @@ version (Posix) {
 		return cast(LPSTR)buffer.toString().ptr;
 	}
 
-	fn toEnvz(stack: char[], env: Environment) void
+	private fn toEnvz(stack: char[], env: Environment) void
 	{
 		start, end, resultPos: size_t;
 
@@ -495,7 +521,7 @@ version (Posix) {
 		return pi.hProcess;
 	}
 
-	fn waitWindows(handle: HANDLE) i32
+	private fn waitWindows(handle: HANDLE) i32
 	{
 		waitResult := WaitForSingleObject(handle, cast(u32) 0xFFFFFFFF);
 		if (waitResult == cast(u32) 0xFFFFFFFF) {
