@@ -176,7 +176,7 @@ fn buildCode(str: string) Code
 	return ret;
 }
 
-//! Create a HtmlInline node, add it to @p children and return it.
+//! Create an HtmlInline node, add it to @p children and return it.
 fn addHtmlInline(ref children: Node[], str: string) HtmlInline
 {
 	ret := new HtmlInline();
@@ -186,6 +186,7 @@ fn addHtmlInline(ref children: Node[], str: string) HtmlInline
 	return ret;
 }
 
+//! Build an HtmlInline node.
 fn buildHtmlInline(str: string) HtmlInline
 {
 	ret := new HtmlInline();
@@ -268,6 +269,7 @@ fn addImage(ref children: Node[], url: string, title: string) Image
 	return ret;
 }
 
+//! Build an Image node.
 fn buildImage(url: string, alt: string, title: string) Image
 {
 	ret := new Image();
@@ -282,6 +284,7 @@ fn buildImage(url: string, alt: string, title: string) Image
  * Parsing utility functions.
  */
 
+//! Consume characters until a character is found.
 fn consumeUntilChar(ref str: string, out outStr: string, c: char) bool
 {
 	found := false;
@@ -304,6 +307,7 @@ fn consumeUntilChar(ref str: string, out outStr: string, c: char) bool
 	return found;
 }
 
+//! Consume a link tag.
 fn consumeTag(ref str: string, out tag: string) bool
 {
 	i: size_t;
@@ -319,6 +323,7 @@ fn consumeTag(ref str: string, out tag: string) bool
 	return true;
 }
 
+//! Consume one character.
 fn consumeChar(ref str: string, c: char) bool
 {
 	if (str.length == 0 || str[0] != c) {
@@ -328,6 +333,7 @@ fn consumeChar(ref str: string, c: char) bool
 	return true;
 }
 
+//! Consume whitespace.
 fn consumeWhitespace(ref str: string)
 {
 	while (str.length > 0 && isWhite(str[0])) {
@@ -335,6 +341,7 @@ fn consumeWhitespace(ref str: string)
 	}
 }
 
+//! Consume a URL.
 fn consumeUrl(ref str: string, out url: string) bool
 {
 	if (str.length == 0) {
@@ -365,6 +372,7 @@ fn consumeUrl(ref str: string, out url: string) bool
 
 enum CODE_INDENT = 4;
 
+//! Count the whitespace at the beginning of a string.
 fn countLeadingWhitespace(str: string) size_t
 {
 	dummy: size_t;
@@ -397,23 +405,6 @@ fn countContiguousWhitespace(str: string, maxLength: size_t, ref i: size_t) size
 		}
 	} while (i < str.length && indentLength < maxLength);
 	return indentLength;
-}
-
-fn visibleWhitespace(str: string) string
-{
-	buf: char[];
-	foreach (c: char; str) {
-		if (c == '\t') {
-			buf ~= "T";
-		} else if (c == ' ') {
-			buf ~= ".";
-		} else if (c == '\n') {
-			buf ~= "$";
-		} else {
-			buf ~= c;
-		}
-	}
-	return cast(string)buf;
 }
 
 /*!
@@ -456,6 +447,7 @@ fn emptyString(len: size_t) string
 	return uniformString(len, ' ');
 }
 
+//! Create a string `len` characters long, filled with `c` characters.
 fn uniformString(len: size_t, c: char) string
 {
 	str := new char[](len);
@@ -465,6 +457,7 @@ fn uniformString(len: size_t, c: char) string
 	return cast(string)str;
 }
 
+//! Get the string representation of a paragraph.
 fn paragraphToString(p: Paragraph) string
 {
 	ss: StringSink;
@@ -478,6 +471,7 @@ fn paragraphToString(p: Paragraph) string
 	return ss.toString();
 }
 
+//! @Returns true if `c` is markdown punctuation.
 fn markdownPunctuation(c: dchar) bool
 {
 	switch (c) {
@@ -490,7 +484,7 @@ fn markdownPunctuation(c: dchar) bool
 	}
 }
 
-// Turn 'foo      bar' into 'foo bar', like a browser.
+//! Turn consecutive whitespace into a single whitespace.
 fn collapseWhitespace(str: string) string
 {
 	buf: char[];
@@ -512,6 +506,7 @@ fn collapseWhitespace(str: string) string
 	return cast(string)buf;
 }
 
+//! Escape a string using markdown escape rules.
 fn markdownEscape(str: string) string
 {
 	outStr: string;
@@ -537,6 +532,7 @@ fn markdownEscape(str: string) string
 	return cast(string)buf;
 }
 
+//! Build an AutoLink node.
 fn makeAutoLink(url: string) Node
 {
 	par := buildParagraph();
@@ -546,6 +542,7 @@ fn makeAutoLink(url: string) Node
 	return par;
 }
 
+//! Build an EmailLink node.
 fn makeEmailLink(url: string) Node
 {
 	par := buildParagraph();
@@ -555,6 +552,7 @@ fn makeEmailLink(url: string) Node
 	return par;
 }
 
+//! Build an AutoLinkNode.
 fn makeStandaloneAutoLink(url: string) Node
 {
 	link := buildLink(urlEscape(url), "");
@@ -563,6 +561,7 @@ fn makeStandaloneAutoLink(url: string) Node
 	return link;
 }
 
+//! @Returns `true` if `str` is an absolute URI, according to markdown rules.
 fn isAbsoluteURI(str: string) bool
 {
 	// Empty urls, or schemes that don't start with a letter are not uris.
@@ -653,6 +652,7 @@ fn urlEscape(str: string) string
 	}
 }
 
+//! Escape HTML entities.
 fn htmlEntityEscape(str: string) string
 {
 	buf: char[];
@@ -735,6 +735,7 @@ fn htmlEntityEscape(str: string) string
 	return cast(string)buf;
 }
 
+//! State for email validator.
 enum EmailState
 {
 	BeforeAt,
@@ -742,6 +743,7 @@ enum EmailState
 	DomainBody,
 }
 
+//! @Returns `true` if `str` could be an email address.
 fn isEmailAddress(str: string) bool
 {
 	state := EmailState.BeforeAt;
@@ -823,6 +825,7 @@ fn validBlockHtml(str: string) bool
 	return true;
 }
 
+//! @Returns `true` if `str` is valid inline HTML.
 fn validInlineHtml(str: string) bool
 {
 	if (!validBlockHtml(str)) {
@@ -897,6 +900,7 @@ fn validInlineHtml(str: string) bool
 	return true;  // todo: most things
 }
 
+//! Strip characters from a string hat are not allowed in image link titles.
 fn altStringPresentation(str: string) string
 {
 	buf: char[];
@@ -916,6 +920,7 @@ fn altStringPresentation(str: string) string
 	return cast(string)buf;
 }
 
+//! Replace an HTML entity with the correct unicode character.
 fn replaceEntity(str: string) string
 {
 	switch (str) {

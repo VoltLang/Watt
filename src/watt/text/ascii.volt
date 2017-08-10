@@ -127,7 +127,7 @@ fn isHexDigit(c: dchar) bool
 	return c >= '0' && c <= '9' || c >= 'a' && c <= 'f' || c >= 'A' && c <= 'F';
 }
 
-/*
+/*!
  * Is a character whitespace?
  *
  * The characters considered whitespace are ` `, `\t`, `\r`, `\f`, `\v`, and `\n`.
