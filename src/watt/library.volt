@@ -6,6 +6,7 @@ module watt.library;
 import watt.conv : toStringz;
 
 
+//! A delegate that loads an address from a name. Usually loads a function.
 alias Loader = dg (string) void*;
 
 version(Windows) {
