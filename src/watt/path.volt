@@ -10,21 +10,21 @@ import core.exception;
 
 version (Windows) {
 	import core.c.windows.windows: HMODULE, DWORD, CreateDirectoryA;
-	extern(C) fn _fullpath(char*, const(char)*, length: size_t) char*;
-	extern(C) fn _wfullpath(wchar*, const(wchar)*, length: size_t) char*;
+	private extern(C) fn _fullpath(char*, const(char)*, length: size_t) char*;
+	private extern(C) fn _wfullpath(wchar*, const(wchar)*, length: size_t) char*;
 } else version (Posix) {
 	import core.c.posix.sys.stat: cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
 	import core.c.posix.sys.types: mode_t;
-	extern(C) fn realpath(const(char)*, char*) char*;
+	private extern(C) fn realpath(const(char)*, char*) char*;
 }
 
 version (Windows) {
-	extern(Windows) fn GetModuleFileNameA(HMODULE, const(char)*, DWORD) DWORD;
+	private extern(Windows) fn GetModuleFileNameA(HMODULE, const(char)*, DWORD) DWORD;
 } else version (OSX) {
-	extern(C) fn _NSGetExecutablePath(char*, u32*) i32;
+	private extern(C) fn _NSGetExecutablePath(char*, u32*) i32;
 } else version (Linux) {
 	import core.c.posix.sys.types: ssize_t;
-	extern(C) fn readlink(path: const(char)*, buf: char*, bufsiz: size_t) ssize_t;
+	private extern(C) fn readlink(path: const(char)*, buf: char*, bufsiz: size_t) ssize_t;
 } else {
 	static assert(false, "unsupported platform");
 }
