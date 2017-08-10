@@ -24,69 +24,74 @@ import watt.text.string;
 import watt.text.sink;
 
 
-/*!
- * Returns an environment that is a copy of the running process' environment.
- */
-version(Posix) fn retrieveEnvironment() Environment
-{
-	env := new Environment();
-	ptr := environ;
-	for (s: char* = *ptr; s !is null; s = *(++ptr)) {
-		str := s[0 .. strlen(s)];
-		pos := indexOf(str, '=');
-		valuePos := cast(size_t)(pos + 1);
+version(Posix) {
+	/*!
+	 * Returns an environment that is a copy of the running process' environment.
+	 */
+	fn retrieveEnvironment() Environment
+	{
+		env := new Environment();
+		ptr := environ;
+		for (s: char* = *ptr; s !is null; s = *(++ptr)) {
+			str := s[0 .. strlen(s)];
+			pos := indexOf(str, '=');
+			valuePos := cast(size_t)(pos + 1);
 
-		if (pos < 1) {
-			continue;
+			if (pos < 1) {
+				continue;
+			}
+
+			key, value: string;
+
+			key = new string(str[0 .. pos]);
+			if (valuePos < str.length) {
+				value = new string(str[valuePos .. $]);
+			}
+
+			env.set(key, value);
 		}
 
-		key, value: string;
-
-		key = new string(str[0 .. pos]);
-		if (valuePos < str.length) {
-			value = new string(str[valuePos .. $]);
-		}
-
-		env.set(key, value);
-	}
-
-	return env;
-}
-
-/*!
- * Returns an environment that is a copy of the running process' environment.
- */
-version(Windows) fn retrieveEnvironment() Environment
-{
-	index: size_t;
-	env := new Environment();
-	strs := GetEnvironmentStringsW();
-	if (strs is null) {
 		return env;
 	}
+}
 
-	for (i: size_t; strs[i] != '\0'; i++) {
 
-		keyStart := i;
-		while (strs[i] != '=') { ++i; }
-		keyEnd := i;
-
-		valStart := ++i;
-		while (strs[i] != '\0') { ++i; }
-		valEnd := i;
-
-		if (keyStart == keyEnd) {
-			continue;
+version(Windows) {
+	/*!
+	 * Returns an environment that is a copy of the running process' environment.
+	 */
+	fn retrieveEnvironment() Environment
+	{
+		index: size_t;
+		env := new Environment();
+		strs := GetEnvironmentStringsW();
+		if (strs is null) {
+			return env;
 		}
 
-		key := convertUtf16ToUtf8(strs[keyStart .. keyEnd]);
-		val := convertUtf16ToUtf8(strs[valStart .. valEnd]);
-		env.set(key, val);
+		for (i: size_t; strs[i] != '\0'; i++) {
+
+			keyStart := i;
+			while (strs[i] != '=') { ++i; }
+			keyEnd := i;
+
+			valStart := ++i;
+			while (strs[i] != '\0') { ++i; }
+			valEnd := i;
+
+			if (keyStart == keyEnd) {
+				continue;
+			}
+
+			key := convertUtf16ToUtf8(strs[keyStart .. keyEnd]);
+			val := convertUtf16ToUtf8(strs[valStart .. valEnd]);
+			env.set(key, val);
+		}
+
+		FreeEnvironmentStringsW(strs);
+
+		return env;
 	}
-
-	FreeEnvironmentStringsW(strs);
-
-	return env;
 }
 
 /*!
