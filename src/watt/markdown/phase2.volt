@@ -16,7 +16,7 @@ import watt.text.source;
 import watt.text.format;
 import watt.conv : convToLower = toLower;
 
-class DelimiterEntry
+private class DelimiterEntry
 {
 	txt: Text;
 	run: string;
@@ -31,7 +31,7 @@ class DelimiterEntry
 	}
 }
 
-fn startsWith(src: Source, str: string) bool
+private fn startsWith(src: Source, str: string) bool
 {
 	dummy: bool;
 	foreach (i, c: dchar; str) {
@@ -42,6 +42,9 @@ fn startsWith(src: Source, str: string) bool
 	return true;
 }
 
+/*!
+ * Perform inline transformation.
+ */
 class Phase2 : Visitor
 {
 private:
