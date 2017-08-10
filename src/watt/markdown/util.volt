@@ -69,6 +69,7 @@ fn addHtmlBlock(ref children: Node[], str: string) HtmlBlock
 	return ret;
 }
 
+//! Create an HtmlBlock node.
 fn buildHtmlBlock() HtmlBlock
 {
 	ret := new HtmlBlock();
@@ -168,6 +169,7 @@ fn addCode(ref children: Node[], str: string) Code
 	return ret;
 }
 
+//! Create a Code node.
 fn buildCode(str: string) Code
 {
 	ret := new Code();

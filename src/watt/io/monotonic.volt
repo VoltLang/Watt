@@ -71,6 +71,7 @@ fn convClockFreq(ticks: i64, srcTicksPerSecond: i64, dstTicksPerSecond: i64) i64
 		ticks % srcTicksPerSecond * dstTicksPerSecond / srcTicksPerSecond;
 }
 
+//! Initialises the `ticksPerSecond` value.
 global this()
 {
 	ticksPerSecond = vrt_monotonic_ticks_per_second();
