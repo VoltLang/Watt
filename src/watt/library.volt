@@ -13,7 +13,7 @@ version(Windows) {
 	import core.c.windows.windows;
 
 	// XXX Proper way to import this.
-	extern(Windows)
+	private extern(Windows)
 	{
 		fn LoadLibraryA(name: const(char)*) HMODULE;
 		fn FreeLibrary(lib: HMODULE) void*;
@@ -23,7 +23,7 @@ version(Windows) {
 } else {
 
 	// XXX Proper way to import this.
-	extern(C)
+	private extern(C)
 	{
 		fn dlopen(file: const(char)*, mode: i32) void*;
 		fn dlclose(handle: void*) i32;
