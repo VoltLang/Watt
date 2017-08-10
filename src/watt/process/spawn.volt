@@ -76,11 +76,6 @@ public:
 	}
 }
 
-fn wait(p: Pid) i32
-{
-	return p.wait();
-}
-
 //! Thrown if a process could not be spawned.
 class ProcessException : Exception
 {
