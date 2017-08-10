@@ -260,6 +260,7 @@ version (Posix) {
 		extern(C) fn waitpid(pid_t, i32*, i32) pid_t;
 	}
 
+	//! Process spawning implementation for POSIX.
 	fn spawnProcessPosix(name: string,
 	                     args: string[],
 	                     stdinFD: i32,
