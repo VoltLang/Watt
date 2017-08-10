@@ -203,7 +203,7 @@ class ThematicBreak : Node
 }
 
 /*!
- * A written method of human communication.  
+ * A written method of human communication.
  *
  * The first instances are recorded at about 6000 BC.
  *
@@ -227,7 +227,7 @@ class Softbreak : Node
 }
 
 /*!
- * Harder form of break than @ref watt.markdown.ast.Softbreak, rendered with <br> in HTML.
+ * Harder form of break than @ref watt.markdown.ast.Softbreak, rendered with `<br>` in HTML.
  */
 class Linebreak : Node
 {
