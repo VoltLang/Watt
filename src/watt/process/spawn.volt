@@ -361,7 +361,8 @@ version (Posix) {
 		result[resultPos] = null;
 	}
 
-	private fn waitPosix(pid: pid_t) int
+	//! Wait for a specific process.
+	fn waitPosix(pid: pid_t) int
 	{
 		status: int;
 
@@ -382,7 +383,8 @@ version (Posix) {
 		assert(false);
 	}
 
-	private fn waitManyPosix(out pid: pid_t) i32
+	//! Wait for a process.
+	fn waitManyPosix(out pid: pid_t) i32
 	{
 		status, result: i32;
 
@@ -521,7 +523,8 @@ version (Posix) {
 		return pi.hProcess;
 	}
 
-	private fn waitWindows(handle: HANDLE) i32
+	//! Wait for a HANDLE to finish.
+	fn waitWindows(handle: HANDLE) i32
 	{
 		waitResult := WaitForSingleObject(handle, cast(u32) 0xFFFFFFFF);
 		if (waitResult == cast(u32) 0xFFFFFFFF) {
