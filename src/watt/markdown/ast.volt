@@ -89,20 +89,32 @@ public:
 	fn toParentFast()               Parent { return cast(Parent)cast(void*)this; }
 }
 
+/*!
+ * A Parent node can have children nodes.
+ */
 abstract class Parent : Node
 {
 	children: Node[];
 }
 
+/*!
+ * A Document node represents the entire markdown text.
+ */
 class Document : Parent
 {
 }
 
+/*!
+ * A Parent block from lines that start with `>`.
+ */
 class BlockQuote : Parent
 {
 	lastLineBlank: bool;
 }
 
+/*!
+ * A Parent block that lists its children, either ordered or unordered.
+ */
 class List : Parent
 {
 public:
@@ -126,12 +138,18 @@ public:
 	start: i32;
 }
 
+/*!
+ * An element in a @ref watt.markdown.ast.List.
+ */
 class Item : Parent
 {
 public:
 	childPoint: size_t;
 }
 
+/*!
+ * A Block that contains text that is to be displayed as-is in a monospace font.
+ */
 class CodeBlock : Node
 {
 	str: string;
@@ -139,6 +157,9 @@ class CodeBlock : Node
 	fenceIndentation: size_t;
 }
 
+/*!
+ * A block of raw HTML.
+ */
 class HtmlBlock : Node
 {
 public:
@@ -159,19 +180,36 @@ public:
 	parent: Parent;
 }
 
+/*!
+ * A Paragraph is the simplest parent block, usually containing text.
+ */
 class Paragraph : Parent
 {
 }
 
+/*!
+ * Demarks a section with text in a special style. Can be generated in multiple ways.
+ */
 class Heading : Parent
 {
 	level: u32;
 }
 
+/*!
+ * Breaks a document into sections. Rendered with an <hr> node in HTML.
+ */
 class ThematicBreak : Node
 {
 }
 
+/*!
+ * A written method of human communication.  
+ *
+ * The first instances are recorded at about 6000 BC.
+ *
+ * ### Bugs
+ * - Tone is often hard to convey, meaning discussions can be more difficult than face-to-face.
+ */
 class Text : Node
 {
 	str: string;
@@ -180,34 +218,55 @@ class Text : Node
 	run: string;
 }
 
+/*!
+ * A newline.
+ */
 class Softbreak : Node
 {
 
 }
 
+/*!
+ * Harder form of break than @ref watt.markdown.ast.Softbreak, rendered with <br> in HTML.
+ */
 class Linebreak : Node
 {
 	slashBreak: bool;
 }
 
+/*!
+ * Like @ref watt.markdown.ast.CodeBlock but inline.
+ */
 class Code : Node
 {
 	str: string;
 }
 
+/*!
+ * An inline HTML tag.
+ */
 class HtmlInline : Node
 {
 	str: string;
 }
 
+/*!
+ * First level of text emphasis. Rendered as italics.
+ */
 class Emph : Parent
 {
 }
 
+/*!
+ * Second level of text emphasis. Rendered as bold.
+ */
 class Strong : Parent
 {
 }
 
+/*!
+ * A Link to a URL.
+ */
 class Link : Parent
 {
 	url: string;
@@ -215,6 +274,9 @@ class Link : Parent
 	fromHtml: bool;
 }
 
+/*!
+ * A Link to an image, intended for inline display.
+ */
 class Image : Parent
 {
 	url: string;
