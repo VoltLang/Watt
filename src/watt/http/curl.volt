@@ -12,6 +12,7 @@ import watt.io : output;
 import watt.http : HttpInterface, RequestInterface;
 
 
+//! Curl implementation of `HttpInterface`.
 class Http : HttpInterface
 {
 private:
@@ -91,6 +92,7 @@ public:
 	}
 }
 
+//! Curl implementation of `RequestInterface`.
 class Request : RequestInterface
 {
 private:

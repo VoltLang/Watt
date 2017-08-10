@@ -10,6 +10,7 @@ version(Windows):
 import core.c.windows;
 
 
+//! Win32 implementation of `HttpInterface`.
 class Http : HttpInterface
 {
 private:
@@ -52,6 +53,7 @@ public:
 	}
 }
 
+//! Win32 implementation of `RequestInterface`.
 class Request : RequestInterface
 {
 private:
