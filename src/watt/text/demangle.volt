@@ -35,6 +35,8 @@ fn demangleShort(mangledName: const(char)[]) string
 	return demangleImpl(mangledName:mangledName, abridged:true);
 }
 
+private:
+
 fn demangleImpl(mangledName: const(char)[], abridged: bool) string
 {
 	sink: StringSink;
@@ -76,8 +78,6 @@ fn demangleImpl(mangledName: const(char)[], abridged: bool) string
 	failIf(mangledName.length > 0, "unused input");
 	return sink.toString();
 }
-
-private:
 
 // If b is true, throw an Exception with msg.
 fn failIf(b: bool, msg: string)
