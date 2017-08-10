@@ -781,7 +781,10 @@ fn isEmailAddress(str: string) bool
 	return state == EmailState.DomainBody;
 }
 
-/* This is all a bit hacky, but a full HTML parser seems out of scope.
+/*!
+ * Is the string valid to be an HTML block?
+ *
+ * This is all a bit hacky, but a full HTML parser seems out of scope.
  * Basically these characters could be in a string or something, but if there's
  * not been whitespace, there's no way they could be valid.
  */
