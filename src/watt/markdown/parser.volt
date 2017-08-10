@@ -18,6 +18,7 @@ import watt.text.html;
 import watt.text.format;
 
 
+//! Parse a string of markdown, ready for processing into output.
 fn parse(str: string) Document
 {
 	p: Parser;
@@ -32,6 +33,9 @@ fn parse(str: string) Document
 	return p.mDocument;
 }
 
+/*!
+ * Internal representation of a link.
+ */
 class LinkReference
 {
 	enum Stage
