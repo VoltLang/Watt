@@ -11,6 +11,7 @@ module watt.process.environment;
 
 version (Windows || Posix):
 
+import core.c.stdlib;
 import core.c.string;
 
 version (Windows) {
@@ -178,22 +179,4 @@ public:
 	{
 		store.remove(toUpper(key));
 	}
-}
-
-private:
-
-version (OSX) {
-
-	// TODO Remove this from iOS, or apps gets rejected.
-	extern(C) fn _NSGetEnviron() char*** ;
-
-	@property fn environ() char**
-	{
-		return *_NSGetEnviron();
-	}
-
-} else version (Posix) {
-
-	extern extern(C) global environ: char**;
-
 }
