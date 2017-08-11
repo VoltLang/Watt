@@ -7,7 +7,7 @@ module watt.process.spawn;
 version (Windows || Posix):
 
 import core.exception;
-import core.c.stdlib: csystem = system, exit;
+import core.c.stdlib: csystem = system, exit, getenv;
 import core.c.string: strlen;
 import core.c.stdio;
 
@@ -205,10 +205,6 @@ fn spawnProcess(name: string, args: string[],
 }
 }
 
-private {
-	extern(C) fn getenv(ident: scope const(char)*) char*;
-}
-
 //! Search a PATH string for a command. If one is not given, PATH will be retrieved and used.
 fn searchPath(cmd: string, path: string = null) string
 {
@@ -249,17 +245,6 @@ fn system(name: string) i32
 }
 
 version (Posix) {
-
-	private {
-		extern(C) fn execv(const(char)*, const(char)**) i32;
-		extern(C) fn execve(const(char)*, const(char)**, const(char)**) i32;
-		extern(C) fn fork() pid_t;
-		extern(C) fn dup(i32) i32;
-		extern(C) fn dup2(i32, i32) i32;
-		extern(C) fn close(i32) void;
-		extern(C) fn waitpid(pid_t, i32*, i32) pid_t;
-	}
-
 	//! Process spawning implementation for POSIX.
 	fn spawnProcessPosix(name: string,
 	                     args: string[],
@@ -416,11 +401,6 @@ version (Posix) {
 	private fn exitstatus(status: i32) i32 { return (status & 0xff00) >> 8; }
 
 } else version (Windows) {
-
-	private extern (C) fn _fileno(FILE*) i32;
-	private extern (C) fn _get_osfhandle(i32) HANDLE;
-	private extern (Windows) fn GetStdHandle(const DWORD) HANDLE;
-	
 	private fn toArgz(moduleName: string, args: string[]) LPSTR
 	{
 		buffer: StringSink;
@@ -467,7 +447,7 @@ version (Posix) {
 	{
 		fn stdHandle(file: FILE*, stdNo: DWORD) HANDLE {
 			if (file !is null) {
-				h := _get_osfhandle(_fileno(file));
+				h := _get_osfhandle(_fileno(cast(void*)file));
 				if (h !is cast(HANDLE)INVALID_HANDLE_VALUE) {
 					return h;
 				}
