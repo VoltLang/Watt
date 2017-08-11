@@ -9,27 +9,23 @@ version (Windows || Posix):
 import core.exception;
 
 version (Windows) {
-	import core.c.windows.windows: HMODULE, DWORD, CreateDirectoryA;
-	private extern(C) fn _fullpath(char*, const(char)*, length: size_t) char*;
-	private extern(C) fn _wfullpath(wchar*, const(wchar)*, length: size_t) char*;
+	import core.c.windows.windows: HMODULE, DWORD, CreateDirectoryA, GetModuleFileNameA, _fullpath, _wfullpath;
 } else version (Posix) {
 	import core.c.posix.sys.stat: cmkdir = mkdir, S_IRWXU, S_IRWXG, S_IRWXO;
 	import core.c.posix.sys.types: mode_t;
-	private extern(C) fn realpath(const(char)*, char*) char*;
 }
 
 version (Windows) {
-	private extern(Windows) fn GetModuleFileNameA(HMODULE, const(char)*, DWORD) DWORD;
 } else version (OSX) {
-	private extern(C) fn _NSGetExecutablePath(char*, u32*) i32;
+	import core.c.osx;
 } else version (Linux) {
 	import core.c.posix.sys.types: ssize_t;
-	private extern(C) fn readlink(path: const(char)*, buf: char*, bufsiz: size_t) ssize_t;
+	import core.c.posix.unistd : readlink;
 } else {
 	static assert(false, "unsupported platform");
 }
 
-import core.c.stdlib: free;
+import core.c.stdlib;
 import watt.conv: toString, toStringz;
 import watt.text.string: indexOf, lastIndexOf;
 import watt.math.random: RandomGenerator;
