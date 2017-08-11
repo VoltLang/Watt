@@ -10,31 +10,9 @@ import watt.conv : toStringz;
 alias Loader = dg (string) void*;
 
 version(Windows) {
-
 	import core.c.windows.windows;
-
-	// XXX Proper way to import this.
-	private extern(Windows)
-	{
-		fn LoadLibraryA(name: const(char)*) HMODULE;
-		fn FreeLibrary(lib: HMODULE) void*;
-		fn GetProcAddress(lib: HMODULE, name: const(char)*) void*;
-	}
-
 } else {
-
-	// XXX Proper way to import this.
-	private extern(C)
-	{
-		fn dlopen(file: const(char)*, mode: i32) void*;
-		fn dlclose(handle: void*) i32;
-		fn dlsym(handle: void*, name: const(char)*) void*;
-		fn dlerror() char*;
-	}
-
-	enum RTLD_NOW    = 0x00002;
-	enum RTLD_GLOBAL = 0x00100;
-
+	import core.c.posix.dlfcn;
 }
 
 /*!
