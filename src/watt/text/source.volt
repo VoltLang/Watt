@@ -427,6 +427,7 @@ public:
 	/*!
 	 * Difference between two locations.
 	 * end - begin == begin ... end
+	 *
 	 * On mismatch of filename or if begin is after
 	 * end _default is returned.
 	 */
