@@ -10,6 +10,7 @@
 module watt.json.sax;
 
 import core.c.stdio: snprintf;
+import core.c.string : strcat, strspn;
 import watt.io.std;
 import watt.io.streams: InputStream, OutputStream;
 import watt.text.ascii: isWhite, isDigit;
@@ -17,11 +18,6 @@ import watt.text.string: indexOf;
 import watt.text.format: format;
 import watt.math: isinf, isnan;
 import util = watt.json.util;
-
-private extern(C) {
-	fn strcat(dest: char*, src: const(char)*) char*;
-	fn strspn(str1: const(char)*, str2: const(char)*) size_t;
-}
 
 /*!
  * Thrown when an error occurs during building.
