@@ -87,8 +87,6 @@ fn eventToString(event: Event) string
 		case ARRAY_END: return "array_end";
 		default: assert(false);
 	}
-
-	assert(false);
 }
 
 /*!
