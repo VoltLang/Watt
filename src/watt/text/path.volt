@@ -149,5 +149,4 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 			return str;
 		}
 	}
-	assert(false);
 }
