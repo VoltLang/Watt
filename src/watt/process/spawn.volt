@@ -366,7 +366,6 @@ version (Posix) {
 				return -1;//errno();
 			}
 		}
-		assert(false);
 	}
 
 	//! Wait for a process.
@@ -390,7 +389,6 @@ version (Posix) {
 
 			return result;
 		}
-		assert(false);
 	}
 
 	private fn stopped(status: i32) bool { return (status & 0xff) == 0x7f; }
