@@ -243,13 +243,11 @@ fn toString(val: i64) const(char)[]
 }
 
 //! Return an `f32` as a string.
-fn toString(f: f32) const(char)[]
+fn toString(f: f32) string
 {
-	ret: string;
-	fn s(a: SinkArg) {
-		ret = new string(a);
-	}
-	vrt_format_f32(s, f);
+	s: StringSink;
+	vrt_format_f32(s.sink, f);
+	ret := s.toString();
 	if (ret is null) {
 		throw new ConvException("couldn't convert float to string.");
 	}
@@ -257,13 +255,11 @@ fn toString(f: f32) const(char)[]
 }
 
 //! Return an `f64` as a string.
-fn toString(f: f64) const(char)[]
+fn toString(f: f64) string
 {
-	ret: string;
-	fn s(a: SinkArg) {
-		ret = new string(a);
-	}
-	vrt_format_f64(s, f);
+	s: StringSink;
+	vrt_format_f64(s.sink, f);
+	ret := s.toString();
 	if (ret is null) {
 		throw new ConvException("couldn't convert double to string.");
 	}
