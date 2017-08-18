@@ -284,14 +284,9 @@ fn toString(b: bool) const(char)[]
 }
 
 //! Return a `dchar` as a string.
-fn charToString(c: dchar) const(char)[]
+fn charToString(c: dchar) string
 {
-	if ((cast(u32) c) >= 255) {
-		throw new Error("charToString: non ASCII dchars unimplemented.");
-	}
-	buf := new char[](1);
-	buf[0] = cast(char) c;
-	return cast(const(char)[]) buf;
+	return encode(c);
 }
 
 //! Returns an upper case hex string from the given unsigned long.
