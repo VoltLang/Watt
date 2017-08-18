@@ -283,12 +283,6 @@ fn toString(b: bool) const(char)[]
 	return b ? "true": "false";
 }
 
-//! Return a `dchar` as a string.
-fn charToString(c: dchar) string
-{
-	return encode(c);
-}
-
 //! Returns an upper case hex string from the given unsigned long.
 fn toStringHex(val: u64) const(char)[]
 {
