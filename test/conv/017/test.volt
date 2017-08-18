@@ -1,11 +1,10 @@
-//T has-passed:no
 module test;
 
-import watt.conv;
+import watt.text.utf;
 
 fn main() i32
 {
-	assert(charToString('a') == "a");
-	assert(charToString('あ') == "あ");
+	assert(encode('a') == "a");
+	assert(encode('あ') == "あ");
 	return 0;
 }
