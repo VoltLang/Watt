@@ -270,7 +270,11 @@ fn toString(f: f64) string
 fn toString(p: void*) const(char)[]
 {
 	u := cast(size_t) p;
-	return format("%s", toStringHex(u));
+	version (V_P64) {
+		return format("%016s", toStringHex(u));
+	} else {
+		return format("%08s", toStringHex(u));
+	}
 }
 
 //! Return a `bool` as "true" or "false".
