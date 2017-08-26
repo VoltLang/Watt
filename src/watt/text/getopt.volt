@@ -107,7 +107,7 @@ private fn equalParameter(s: string) string
 private fn getoptImpl(ref args: string[], description: string, dgt: scope dg())
 {
 	flags := parseDescription(description);
-	for (i: size_t = 1; i < args.length; ++i) {
+	for (i: size_t = 0; i < args.length; ++i) {
 		arg := removeDashes(args[i]);
 		foreach (flag; flags) {
 			if (flag == arg) {
@@ -123,7 +123,7 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg())
 private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (string))
 {
 	flags := parseDescription(description);
-	for (i: size_t = 1; i < args.length; ++i) {
+	for (i: size_t = 0; i < args.length; ++i) {
 		oneDash: bool = args[i].length > 2 && args[i][0] == '-' && args[i][1] != '-';
 		arg := removeDashes(args[i]);
 		foreach (flag; flags) {
