@@ -53,6 +53,8 @@ public:
 	//! Close the underlying file descriptor.
 	override fn close()
 	{
+		flush();
+
 		if (fd >= 0) {
 			.close(fd);
 			fd = -1;
@@ -93,7 +95,7 @@ public:
 	//! Ensure that all buffered output is written.
 	override fn flush()
 	{
-		if (mCur <= 0) {
+		if (mCur <= 0 || fd < 0) {
 			return;
 		}
 
