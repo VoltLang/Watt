@@ -25,6 +25,35 @@ fn normalizePath(path: SinkArg) string
 }
 
 /*!
+ * Given two paths, return a path composed of both.
+ *
+ * If the first path doesn't end in a path separator, one
+ * will be added. Only one path separator will separate
+ * `base` and `tail`.
+ *
+ * ### Examples
+ * ```volt
+ * // On Windows, backslash will separate.
+ * concatenatePath("a", "b");  "a/b"
+ * concatenatePath("a/", "b"); "a/b"
+ * concatenatePath("a/", "/b"); "a/b"
+ * ```
+ */
+fn concatenatePath(base: string, tail: string) string
+{
+	outbuf: StringSink;
+	outbuf.sink(base);
+	if (!base[$-1].isSlash()) {
+		outbuf.sink(dirSeparator);
+	}
+	if (tail.length > 0 && tail[0].isSlash()) {
+		tail = tail[1 .. $];
+	}
+	outbuf.sink(tail);
+	return outbuf.toString();
+}
+
+/*!
  * Given a path, return a path that could be a subpath.
  *
  * A full path under windows contains a drive letter and a colon before '\'.
