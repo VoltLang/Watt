@@ -148,6 +148,8 @@ public:
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
 	 *
+	 * If `n` is `0`, this is the same as calling `front`.
+	 *
 	 * @Throws UtfException if the source is not valid utf8.
 	 *
 	 * @SideEffects None.
@@ -296,6 +298,8 @@ public:
 	/*!
 	 * Return the unicode character @p n chars forwards.
 	 * @p lookaheadEOF set to true if we reached EOF, otherwise false.
+	 *
+	 * If `n` is `0`, this is the same as calling `front`.
 	 *
 	 * @Returns Unicode char at @p n or @p dchar.init at empty.
 	 *
