@@ -47,7 +47,7 @@ fn toLower(s: string) string
 		case 'Л': dst.sink("л"); break;
 		case 'П': dst.sink("п"); break;
 		case 'Й': dst.sink("й"); break;
-		default: dst.sink(encode(asciiToLower(c))); break;
+		default: encode(dst.sink, asciiToLower(c)); break;
 		}
 	}
 	return dst.toString();
