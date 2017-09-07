@@ -7,7 +7,7 @@ fn main() i32
 	if (join(["hello", "world"]) != "helloworld") {
 		return 4;
 	}
-	if (join([], " ") != "") {
+	if (join(null, " ") != "") {
 		return 1;
 	}
 	if (["a", "b", "c"].join("XXX") != "aXXXbXXXc") {
