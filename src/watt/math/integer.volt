@@ -14,3 +14,13 @@ fn log2(x: u32) u32
 
 	return ans;
 }
+
+//! Returns the absolute value of a signed integer.
+fn abs(x: i32) i32
+{
+	if (x < 0) {
+		return x * -1;
+	} else {
+		return x;
+	}
+}
