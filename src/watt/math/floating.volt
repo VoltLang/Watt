@@ -101,16 +101,4 @@ fn degrees(rads: f64) f64
  */
 @mangledName("llvm.fabs.f32") fn abs(f32) f32;
 @mangledName("llvm.fabs.f64") fn abs(f64) f64;
-/* This should probably be in integer, but having
- * another abs function in a separate overload set
- * is awkward.
- */
-fn abs(x: i32) i32
-{
-	if (x < 0) {
-		return x * -1;
-	} else {
-		return x;
-	}
-}
 //! @}
