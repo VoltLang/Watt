@@ -2,6 +2,7 @@ module test;
 
 import watt.math;
 
+
 fn main() i32
 {
 	a := -3;
