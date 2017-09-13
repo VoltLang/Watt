@@ -17,6 +17,9 @@ alias SwapDg = scope dg(size_t, size_t);
  */
 fn runSort(numElements: size_t, cmp: CmpDg, swap: SwapDg)
 {
+	if (numElements == 0) {
+		return;
+	}
 	qsort(0, numElements-1, cmp, swap);
 }
 
