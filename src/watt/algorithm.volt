@@ -2,22 +2,22 @@
 module watt.algorithm;
 
 
-//! Takes two indices of elements to compare.
+//! Takes two indices of elements to compare. Return `true` if the first parameter should go before the second.
 alias CmpDg = scope dg(size_t, size_t) bool;
 //! Takes two indices of elements to swap.
 alias SwapDg = scope dg(size_t, size_t);
 
 /*!
  * Sort something via delegates.
- * @param numElements The number of elements being sorted.
+ * @param numElements The number of elements being sorted. If this is `1` or `0`, `runSort` will return immediately.
  * @param cmp A delegate that takes two indices. Compare two elements,
- * @return `true` if the first parameter should be given precedence over
+ * return `true` if the first parameter should be given precedence over
  * the second.
  * @param swap A delegate that gives two indices to swap.
  */
 fn runSort(numElements: size_t, cmp: CmpDg, swap: SwapDg)
 {
-	if (numElements == 0) {
+	if (numElements <= 1) {
 		return;
 	}
 	qsort(0, numElements-1, cmp, swap);
