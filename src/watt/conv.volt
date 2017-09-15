@@ -6,7 +6,7 @@ module watt.conv;
 import core.exception;
 import core.rt.format;
 
-import watt.text.ascii: isDigit, isHexDigit, asciiToLower = toLower, asciiToUpper = toUpper, HEX_DIGITS;
+import ascii = watt.text.ascii;
 import watt.text.format: format;
 import watt.text.utf: encode;
 import watt.text.sink: StringSink;
@@ -47,7 +47,7 @@ fn toLower(s: string) string
 		case 'Л': dst.sink("л"); break;
 		case 'П': dst.sink("п"); break;
 		case 'Й': dst.sink("й"); break;
-		default: encode(dst.sink, asciiToLower(c)); break;
+		default: encode(dst.sink, ascii.toLower(c)); break;
 		}
 	}
 	return dst.toString();
@@ -66,7 +66,7 @@ fn toUpper(s: string) string
 {
 	ns := new char[](s.length);
 	for (i: size_t = 0; i < s.length; i++) {
-		ns[i] = cast(char) asciiToUpper(s[i]);
+		ns[i] = cast(char) ascii.toUpper(s[i]);
 	}
 	return cast(string) ns;
 }
@@ -88,16 +88,16 @@ fn toUlong(s: const(char)[], base: i32 = 10) u64
 	column: u64 = 1;
 	for (i := s.length; i > 0; i--) {
 		c: char = s[i - 1];
-		if (base != 16 && !isDigit(c)) {
+		if (base != 16 && !ascii.isDigit(c)) {
 			throw new ConvException(format("Found non digit %s.", c));
-		} else if (base == 16 && !isHexDigit(c)) {
+		} else if (base == 16 && !ascii.isHexDigit(c)) {
 			throw new ConvException(format("Found non hex digit %s.", c));
 		}
 		digit: u64;
-		if (isDigit(c)) {
+		if (ascii.isDigit(c)) {
 			digit = (cast(u64)c) - (cast(u64)'0');
-		} else if (isHexDigit(c)) {
-			lowerC := asciiToLower(c);
+		} else if (ascii.isHexDigit(c)) {
+			lowerC := ascii.toLower(c);
 			digit = 10 + ((cast(u64)lowerC) - (cast(u64)'a'));
 		}
 		if (digit >= cast(u64)base) {
