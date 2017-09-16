@@ -6,9 +6,9 @@ module watt.license;
  * This is the license for the watt library.
  */
 enum string license = `
-Copyright © 2005-2009, Sean Kelly.  All rights reserved.
-Copyright © 2013, Jakob Bornecrantz.  All rights reserved.
-Copyright © 2013, Bernard Helyer.
+Copyright © 2005-2009, Sean Kelly.
+Copyright © 2013-2017, Jakob Bornecrantz.
+Copyright © 2013-2017, Bernard Helyer.
 
 Boost Software License - Version 1.0 - August 17th, 2003
 
