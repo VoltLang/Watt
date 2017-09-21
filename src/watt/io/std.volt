@@ -172,3 +172,9 @@ global this()
 		input.handle = stdin;
 	}
 }
+
+global ~this()
+{
+	output.flush();
+	error.flush();
+}
