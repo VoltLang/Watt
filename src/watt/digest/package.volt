@@ -6,3 +6,4 @@
 module watt.digest;
 
 public import watt.digest.fnv;
+public import watt.digest.murmur;
