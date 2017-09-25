@@ -9,7 +9,7 @@
 module watt.io.file;
 
 import core.exception;
-import core.c.stdio;
+import cstdio = core.c.stdio;
 import watt.conv;
 import watt.text.format;
 import watt.text.utf;
@@ -54,33 +54,33 @@ fn read(filename: string) void[]
 		return null;
 	}
 	cstr := toStringz(filename);
-	fp := fopen(cstr, "rb");
+	fp := cstdio.fopen(cstr, "rb");
 	if (fp is null) {
 		throw new FileException(format("Couldn't open file '%s' for reading.", filename));
 	}
 
-	if (fseek(fp, 0, SEEK_END) != 0) {
-		fclose(fp);
+	if (cstdio.fseek(fp, 0, cstdio.SEEK_END) != 0) {
+		cstdio.fclose(fp);
 		throw new FileException("fseek failure.");
 	}
 
-	size: size_t = cast(size_t) ftell(fp);
+	size: size_t = cast(size_t) cstdio.ftell(fp);
 	if (size == cast(size_t) -1) {
 		throw new FileException("ftell failure.");
 	}
 
-	if (fseek(fp, 0, SEEK_SET) != 0) {
-		fclose(fp);
+	if (cstdio.fseek(fp, 0, cstdio.SEEK_SET) != 0) {
+		cstdio.fclose(fp);
 		throw new FileException("fseek failure.");
 	}
 
 	buf := new char[](size);
-	bytesRead: size_t = fread(cast(void*)buf.ptr, 1, size, fp);
+	bytesRead: size_t = cstdio.fread(cast(void*)buf.ptr, 1, size, fp);
 	if (bytesRead != size) {
 		throw new FileException("read failure.");
 	}
 
-	fclose(fp);
+	cstdio.fclose(fp);
 
 	return cast(void[]) buf;
 }
@@ -270,12 +270,28 @@ fn isDir(path: scope const(char)[]) bool
  */
 fn exists(path: const(char)[]) bool
 {
-	fp := fopen(toStringz(path), "r");
+	fp := cstdio.fopen(toStringz(path), "r");
 	if (fp is null) {
 		return false;
 	}
-	fclose(fp);
+	cstdio.fclose(fp);
 	return true;
+}
+
+/*!
+ * Rename a file or directory.
+ *
+ * This is a thing wrapper around the C library's `rename`; consult
+ * your system's libc documentation for more details.
+ *
+ * @Param oldname The path to rename.
+ * @Param newname The path rename `oldname` to.
+ */
+fn rename(oldname: string, newname: string)
+{
+	if (cstdio.rename(toStringz(oldname), toStringz(newname)) != 0) {
+		throw new FileException(new "couldn't rename '${oldname}' to '${newname}'");
+	}
 }
 
 /*!
@@ -289,7 +305,7 @@ fn exists(path: const(char)[]) bool
  */
 fn remove(path: const(char)[])
 {
-	if (unlink(toStringz(path)) != 0) {
+	if (cstdio.unlink(toStringz(path)) != 0) {
 		throw new FileException("couldn't delete file");
 	}
 }
