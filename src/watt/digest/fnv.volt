@@ -4,7 +4,8 @@
  * Contains two variants of the Fowler–Noll–Vo hashing function.
  *
  * FNV is a non-cryptographic hash function that produces fewer hash collisions
- * than the crc32 hashing function that is available via `vrt_hash`.
+ * than the crc32 hashing function that is available via `vrt_hash`.  
+ * It is not appropriate for cryptographic purposes.
  *
  * @sa [Wikipedia](https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function).
  */
