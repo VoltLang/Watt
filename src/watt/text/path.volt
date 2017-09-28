@@ -119,7 +119,8 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 			(i+1 == path.length-1 || path[i+2].isSlash())) {
 			// "Eliminate each /./ path name element."
 			i += 2;
-		} else if (path[i].isSlash() &&
+		} else if (i+2 < path.length &&
+			path[i].isSlash() &&
 			path[i+1] == '.' &&
 			path[i+2] == '.' &&
 			(i+3 == path.length || path[i+3].isSlash()) && nonDot) {
