@@ -151,7 +151,9 @@ public:
 	/*!
 	 * Get a string representation of the value.
 	 *
-	 * The string returned will be a valid TOML document.
+	 * The string returned will be a valid TOML document.  
+	 * Note that this does not get an individual string value.
+	 * Use `str` for that.
 	 */
 	override fn toString() string
 	{
@@ -165,6 +167,8 @@ public:
 	 *
 	 * The `parent` parameter is for setting what table a sub table belongs to,
 	 * and in most user code should be left blank.
+	 *
+	 * Use `str` to get the string value of a key.
 	 */
 	fn toString(sink: sink.Sink, parent: string = "")
 	{
@@ -280,6 +284,10 @@ public:
 
 	/*!
 	 * Retrieve the string value.
+	 *
+	 * To get a printable string of any value type, or entire table,
+	 * use `toString`. This is for retrieving the string value of
+	 * a `String` typed toml value.
 	 *
 	 * @Throws `TomlException` if this `Value` isn't a string.
 	 */
