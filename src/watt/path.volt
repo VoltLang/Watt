@@ -116,6 +116,12 @@ fn countSlashes(s: const(char)[]) size_t
 
 /*!
  * Remove any trailing path separators from @p s.
+ *
+ * ### Examples
+ * ```volt
+ * removeTrailingSlashes(`a/`);  // "a"
+ * removeTrailingSlashes(`D:\Documents\`);  // `D:\Documents`
+ * ```
  */
 fn removeTrailingSlashes(ref s: string)
 {
@@ -128,6 +134,11 @@ fn removeTrailingSlashes(ref s: string)
  * Return the directory portion of a pathname.
  *
  * An implementation of <http://pubs.opengroup.org/onlinepubs/9699919799/utilities/dirname.html>.
+ *
+ * ### Examples
+ * ```volt
+ * dirName("a/path/to/a/file.txt");  // "a/path/to/a"
+ * ```
  */
 fn dirName(path: const(char)[]) string
 {
@@ -220,6 +231,13 @@ fn baseName(path: const(char)[], suffix: const(char)[] = "") string
 
 /*!
  * Return the file extension of a path, or an empty string.
+ *
+ * ### Examples
+ * ```volt
+ * extension("hello.volt");  // ".volt"
+ * extension(".foo");  // ""
+ * extension("hello");  // ""
+ * ```
  */
 fn extension(path: const(char)[]) string
 {

@@ -14,6 +14,11 @@ import watt.path;
  *
  * That is to say, given two paths to the same location (from the same starting point),
  * normalizePath(A) == normalizePath(B).
+ *
+ * ### Examples
+ * ```volt
+ * normalizePath("abc/def/..");  // "abc"
+ * ```
  */
 fn normalizePath(path: SinkArg) string
 {
@@ -59,6 +64,11 @@ fn concatenatePath(base: string, tail: string) string
  * A full path under windows contains a drive letter and a colon before '\'.
  * If we want to make a subdirectory based on a full path, get rid of the colon,
  * as it cannot exist in a valid windows filename.
+ *
+ * ### Examples
+ * ```volt
+ * makePathAppendable(`D:\dir`);  // "D\dir"
+ * ```
  */
 fn makePathAppendable(s: string) string
 {
