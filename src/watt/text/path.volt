@@ -104,7 +104,7 @@ private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
 		slash = '\\';
 		colonIndex = path.indexOf(':');
 		if (colonIndex > 0) {
-			drive = path[0 .. colonIndex+1];
+			drive = new string(path[0 .. colonIndex+1]);
 			absolute = true;
 		}
 	}

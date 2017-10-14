@@ -132,10 +132,10 @@ struct Value
 	/*!
 	 * Set this `Value` as a `DomType.STRING`, and give it the value `s`.
 	 */
-	fn str(s: string)
+	fn str(s: const(char)[])
 	{
 		_type = DomType.STRING;
-		store.str = s;
+		store.str = cast(string)s;
 	}
 
 	/*!
@@ -308,9 +308,9 @@ fn parse(s: string) Value
 	valueStack: Value[];
 	keyStack: string[];
 
-	fn addKey(key: string)
+	fn addKey(key: const(char)[])
 	{
-		keyStack ~= key;
+		keyStack ~= cast(string)key;
 	}
 
 	fn getKey() string
@@ -391,7 +391,7 @@ fn parse(s: string) Value
 				break;
 			} else if (canBeInteger(cast(const(char)[])data, true)) {
 				l: i64;
-				parseLong(cast(const(char[]))data, out l);
+				parseLong(cast(const(char)[])data, out l);
 				v.integer(l);
 				addValue(v, getKey());
 				break;

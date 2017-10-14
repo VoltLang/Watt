@@ -10,6 +10,7 @@ import ascii = watt.text.ascii;
 import watt.text.format: format;
 import watt.text.utf: encode;
 import watt.text.sink: SinkArg, StringSink;
+import watt.text.string : StrArg;
 
 
 /*!
@@ -33,7 +34,7 @@ class ConvException : Exception
  *     toLower("APPLE");  // returns "apple"
  *     toLower("BA(NA)NA 32%");  // returns "ba(na)na 32%"
  */
-fn toLower(s: string) string
+fn toLower(s: StrArg) string
 {
 	dst: StringSink;
 	// @TODO extend to support all lowercase.
@@ -62,13 +63,13 @@ fn toLower(s: string) string
  * ### Examples
  *      toUpper("hellO THERE 32");  // returns "HELLO THERE 32"
  */
-fn toUpper(s: string) string
+fn toUpper(s: StrArg) string
 {
 	ns := new char[](s.length);
 	for (i: size_t = 0; i < s.length; i++) {
 		ns[i] = cast(char) ascii.toUpper(s[i]);
 	}
-	return cast(string) ns;
+	return new string(ns);
 }
 
 /*!
@@ -155,7 +156,7 @@ fn toUint(s: const(char)[], base: i32 = 10) u32
  * ### Examples
  *     toString(32);  // returns "32"
  */
-fn toString(val: u8) const(char)[]
+fn toString(val: u8) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -166,7 +167,7 @@ fn toString(val: u8) const(char)[]
 }
 
 //! Return an `i8` as a string.
-fn toString(val: i8) const(char)[]
+fn toString(val: i8) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -177,7 +178,7 @@ fn toString(val: i8) const(char)[]
 }
 
 //! Return a `u16` as a string.
-fn toString(val: u16) const(char)[]
+fn toString(val: u16) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -188,7 +189,7 @@ fn toString(val: u16) const(char)[]
 }
 
 //! Return an `i16` as a string.
-fn toString(val: i16) const(char)[]
+fn toString(val: i16) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -199,7 +200,7 @@ fn toString(val: i16) const(char)[]
 }
 
 //! Return a `u32` as a string.
-fn toString(val: u32) const(char)[]
+fn toString(val: u32) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -210,7 +211,7 @@ fn toString(val: u32) const(char)[]
 }
 
 //! Return an `i32` as a string.
-fn toString(val: i32) const(char)[]
+fn toString(val: i32) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -221,7 +222,7 @@ fn toString(val: i32) const(char)[]
 }
 
 //! Return a `u64` as a string.
-fn toString(val: u64) const(char)[]
+fn toString(val: u64) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -232,7 +233,7 @@ fn toString(val: u64) const(char)[]
 }
 
 //! Return an `i64` as a string.
-fn toString(val: i64) const(char)[]
+fn toString(val: i64) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -267,7 +268,7 @@ fn toString(f: f64) string
 }
 
 //! Return a pointer as a string.
-fn toString(p: void*) const(char)[]
+fn toString(p: void*) string
 {
 	u := cast(size_t) p;
 	version (V_P64) {
@@ -278,13 +279,13 @@ fn toString(p: void*) const(char)[]
 }
 
 //! Return a `bool` as "true" or "false".
-fn toString(b: bool) const(char)[]
+fn toString(b: bool) string
 {
 	return b ? "true": "false";
 }
 
 //! Returns an upper case hex string from the given unsigned long.
-fn toStringHex(val: u64) const(char)[]
+fn toStringHex(val: u64) string
 {
 	ret: string;
 	fn s(a: SinkArg) {
@@ -295,69 +296,69 @@ fn toStringHex(val: u64) const(char)[]
 }
 
 //! Given a `u8`, return a binary string.
-fn toStringBinary(val: u8) const(char)[]
+fn toStringBinary(val: u8) string
 {
 	str := new char[](8);
 	foreach (i, ref s: char; str) {
 		msb := ((val << i) & 0x80) != 0;
 		s = msb ? '1' : '0';
 	}
-	return cast(const(char)[])str;
+	return cast(string)str;
 }
 
 //! Given a `u16`, return a binary string.
-fn toStringBinary(val: u16) const(char)[]
+fn toStringBinary(val: u16) string
 {
 	str := new char[](16);
 	foreach (i, ref s: char; str) {
 		msb := ((val << i) & 0x8000) != 0;
 		s = msb ? '1' : '0';
 	}
-	return cast(const(char)[])str;
+	return cast(string)str;
 }
 
 //! Given a `u32`, return a binary string.
-fn toStringBinary(val: u32) const(char)[]
+fn toStringBinary(val: u32) string
 {
 	str := new char[](32);
 	foreach (i, ref s: char; str) {
 		msb := ((val << i) & 0x80000000UL) != 0;
 		s = msb ? '1' : '0';
 	}
-	return cast(const(char)[])str;
+	return cast(string)str;
 }
 
 //! Given a `u64`, return a binary string.
-fn toStringBinary(val: u64) const(char)[]
+fn toStringBinary(val: u64) string
 {
 	str := new char[](64);
 	foreach (i, ref s: char; str) {
 		msb := ((val << i) & 0x8000000000000000UL) != 0;
 		s = msb ? '1' : '0';
 	}
-	return cast(const(char)[])str;
+	return cast(string)str;
 }
 
 //! Given an `i8`, return a binary string.
-fn toStringBinary(val: i8) const(char)[]
+fn toStringBinary(val: i8) string
 {
 	return toStringBinary(cast(u8)val);
 }
 
 //! Given an `i16`, return a binary string.
-fn toStringBinary(val: i16) const(char)[]
+fn toStringBinary(val: i16) string
 {
 	return toStringBinary(cast(u16)val);
 }
 
 //! Given an `i32`, return a binary string.
-fn toStringBinary(val: i32) const(char)[]
+fn toStringBinary(val: i32) string
 {
 	return toStringBinary(cast(u32)val);
 }
 
 //! Given an `i64`, return a binary string.
-fn toStringBinary(val: i64) const(char)[]
+fn toStringBinary(val: i64) string
 {
 	return toStringBinary(cast(u64)val);
 }

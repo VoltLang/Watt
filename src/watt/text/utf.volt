@@ -10,6 +10,7 @@ import core.exception;
 
 import watt.text.sink;
 import watt.text.format : format;
+import watt.text.string : StrArg;
 
 
 private enum ONE_BYTE_MASK                   = 0x80;
@@ -21,7 +22,7 @@ private enum FIVE_BYTE_MASK                  = 0xFC;
 private enum SIX_BYTE_MASK                   = 0xFE;
 private enum CONTINUING_MASK                 = 0xC0;
 
-private fn readU8(str: string, ref index: size_t) u8
+private fn readU8(str: StrArg, ref index: size_t) u8
 {
 	if (index >= str.length) {
 		throw new MalformedUTF8Exception("unexpected end of stream");
@@ -41,7 +42,7 @@ private fn readU8(str: string, ref index: size_t) u8
  * @Param str The string to decode from.
  * @Param index The index to decode from. Will be updated to the next character.
  */
-fn decode(str: string, ref index: size_t) dchar
+fn decode(str: StrArg, ref index: size_t) dchar
 {
 	return vrt_decode_u8_d(str, ref index);
 }
@@ -53,7 +54,7 @@ fn decode(str: string, ref index: size_t) dchar
  * assert(count("この") == 2);
  * ```
  */
-fn count(s: string) size_t
+fn count(s: StrArg) size_t
 {
 	i, length: size_t;
 	while (i < s.length) {
@@ -64,7 +65,7 @@ fn count(s: string) size_t
 }
 
 //! Throws a MalformedUTF8Exception if @p s is not valid UTF-8.
-fn validate(s: string) void
+fn validate(s: StrArg) void
 {
 	i: size_t;
 	while (i < s.length) {

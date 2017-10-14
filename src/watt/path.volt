@@ -123,7 +123,7 @@ fn countSlashes(s: const(char)[]) size_t
  * removeTrailingSlashes(`D:\Documents\`);  // `D:\Documents`
  * ```
  */
-fn removeTrailingSlashes(ref s: string)
+fn removeTrailingSlashes(ref s: const(char)[])
 {
 	while (s.length > 0 && isSlash(s[$-1])) {
 		s = s[0 .. $-1];
@@ -144,7 +144,7 @@ fn dirName(path: const(char)[]) string
 {
 	drive: string;
 	version (Windows) if (path.length >= 2 && path[1] == ':') {
-		drive = path[0 .. 2];
+		drive = new string(path[0 .. 2]);
 		path = path[2 .. $];
 	}
 
@@ -222,11 +222,11 @@ fn baseName(path: const(char)[], suffix: const(char)[] = "") string
 	}
 
 	if (suffix == path || path.length <= suffix.length || path[($-suffix.length) .. $] != suffix) {
-		return path;
+		return new string(path);
 	}
 
 	path = path[0 .. ($-suffix.length)];
-	return path;
+	return new string(path);
 }
 
 /*!
