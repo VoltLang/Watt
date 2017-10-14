@@ -35,7 +35,7 @@ alias StrArrayArg = scope const(char)[][];
  *     split("a = b", '=') ["a ", " b"]
  *     split("a=b", '@') []
  */
-fn split(s: string, delimiter: dchar) string[]
+fn split(s: StrArg, delimiter: dchar) string[]
 {
 	if (s.length == 0) {
 		return null;
@@ -45,18 +45,18 @@ fn split(s: string, delimiter: dchar) string[]
 	while (i < s.length) {
 		oldi = i;
 		if (decode(s, ref i) == delimiter) {
-			strings ~= s[base .. oldi];
+			strings ~= new string(s[base .. oldi]);
 			base = i;
 		}
 	}
-	strings ~= s[base .. $];
+	strings ~= new string(s[base .. $]);
 	return strings;
 }
 
 /*!
  * Divide `s` into an array of `string`s.
  */
-fn split(s: string, delimiter: StrArg) string[]
+fn split(s: StrArg, delimiter: StrArg) string[]
 {
 	strings: string[];
 	do {
@@ -64,7 +64,7 @@ fn split(s: string, delimiter: StrArg) string[]
 		if (i < 0) {
 			break;
 		}
-		strings ~= s[0 .. cast(size_t)i];
+		strings ~= new string(s[0 .. cast(size_t)i]);
 		nexti := cast(size_t)i+delimiter.length;
 		if (nexti > s.length) {
 			break;
@@ -78,7 +78,7 @@ fn split(s: string, delimiter: StrArg) string[]
 		if (s == delimiter) {
 			strings ~= "";
 		} else {
-			strings ~= s;
+			strings ~= new string(s);
 		}
 	}
 	return strings;
@@ -91,7 +91,7 @@ fn split(s: string, delimiter: StrArg) string[]
  * splitLines("a\nb\nc");  // ["a", "b", "c"]
  * ```
  */
-fn splitLines(s: string) string[]
+fn splitLines(s: StrArg) string[]
 {
 	if (s.length == 0) {
 		return null;
@@ -102,7 +102,7 @@ fn splitLines(s: string) string[]
 		oldi = i;
 		c := decode(s, ref i);
 		if (c == '\n' || c == '\r') {
-			strings ~= s[base .. oldi];
+			strings ~= new string(s[base .. oldi]);
 			base = i;
 			if (c == '\r' && base < s.length && s[base] == '\n') {
 				base++;
@@ -110,7 +110,7 @@ fn splitLines(s: string) string[]
 			}
 		}
 	}
-	strings ~= s[base .. $];
+	strings ~= new string(s[base .. $]);
 	return strings;
 }
 
@@ -136,7 +136,7 @@ fn strip(str: StrArg) string
 			break;
 		}
 	}
-	return start == stop ? null : str[start .. stop];
+	return start == stop ? null : new string(str[start .. stop]);
 }
 
 /*!
@@ -144,11 +144,11 @@ fn strip(str: StrArg) string
  *
  * Whitespace is defined by @ref watt.text.ascii.isWhite.
  */
-fn stripLeft(str: string) string
+fn stripLeft(str: StrArg) string
 {
 	foreach (i, char c; str) {
 		if (!isWhite(c)) {
-			return str[i .. $];
+			return new string(str[i .. $]);
 		}
 	}
 	return null;
@@ -159,11 +159,11 @@ fn stripLeft(str: string) string
  * 
  * Whitespace is defined by @ref watt.text.ascii.isWhite.
  */
-fn stripRight(str: string) string
+fn stripRight(str: StrArg) string
 {
 	foreach_reverse (i, char c; str) {
 		if (!isWhite(c)) {
-			return str[0 .. i+1];
+			return new string(str[0 .. i+1]);
 		}
 	}
 	return null;
