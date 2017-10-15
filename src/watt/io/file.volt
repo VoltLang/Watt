@@ -13,6 +13,8 @@ import cstdio = core.c.stdio;
 import watt.conv;
 import watt.text.format;
 import watt.text.utf;
+import watt.text.sink : SinkArg;
+
 
 version (Windows) {
 	import core.c.windows.windows;
@@ -48,7 +50,7 @@ class FileException : Exception
  * @Returns The entire contents of the file.
  * @Throws `FileException` if the file cannot be read.
  */
-fn read(filename: string) void[]
+fn read(filename: SinkArg) void[]
 {
 	if (!isFile(filename)) {
 		return null;
@@ -230,7 +232,7 @@ private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: s
  * For example, a directory would not be classified as a file.
  * @Returns `true` if `path` points to a file.
  */
-fn isFile(path: scope const(char)[]) bool
+fn isFile(path: SinkArg) bool
 {
 	return exists(path) && !isDir(path);
 }
