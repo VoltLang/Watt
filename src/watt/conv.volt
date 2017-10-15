@@ -9,7 +9,7 @@ import core.rt.format;
 import ascii = watt.text.ascii;
 import watt.text.format: format;
 import watt.text.utf: encode;
-import watt.text.sink: StringSink;
+import watt.text.sink: SinkArg, StringSink;
 
 
 /*!
@@ -367,7 +367,7 @@ fn toStringBinary(val: i64) const(char)[]
  *
  * This is for interfacing with C libraries.
  */
-fn toStringz(s: const(char)[]) const(char)*
+fn toStringz(s: SinkArg) const(char)*
 {
 	cstr := new char[](s.length + 1);
 	cstr[0 .. $-1] = s[0 .. $];
