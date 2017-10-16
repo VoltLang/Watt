@@ -12,4 +12,3 @@ module watt.toml;
 public import watt.toml.event;
 public import watt.toml.tree;
 public import watt.toml.util : TomlException;
-

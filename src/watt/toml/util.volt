@@ -24,7 +24,7 @@ class TomlException : rt.Exception
 fn match(ref src: source.SimpleSource, c: dchar)
 {
 	if (src.front != c) {
-		throw new TomlException(new "Expected '${src.front}', got '${c}'");
+		throw new TomlException(new "Error parsing TOML: expected '${src.front}', got '${c}'.");
 	}
 	src.popFront();
 }
@@ -89,7 +89,7 @@ fn parseString(ref src: source.SimpleSource) string
 			src.popFront();
 		}
 		if (src.front <= 0x1F) {
-			throw new TomlException("Control character in simple string.");
+			throw new TomlException("Error parsing TOML: control character in simple string.");
 		}
 		src.popFront();
 	}
@@ -116,7 +116,7 @@ fn escapeString(unescaped: string, multiline: bool) string
 			try {
 				i = cast(u32)conv.toInt(hexchars, 16);
 			} catch (conv.ConvException) {
-				throw new TomlException("Expected unicode codepoint specification.");
+				throw new TomlException("Error parsing TOML: expected unicode codepoint specification.");
 			}
 
 			if (hexchars.length == 4) {
@@ -124,11 +124,11 @@ fn escapeString(unescaped: string, multiline: bool) string
 			} else if (hexchars.length == 8) {
 				utf.encode(ss.sink, cast(u16)i);
 			} else {
-				throw new TomlException("Expected unicode codepoint specification.");
+				throw new TomlException("Error parsing TOML: expected unicode codepoint specification.");
 			}
 			unicoding = 0;
 		} else { 
-			throw new TomlException("Expected unicode codepoint specification.");
+			throw new TomlException("Error parsing TOML: expected unicode codepoint specification.");
 		}
 	}
 
@@ -174,7 +174,7 @@ fn escapeString(unescaped: string, multiline: bool) string
 			if (multiline && ascii.isWhite(c)) {
 				whiteskipping = true;
 			} else {
-				throw new TomlException(new "Bad escape character '${c}'.");
+				throw new TomlException(new "Error parsing TOML: bad escape character '${c}'.");
 			}
 		}
 		escaping = false;
@@ -183,7 +183,7 @@ fn escapeString(unescaped: string, multiline: bool) string
 		doUnicode(' ');
 	}
 	if (escaping) {
-		throw new TomlException("Expected escape character, got end of string.");
+		throw new TomlException("Error parsing TOML: expected escape character, got end of string.");
 	}
 	return ss.toString();
 }

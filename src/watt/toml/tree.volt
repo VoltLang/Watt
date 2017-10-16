@@ -411,7 +411,7 @@ public:
 				continue;
 			}
 			if (lastVal.type != val.type) {
-				throw new util.TomlException("all Values in an array must be of the same type");
+				throw new util.TomlException("TOML error: all Values in an array must be of the same type");
 			}
 		}
 		mUnion.array = new vals[0 .. $];
@@ -451,7 +451,7 @@ public:
 		enforce(Type.Table);
 		ptr := key in mUnion.table;
 		if (ptr is null) {
-			throw new util.TomlException(new "key \"${key}\" not set.");
+			throw new util.TomlException(new "TOML error: key \"${key}\" not set.");
 		}
 		return *ptr;
 	}
@@ -491,7 +491,7 @@ private:
 	fn enforce(type: Type)
 	{
 		if (this.type != type) {
-			throw new util.TomlException(new "Value is a ${this.type}, not a ${type}.");
+			throw new util.TomlException(new "TOML error: Value is a '${this.type}', not a '${type}'.");
 		}
 	}
 }
@@ -526,7 +526,7 @@ fn splitTableName(name: string) string[]
 		if (src.front == '.') {
 			str := text.strip(src.sliceFrom(currentMark));
 			if (str.length == 0) {
-				throw new util.TomlException("Empty table name.");
+				throw new util.TomlException("TOML error: empty table name.");
 			}
 			names ~= str;
 			src.popFront();
@@ -535,10 +535,10 @@ fn splitTableName(name: string) string[]
 		} else if (src.front == '"' || src.front == '\'') {
 			str := util.parseString(ref src);
 			if (str.length == 0) {
-				throw new util.TomlException("Empty table name.");
+				throw new util.TomlException("TOML error: empty table name.");
 			}
 			if (!src.eof && src.front != '.') {
-				throw new util.TomlException("Expected '.' after string component of table name.");
+				throw new util.TomlException("TOML error: expected '.' after string component of table name.");
 			}
 			names ~= str;
 			src.popFront();
@@ -549,14 +549,14 @@ fn splitTableName(name: string) string[]
 		}
 	}
 	if (lastNonWhitespace == '.') {
-		throw new util.TomlException("Empty table name.");
+		throw new util.TomlException("TOML error: empty table name.");
 	}
 	str := text.strip(src.sliceFrom(currentMark));
 	if (str.length > 0) {
 		names ~= str;
 	}
 	if (names.length == 0) {
-		throw new util.TomlException("Empty table name.");
+		throw new util.TomlException("TOML error: empty table name.");
 	}
 	return names;
 }
@@ -600,7 +600,7 @@ public:
 					continue;
 				}
 				if ((i == names.length - 1 && p.mBeenAtHead) || p.type != Value.Type.Table) {
-					throw new util.TomlException(new "Redefining ${tname}.");
+					throw new util.TomlException(new "TOML error: redefining '${tname}'.");
 				}
 				tableStack ~= *p;
 				continue;
@@ -657,11 +657,11 @@ public:
 					continue;
 				}
 				if (p.type != Value.Type.Table || p.mUnion.table.length > 1) {
-					throw new util.TomlException(new "Redefining ${prename}.");
+					throw new util.TomlException(new "TOML error: redefining '${prename}'.");
 				}
 				foreach (key; p.mUnion.table.keys) {
 					if (p.mUnion.table[key].type != Value.Type.Table) {
-						throw new util.TomlException(new "Redefining table ${prename}.");
+						throw new util.TomlException(new "TOML error: redefining table '${prename}'.");
 					}
 				}
 				lastTable = *p;
@@ -677,7 +677,7 @@ public:
 		array: Value;
 		if (p := aname in lastTable.mUnion.table) {
 			if (!p.mTableArray) {
-				throw new util.TomlException(new "Redefining array of tables ${aname}");
+				throw new util.TomlException(new "TOML error: redefining array of tables '${aname}'");
 			}
 			array = *p;
 		} else {
@@ -761,7 +761,7 @@ public:
 				inlineStack[$-1].val.mKeyOrder[currentKey] = inlineStack[$-1].val.mKeyOrder.length;
 			} else {
 				if (inlineStack[$-1].arr.length > 0 && val.type != inlineStack[$-1].arr[$-1].type) {
-					throw new util.TomlException("Array elements must all be of the same type.");
+					throw new util.TomlException("TOML error: array elements must all be of the same type.");
 				}
 				inlineStack[$-1].arr ~= val;
 			}

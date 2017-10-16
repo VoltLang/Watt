@@ -183,13 +183,13 @@ fn skipEndOfLine(ref p: Parser)
 		}
 	}
 	if (!hitNewline && !p.src.eof) {
-		throw new util.TomlException(new "Unexpected character at end of line ('${p.src.front}')");
+		throw new util.TomlException(new "Error parsing TOML: unexpected character at end of line ('${p.src.front}').");
 	}
 }
 
 fn unexpectedCharMsg(c: dchar) string
 {
-	return new "Unexpected character '${c}'.";
+	return new "Error parsing TOML: unexpected character '${c}'.";
 }
 
 // # This is a comment.
@@ -220,7 +220,7 @@ fn parseKeyValue(ref p: Parser)
 		}
 		key = p.src.sliceFrom(keyStart);
 		if (key.length == 0) {
-			throw new util.TomlException("Zero length bare key.");
+			throw new util.TomlException("Error parsing TOML: zero length bare key.");
 		}
 	} else {
 		key = util.parseString(ref p.src);
@@ -344,7 +344,7 @@ fn parseNumber(ref p: Parser)
 		   p.src.front == 'T' || p.src.front == ':' || p.src.front == '_') ||
 		   p.src.front == 'e' || p.src.front == 'E' || p.src.front == '.' || p.src.front == '+') {
 		if (p.src.front == 'T' || (!isFloat && p.src.front == '-') || p.src.front == ':') {
-			throw new util.TomlException("dates not supported");
+			throw new util.TomlException("Error parsing TOML: dates not supported.");
 		}
 		if (p.src.front == 'e' || p.src.front == 'E' || p.src.front == '.') {
 			isFloat = true;
@@ -363,7 +363,7 @@ fn parseNumber(ref p: Parser)
 			p.esink.floatContent(conv.toDouble(numStr));
 		}
 	} catch (e: conv.ConvException) {
-		throw new util.TomlException("Bad number.");
+		throw new util.TomlException("Error parsing TOML: bad number.");
 	}
 }
 
@@ -376,7 +376,7 @@ fn parseArray(ref p: Parser)
 	while (p.src.front != ']') {
 		parseValue(ref p);
 		if (p.src.eof) {
-			throw new util.TomlException("EOF while parsing array.");
+			throw new util.TomlException("Error parsing TOML: EOF while parsing array.");
 		}
 		skipWhitespace(ref p);
 		util.matchIf(ref p.src, ',');
