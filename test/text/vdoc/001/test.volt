@@ -3,7 +3,6 @@ module test;
 import io = watt.io;
 
 import watt.text.vdoc;
-import watt.markdown;
 import watt.text.diff;
 
 enum expect1 = 
