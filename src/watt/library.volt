@@ -27,8 +27,8 @@ private:
 		ptr: void*;
 	}
 
-public:
 
+public:
 	/*!
 	 * Given a list of shared objects, return the first one that loads.
 	 *
@@ -116,6 +116,7 @@ public:
 		static assert(false);
 
 	}
+
 
 private:
 	version (Windows) {
