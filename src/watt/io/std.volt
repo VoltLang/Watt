@@ -152,6 +152,7 @@ fn readln() string
 
 
 private:
+
 version (Posix) {
 	import core.c.posix.unistd : STDIN_FILENO, STDOUT_FILENO, STDERR_FILENO;
 } else {
