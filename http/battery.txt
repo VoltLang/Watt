@@ -1,0 +1,15 @@
+#
+# Need the rest of watt
+#
+--dep
+watt
+#
+# External dependancies
+#
+--if-linux
+--if-osx
+-l
+curl
+--if-msvc
+-l
+winhttp.lib
