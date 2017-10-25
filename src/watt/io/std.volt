@@ -34,6 +34,7 @@ import watt.io.streams;
  * application was launched from one.
  */
 global output: OutputFileStream;
+
 /*!
  * An @ref watt.io.streams.OutputFileStream that outputs to `stderr`.
  *
@@ -41,6 +42,7 @@ global output: OutputFileStream;
  * but is used for errors, and can be redirected separately to output.
  */
 global error: OutputFileStream;
+
 /*!
  * An @ref watt.io.streams.InputFileStream that reads from `stdin`.
  *
