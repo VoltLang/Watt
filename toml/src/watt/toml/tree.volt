@@ -156,6 +156,10 @@ public:
 	 * The string returned will be a valid TOML document.  
 	 * Note that this does not get an individual string value.
 	 * Use `str` for that.
+	 *
+	 * This will try to handle implicitly defined tables gracefully,
+	 * and maintain the structure as given, but complicated cascading
+	 * nested tables are likely to generate bugs.
 	 */
 	override fn toString() string
 	{
@@ -259,27 +263,7 @@ public:
 						v.toString(sink, parent ~ quoteIfNeeded(k) ~ ".");
 						sink("\n");
 					} else {
-						foreach (_k, _v; v.mUnion.table) {
-							if (_v.hoist) {
-								_v.outputComment(sink);
-								name := quoteIfNeeded(k) ~ "." ~ quoteIfNeeded(_k);
-								if (_v.type == Value.Type.Array) {
-									_v.outputTableArray(sink, name);
-								} else {
-									sink("[");
-									sink(name);
-									sink("]\n");
-									_v.toString(sink, name);
-								}
-							}
-						}
-						// [point]
-						// x = 2
-						sink("[");
-						parent2 := parent ~ quoteIfNeeded(k);
-						sink(parent2);
-						sink("]\n");
-						v.toString(sink, parent2 ~ ".");
+						v.outputTable(sink, parent ~ quoteIfNeeded(k));
 					}
 				}
 			}
@@ -498,6 +482,25 @@ private:
 		}
 	}
 
+	fn outputTable(sink: sink.Sink, name: string)
+	{
+		foreach (_k, _v; mUnion.table) {
+			if (_v.hoist) {
+				_v.outputComment(sink);
+				name2 := quoteIfNeeded(name) ~ "." ~ quoteIfNeeded(_k);
+				if (_v.type == Value.Type.Array) {
+					_v.outputTableArray(sink, name2);
+				} else {
+					_v.outputTable(sink, name2);
+				}
+			}
+		}
+		sink("[");
+		sink(name);
+		sink("]\n");
+		toString(sink, name ~ ".");
+	}
+
 	fn outputTableArray(sink: sink.Sink, name: string)
 	{
 		foreach (e; array()) {
@@ -638,6 +641,9 @@ public:
 				hoist = true;
 			}
 			table := new Value();
+			if (i != 0) {
+				table.hoist = hoist;
+			}
 			table.type = Value.Type.Table;
 			tableStack[$-1].mUnion.table[tname] = table;
 			tableStack[$-1].mKeyOrder[tname] = tableStack[$-1].mKeyOrder.length;
