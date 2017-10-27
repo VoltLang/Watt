@@ -153,13 +153,41 @@ public:
 	/*!
 	 * Get a string representation of the value.
 	 *
+	 * This is intended for serialisation of the data.
+	 * e.g. Reading in a document, modifying it, and
+	 * then using the output of this function to write
+	 * back to disk.
+	 *
 	 * The string returned will be a valid TOML document.  
 	 * Note that this does not get an individual string value.
 	 * Use `str` for that.
 	 *
+	 * # Limitations
+	 *
 	 * This will try to handle implicitly defined tables gracefully,
 	 * and maintain the structure as given, but complicated cascading
 	 * nested tables are likely to generate bugs.
+	 *
+	 * In particular, a setup like this:
+	 * ```
+	 * [a.b.c]
+	 * x = 1
+	 * [a.b]
+	 * y = 2
+	 * [a]
+	 * z = 3
+	 * ```
+	 *
+	 * Will cause problems. To work around this issue, declare tables
+	 * in the regular order (parent -> child) instead:
+	 * ```
+	 * [a]
+	 * z = 3
+	 * [a.b]
+	 * y = 2
+	 * [a.b.c]
+	 * x = 1
+	 * ```
 	 */
 	override fn toString() string
 	{
