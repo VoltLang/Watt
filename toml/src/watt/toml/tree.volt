@@ -52,6 +52,8 @@ public:
 	comment: string;
 	//! If this is a table, was it inline? (Affects `toString` functions).
 	inline: bool;
+	//! If this is an array, should it appear before the table it's nested in?
+	hoistArray: bool;
 
 public:
 	//! Construct a `Value` with no type.
@@ -229,25 +231,17 @@ public:
 			if (inline) {
 				sink("{");
 			}
+
 			foreach (i, k; keys) {
 				v := values[i];
-				lines := text.splitLines(v.comment);
-				foreach (j, line; lines) {
-					if (j == lines.length - 1 && line == "") {
-						continue;
-					}
-					sink(new "#${line}\n");
+				if (v.hoistArray) {
+					continue;
 				}
+				v.outputComment(sink);
 				if (v.type != Value.Type.Table) {
 					if (v.type == Value.Type.Array && v.array().length > 0
 						&& v.array()[0].type == Value.Type.Table && !v.array()[0].inline) {
-						foreach (e; v.array()) {
-							parent2 := parent ~ quoteIfNeeded(k);
-							sink("[[");
-							sink(parent2);
-							sink("]]\n");
-							e.toString(sink, parent2 ~ ".");
-						}
+						v.outputTableArray(sink, parent ~ quoteIfNeeded(k));
 					} else {
 						if (inline && !firstNonTable) {
 							sink(", ");
@@ -265,6 +259,12 @@ public:
 						v.toString(sink, parent ~ quoteIfNeeded(k) ~ ".");
 						sink("\n");
 					} else {
+						foreach (_k, _v; v.mUnion.table) {
+							if (_v.hoistArray) {
+								_v.outputComment(sink);
+								_v.outputTableArray(sink, quoteIfNeeded(k) ~ "." ~ quoteIfNeeded(_k));
+							}
+						}
 						// [point]
 						// x = 2
 						sink("[");
@@ -479,6 +479,27 @@ private:
 		return str;
 	}
 
+	fn outputComment(sink: sink.Sink)
+	{
+		lines := text.splitLines(comment);
+		foreach (j, line; lines) {
+			if (j == lines.length - 1 && line == "") {
+				continue;
+			}
+			sink(new "#${line}\n");
+		}
+	}
+
+	fn outputTableArray(sink: sink.Sink, name: string)
+	{
+		foreach (e; array()) {
+			sink("[[");
+			sink(name);
+			sink("]]\n");
+			e.toString(sink, name ~ ".");
+		}
+	}
+
 private:
 	mUnion: ValueUnion;
 	mTableArray: bool;
@@ -649,6 +670,7 @@ public:
 	{
 		names := splitTableName(name);
 		lastTable := result;
+		hoist := false;
 		foreach (prename; names[0 .. $-1]) {
 			p := prename in lastTable.mUnion.table;
 			if (p := prename in lastTable.mUnion.table) {
@@ -666,6 +688,8 @@ public:
 				}
 				lastTable = *p;
 				continue;
+			} else {
+				hoist = true;
 			}
 			table := new Value();
 			table.type = Value.Type.Table;
@@ -683,6 +707,7 @@ public:
 		} else {
 			array = new Value();
 			array.type = Value.Type.Array;
+			array.hoistArray = hoist;
 			array.mTableArray = true;
 			lastTable.mUnion.table[aname] = array;
 			lastTable.mKeyOrder[aname] = lastTable.mKeyOrder.length;
