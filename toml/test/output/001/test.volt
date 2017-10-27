@@ -18,7 +18,9 @@ point = { "x" = "value", "y" = "value" }
 fn main() i32
 {
 	val1 := toml.parse(src);
-	val2 := toml.parse(val1.toString());
+	str  := val1.toString();
+	io.writeln(str);
+	val2 := toml.parse(str);
 	if (val2["a key"].str() != "value") {
 		return 1;
 	}

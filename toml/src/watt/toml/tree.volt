@@ -53,7 +53,7 @@ public:
 	//! If this is a table, was it inline? (Affects `toString` functions).
 	inline: bool;
 	//! If this is an array, should it appear before the table it's nested in?
-	hoistArray: bool;
+	hoist: bool;
 
 public:
 	//! Construct a `Value` with no type.
@@ -234,7 +234,7 @@ public:
 
 			foreach (i, k; keys) {
 				v := values[i];
-				if (v.hoistArray) {
+				if (v.hoist) {
 					continue;
 				}
 				v.outputComment(sink);
@@ -260,9 +260,17 @@ public:
 						sink("\n");
 					} else {
 						foreach (_k, _v; v.mUnion.table) {
-							if (_v.hoistArray) {
+							if (_v.hoist) {
 								_v.outputComment(sink);
-								_v.outputTableArray(sink, quoteIfNeeded(k) ~ "." ~ quoteIfNeeded(_k));
+								name := quoteIfNeeded(k) ~ "." ~ quoteIfNeeded(_k);
+								if (_v.type == Value.Type.Array) {
+									_v.outputTableArray(sink, name);
+								} else {
+									sink("[");
+									sink(name);
+									sink("]\n");
+									_v.toString(sink, name);
+								}
 							}
 						}
 						// [point]
@@ -614,6 +622,7 @@ public:
 	{
 		tableArrayTable = null;
 		names := splitTableName(name);
+		hoist := false;
 		foreach (i, tname; names) {
 			if (p := tname in tableStack[$-1].mUnion.table) {
 				if (p.mTableArray && i < names.length - 1) {
@@ -625,6 +634,8 @@ public:
 				}
 				tableStack ~= *p;
 				continue;
+			} else if (i == 0 && names.length > 1) {
+				hoist = true;
 			}
 			table := new Value();
 			table.type = Value.Type.Table;
@@ -632,6 +643,7 @@ public:
 			tableStack[$-1].mKeyOrder[tname] = tableStack[$-1].mKeyOrder.length;
 			tableStack ~= table;
 		}
+		tableStack[$-1].hoist = hoist;
 		tableStack[$-1].comment = commentSink.toString();
 		commentSink.reset();
 		tableStack[$-1].mBeenAtHead = true;
@@ -707,7 +719,7 @@ public:
 		} else {
 			array = new Value();
 			array.type = Value.Type.Array;
-			array.hoistArray = hoist;
+			array.hoist = hoist;
 			array.mTableArray = true;
 			lastTable.mUnion.table[aname] = array;
 			lastTable.mKeyOrder[aname] = lastTable.mKeyOrder.length;

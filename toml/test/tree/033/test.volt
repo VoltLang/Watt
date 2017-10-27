@@ -1,6 +1,7 @@
 module test;
 
 import toml = watt.toml;
+import io = watt.io;
 
 enum TomlFile = `
 template = "temporary-onetime-stat-buff"
@@ -25,6 +26,7 @@ fn main() i32
 {
 	val := toml.parse(TomlFile);
 	str := val.toString();
+	io.writeln(str);
 	val2:= toml.parse(str);
 	return val2["args"]["changes"].array()[0]["change"].integer() == 800 ? 0 : 1;
 }
