@@ -728,7 +728,8 @@ public:
 					throw new util.TomlException(new "TOML error: redefining '${prename}'.");
 				}
 				foreach (key; p.mUnion.table.keys) {
-					if (p.mUnion.table[key].type != Value.Type.Table) {
+					if (p.mUnion.table[key].type != Value.Type.Table &&
+						(p.mUnion.table[key].type != Value.Type.Array || !p.mUnion.table[key].mTableArray)) {
 						throw new util.TomlException(new "TOML error: redefining table '${prename}'.");
 					}
 				}
