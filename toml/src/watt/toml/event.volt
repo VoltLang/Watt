@@ -373,13 +373,17 @@ fn parseArray(ref p: Parser)
 	util.match(ref p.src, '[');
 	skipWhitespace(ref p);
 	p.esink.arrayStart();
+	parsedComma := true;
 	while (p.src.front != ']') {
+		if (!parsedComma) {
+			throw new util.TomlException("Error parsing TOML: expect ',' between array elements.");
+		}
 		parseValue(ref p);
 		if (p.src.eof) {
 			throw new util.TomlException("Error parsing TOML: EOF while parsing array.");
 		}
 		skipWhitespace(ref p);
-		util.matchIf(ref p.src, ',');
+		parsedComma = util.matchIf(ref p.src, ',');
 		skipWhitespace(ref p);
 		if (p.src.front == '#') {
 			parseComment(ref p);
