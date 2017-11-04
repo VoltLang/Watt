@@ -85,6 +85,17 @@ fn writeln(i: i32)
 }
 
 /*!
+ * Write the string representation of a `size_t` to `output`.
+ *
+ * Same as `output.writefln("%s", i)`.
+ * @Param i A `size_t` to write to `output`.
+ */
+fn writeln(i: size_t)
+{
+	output.writefln("%s", i);
+} 
+
+/*!
  * Write the string representation of a `bool` to `output`.
  *
  * Same as `output.writefln("%s", b)`.
