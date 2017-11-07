@@ -1,10 +1,10 @@
+//T macro:expect-failure
+//T check:cannot modify
 module test;
-
-import watt.io;
 
 fn main() i32
 {
-	b: u8 = cast(u8)257;
-	writeln(b);
-	return 0;
+	a: const(i32) = 12;
+	a = 6;
+	return a - 6;
 }
