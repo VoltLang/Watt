@@ -1,4 +1,3 @@
-//T has-passed:no
 //T check:5
 //T check:Member
 //T check:[1, 2, 3]
