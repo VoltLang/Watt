@@ -1,0 +1,3 @@
+name = "watt"
+[platform.linux]
+libraries = ["m"]

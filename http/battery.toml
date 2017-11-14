@@ -1,0 +1,12 @@
+#
+# Need the rest of watt
+#
+name = "watt.http"
+dependencies = ["watt"]
+#
+# External dependancies
+#
+[platform.'linux || osx']
+libraries = ["curl"]
+[platform.msvc]
+libraries = ["winhttp.lib"]
