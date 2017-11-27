@@ -12,13 +12,8 @@ enum Enum
 
 fn main() i32
 {
-/*
 	writeln("${3+2}");
 	writeln("${Enum.Member}");
 	writeln(new "${[1, 2, 3]}");
-*/
-	writeln("5");
-	writeln("Member");
-	writeln("[1, 2, 3]");
 	return 0;
 }
