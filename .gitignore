@@ -6,3 +6,8 @@
 *.tar.gz
 .pkg
 .battery.*
+.DS_Store
+*.out
+/.bin/**
+*.swp
+results.xml
