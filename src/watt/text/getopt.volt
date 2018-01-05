@@ -53,14 +53,16 @@ class GetoptException : Exception
 }
 
 // Removes up to two leading dashes from a string.
-private fn removeDashes(s: string) string
+private fn removeDashes(s: string, ref removedDashes: bool) string
 {
 	if (s.length == 0 || (s.length == 1 && s[0] == '-') || (s.length == 2 && s == "--")) {
 		return "";
 	}
 	if (s.length >= 2 && s[0 .. 2] == "--") {
+		removedDashes = true;
 		return s[2 .. $];
 	} else if (s.length >= 1 && s[0 .. 1] == "-") {
+		removedDashes = true;
 		return s[1 .. $];
 	} else {
 		return s;
@@ -109,7 +111,11 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg()) 
 	removed := false;
 	flags := parseDescription(description);
 	for (i: size_t = 0; i < args.length; ++i) {
-		arg := removeDashes(args[i]);
+		dashesRemoved: bool;
+		arg := removeDashes(args[i], ref dashesRemoved);
+		if (!dashesRemoved) {
+			continue;
+		}
 		foreach (flag; flags) {
 			if (flag == arg) {
 				dgt();
@@ -129,7 +135,11 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
 	flags := parseDescription(description);
 	for (i: size_t = 0; i < args.length; ++i) {
 		oneDash: bool = args[i].length > 2 && args[i][0] == '-' && args[i][1] != '-';
-		arg := removeDashes(args[i]);
+		dashesRemoved: bool;
+		arg := removeDashes(args[i], ref dashesRemoved);
+		if (!dashesRemoved) {
+			continue;
+		}
 		foreach (flag; flags) {
 			equals := equalParameter(arg);
 			equalLeft := split(arg, '=')[0];
