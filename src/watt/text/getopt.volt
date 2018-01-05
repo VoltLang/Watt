@@ -53,16 +53,17 @@ class GetoptException : Exception
 }
 
 // Removes up to two leading dashes from a string.
-private fn removeDashes(s: string, ref removedDashes: bool) string
+private fn removeDashes(s: string, ref dashesRemoved: i32) string
 {
+	dashesRemoved = 0;
 	if (s.length == 0 || (s.length == 1 && s[0] == '-') || (s.length == 2 && s == "--")) {
 		return "";
 	}
 	if (s.length >= 2 && s[0 .. 2] == "--") {
-		removedDashes = true;
+		dashesRemoved = 2;
 		return s[2 .. $];
 	} else if (s.length >= 1 && s[0 .. 1] == "-") {
-		removedDashes = true;
+		dashesRemoved = 1;
 		return s[1 .. $];
 	} else {
 		return s;
@@ -111,9 +112,9 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg()) 
 	removed := false;
 	flags := parseDescription(description);
 	for (i: size_t = 0; i < args.length; ++i) {
-		dashesRemoved: bool;
+		dashesRemoved: i32;
 		arg := removeDashes(args[i], ref dashesRemoved);
-		if (!dashesRemoved) {
+		if (dashesRemoved == 0 || (arg.length > 1 && dashesRemoved != 2)) {
 			continue;
 		}
 		foreach (flag; flags) {
@@ -134,30 +135,35 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
 	removed := false;
 	flags := parseDescription(description);
 	for (i: size_t = 0; i < args.length; ++i) {
-		oneDash: bool = args[i].length > 2 && args[i][0] == '-' && args[i][1] != '-';
-		dashesRemoved: bool;
+		dashesRemoved: i32;
 		arg := removeDashes(args[i], ref dashesRemoved);
-		if (!dashesRemoved) {
+		if (dashesRemoved == 0) {
 			continue;
 		}
 		foreach (flag; flags) {
 			equals := equalParameter(arg);
 			equalLeft := split(arg, '=')[0];
 			if (equals.length > 0 && equalLeft == flag) {
+				// Flag with equals between argument, a la '--name=boggyb'
 				dgt(equals);
 				remove(ref args, ref i);
 				removed = true;
-			} else if (flag.length == 1 && oneDash && arg[0] == flag[0]) {
+				break;
+			} else if (flag.length == 1 && dashesRemoved == 1 && arg[0] == flag[0] && arg != flag) {
+				// Combined flag with argument, a la '-j2'
 				dgt(arg[1 .. $]);
 				remove(ref args, ref i);
 				removed = true;
+				break;
 			} else if (flag == arg) {
+				// Flag, then argument, a la '-j 2'
 				if (i + 1 >= args.length) {
 					throw new GetoptException(format("getopt: expected parameter for argument '%s'.", arg));
 				}
 				dgt(args[i + 1]);
 				removeTwo(ref args, ref i);
 				removed = true;
+				break;
 			}
 		}
 	}
@@ -179,6 +185,7 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
  */
 fn getopt(ref args: string[], description: string, ref _string: string) bool
 {
+	_string = null;
 	fn dgt(param: string) { _string = param; }
 	return getoptImpl(ref args, description, dgt);
 }
@@ -194,6 +201,7 @@ fn getopt(ref args: string[], description: string, ref _string: string) bool
  */
 fn getopt(ref args: string[], description: string, ref _int: i32) bool
 {
+	_int = 0;
 	fn dgt(arg: string)
 	{
 		try {
@@ -215,6 +223,7 @@ fn getopt(ref args: string[], description: string, ref _int: i32) bool
  */
 fn getopt(ref args: string[], description: string, ref _bool: bool) bool
 {
+	_bool = false;
 	fn dgt() { _bool = true; }
 	return getoptImpl(ref args, description, dgt);
 }
