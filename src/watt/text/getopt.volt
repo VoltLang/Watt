@@ -104,8 +104,9 @@ private fn equalParameter(s: string) string
 }
 
 // No argument getopt base implementation.
-private fn getoptImpl(ref args: string[], description: string, dgt: scope dg())
+private fn getoptImpl(ref args: string[], description: string, dgt: scope dg()) bool
 {
+	removed := false;
 	flags := parseDescription(description);
 	for (i: size_t = 0; i < args.length; ++i) {
 		arg := removeDashes(args[i]);
@@ -113,15 +114,18 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg())
 			if (flag == arg) {
 				dgt();
 				remove(ref args, ref i);
+				removed = true;
 				break;
 			}
 		}
 	}
+	return removed;
 }
 
 // Argument taking getopt base implementation.
-private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (string))
+private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (string)) bool
 {
+	removed := false;
 	flags := parseDescription(description);
 	for (i: size_t = 0; i < args.length; ++i) {
 		oneDash: bool = args[i].length > 2 && args[i][0] == '-' && args[i][1] != '-';
@@ -132,36 +136,53 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
 			if (equals.length > 0 && equalLeft == flag) {
 				dgt(equals);
 				remove(ref args, ref i);
+				removed = true;
 			} else if (flag.length == 1 && oneDash && arg[0] == flag[0]) {
 				dgt(arg[1 .. $]);
 				remove(ref args, ref i);
+				removed = true;
 			} else if (flag == arg) {
 				if (i + 1 >= args.length) {
 					throw new GetoptException(format("getopt: expected parameter for argument '%s'.", arg));
 				}
 				dgt(args[i + 1]);
 				removeTwo(ref args, ref i);
+				removed = true;
 			}
 		}
 	}
+	return removed;
 }
 
 /*!
+ * Parse a flag taking a string argument from an array of strings.
+ *
  * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
  * and put into `_string`. Both the flag and argument are then removed from `args`.
+ * If there are multiple instances of the flag, `_string` will have the value of the last
+ * instance.
+ *
+ * @Param args The array of strings to remove applicable flags and arguments from.
+ * @Param description The description of the flag -- see `getopt`'s module documentation for details.
+ * @Param _string This argument will be filled with the last value parsed out of `args`.
+ * @Returns `true` if an argument was removed from `args`.
  */
-fn getopt(ref args: string[], description: string, ref _string: string)
+fn getopt(ref args: string[], description: string, ref _string: string) bool
 {
 	fn dgt(param: string) { _string = param; }
-	getoptImpl(ref args, description, dgt);
+	return getoptImpl(ref args, description, dgt);
 }
 
 /*!
- * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
- * and put into `_int`. Both the flag and argument are then removed from `args`.
+ * Parse a flag that takes an integer argument from an array of strings.
+ *
+ * @Param args The array of strings to remove flags and arguments from.
+ * @Param description The description of the flag -- see `getopt`'s module documentation for details.
+ * @Param _int This argument will be filled with the last value parsed out of `args`.
+ * @Returns `true` if an argument was removed from `args`.
  * @Throws `GetoptException` if the argument could not be parsed as an integer.
  */
-fn getopt(ref args: string[], description: string, ref _int: i32)
+fn getopt(ref args: string[], description: string, ref _int: i32) bool
 {
 	fn dgt(arg: string)
 	{
@@ -171,7 +192,7 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
 			throw new GetoptException(format("getopt: expected integer argument for flag '%s'.", description));
 		}
 	}
-	getopt(ref args, description, dgt);
+	return getopt(ref args, description, dgt);
 }
 
 /*!
@@ -180,32 +201,36 @@ fn getopt(ref args: string[], description: string, ref _int: i32)
  * Given an array of strings, args, and a list of strings separated by a | character, description,
  * remove any strings in `args[1 .. $]` that start with '-' and contain any of the description strings.
  *
- * Sets `_bool` to `true` if `args` was modified.
+ * Sets `_bool` to `true` if `args` was modified, and returns the same value.
  */
-fn getopt(ref args: string[], description: string, ref _bool: bool)
+fn getopt(ref args: string[], description: string, ref _bool: bool) bool
 {
 	fn dgt() { _bool = true; }
-	getoptImpl(ref args, description, dgt);
+	return getoptImpl(ref args, description, dgt);
 }
 
 /*!
  * Calls a delegate each time the flag appears.
  *
  * The found flags are removed from `args`.
+ *
+ * @Returns `true` if anything was removed from `args`.
  */
-fn getopt(ref args: string[], description: string, dgt: scope dg ())
+fn getopt(ref args: string[], description: string, dgt: scope dg ()) bool
 {
-	getoptImpl(ref args, description, dgt);
+	return getoptImpl(ref args, description, dgt);
 }
 
 /*!
  * Calls a delegate with argument each time the flag appears.
  *
  * The flag and arguments are removed from the `args` array.
+ *
+ * @Returns `true` if anything was removed from `args`.
  */
-fn getopt(ref args: string[], description: string, dgt: scope dg (string))
+fn getopt(ref args: string[], description: string, dgt: scope dg (string)) bool
 {
-	getoptImpl(ref args, description, dgt);
+	return getoptImpl(ref args, description, dgt);
 }
 
 /*!
