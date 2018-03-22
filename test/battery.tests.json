@@ -13,6 +13,10 @@
 		"import": [
 			"//T run:volta -o %t %s --src-I %S/../deps",
 			"//T run:%t"
+		],
+		"passpath": [
+			"//T run:volta -o %t %s",
+			"//T run:%t %S"
 		]
 	}
 }
