@@ -154,7 +154,7 @@ fn globMatch(path: string, pattern: string) bool
  * ### Example
  * ```volt
  * sourceFiles: string[];
- * fn addFile(s: string) { sourceFiles ~= s; }
+ * fn addFile(s: string) SearchStatus { sourceFiles ~= s; return SearchStatus.Continue; }
  * searchDir(".", "*.volt", addFile);
  * ```
  *
@@ -171,12 +171,21 @@ fn globMatch(path: string, pattern: string) bool
  * matches `glob`.
  * @Throws `FileException` If `dirName` could not be opened or read.
  */
-fn searchDir(dirName: string, glob: string, dgt: scope dg(string))
+fn searchDir(dirName: string, glob: string, dgt: scope dg(string) SearchStatus)
 {
 	searchDirImpl(dirName, glob, dgt);
 }
 
-private version (Posix) fn searchDirImpl(dirName: string, glob: string, dgt: scope dg (string))
+//! Tell `searchDir` what to do after calling your delegate.
+enum SearchStatus
+{
+	//! Call the delegate for any further entries.
+	Continue,
+	//! Stop searching; don't call the delegate further.
+	Halt,
+}
+
+private version (Posix) fn searchDirImpl(dirName: string, glob: string, dgt: scope dg (string) SearchStatus)
 {
 	dp: dirent*;
 	dirp := opendir(toStringz(dirName));
@@ -189,7 +198,10 @@ private version (Posix) fn searchDirImpl(dirName: string, glob: string, dgt: sco
 		if (dp !is null) {
 			path := toString(cast(const(char)*) dp.d_name.ptr);
 			if (globMatch(path, glob)) {
-				dgt(path);
+				status := dgt(path);
+				if (status == SearchStatus.Halt) {
+					break;
+				}
 			}
 		}
 	} while (dp !is null);
@@ -197,7 +209,7 @@ private version (Posix) fn searchDirImpl(dirName: string, glob: string, dgt: sco
 	closedir(dirp);
 }
 
-private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: scope dg (string))
+private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: scope dg (string) SearchStatus)
 {
 	findData: WIN32_FIND_DATA;
 	handle := FindFirstFileA(toStringz(format("%s/*", dirName)), &findData);  // Use our own globbing function.
@@ -212,7 +224,10 @@ private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: s
 	do {
 		path := toString(cast(const(char)*) findData.cFileName.ptr);
 		if (globMatch(toLower(path), toLower(glob))) {
-			dgt(toString(cast(const(char)*) findData.cFileName.ptr));
+			status := dgt(toString(cast(const(char)*) findData.cFileName.ptr));
+			if (status == SearchStatus.Halt) {
+				break;
+			}
 		}
 		bRetval: BOOL = FindNextFileA(handle, &findData);
 		if (bRetval == 0) {

@@ -15,7 +15,6 @@
  */
 module watt.json.dom;
 
-import watt.text.format;
 import watt.json.util;
 import watt.json.sax;
 
@@ -242,7 +241,7 @@ struct Value
 		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
 		p := s in object;
 		if (p is null) {
-			throw new DOMException(format("Lookup of '%s' through JSON object failed.", s));
+			throw new DOMException(new "Lookup of '${s}' through JSON object failed.");
 		}
 		return *p;
 	}
