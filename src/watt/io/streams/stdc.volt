@@ -99,6 +99,17 @@ public:
 		}
 	}
 
+	/*!
+	 * Construct a new @p InputStdcStream with a filename, using
+	 * the given mode string.
+	 */
+	this(filename: const(char)[], flags: const(char)[])
+	{
+		if (filename.length > 0u) {
+			handle = fopen(toStringz(filename), toStringz(flags));
+		}
+	}
+
 	//! Close the underlying FILE handle.
 	override fn close()
 	{
