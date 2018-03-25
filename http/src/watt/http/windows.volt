@@ -3,7 +3,9 @@
 //! Windows implementation of Http requests.
 module watt.http.windows;
 
+import watt.algorithm : min;
 import watt.http : HttpInterface, RequestInterface;
+import watt.text.string : strip;
 
 version(Windows):
 
@@ -51,6 +53,15 @@ public:
 
 		mReqs = mReqs[0 .. count];
 	}
+
+	override fn loop(cb: dg() = null)
+	{
+		while (!isEmpty()) {
+			perform();
+			cb();
+			Sleep(1000);  // Stupid, but it does okay.
+		}
+	}
 }
 
 //! Win32 implementation of `RequestInterface`.
@@ -61,6 +72,8 @@ private:
 	mCon, mReq: HINTERNET;
 
 	mError: bool;
+	mErrorString: char[255];
+	mErrorLength: size_t;
 	mDone: bool;
 
 	mHeader: char*;
@@ -68,6 +81,7 @@ private:
 
 	mData: void*;
 	mDataSize: size_t;
+	mContentLength: DWORD;
 
 	mDebug: char*;
 	mDebugSize: size_t;
@@ -99,9 +113,42 @@ public:
 		CloseHandle(mReadMutex);
 	}
 
+	override fn getData() void[]
+	{
+		return mData[0 .. mDataSize];
+	}
+
 	override fn getString() string
 	{
 		return new string((cast(char*)mData)[0 .. mDataSize]);
+	}
+
+	override fn completed() bool
+	{
+		return mDone;
+	}
+
+	override fn errorGenerated() bool
+	{
+		return mError;
+	}
+
+	override fn errorString() string
+	{
+		/* FormatMessage seems to end each message with \r\n, but I'm not sure if it's EVERY message,
+		 * so just play it safe and strip() it.
+		 */
+		return strip(cast(string)mErrorString[0 .. mErrorLength]);
+	}
+
+	override fn bytesDownloaded() size_t
+	{
+		return mDataSize;
+	}
+
+	override fn contentLength() size_t
+	{
+		return cast(size_t)mContentLength;
 	}
 
 private:
@@ -184,6 +231,14 @@ private:
 			return raiseError();
 		}
 
+		dwSize: DWORD = cast(DWORD)typeid(DWORD).size;
+		WinHttpQueryHeaders(mReq, 
+                     WINHTTP_QUERY_CONTENT_LENGTH | WINHTTP_QUERY_FLAG_NUMBER,
+                     WINHTTP_HEADER_NAME_BY_INDEX, 
+                     cast(void*)&mContentLength, 
+                     &dwSize, 
+                     WINHTTP_NO_HEADER_INDEX);
+
 		// Move onto reading data.
 		queryData();
 	}
@@ -220,6 +275,7 @@ private:
 
 	fn raiseError()
 	{
+		win32ErrorString(mErrorString.ptr, mErrorString.length, out mErrorLength);
 		cleanup();
 		mError = true;
 		mDone = true;
@@ -238,7 +294,28 @@ private:
 
 private:
 
+/* This is copying into a pointer to a static array not because
+ * the author is insane (well not *only* because the author is insane)
+ * but because this gets called by callbackFunction, and we cannot
+ * use the GC.
+ */
+fn win32ErrorString(buf: char*, bufLen: size_t, out strLength: size_t)
+{
+	code := GetLastError();
+	msg: char*;
+	count := FormatMessageA(cast(DWORD)(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_HMODULE | FORMAT_MESSAGE_IGNORE_INSERTS),
+	cast(void*)GetModuleHandleA("winhttp.dll"), code, 0, cast(LPCSTR)&msg, 0, null);
+	strLength = min(count, bufLen);
+	buf[0 .. strLength] = msg[0 .. strLength];
+	LocalFree(cast(HLOCAL)msg);
+}
+
 import core.c.stdlib : realloc, free;
+
+/* Anything called from the callbackFunction cannot use the GC,
+ * as we are in ASYNC mode and it will not be called from the
+ * main thread.
+ */
 
 extern(Windows) fn callbackFunction(
 	hInternet: HINTERNET,

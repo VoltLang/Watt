@@ -38,6 +38,14 @@ public:
 	 * to see if all pending `Request`s are complete.
 	 */
 	fn perform();
+
+	/*!
+	 * Complete all requests.
+	 *
+	 * Blocks until all requests are completed. Periodically calls
+	 * `cb` if it is non-null.
+	 */
+	fn loop(cb: dg() = null);
 }
 
 //! An HTTP request.
@@ -71,7 +79,25 @@ public:
 	}
 
 	//! Get the result of the request.
+	abstract fn getData() void[];
+
+	//! Get the result of the request as a string.
 	abstract fn getString() string;
+
+	//! Has this request completed?
+	abstract fn completed() bool;
+
+	//! Was an error generated for this request?
+	abstract fn errorGenerated() bool;
+
+	//! Get an error string.
+	abstract fn errorString() string;
+
+	//! How many bytes have been downloaded so far?
+	abstract fn bytesDownloaded() size_t;
+
+	//! How big is the content? If unknown, this is zero.
+	abstract fn contentLength() size_t;
 }
 
 version (Windows) {

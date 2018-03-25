@@ -5,8 +5,13 @@ module watt.http.curl;
 
 version (!Windows):
 
+import core.c.config : c_long;
 import core.c.stdlib : realloc, free;
+import core.c.posix.unistd;
+import core.c.posix.sys.select;
+import core.c.posix.sys.time;
 
+import watt.conv;
 import watt.io : output;
 
 import watt.http : HttpInterface, RequestInterface;
@@ -87,9 +92,64 @@ public:
 			mReqs = mReqs[0 .. $-1];
 
 			curl_multi_remove_handle(mMulti, req.mEasy);
-			req.raiseDone();
+			if (m.data.result != CURLcode.CURLE_OK) {
+				req.mErrorString = .toString(curl_easy_strerror(m.data.result));
+				req.raiseError();
+			} else {
+				responseCode: c_long;
+				curl_easy_getinfo(req.mEasy, CURLINFO_RESPONSE_CODE, &responseCode);
+				if (responseCode != 200) {
+					req.mErrorString = req.getString();
+					req.raiseError();
+				} else {
+					req.raiseDone();
+				}
+			}
 		}
 	}
+
+	override fn loop(cb: dg() = null)
+	{
+		timeout: timeval;
+		while (!isEmpty()) {
+			fdread, fdwrite, fdexcept: fd_set;
+			curl_timeo: c_long;
+
+			curl_multi_timeout(mMulti, &curl_timeo);
+			if (curl_timeo < 0) {
+				curl_timeo = 1000;
+			}
+
+			timeout.tv_sec = curl_timeo / 1000;
+			timeout.tv_usec = cast(suseconds_t)((curl_timeo % 1000) * 1000);
+
+			FD_ZERO(&fdread);
+			FD_ZERO(&fdwrite);
+			FD_ZERO(&fdexcept);
+
+			maxfd: i32;
+			curl_multi_fdset(mMulti, &fdread, &fdwrite, &fdexcept, &maxfd);
+
+			rc: i32;
+			if (maxfd == -1) {
+				usleep(100000);
+				rc = 0;
+			} else {
+				rc = select(maxfd+1, &fdread, &fdwrite, &fdexcept, &timeout);
+			}
+
+			perform();
+			if (cb !is null) cb();
+		}
+	}
+}
+
+extern (C) fn request_progress(clientp: void*, dltotal: curl_off_t, dlnow: curl_off_t, 
+	ultotal: curl_off_t, ulnow: curl_off_t) i32
+{
+	req := cast(Request)clientp;
+	req.mContentLength = cast(size_t)dltotal;
+	return 0;
 }
 
 //! Curl implementation of `RequestInterface`.
@@ -99,9 +159,11 @@ private:
 	mHttp: Http;
 	mEasy: CURL*;
 	mUrl: string;
+	mErrorString: string;
 
 	mDataSize: size_t;
 	mData: void*;
+	mContentLength: size_t;
 
 	mError: bool;
 	mDone: bool;
@@ -123,9 +185,39 @@ public:
 		}
 	}
 
+	override fn getData() void[]
+	{
+		return mData[0 .. mDataSize];
+	}
+
 	override fn getString() string
 	{
 		return new string((cast(char*)mData)[0 .. mDataSize]);
+	}
+
+	override fn completed() bool
+	{
+		return mDone;
+	}
+
+	override fn errorGenerated() bool
+	{
+		return mError;
+	}
+
+	override fn errorString() string
+	{
+		return mErrorString;
+	}
+
+	override fn bytesDownloaded() size_t
+	{
+		return mDataSize;
+	}
+
+	override fn contentLength() size_t
+	{
+		return mContentLength;
 	}
 
 private:
@@ -133,6 +225,7 @@ private:
 	{
 		mEasy = curl_easy_init();
 		if (mEasy is null) {
+			mErrorString = "curl_easy_init() failure";
 			return raiseError();
 		}
 
@@ -150,6 +243,10 @@ private:
 		curl_easy_setopt(mEasy, CURLoption.WRITEFUNCTION, myWrite);
 		curl_easy_setopt(mEasy, CURLoption.WRITEDATA, this);
 
+		curl_easy_setopt(mEasy, CURLoption.XFERINFOFUNCTION, request_progress);
+		curl_easy_setopt(mEasy, CURLoption.XFERINFODATA, cast(void*)this);
+		curl_easy_setopt(mEasy, CURLoption.NOPROGRESS, 0);
+
 		curl_multi_add_handle(mHttp.mMulti, mEasy);
 	}
 
@@ -164,7 +261,7 @@ private:
 	}
 
 	/*!
-	 * Data comming from the host to this process.
+	 * Data coming from the host to this process.
 	 */
 	extern(C) global fn myWrite(buffer: void*, size: size_t,
 	                        	nitems: size_t, outstream: void*) size_t
@@ -312,6 +409,8 @@ enum CURLcode
 	CURL_LAST /* never use! */
 }
 
+alias curl_off_t = c_long;
+
 enum CURLOPTTYPE_LONG          = 0;
 enum CURLOPTTYPE_OBJECTPOINT   = 10000;
 enum CURLOPTTYPE_STRINGPOINT   = 10000;
@@ -328,6 +427,9 @@ enum CURLoption
 	READFUNCTION     = CURLOPTTYPE_FUNCTIONPOINT + 12,
 	COOKIE           = CURLOPTTYPE_STRINGPOINT   + 22,
 	FOLLOWLOCATION   = CURLOPTTYPE_LONG          + 52,
+	XFERINFOFUNCTION = CURLOPTTYPE_FUNCTIONPOINT + 219,
+	XFERINFODATA     = CURLOPTTYPE_OBJECTPOINT   + 57,
+	NOPROGRESS       = CURLOPTTYPE_LONG          + 43,
 }
 
 
@@ -378,6 +480,11 @@ fn curl_easy_init() CURL*;
 fn curl_easy_setopt(curl: CURL*, option: CURLoption, ...) CURLcode;
 fn curl_easy_perform(curl: CURL*) CURLcode;
 fn curl_easy_cleanup(curl: CURL*);
+fn curl_easy_strerror(CURLcode) const(char)*;
+
+enum CURLINFO_CONTENT_LENGTH_DOWNLOAD = 0x300000 + 15;
+enum CURLINFO_RESPONSE_CODE           = 0x200000 + 2;
+fn curl_easy_getinfo(CURL*, i32, ...) CURLcode;
 
 fn curl_multi_init() CURLM*;
 fn curl_multi_cleanup(multi_handle: CURLM*) CURLMcode;
@@ -385,3 +492,5 @@ fn curl_multi_perform(multi_handle: CURLM*, running_handles: i32*) CURLMcode;
 fn curl_multi_add_handle(multi_handle: CURLM*, curl_handle: CURL*) CURLMcode;
 fn curl_multi_remove_handle(multi_handle: CURLM*, curl_handle: CURL*) CURLMcode;
 fn curl_multi_info_read(multi_handle: CURLM*, msgs_in_queue: i32*) CURLMsg*;
+fn curl_multi_timeout(CURLM*, c_long*) CURLMcode;
+fn curl_multi_fdset(CURLM*, fd_set*, fd_set*, fd_set*, i32*) CURLMcode;
