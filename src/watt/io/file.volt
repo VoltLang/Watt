@@ -88,6 +88,30 @@ fn read(filename: SinkArg) void[]
 }
 
 /*!
+ * Write an array of data to a file.
+ *
+ * `data` is interpreted as an array of bytes, and each byte
+ * is written to a new file named `filename`.  
+ * If `filename` is an existing file, **it will be overwritten**.
+ * @Throws `FileException` if a file cannot be opened for writing.
+ */
+fn write(data: void[], filename: SinkArg)
+{
+	cstr := toStringz(filename);
+	fp := cstdio.fopen(cstr, "wb");
+	if (fp is null) {
+		throw new FileException(new "Couldn't open file '${filename}' for writing.");
+	}
+
+	bytes := cast(u8[])data;
+	foreach (b; bytes) {
+		cstdio.fputc(b, fp);
+	}
+
+	cstdio.fclose(fp);
+}
+
+/*!
  * Check if `path` matches `pattern`.
  *
  * `pattern` is treated as a regular string except for two special characters:
