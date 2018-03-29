@@ -82,6 +82,7 @@ private:
 	mError: bool;
 	mErrorString: char[255];
 	mErrorLength: size_t;
+	mManualError: string;
 	mDone: bool;
 
 	mHeader: char*;
@@ -143,6 +144,9 @@ public:
 
 	override fn errorString() string
 	{
+		if (mManualError !is null) {
+			return mManualError;
+		}
 		/* FormatMessage seems to end each message with \r\n, but I'm not sure if it's EVERY message,
 		 * so just play it safe and strip() it.
 		 */
@@ -363,6 +367,34 @@ extern(Windows) fn callbackFunction(
 		break;
 	case WINHTTP_CALLBACK_STATUS_REQUEST_ERROR:
 		req.raiseError();
+		break;
+	case WINHTTP_CALLBACK_STATUS_SECURE_FAILURE:
+		val := *cast(DWORD*)lpvStatusInformation;
+		switch (val) {
+		case WINHTTP_CALLBACK_STATUS_FLAG_CERT_REV_FAILED:
+			req.mManualError= "Certification revocation checking has been enabled, but the revocation check failed to verify whether a certificate has been revoked. The server used to check for revocation might be unreachable. (WINHTTP_CALLBACK_STATUS_FLAG_CERT_REV_FAILED)";
+			break;
+		case WINHTTP_CALLBACK_STATUS_FLAG_INVALID_CERT:
+			req.mManualError = "SSL certificate is invalid. (WINHTTP_CALLBACK_STATUS_FLAG_INVALID_CERT)";
+			break;
+		case WINHTTP_CALLBACK_STATUS_FLAG_CERT_REVOKED:
+			req.mManualError = "SSL certificate was revoked. (WINHTTP_CALLBACK_STATUS_FLAG_CERT_REVOKED)";
+			break;
+		case WINHTTP_CALLBACK_STATUS_FLAG_INVALID_CA:
+			req.mManualError = "The function is unfamiliar with the Certificate Authority that generated the server's certificate. (WINHTTP_CALLBACK_STATUS_FLAG_INVALID_CA)";
+			break;
+		case WINHTTP_CALLBACK_STATUS_FLAG_CERT_CN_INVALID:
+			req.mManualError = "SSL certificate common name (host name field) is incorrect, for example, if you entered www.microsoft.com and the common name on the certificate says www.msn.com. (WINHTTP_CALLBACK_STATUS_FLAG_CERT_CN_INVALID)";
+			break;
+		case WINHTTP_CALLBACK_STATUS_FLAG_CERT_DATE_INVALID:
+			req.mManualError = "SSL certificate date that was received from the server is bad. The certificate is expired. (WINHTTP_CALLBACK_STATUS_FLAG_CERT_DATE_INVALID)";
+			break;
+		case WINHTTP_CALLBACK_STATUS_FLAG_SECURITY_CHANNEL_ERROR:
+			req.mManualError = "The application experienced an internal error loading the SSL libraries. (WINHTTP_CALLBACK_STATUS_FLAG_SECURITY_CHANNEL_ERROR)";
+			break;
+		default:
+			break;
+		}
 		break;
 	default:
 	}
