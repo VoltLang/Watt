@@ -30,11 +30,8 @@ public:
 			WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS,
 			WINHTTP_FLAG_ASYNC);
 
-		/* Windows 7 doesn't enable TLS 1.1 and 1.2 by default, but github (among others) doesn't
-		 * support TLS 1.0.
-		 */
-		protocol: DWORD = WINHTTP_FLAG_SECURE_PROTOCOL_ALL | WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_1 |
-			WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_2;
+		// Some install of windows won't connect if SSL is in the protocols list at *all*. @todo
+		protocol :=  WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_2;
 		WinHttpSetOption(hSession, WINHTTP_OPTION_SECURE_PROTOCOLS, cast(void*)&protocol,
 			cast(DWORD)typeid(protocol).size);
 	}
