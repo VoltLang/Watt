@@ -38,13 +38,14 @@ version (Windows) {
 	extern (Windows) fn CryptReleaseContext(HCRYPTPROV, DWORD) BOOL;
 	extern (Windows) fn CryptGenRandom(HCRYPTPROV, DWORD, u8*) BOOL;
 	enum PROV_RSA_FULL = 1;
-	enum CRYPT_NEWKEYSET = 0x00000008;
+	enum CRYPT_NEWKEYSET     = 0x00000008;
+	enum CRYPT_VERIFYCONTEXT = 0xF0000000;
 
 	fn getHardwareSeedU32Impl() u32
 	{
 		buf := new u32[](1);
 		hcpov: HCRYPTPROV;
-		if (!CryptAcquireContextA(&hcpov, null, null, PROV_RSA_FULL, 0)) {
+		if (!CryptAcquireContextA(&hcpov, null, null, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
 			throw new Exception("Can't get CryptoAPI provider.");
 		}
 		if (!CryptGenRandom(hcpov, 4, cast(u8*)buf.ptr)) {
