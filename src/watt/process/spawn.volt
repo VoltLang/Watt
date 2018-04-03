@@ -149,22 +149,28 @@ fn spawnProcess(name: string, args: string[],
 }
 
 version (Posix) {
-/*
+/*!
  * Start a process from an executable.
  *
- * Takes an optional environment, and input, output, and error streams.  
- * If the streams are null, stdin, stdout, and stderr respectively will be used.
+ * @Param inputStream Standard input will be read from this stream. If this is
+ * `null`, the system `STDIN` will be used.
+ * @Param outputStream Standard output will be written to this stream. If this is `null`,
+ * the system `STDOUT` will be used.
+ * @Param errorStream Standard error will be written to this stream. If this is `null`,
+ * the system `STDERR` will be used.
+ * @Returns A `Pid` instance for the new process.
+ * @Throws `ProcessException` if a process could not be spawned for some reason.
  */
 fn spawnProcess(name: string, args: string[],
-                _stdin: InputFDStream,
-                _stdout: OutputFDStream,
-                _stderr: OutputFDStream,
+                inputStream: InputFDStream,
+                outputStream: OutputFDStream,
+                errorStream: OutputFDStream,
                 env: Environment = null) Pid
 {
 	cmd := getCommandFromName(name);
-	stdinfd := _stdin is null ? STDIN_FILENO : _stdin.fd;
-	stdoutfd := _stdout is null ? STDOUT_FILENO : _stdout.fd;
-	stderrfd := _stderr is null ? STDERR_FILENO : _stderr.fd;
+	stdinfd := inputStream is null ? STDIN_FILENO : inputStream.fd;
+	stdoutfd := outputStream is null ? STDOUT_FILENO : outputStream.fd;
+	stderrfd := errorStream is null ? STDERR_FILENO : errorStream.fd;
 	pid := spawnProcessPosix(cmd, args, stdinfd, stdoutfd, stderrfd, env);
 	return new Pid(pid);
 }
