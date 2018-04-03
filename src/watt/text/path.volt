@@ -48,7 +48,7 @@ fn concatenatePath(base: string, tail: string) string
 {
 	outbuf: StringSink;
 	outbuf.sink(base);
-	if (!base[$-1].isSlash()) {
+	if (base is null || !base[$-1].isSlash()) {
 		outbuf.sink(dirSeparator);
 	}
 	if (tail.length > 0 && tail[0].isSlash()) {
