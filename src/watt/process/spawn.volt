@@ -126,24 +126,30 @@ version (CRuntime_All) {
 /*!
  * Start a process from an executable.
  *
- * Takes an optional environment, and input, output, and error streams.  
- * If the streams are null, stdin, stdout, and stderr respectively will be used.
+ * @Param inputStream Standard input will be read from this stream. If this is
+ * `null`, the system `STDIN` will be used.
+ * @Param outputStream Standard output will be written to this stream. If this is `null`,
+ * the system `STDOUT` will be used.
+ * @Param errorStream Standard error will be written to this stream. If this is `null`,
+ * the system `STDERR` will be used.
+ * @Returns A `Pid` instance for the new process.
+ * @Throws `ProcessException` if a process could not be spawned for some reason.
  */
 fn spawnProcess(name: string, args: string[],
-                _stdin: InputStdcStream,
-                _stdout: OutputStdcStream,
-                _stderr: OutputStdcStream,
+                inputStream:  InputStdcStream,
+                outputStream: OutputStdcStream,
+                errorStream:  OutputStdcStream,
                 env: Environment = null) Pid
 {
-	stdinh := _stdin is null ? null : _stdin.handle;
-	stdouth := _stdout is null ? null : _stdout.handle;
-	stderrh := _stderr is null ? null : _stderr.handle;
+	stdinh  := inputStream is null ? null : inputStream.handle;
+	stdouth := outputStream is null ? null : outputStream.handle;
+	stderrh := errorStream is null ? null : errorStream.handle;
 	return spawnProcess(name, args, stdinh, stdouth, stderrh, env);
 }
 }
 
 version (Posix) {
-/*!
+/*
  * Start a process from an executable.
  *
  * Takes an optional environment, and input, output, and error streams.  
@@ -165,7 +171,7 @@ fn spawnProcess(name: string, args: string[],
 }
 
 version (Posix && CRuntime_All) {
-/*!
+/*
  * Start a process from an executable.
  *
  * Takes an optional environment, and input, output, and error streams.  
@@ -187,7 +193,7 @@ fn spawnProcess(name: string, args: string[],
 }
 
 version (Windows && CRuntime_All) {
-/*!
+/*
  * Start a process from an executable.
  *
  * Takes an optional environment, and input, output, and error streams.  
@@ -245,7 +251,7 @@ fn system(name: string) i32
 }
 
 version (Posix) {
-	//! Process spawning implementation for POSIX.
+	// Process spawning implementation for POSIX.
 	fn spawnProcessPosix(name: string,
 	                     args: string[],
 	                     stdinFD: i32,
