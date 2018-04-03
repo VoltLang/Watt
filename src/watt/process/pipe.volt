@@ -70,7 +70,11 @@ version(Windows) {
 		sizeHigh: DWORD;
 		sizeLow := GetFileSize(hIn, &sizeHigh);
 		if (sizeHigh) {
-			throw new ProcessException("Output is way to big");
+			throw new ProcessException("Too much output");
+		}
+
+		if (sizeLow == 0) {
+			return null;
 		}
 
 		// Read data from file.
