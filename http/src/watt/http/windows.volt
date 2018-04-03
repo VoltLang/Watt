@@ -63,7 +63,7 @@ public:
 	{
 		while (!isEmpty()) {
 			perform();
-			cb();
+			if (cb !is null) cb();
 			Sleep(1000);  // Stupid, but it does okay.
 		}
 	}
