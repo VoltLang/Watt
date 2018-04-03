@@ -404,10 +404,10 @@ extern(Windows) fn MultiByteToWideChar(
 
 fn convert8To16(str: const(char)[]) immutable(wchar)[]
 {
-	numChars: i32 = MultiByteToWideChar(CP_UTF8, 0, str.ptr, -1, null, 0);
+	numChars: i32 = MultiByteToWideChar(CP_UTF8, 0, str.ptr, cast(i32)str.length, null, 0);
 	w := new wchar[](numChars+1);
 
-	numChars = MultiByteToWideChar(CP_UTF8, 0, str.ptr, -1, w.ptr, numChars);
+	numChars = MultiByteToWideChar(CP_UTF8, 0, str.ptr, cast(i32)str.length, w.ptr, numChars);
 	w[numChars] = 0;
 	w = w[0 .. numChars];
 	return cast(immutable(wchar)[])w;
