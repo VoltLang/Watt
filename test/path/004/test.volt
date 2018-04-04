@@ -119,8 +119,8 @@ global cleantests: string[][] = [
 fn main() i32
 {
 	foreach (cleantest; cleantests) {
-		if (normalizePath(cleantest[0]) != cleantest[1]) {
-			writefln("input \"%s\" expected \"%s\" got \"%s\"", cleantest[0], cleantest[1], normalizePath(cleantest[0]));
+		if (normalisePath(cleantest[0]) != cleantest[1]) {
+			writefln("input \"%s\" expected \"%s\" got \"%s\"", cleantest[0], cleantest[1], normalisePath(cleantest[0]));
 			return 1;
 		}
 	}

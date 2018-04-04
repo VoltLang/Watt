@@ -13,19 +13,19 @@ import watt.path;
  * Given a path, return a representation of that path that is universal.
  *
  * That is to say, given two paths to the same location (from the same starting point),
- * normalizePath(A) == normalizePath(B).
+ * normalisePath(A) == normalisePath(B).
  *
  * ### Examples
  * ```volt
- * normalizePath("abc/def/..");  // "abc"
+ * normalisePath("abc/def/..");  // "abc"
  * ```
  */
-fn normalizePath(path: SinkArg) string
+fn normalisePath(path: SinkArg) string
 {
 	version (Windows) {
-		return normalizePathImpl(path, true);
+		return normalisePathImpl(path, true);
 	} else {
-		return normalizePathImpl(path, false);
+		return normalisePathImpl(path, false);
 	}
 }
 
@@ -79,19 +79,19 @@ fn makePathAppendable(s: string) string
 	}
 }
 
-//! Normalize a path using POSIX rules, regardless of the current platform.
-fn normalizePathPosix(path: SinkArg) string
+//! Normalise a path using POSIX rules, regardless of the current platform.
+fn normalisePathPosix(path: SinkArg) string
 {
-	return normalizePathImpl(path, false);
+	return normalisePathImpl(path, false);
 }
 
-//! Normalize a path using Windows rules, regardless of the current platform.
-fn normalizePathWindows(path: SinkArg) string
+//! Normalise a path using Windows rules, regardless of the current platform.
+fn normalisePathWindows(path: SinkArg) string
 {
-	return normalizePathImpl(path, true);
+	return normalisePathImpl(path, true);
 }
 
-private fn normalizePathImpl(path: SinkArg, windowsPaths: bool) string
+private fn normalisePathImpl(path: SinkArg, windowsPaths: bool) string
 {
 	buf := new char[](path.length);
 	bufIndex: size_t = 0;
