@@ -64,7 +64,7 @@ public:
 		while (!isEmpty()) {
 			perform();
 			if (cb !is null) cb();
-			Sleep(1000);  // Stupid, but it does okay.
+			Sleep(10);  // Stupid, but it does okay.
 		}
 	}
 }
