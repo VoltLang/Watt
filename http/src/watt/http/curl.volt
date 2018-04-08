@@ -242,6 +242,7 @@ private:
 		curl_easy_setopt(mEasy, CURLoption.READDATA, this);
 		curl_easy_setopt(mEasy, CURLoption.WRITEFUNCTION, myWrite);
 		curl_easy_setopt(mEasy, CURLoption.WRITEDATA, this);
+		curl_easy_setopt(mEasy, CURLoption.USERAGENT, "VoltLang/Watt".ptr);
 
 		curl_easy_setopt(mEasy, CURLoption.XFERINFOFUNCTION, request_progress);
 		curl_easy_setopt(mEasy, CURLoption.XFERINFODATA, cast(void*)this);
@@ -425,6 +426,7 @@ enum CURLoption
 	READDATA         = CURLOPTTYPE_OBJECTPOINT   + 9,
 	WRITEFUNCTION    = CURLOPTTYPE_FUNCTIONPOINT + 11,
 	READFUNCTION     = CURLOPTTYPE_FUNCTIONPOINT + 12,
+	USERAGENT        = CURLOPTTYPE_OBJECTPOINT   + 18,
 	COOKIE           = CURLOPTTYPE_STRINGPOINT   + 22,
 	FOLLOWLOCATION   = CURLOPTTYPE_LONG          + 52,
 	XFERINFOFUNCTION = CURLOPTTYPE_FUNCTIONPOINT + 219,
