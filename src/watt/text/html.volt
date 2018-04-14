@@ -1,6 +1,6 @@
-// Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
-// Copyright © 2015, Bernard Helyer.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2015, Jakob Bornecrantz.
+// Copyright 2015, Bernard Helyer.
+// SPDX-License-Identifier: BSL-1.0
 //! Functions for escaping and unescaping HTML.
 module watt.text.html;
 

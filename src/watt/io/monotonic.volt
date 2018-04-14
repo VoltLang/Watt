@@ -1,7 +1,7 @@
-// Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
-// Copyright © 2010-2012, Jonathan M Davis.  All rights reserved.
-// Copyright © 2010-2012, Kato Shoichi.  All rights reserved.
-// See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
+// Copyright 2016-2017, Jakob Bornecrantz.
+// Copyright 2010-2012, Jonathan M Davis.
+// Copyright 2010-2012, Kato Shoichi.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * Get precise timing information from the OS.
  *

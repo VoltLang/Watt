@@ -1,5 +1,5 @@
-// Copyright © 2016, Jakob Bornecrantz.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2016, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! Modules for spawning new processes, reading environmental variables, running and capturing the output of a command.
 module watt.process;
 

@@ -1,5 +1,5 @@
-// Copyright © 2011-2013, Jakob Bornecrantz.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2011-2013, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! Load functions from shared objects.
 module watt.library;
 

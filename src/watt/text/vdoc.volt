@@ -1,6 +1,6 @@
-// Copyright © 2014-2017, Bernard Helyer.
-// Copyright © 2014-2017, Jakob Bornecrantz.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0)
+// Copyright 2014-2017, Bernard Helyer.
+// Copyright 2014-2017, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * Volt doccomment parsing and cleaning code.
  *

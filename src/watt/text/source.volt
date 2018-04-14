@@ -1,6 +1,6 @@
-// Copyright © 2010-2015, Bernard Helyer.  All rights reserved.
-// Copyright © 2012-2015, Jakob Bornecrantz.  All rights reserved.
-// See copyright notice in src/volt/license.d (BOOST ver. 1.0).
+// Copyright 2010-2015, Bernard Helyer.
+// Copyright 2012-2015, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! A class for dealing with a file from the perspective of a compiler.
 module watt.text.source;
 

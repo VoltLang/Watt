@@ -1,5 +1,5 @@
-// Copyright © 2017, Bernard Helyer.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2017, Bernard Helyer.
+// SPDX-License-Identifier: BSL-1.0
 //! Uses the event parser to parse TOML into a tree in memory.
 module watt.toml.tree;
 

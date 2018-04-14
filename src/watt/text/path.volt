@@ -1,5 +1,5 @@
-// Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2016, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! Functions for dealing with path strings.
 module watt.text.path;
 

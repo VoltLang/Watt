@@ -1,5 +1,5 @@
-// Copyright © 2016-2017, Jakob Bornecrantz.
-// See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
+// Copyright 2016-2017, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * Modules that generate hashes of data.
  *

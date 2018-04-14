@@ -1,6 +1,6 @@
-// Copyright © 2013-2017, Bernard Helyer.  All rights reserved.
-// Copyright © 2016-2017, Jakob Bornecrantz.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2013-2017, Bernard Helyer.
+// Copyright 2016-2017, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! Stream implementations in which the underlying implementation is libc FILEs.
 module watt.io.streams.stdc;
 

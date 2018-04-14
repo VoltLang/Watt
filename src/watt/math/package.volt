@@ -1,5 +1,5 @@
-// Copyright © 2015-2017, Jakob Bornecrantz.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2015-2017, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! Fundamental math functions.
 module watt.math;
 

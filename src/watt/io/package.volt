@@ -1,5 +1,5 @@
-// Copyright © 2013-2017, Bernard Helyer.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2013-2017, Bernard Helyer.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * The io package deals with input and output.
  */

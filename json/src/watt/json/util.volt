@@ -1,6 +1,6 @@
-// Copyright © 2015, Bernard Helyer.  All rights reserved.
-// Copyright © 2015, David Herberth.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2015, Bernard Helyer.
+// Copyright 2015, David Herberth.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * Useful functions when dealing with [JSON](http://json.org/).
  *

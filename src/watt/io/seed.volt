@@ -1,6 +1,6 @@
-// Copyright © 2015, Bernard Helyer.  All rights reserved.
-// Copyright © 2015, Jakob Bornecrantz.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2015, Bernard Helyer.
+// Copyright 2015, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * Get a random 32 bit number from the Operating System.
  *

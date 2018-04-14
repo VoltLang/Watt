@@ -1,5 +1,5 @@
-// Copyright © 2015, Bernard Helyer.  All rights reserved.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2015, Bernard Helyer.
+// SPDX-License-Identifier: BSL-1.0
 //! Determine if floating points are special constants.
 module watt.math.introspection;
 

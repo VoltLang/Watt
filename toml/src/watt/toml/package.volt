@@ -1,5 +1,5 @@
-// Copyright © 2017, Bernard Helyer.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2017, Bernard Helyer.
+// SPDX-License-Identifier: BSL-1.0
 /*!
  * Package module for Watt's [TOML](https://github.com/toml-lang/toml) parser.
  *

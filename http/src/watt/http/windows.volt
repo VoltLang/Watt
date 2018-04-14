@@ -1,5 +1,5 @@
-// Copyright © 2016, Jakob Bornecrantz.  All rights reserved.
-// See copyright notice in src/watt/license.volt (BOOST ver. 1.0).
+// Copyright 2016, Jakob Bornecrantz.
+// SPDX-License-Identifier: BSL-1.0
 //! Windows implementation of Http requests.
 module watt.http.windows;
 

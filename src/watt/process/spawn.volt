@@ -1,6 +1,6 @@
-// Copyright © 2013, Jakob Bornecrantz.
-// Copyright © 2013, Bernard Helyer.
-// See copyright notice in src/watt/licence.volt (BOOST ver 1.0).
+// Copyright 2013, Jakob Bornecrantz.
+// Copyright 2013, Bernard Helyer.
+// SPDX-License-Identifier: BSL-1.0
 //! Functions for starting a process.
 module watt.process.spawn;
 
