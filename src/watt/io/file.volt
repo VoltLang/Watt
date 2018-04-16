@@ -19,6 +19,7 @@ import watt.text.sink : SinkArg;
 version (Windows) {
 	import core.c.windows.windows;
 } else version (Posix) {
+	import unix = core.c.posix.unistd;
 	import core.c.posix.dirent;
 	import core.c.posix.sys.stat;
 }
@@ -348,5 +349,24 @@ fn remove(path: const(char)[])
 {
 	if (cstdio.unlink(toStringz(path)) != 0) {
 		throw new FileException("couldn't delete file");
+	}
+}
+
+/*!
+ * Change the current working directory of the calling process.
+ *
+ * @Throws `FileException` if the path could not be changed to.
+ */
+fn chdir(path: const(char)[])
+{
+	zstr := toStringz(path);
+	version (Windows) {
+		if (SetCurrentDirectoryA(zstr) == 0) {
+			throw new FileException(new "couldn't change to path '${path}'");
+		}
+	} else {
+		if (unix.chdir(zstr) != 0) {
+			throw new FileException(new "couldn't change to path '${path}'");
+		}
 	}
 }
