@@ -21,7 +21,7 @@ enum BufferSize = 1024;
 version(Windows) {
 
 	/*!
-	 * Run the given command and read back the output into a string.
+	 * Run the given command and read back the output/error into a string.
 	 *
 	 * Waits for the command to complete before returning.
 	 */
@@ -58,7 +58,7 @@ version(Windows) {
 		}
 
 		// Use helpers to spawn.
-		hProcess = spawnProcessWindows(cmd, args, null, hPipeWrite, null, null);
+		hProcess = spawnProcessWindows(cmd, args, null, hPipeWrite, hPipeWrite, null);
 		scope(exit) {
 			CloseHandle(hProcess);
 		}
@@ -81,7 +81,7 @@ version(Windows) {
 version(Posix) {
 
 	/*!
-	 * Run the given command and read back the output into a string.
+	 * Run the given command and read back the output/error into a string.
 	 *
 	 * Waits for the command to complete before returning.
 	 */
