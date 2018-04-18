@@ -11,8 +11,11 @@ version (Windows) {
 	import core.c.stdio;
 }
 
+import watt.text.sink;
 import watt.process.cmd;
 import watt.process.spawn;
+
+enum BufferSize = 1024;
 
 
 version(Windows) {
@@ -29,8 +32,9 @@ version(Windows) {
 
 	private fn getOutputWindows(cmd: string, args: string[]) string
 	{
+		ss: StringSink;
 		saAttr: SECURITY_ATTRIBUTES;
-		hOut, hIn, hProcess: HANDLE;
+		hPipeWrite, hPipeRead, hProcess: HANDLE;
 		uRet: u32;
 		bRet: BOOL;
 
@@ -38,55 +42,38 @@ version(Windows) {
 		saAttr.bInheritHandle = true;
 		saAttr.lpSecurityDescriptor = null;
 
-		bRet = CreatePipe(&hIn, &hOut, &saAttr, 0);
+		bRet = CreatePipe(&hPipeRead, &hPipeWrite, &saAttr, 0);
 		if (!bRet) {
 			throw new ProcessException("Could not create pipe");
 		}
 
 		scope(exit) {
-			CloseHandle(hIn);
-			CloseHandle(hOut);
+			CloseHandle(hPipeRead);
 		}
 
 		// Ensure the read handle to the pipe for STDOUT is not inherited.
-		bRet = SetHandleInformation(hIn, HANDLE_FLAG_INHERIT, 0);
+		bRet = SetHandleInformation(hPipeRead, HANDLE_FLAG_INHERIT, 0);
 		if (!bRet) {
-			throw new ProcessException("Failed to set hIn info");
+			throw new ProcessException("Failed to set hPipeRead info");
 		}
 
 		// Use helpers to spawn.
-		hProcess = spawnProcessWindows(cmd, args, null, hOut, null, null);
+		hProcess = spawnProcessWindows(cmd, args, null, hPipeWrite, null, null);
 		scope(exit) {
 			CloseHandle(hProcess);
 		}
 
-		// Wait for the process to close.
-		uRet = WaitForSingleObject(hProcess, cast(DWORD)(-1));
-		if (uRet) {
-			throw new ProcessException("Failed to wait for program");
+		CloseHandle(hPipeWrite);  // Otherwise ReadFile will hang as the pipe could be written to.
+		while (true) {
+			data: char[BufferSize];
+			bRet = ReadFile(hPipeRead, cast(void*)data.ptr, BufferSize, &uRet, null);
+			if (!bRet || uRet == 0) {
+				break;
+			}
+			ss.sink(data[0 .. uRet]);
 		}
 
-		// Get the size of the output.
-		sizeHigh: DWORD;
-		sizeLow := GetFileSize(hIn, &sizeHigh);
-		if (sizeHigh) {
-			throw new ProcessException("Too much output");
-		}
-
-		if (sizeLow == 0) {
-			return null;
-		}
-
-		// Read data from file.
-		data := new void[](sizeLow);
-		bRet = ReadFile(hIn, data.ptr, sizeLow, &uRet, null);
-
-		// Check result of read.
-		if (!bRet || uRet != data.length) {
-			throw new ProcessException("Failed to read from output file");
-		}
-
-		return cast(string)data;
+		return ss.toString();
 	}
 
 }
