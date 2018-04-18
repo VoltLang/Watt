@@ -59,6 +59,26 @@ fn toArgsPosix(cmd: SinkArg, args: SinkArg[]) char*
 	return sink.toChar().ptr;
 }
 
+/*!
+ * As normal toArgsPosix, but adds `redirect` after `cmd` with
+ * no processing.
+ */
+fn toArgsPosix(cmd: SinkArg, args: SinkArg[], redirect: SinkArg) char*
+{
+	sink: StringSink;
+
+	escapeAndAddQuotation(sink.sink, cmd);
+	sink.sink(" ");
+	sink.sink(redirect);
+	foreach (arg; args) {
+		sink.sink(" ");
+		escapeAndAddQuotation(sink.sink, arg);
+	}
+	sink.sink("\0");
+
+	return sink.toChar().ptr;
+}
+
 /*
  * State for parsing 
  */

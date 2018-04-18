@@ -79,7 +79,7 @@ version(Windows) {
 }
 
 version(Posix) {
-
+	import watt.conv;
 	/*!
 	 * Run the given command and read back the output/error into a string.
 	 *
@@ -93,7 +93,7 @@ version(Posix) {
 	private fn getOutputPosix(cmd: string, args: string[]) string
 	{
 		ss: StringSink;
-		cmdPtr := toArgsPosix(cmd, args);
+		cmdPtr := toArgsPosix(cmd, args, "2>&1");
 		fp := popen(cmdPtr, "r");
 		if (fp is null) {
 			throw new ProcessException("failed to launch the program");
