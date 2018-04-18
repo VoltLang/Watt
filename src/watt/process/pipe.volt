@@ -92,22 +92,27 @@ version(Posix) {
 
 	private fn getOutputPosix(cmd: string, args: string[]) string
 	{
+		ss: StringSink;
 		cmdPtr := toArgsPosix(cmd, args);
 		fp := popen(cmdPtr, "r");
 		if (fp is null) {
 			throw new ProcessException("failed to launch the program");
 		}
 
-		size: size_t = 4096;
-		buf := new char[](size);
-		bytesRead := fread(cast(void*)buf.ptr, 1, size, fp);
-		if (bytesRead > size) {
-			throw new ProcessException("read failure.");
+		buf: char[BufferSize];
+		while (true) {
+			bytesRead := fread(cast(void*)buf.ptr, 1, BufferSize, fp);
+			if (bytesRead > BufferSize || (bytesRead == 0 && ferror(fp) != 0)) {
+				throw new ProcessException("read failure");
+			}
+			if (bytesRead == 0) {
+				break;
+			}
+			ss.sink(buf[0 .. bytesRead]);
 		}
 
 		pclose(fp);
 
-		return cast(string)buf[0 .. bytesRead];
+		return ss.toString();
 	}
-
 }
