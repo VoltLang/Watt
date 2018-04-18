@@ -370,3 +370,32 @@ fn chdir(path: const(char)[])
 		}
 	}
 }
+
+/*!
+ * Get the current working directory of the calling process.
+ *
+ * @Throws `FileException` if there was a error retriving the current working directory.
+ */
+fn getcwd() string
+{
+	version (Windows) {
+		len := GetCurrentDirectoryA(0, null);
+		if (len <= 0) {
+			throw new FileException("couldn't get wd length");
+		}
+
+		ret := new char[](len);
+		if (GetCurrentDirectoryA(len, ret.ptr) == 0) {
+			throw new FileException("couldn't get working directory");
+		}
+
+		return cast(string) ret;
+	} else {
+		buf: char[1024];
+		ret := unix.getcwd(buf.ptr, 1024);
+		if (ret is null) {
+			throw new FileException("couldn't get working directory");
+		}
+		return toString(ret);
+	}
+}
