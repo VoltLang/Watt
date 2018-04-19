@@ -156,7 +156,7 @@ fn parseArguments(str: SinkArg) string[]
 			}
 			break;
 		case ESCAPE:
-			if (c != '\n') {
+			if (c != '\n' && c != '\r') {
 				add(c);
 			}
 
