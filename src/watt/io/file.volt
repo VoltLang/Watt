@@ -137,7 +137,6 @@ fn size(filename: SinkArg) size_t
 		throw new FileException(new "Couldn't ftell at the end of '${filename}'.");
 	}
 
-	cstdio.fclose(fp);
 	return sz;
 }
 
