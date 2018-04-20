@@ -113,6 +113,35 @@ fn write(data: void[], filename: SinkArg)
 }
 
 /*!
+ * Get the size of a file.
+ *
+ * @Returns the size of `filename` in bytes.
+ * @Throws `FileException` if the file cannot be read.
+ */
+fn size(filename: SinkArg) size_t
+{
+	cstr := toStringz(filename);
+	fp   := cstdio.fopen(cstr, "rb");
+	if (fp is null) {
+		throw new FileException(new "Couldn't open '${filename}' for reading.");
+	}
+
+	scope (exit) cstdio.fclose(fp);
+
+	if (cstdio.fseek(fp, 0, cstdio.SEEK_END) != 0) {
+		throw new FileException(new "Couldn't seek to the end of '${filename}'.");
+	}
+
+	sz   := cast(size_t)cstdio.ftell(fp);
+	if (sz == cast(size_t)-1) {
+		throw new FileException(new "Couldn't ftell at the end of '${filename}'.");
+	}
+
+	cstdio.fclose(fp);
+	return sz;
+}
+
+/*!
  * Check if `path` matches `pattern`.
  *
  * `pattern` is treated as a regular string except for two special characters:
