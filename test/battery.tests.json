@@ -17,6 +17,8 @@
 		"passpath": [
 			"//T run:volta -o %t %s",
 			"//T run:%t %S"
+		],
+		"empty": [
 		]
 	}
 }
