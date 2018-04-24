@@ -24,13 +24,22 @@ version(Windows) {
 	 * Run the given command and read back the output/error into a string.
 	 *
 	 * Waits for the command to complete before returning.
+	 *
+	 * @{
 	 */
 	fn getOutput(cmd: string, args: string[]) string
 	{
-		return getOutputWindows(cmd, args);
+		dummy: u32;
+		return getOutputWindows(cmd, args, ref dummy);
 	}
 
-	private fn getOutputWindows(cmd: string, args: string[]) string
+	fn getOutput(cmd: string, args: string[], ref retval: u32) string
+	{
+		return getOutputWindows(cmd, args, ref retval);
+	}
+	//! @}
+
+	private fn getOutputWindows(cmd: string, args: string[], ref retval: u32) string
 	{
 		ss: StringSink;
 		saAttr: SECURITY_ATTRIBUTES;
@@ -60,6 +69,10 @@ version(Windows) {
 		// Use helpers to spawn.
 		hProcess = spawnProcessWindows(cmd, args, null, hPipeWrite, hPipeWrite, null);
 		scope(exit) {
+			dwRetval: DWORD;
+			if (GetExitCodeProcess(hProcess, &dwRetval) != 0) {
+				retval = cast(u32)dwRetval;
+			}
 			CloseHandle(hProcess);
 		}
 
@@ -84,13 +97,22 @@ version(Posix) {
 	 * Run the given command and read back the output/error into a string.
 	 *
 	 * Waits for the command to complete before returning.
+	 *
+	 * @{
 	 */
 	fn getOutput(cmd: string, args: string[]) string
 	{
-		return getOutputPosix(cmd, args);
+		dummy: u32;
+		return getOutputPosix(cmd, args, ref dummy);
 	}
 
-	private fn getOutputPosix(cmd: string, args: string[]) string
+	fn getOutput(cmd: string, args: string[], ref retval: u32) string
+	{
+		return getOutputPosix(cmd, args, ref retval);
+	}
+	//! @}
+
+	private fn getOutputPosix(cmd: string, args: string[], ref retval: u32) string
 	{
 		ss: StringSink;
 		cmdPtr := toArgsPosix(cmd, args, "2>&1");
