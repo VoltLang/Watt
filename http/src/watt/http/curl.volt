@@ -14,7 +14,7 @@ import core.c.posix.sys.time;
 import watt.conv;
 import watt.io : output;
 
-import watt.http : HttpInterface, RequestInterface;
+import watt.http : HttpInterface, RequestInterface, Status;
 
 
 //! Curl implementation of `HttpInterface`.
@@ -108,7 +108,7 @@ public:
 		}
 	}
 
-	override fn loop(cb: dg() = null)
+	override fn loop(cb: dg() Status = null)
 	{
 		timeout: timeval;
 		while (!isEmpty()) {
@@ -139,7 +139,12 @@ public:
 			}
 
 			perform();
-			if (cb !is null) cb();
+			if (cb !is null) {
+				stat := cb();
+				if (stat == Status.Abort) {
+					break;
+				}
+			}
 		}
 	}
 }

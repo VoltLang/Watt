@@ -4,7 +4,7 @@
 module watt.http.windows;
 
 import watt.algorithm : min;
-import watt.http : HttpInterface, RequestInterface;
+import watt.http : HttpInterface, RequestInterface, Status;
 import watt.text.string : strip;
 
 version(Windows):
@@ -59,11 +59,16 @@ public:
 		mReqs = mReqs[0 .. count];
 	}
 
-	override fn loop(cb: dg() = null)
+	override fn loop(cb: dg() Status = null)
 	{
 		while (!isEmpty()) {
 			perform();
-			if (cb !is null) cb();
+			if (cb !is null) {
+				stat := cb();
+				if (stat == Status.Abort) {
+					break;
+				}
+			}
 		}
 	}
 }

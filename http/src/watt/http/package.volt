@@ -20,6 +20,12 @@
  */
 module watt.http;
 
+enum Status
+{
+	Continue,
+	Abort
+}
+
 /*!
  * Manage multiple HTTP requests.
  *
@@ -45,7 +51,7 @@ public:
 	 * Blocks until all requests are completed. Periodically calls
 	 * `cb` if it is non-null.
 	 */
-	fn loop(cb: dg() = null);
+	fn loop(cb: dg() Status = null);
 }
 
 //! An HTTP request.
