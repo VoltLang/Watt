@@ -9,6 +9,7 @@ version (Windows) {
 	import core.c.windows.windows;
 } else version (Posix) {
 	import core.c.stdio;
+	import core.c.posix.sys.wait : WEXITSTATUS;
 }
 
 import watt.text.sink;
@@ -133,7 +134,7 @@ version(Posix) {
 			ss.sink(buf[0 .. bytesRead]);
 		}
 
-		pclose(fp);
+		retval = cast(u32)WEXITSTATUS(pclose(fp));
 
 		return ss.toString();
 	}
