@@ -20,7 +20,7 @@ import core.exception;
 import watt.text.ascii: isWhite;
 import watt.text.utf;
 import watt.text.format : format;
-import watt.text.sink : StringSink;
+import watt.text.sink : StringSink, StringsSink;
 
 
 //! Helper alias for string args that are scoped.
@@ -84,6 +84,11 @@ fn split(s: StrArg, delimiter: StrArg) string[]
 	return strings;
 }
 
+/+ TOOD BUG
+fn splitLines = mixin splitLinesTemplete!StrArg;
+fn splitLines = mixin splitLinesTemplete!string;
++/
+
 /*!
  * Get an array with an element for each line in `s`.
  * ### Example
@@ -96,13 +101,13 @@ fn splitLines(s: StrArg) string[]
 	if (s.length == 0) {
 		return null;
 	}
-	strings: string[];
+	strings: StringsSink;
 	base, i, oldi: size_t;
 	while (i < s.length) {
 		oldi = i;
 		c := decode(s, ref i);
 		if (c == '\n' || c == '\r') {
-			strings ~= new string(s[base .. oldi]);
+			strings.sink(new string(s[base .. oldi]));
 			base = i;
 			if (c == '\r' && base < s.length && s[base] == '\n') {
 				base++;
@@ -110,8 +115,38 @@ fn splitLines(s: StrArg) string[]
 			}
 		}
 	}
-	strings ~= new string(s[base .. $]);
-	return strings;
+	strings.sink(new string(s[base .. $]));
+	return strings.toArray();
+}
+
+/*!
+ * Get an array with an element for each line in `s`.
+ * ### Example
+ * ```volt
+ * splitLines("a\nb\nc");  // ["a", "b", "c"]
+ * ```
+ */
+fn splitLines(s: string) string[]
+{
+	if (s.length == 0) {
+		return null;
+	}
+	strings: StringsSink;
+	base, i, oldi: size_t;
+	while (i < s.length) {
+		oldi = i;
+		c := decode(s, ref i);
+		if (c == '\n' || c == '\r') {
+			strings.sink(s[base .. oldi]);
+			base = i;
+			if (c == '\r' && base < s.length && s[base] == '\n') {
+				base++;
+				i++;
+			}
+		}
+	}
+	strings.sink(s[base .. $]);
+	return strings.toArray();
 }
 
 /*!
@@ -335,4 +370,49 @@ fn join(ss: StrArrayArg, sep: StrArg = "") string
 		}
 	}
 	return outs.toString();
+}
+
+
+private:
+
+//! Helper function, that copies a string if needed.
+fn copyOrPass(str: StrArg) string
+{
+	return new string(str);
+}
+
+//! Helper function, that copies a string if needed.
+fn copyOrPass(str: string) string
+{
+	return str;
+}
+
+/*!
+ * Get an array with an element for each line in `s`.
+ * ### Example
+ * ```volt
+ * splitLines("a\nb\nc");  // ["a", "b", "c"]
+ * ```
+ */
+fn splitLinesTemplete!(T)(s: T) string[]
+{
+	if (s.length == 0) {
+		return null;
+	}
+	strings: StringsSink;
+	base, i, oldi: size_t;
+	while (i < s.length) {
+		oldi = i;
+		c := decode(s, ref i);
+		if (c == '\n' || c == '\r') {
+			strings.sink(copyOrPass(s[base .. oldi]));
+			base = i;
+			if (c == '\r' && base < s.length && s[base] == '\n') {
+				base++;
+				i++;
+			}
+		}
+	}
+	strings.sink(copyOrPass(s[base .. $]));
+	return strings.toArray();
 }
