@@ -402,7 +402,7 @@ fn chdir(path: const(char)[])
 /*!
  * Get the current working directory of the calling process.
  *
- * @Throws `FileException` if there was a error retriving the current working directory.
+ * @Throws `FileException` if there was a error retrieving the current working directory.
  */
 fn getcwd() string
 {
