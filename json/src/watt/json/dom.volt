@@ -31,21 +31,21 @@ class DOMException : JSONException
 enum DomType
 {
 	//! A JSON value of `null`.
-	NULL,
+	Null,
 	//! A JSON value of `true` or `false`.
-	BOOLEAN,
+	Boolean,
 	//! A JSON value of a number with a decimal portion.
-	DOUBLE,
+	Double,
 	//! A JSON value of a signed integer.
-	LONG,
+	Long,
 	//! A JSON value of an unsigned integer.
-	ULONG,
+	Ulong,
 	//! A JSON string.
-	STRING,
+	String,
 	//! A JSON object, everything between {}.
-	OBJECT,
+	Object,
 	//! A JSON array, everything between \[\].
-	ARRAY
+	Array
 }
 
 private fn enforceJEx(b: bool, msg: string = "Json type enforce failure.",
@@ -88,7 +88,7 @@ struct Value
 	 */
 	fn isNull() bool
 	{
-		return _type == DomType.NULL;
+		return _type == DomType.Null;
 	}
 
 	/*!
@@ -96,149 +96,149 @@ struct Value
 	 */
 	fn setNull()
 	{
-		_type = DomType.NULL;
+		_type = DomType.Null;
 	}
 
 	/*!
 	 * Get this as a boolean value.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.BOOLEAN`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Boolean`.
 	 */
 	fn boolean() bool
 	{
-		enforceJEx(_type == DomType.BOOLEAN, "Value is not a boolean.");
+		enforceJEx(_type == DomType.Boolean, "Value is not a boolean.");
 		return store.boolean;
 	}
 
 	/*!
-	 * Set this `Value` as a `DomType.BOOLEAN`, and give it the value `b`.
+	 * Set this `Value` as a `DomType.Boolean`, and give it the value `b`.
 	 */
 	fn boolean(b: bool)
 	{
-		_type = DomType.BOOLEAN;
+		_type = DomType.Boolean;
 		store.boolean = b;
 	}
 
 	/*!
 	 * Get this as a string value.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.STRING`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.String`.
 	 */
 	fn str() string
 	{
-		enforceJEx(_type == DomType.STRING, "Value is not a string.");
+		enforceJEx(_type == DomType.String, "Value is not a string.");
 		return store.str;
 	}
 
 	/*!
-	 * Set this `Value` as a `DomType.STRING`, and give it the value `s`.
+	 * Set this `Value` as a `DomType.String`, and give it the value `s`.
 	 */
 	fn str(s: const(char)[])
 	{
-		_type = DomType.STRING;
+		_type = DomType.String;
 		store.str = cast(string)s;
 	}
 
 	/*!
 	 * Get this as an integer value.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.LONG`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Long`.
 	 */
 	fn integer() i64
 	{
-		enforceJEx(_type == DomType.LONG, "Value is not a long.");
+		enforceJEx(_type == DomType.Long, "Value is not a long.");
 		return store.integer;
 	}
 
 	/*!
-	 * Set this `Value` as a `DomType.LONG`, and give it the value `l`.
+	 * Set this `Value` as a `DomType.Long`, and give it the value `l`.
 	 */
 	fn integer(l: i64)
 	{
-		_type = DomType.LONG;
+		_type = DomType.Long;
 		store.integer = l;
 	}
 
 	/*!
 	 * Get this as an unsigned integer value.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.ULONG`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Ulong`.
 	 */
 	fn unsigned() u64
 	{
-		enforceJEx(_type == DomType.ULONG, "Value is not a ulong.");
+		enforceJEx(_type == DomType.Ulong, "Value is not a ulong.");
 		return store.unsigned;
 	}
 
 	/*!
-	 * Set this `Value` as a `DomType.ULONG`, and give it the value `l`.
+	 * Set this `Value` as a `DomType.Ulong`, and give it the value `l`.
 	 */
 	fn unsigned(l: u64)
 	{
-		_type = DomType.ULONG;
+		_type = DomType.Ulong;
 		store.unsigned = l;
 	}
 
 	/*!
 	 * Get this as a floating point value.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.DOUBLE`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Double`.
 	 */
 	fn floating() f64
 	{
-		enforceJEx(_type == DomType.DOUBLE, "Value is not a double.");
+		enforceJEx(_type == DomType.Double, "Value is not a double.");
 		return store.floating;
 	}
 
 	/*!
-	 * Set this `Value` as a `DomType.DOUBLE`, and give it the value `d`.
+	 * Set this `Value` as a `DomType.Double`, and give it the value `d`.
 	 */
 	fn floating(d: f64)
 	{
-		_type = DomType.DOUBLE;
+		_type = DomType.Double;
 		store.floating = d;
 	}
 
 	/*!
 	 * Get this as an array of `Value`.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.ARRAY`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Array`.
 	 */
 	fn array() Value[]
 	{
-		enforceJEx(_type == DomType.ARRAY, "Value is not an array.");
+		enforceJEx(_type == DomType.Array, "Value is not an array.");
 		return _array;
 	}
 
 	/*!
-	 * Set this `Value` as a `DomType.ARRAY`, and give it the value `array`.
+	 * Set this `Value` as a `DomType.Array`, and give it the value `array`.
 	 */
 	fn array(array: Value[])
 	{
-		_type = DomType.ARRAY;
+		_type = DomType.Array;
 		_array = array;
 	}
 
 	/*!
 	 * Add `val` to this `Value`'s array.
-	 * @Throws `DOMException` if this is not a `DomType.ARRAY`.
+	 * @Throws `DOMException` if this is not a `DomType.Array`.
 	 */
 	fn arrayAdd(val: Value)
 	{
-		enforceJEx(_type == DomType.ARRAY, "Value is not an array.");
+		enforceJEx(_type == DomType.Array, "Value is not an array.");
 		_array ~= val;
 	}
 
 	/*!
-	 * Set type as `DomType.ARRAY`.
+	 * Set type as `DomType.Array`.
 	 */
 	fn setArray()
 	{
-		_type = DomType.ARRAY;
+		_type = DomType.Array;
 	}
 
 	/*!
 	 * Retrieve a key from this `Value`.
 	 * @Throws `DOMException` if the lookup fails, or if this `Value` is not a
-	 * `DomType.OBJECT`.
+	 * `DomType.Object`.
 	 */
 	fn lookupObjectKey(s: string) Value
 	{
-		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
+		enforceJEx(_type == DomType.Object, "Value is not an object.");
 		p := s in object;
 		if (p is null) {
 			throw new DOMException(new "Lookup of '${s}' through JSON object failed.");
@@ -249,11 +249,11 @@ struct Value
 	/*!
 	 * Does this object have a key `s`?
 	 * @Returns `true` if this `Value` has the given key.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.OBJECT`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Object`.
 	 */
 	fn hasObjectKey(s: string) bool
 	{
-		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
+		enforceJEx(_type == DomType.Object, "Value is not an object.");
 		return (s in object) !is null;
 	}
 
@@ -264,35 +264,35 @@ struct Value
 	 */
 	fn setObjectKey(k: string, v: Value)
 	{
-		_type = DomType.OBJECT;
+		_type = DomType.Object;
 		object[k] = v;
 	}
 
 	/*!
-	 * Set type as `DomType.OBJECT`.
+	 * Set type as `DomType.Object`.
 	 */
 	fn setObject()
 	{
-		_type = DomType.OBJECT;
+		_type = DomType.Object;
 	}
 
 	/*!
 	 * Retrieve all the keys associated with this `Value`.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.OBJECT`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Object`.
 	 */
 	fn keys() string[]
 	{
-		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
+		enforceJEx(_type == DomType.Object, "Value is not an object.");
 		return object.keys;
 	}
 
 	/*!
 	 * Retrieve all the values associated with this `Value`.
-	 * @Throws `DOMException` if this `Value` is not a `DomType.OBJECT`.
+	 * @Throws `DOMException` if this `Value` is not a `DomType.Object`.
 	 */
 	fn values() Value[]
 	{
-		enforceJEx(_type == DomType.OBJECT, "Value is not an object.");
+		enforceJEx(_type == DomType.Object, "Value is not an object.");
 		return object.values;
 	}
 }
@@ -315,7 +315,7 @@ fn parse(s: string) Value
 	fn getKey() string
 	{
 		assert(valueStack.length >= 1);
-		if (valueStack[$-1]._type == DomType.ARRAY) {
+		if (valueStack[$-1]._type == DomType.Array) {
 			return "";
 		}
 		assert(keyStack.length >= 1);
@@ -340,8 +340,8 @@ fn parse(s: string) Value
 	fn addValue(val: Value, key: string ="")
 	{
 		assert(valueStack.length >= 1);
-		assert(valueStack[$-1]._type == DomType.OBJECT || valueStack[$-1]._type == DomType.ARRAY);
-		if (valueStack[$-1]._type == DomType.OBJECT) {
+		assert(valueStack[$-1]._type == DomType.Object || valueStack[$-1]._type == DomType.Array);
+		if (valueStack[$-1]._type == DomType.Object) {
 			assert(key.length > 0);
 			valueStack[$-1].setObjectKey(key, val);
 		} else {
