@@ -15,6 +15,9 @@
  */
 module watt.json.dom2;
 
+import watt.json.util;
+import watt.json.sax;
+
 
 //! Identifies the JSON type of a `Value`.
 enum Type
@@ -151,7 +154,7 @@ public:
 
 	fn byKey(key: string) Value
 	{
-		Value tmp;
+		tmp: Value;
 		if (type != Type.Object) {
 			return tmp;
 		}
@@ -181,7 +184,7 @@ public:
 
 	fn byIndex(index: size_t) Value
 	{
-		Value tmp;
+		tmp: Value;
 		if (type != Type.Array) {
 			return tmp;
 		}
@@ -261,4 +264,159 @@ public:
 		}
 		return store.array;
 	}
+}
+
+private enum LONG_MAX = 9223372036854775807UL;
+
+//! Parse a JSON string into a `Value`.
+fn parse(s: string) Value
+{
+	val: Value;
+//	val.type = Type.Object;
+
+	valueStack: Value[];
+	keyStack: string[];
+
+	fn addKey(key: const(char)[])
+	{
+		keyStack ~= cast(string)key;
+	}
+
+	fn getKey() string
+	{
+		assert(valueStack.length >= 1);
+		if (valueStack[$-1].type == Type.Array) {
+			return "";
+		}
+		assert(keyStack.length >= 1);
+		key := keyStack[$-1];
+		keyStack = keyStack[0 .. $-1];
+		return key;
+	}
+
+	fn pushValue(p: Value)
+	{
+		valueStack ~= p;
+	}
+
+	fn popValue() Value
+	{
+		assert(valueStack.length > 1);
+		val := valueStack[$-1];
+		valueStack = valueStack[0 .. $-1];
+		return val;
+	}
+
+	fn addValue(val: Value, key: string ="")
+	{
+		assert(valueStack.length >= 1);
+		assert(valueStack[$-1].type == Type.Object || valueStack[$-1].type == Type.Array);
+		if (valueStack[$-1].type == Type.Object) {
+			assert(key.length > 0);
+			valueStack[$-1].store.object[key] = val;
+		} else {
+			assert(key.length == 0);
+			valueStack[$-1].store.array ~= val;
+		}
+	}
+
+	current := &val;
+	loop := true;
+	error := false;
+	fn dgt(event: Event, data: const(ubyte)[])
+	{
+		if (event == Event.ERROR) {
+			error = true;
+			return;
+		}
+		loop = event != Event.END;
+		v: Value;
+		final switch (event) {
+		case Event.ERROR:
+			assert(false);
+		case Event.END:
+		case Event.START:
+			break;
+		case Event.NULL:
+			v.type = Type.Null;
+			addValue(v, getKey());
+			break;
+		case Event.BOOLEAN:
+			v.type = Type.Boolean;
+			v.store.boolean = parseBool(cast(const(char)[])data);
+			addValue(v, getKey());
+			break;
+		case Event.NUMBER:
+			if (canBeInteger(cast(const(char)[])data, false)) {
+				ul: u64;
+				parseUlong(cast(const(char)[])data, out ul);
+				if (ul < LONG_MAX) {
+					assert(canBeInteger(cast(const(char)[])data, true));
+					l: i64;
+					parseLong(cast(const(char)[])data, out l);
+					v.type = Type.Long;
+					v.store.integer = l;
+					addValue(v, getKey());
+					break;
+				}
+				v.type = Type.Ulong;
+				v.store.unsigned = ul;
+				addValue(v, getKey());
+				break;
+			} else if (canBeInteger(cast(const(char)[])data, true)) {
+				l: i64;
+				parseLong(cast(const(char)[])data, out l);
+				v.type = Type.Long;
+				v.store.integer = l;
+				addValue(v, getKey());
+				break;
+			}
+			d: f64;
+			buf: char[];
+			ret: bool = parseDouble(cast(const(char)[])data, out d, ref buf);
+			assert(ret);
+			v.type = Type.Double;
+			v.store.floating = d;
+			addValue(v, getKey());
+			break;
+		case Event.STRING:
+			v.type = Type.String;
+			v.store.str = cast(string)unescapeString(data);
+			addValue(v, getKey());
+			break;
+		case Event.ARRAY_START:
+			v.type = Type.Array;
+			pushValue(v);
+			break;
+		case Event.ARRAY_END:
+			if (valueStack.length > 1) {
+				av := popValue();
+				addValue(av, getKey());
+			}
+			break;
+		case Event.OBJECT_START:
+			v.type = Type.Object;
+			pushValue(v);
+			break;
+		case Event.OBJECT_END:
+			if (valueStack.length > 1) {
+				ov := popValue();
+				addValue(ov, getKey());
+			}
+			break;
+		case Event.OBJECT_KEY:
+			addKey(unescapeString(data));
+			break;
+		}
+	}
+	sax := new SAX(s);
+	invalid: Value;
+	while (loop) {
+		sax.get(dgt);
+		if (error) {
+			return invalid;
+		}
+	}
+	assert(valueStack.length == 1);
+	return valueStack[$-1];
 }
