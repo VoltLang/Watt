@@ -97,12 +97,23 @@ public:
 
 	fn getDouble(out ret: f64) bool
 	{
-		if (type != Type.Double) {
+		if (type != Type.Double && type != Type.Long && type != Type.Ulong) {
 			return false;
 		}
 
-		ret = store.floating;
-		return true;
+		switch (type) {
+		case Type.Double:
+			ret = store.floating;
+			return true;
+		case Type.Long:
+			ret = cast(f64)store.integer;
+			return true;
+		case Type.Ulong:
+			ret = cast(f64)store.unsigned;
+			return true;
+		default:
+			return false;
+		}
 	}
 
 	fn getLong(out ret: i64) bool
@@ -227,10 +238,11 @@ public:
 
 	@property fn asDouble() f64
 	{
-		if (type != Type.Double) {
+		ret: f64;
+		if (!getDouble(out ret)) {
 			return f64.init;
 		}
-		return store.floating;
+		return ret;
 	}
 
 	@property fn asLong() i64
