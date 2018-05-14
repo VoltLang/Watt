@@ -20,23 +20,23 @@ module watt.json.dom2;
 enum Type
 {
 	//! Not a valid object.
-	NOTHING,
+	Nothing,
 	//! A JSON value of `null`.
-	NULL,
+	Null,
 	//! A JSON value of `true` or `false`.
-	BOOLEAN,
+	Boolean,
 	//! A JSON value of a number with a decimal portion.
-	DOUBLE,
+	Double,
 	//! A JSON value of a signed integer.
-	LONG,
+	Long,
 	//! A JSON value of an unsigned integer.
-	ULONG,
+	Ulong,
 	//! A JSON string.
-	STRING,
+	String,
 	//! A JSON object, everything between {}.
-	OBJECT,
+	Object,
 	//! A JSON array, everything between \[\].
-	ARRAY
+	Array
 }
 
 struct Value
@@ -64,16 +64,16 @@ public:
 	 *
 	 */
 
-	fn isSomething() bool { return type != Type.NOTHING; }
-	fn isNothing() bool { return type == Type.NOTHING; }
-	fn isNull() bool { return type == Type.NULL; }
-	fn isBool() bool { return type == Type.BOOLEAN; }
-	fn isDouble() bool { return type == Type.DOUBLE; }
-	fn isLong() bool { return type == Type.LONG; }
-	fn isUlong() bool { return type == Type.ULONG; }
-	fn isString() bool { return type == Type.STRING; }
-	fn isObject() bool { return type == Type.OBJECT; }
-	fn isArray() bool { return type == Type.ARRAY; }
+	fn isSomething() bool { return type != Type.Nothing; }
+	fn isNothing() bool { return type == Type.Nothing; }
+	fn isNull() bool { return type == Type.Null; }
+	fn isBool() bool { return type == Type.Boolean; }
+	fn isDouble() bool { return type == Type.Double; }
+	fn isLong() bool { return type == Type.Long; }
+	fn isUlong() bool { return type == Type.Ulong; }
+	fn isString() bool { return type == Type.String; }
+	fn isObject() bool { return type == Type.Object; }
+	fn isArray() bool { return type == Type.Array; }
 
 
 	/*
@@ -84,7 +84,7 @@ public:
 
 	fn getBool(out ret: bool) bool
 	{
-		if (type != Type.BOOLEAN) {
+		if (type != Type.Boolean) {
 			return false;
 		}
 
@@ -94,7 +94,7 @@ public:
 
 	fn getDouble(out ret: f64) bool
 	{
-		if (type != Type.DOUBLE) {
+		if (type != Type.Double) {
 			return false;
 		}
 
@@ -104,7 +104,7 @@ public:
 
 	fn getLong(out ret: i64) bool
 	{
-		if (type != Type.LONG) {
+		if (type != Type.Long) {
 			return false;
 		}
 
@@ -114,7 +114,7 @@ public:
 
 	fn getUlong(out ret: u64) bool
 	{
-		if (type != Type.ULONG) {
+		if (type != Type.Ulong) {
 			return false;
 		}
 
@@ -124,7 +124,7 @@ public:
 
 	fn getString(out ret: string) bool
 	{
-		if (type != Type.STRING) {
+		if (type != Type.String) {
 			return false;
 		}
 
@@ -134,7 +134,7 @@ public:
 
 	fn getArray(out ret: Value[]) bool
 	{
-		if (type != Type.ARRAY) {
+		if (type != Type.Array) {
 			return false;
 		}
 
@@ -152,7 +152,7 @@ public:
 	fn byKey(key: string) Value
 	{
 		Value tmp;
-		if (type != Type.OBJECT) {
+		if (type != Type.Object) {
 			return tmp;
 		}
 
@@ -166,7 +166,7 @@ public:
 
 	fn byKey(key: string, out ret: Value) bool
 	{
-		if (type != Type.OBJECT) {
+		if (type != Type.Object) {
 			return false;
 		}
 
@@ -182,7 +182,7 @@ public:
 	fn byIndex(index: size_t) Value
 	{
 		Value tmp;
-		if (type != Type.ARRAY) {
+		if (type != Type.Array) {
 			return tmp;
 		}
 
@@ -195,7 +195,7 @@ public:
 
 	fn byIndex(index: size_t, out ret: Value) bool
 	{
-		if (type != Type.ARRAY) {
+		if (type != Type.Array) {
 			return false;
 		}
 
@@ -216,7 +216,7 @@ public:
 
 	@property fn asBoolean() bool
 	{
-		if (type != Type.BOOLEAN) {
+		if (type != Type.Boolean) {
 			return bool.init;
 		}
 		return store.boolean;
@@ -224,7 +224,7 @@ public:
 
 	@property fn asDouble() f64
 	{
-		if (type != Type.DOUBLE) {
+		if (type != Type.Double) {
 			return f64.init;
 		}
 		return store.floating;
@@ -232,7 +232,7 @@ public:
 
 	@property fn asLong() i64
 	{
-		if (type != Type.LONG) {
+		if (type != Type.Long) {
 			return i64.init;
 		}
 		return store.integer;
@@ -240,7 +240,7 @@ public:
 
 	@property fn asUlong() u64
 	{
-		if (type != Type.ULONG) {
+		if (type != Type.Ulong) {
 			return u64.init;
 		}
 		return store.unsigned;
@@ -248,7 +248,7 @@ public:
 
 	@property fn asString() string
 	{
-		if (type != Type.STRING) {
+		if (type != Type.String) {
 			return null;
 		}
 		return store.str;
@@ -256,7 +256,7 @@ public:
 
 	@property fn asArray() Value[]
 	{
-		if (type != Type.ARRAY) {
+		if (type != Type.Array) {
 			return null;
 		}
 		return store.array;
