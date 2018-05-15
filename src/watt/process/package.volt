@@ -11,3 +11,4 @@ public import watt.process.pipe;
 public import watt.process.spawn;
 public import watt.process.group;
 public import watt.process.environment;
+public import watt.process.util;
