@@ -16,7 +16,7 @@ module watt.text.sink;
 static import core.rt.format;
 
 
-//! A `Sink` is a type that accepts strings and concatenates them efficiently.
+//! A `Sink` is a delegate that accepts strings and concatenates them efficiently.
 alias Sink = core.rt.format.Sink;
 
 //! A `SinkArg` is shorthand for the string argument to a `Sink`.
