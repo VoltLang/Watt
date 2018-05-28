@@ -56,14 +56,18 @@ fn read(filename: SinkArg) void[]
 	if (!isFile(filename)) {
 		return null;
 	}
+
 	cstr := toStringz(filename);
 	fp := cstdio.fopen(cstr, "rb");
 	if (fp is null) {
 		throw new FileException(format("Couldn't open file '%s' for reading.", filename));
 	}
 
-	if (cstdio.fseek(fp, 0, cstdio.SEEK_END) != 0) {
+	scope (exit) {
 		cstdio.fclose(fp);
+	}
+
+	if (cstdio.fseek(fp, 0, cstdio.SEEK_END) != 0) {
 		throw new FileException("fseek failure.");
 	}
 
@@ -73,7 +77,6 @@ fn read(filename: SinkArg) void[]
 	}
 
 	if (cstdio.fseek(fp, 0, cstdio.SEEK_SET) != 0) {
-		cstdio.fclose(fp);
 		throw new FileException("fseek failure.");
 	}
 
@@ -82,8 +85,6 @@ fn read(filename: SinkArg) void[]
 	if (bytesRead != size) {
 		throw new FileException("read failure.");
 	}
-
-	cstdio.fclose(fp);
 
 	return cast(void[]) buf;
 }
