@@ -164,6 +164,23 @@ public:
 		newCmd(done, pid);
 	}
 
+	version (Posix) fn run(
+		name: string, args: string[],
+		inputFD: i32,
+		outputFD: i32,
+		errorFD: i32,
+		env: Environment,
+		done: DoneDg)
+	{
+		// Wait until we have a free slot.
+		while (waiting >= maxWaiting) {
+			waitOne();
+		}
+
+		pid := spawnProcessPosix(name, args, inputFD, outputFD, errorFD, env);
+		newCmd(done, new Pid(pid));
+	}
+
 	fn waitOne()
 	{
 		version(Windows) {
