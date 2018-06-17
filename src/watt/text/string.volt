@@ -33,7 +33,7 @@ alias StrArrayArg = scope const(char)[][];
  * ### Examples
  *     split("a=b", '=') ["a", "b"]
  *     split("a = b", '=') ["a ", " b"]
- *     split("a=b", '@') []
+ *     split("a=b", '@') ["a=b"]
  */
 fn split(s: StrArg, delimiter: dchar) string[]
 {
