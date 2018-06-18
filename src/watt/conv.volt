@@ -364,7 +364,7 @@ fn toStringBinary(val: i64) string
 }
 
 /*!
- * Given a Volt string s, return a pointer to a null terminated string.
+ * Given a Volt utf-8 string s, return a pointer to a null terminated string.
  *
  * This is for interfacing with C libraries.
  */
@@ -374,6 +374,19 @@ fn toStringz(s: SinkArg) const(char)*
 	cstr[0 .. $-1] = s[0 .. $];
 	cstr[$ - 1] = '\0';
 	return cast(const(char)*) cstr.ptr;
+}
+
+/*!
+ * Given a Volt utf-16 string s, return a pointer to a null terminated wchar string.
+ *
+ * This is for interfacing with win32 libraries.
+ */
+fn toStringz(s: const(wchar)[]) const(wchar)*
+{
+	cstr := new wchar[](s.length + 1);
+	cstr[0 .. $-1] = s[0 .. $];
+	cstr[$ - 1] = '\0';
+	return cast(const(wchar)*)cstr.ptr;
 }
 
 version (CRuntime_All) {
