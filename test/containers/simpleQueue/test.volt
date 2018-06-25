@@ -7,7 +7,7 @@ struct IntegerQueue = mixin Queue!i32;
 
 fn verifyQueue(q: IntegerQueue, arr: i32[]) bool
 {
-	return q.length == arr.length && arr == q.borrowUnsafe();
+	return q.length == arr.length;
 }
 
 fn main() i32
