@@ -26,7 +26,7 @@ private:
 	mStore:   T[32];
 	mArr:     T[];
 	mLength:  size_t;
-	mInsert:    size_t;
+	mRear:    size_t;
 
 public:
 	/*!
@@ -34,33 +34,17 @@ public:
 	 */
 	fn enqueue(val: T)
 	{
-		newSize := mLength + 1;
 		if (mArr.length == 0) {
 			mArr = mStore[0 .. $];
-			mInsert = mArr.length - 1;
 		}
 
-		if (newSize <= mArr.length) {
-			mLength++;
-			mArr[mInsert--] = val;
-			return;
+		if (mLength + 1 > mArr.length) {
+			resize();
 		}
 
-		allocSize := mArr.length;
-		while (allocSize < newSize) {
-			if (allocSize >= MaxSize) {
-				allocSize += MaxSize;
-			} else {
-				allocSize = allocSize * 2;
-			}
-		}
-
-		n := new T[](allocSize);
-		n[$-mLength .. $] = mArr[0 .. mLength];
-		mInsert += (n.length - mArr.length);
+		mArr[(mRear+mLength) % $] = val;
 		mLength++;
-		n[mInsert--] = val;
-		mArr = n;
+		return;
 	}
 
 	/*!
@@ -69,7 +53,8 @@ public:
 	fn dequeue() T
 	{
 		assert(mArr.length > 0, "dequeue()ed an empty queue");
-		T val = mArr[mInsert+mLength];
+		T val = mArr[mRear];
+		mRear = (mRear + 1) % mArr.length;
 		mLength--;
 		return val;
 	}
@@ -80,7 +65,7 @@ public:
 	fn peek() T
 	{
 		assert(mArr.length > 0, "peek()ed an empty queue");
-		return mArr[mInsert+mLength];
+		return mArr[mRear];
 	}
 
 	/*!
@@ -90,16 +75,25 @@ public:
 	{
 		mArr = null;
 		mLength = 0;
-		mInsert = 0;
+		mRear = 0;
 	}
 
-	/*!
-	 * Unsafely get a reference to the underlying array.  
-	 * Mutating this array may (or may not) impact the queue data structure.
-	 * Taking a copy and mutating *that* is recommended.
-	 */
-	fn borrowUnsafe() T[]
+private:
+	fn resize()
 	{
-		return mArr[mInsert+1 .. mInsert+mLength+1];
+		allocSize := mArr.length;
+		while (allocSize < mLength + 1) {
+			if (allocSize >= MaxSize) {
+				allocSize += MaxSize;
+			} else {
+				allocSize = allocSize * 2;
+			}
+		}
+		n := new T[](allocSize);
+		for (k: size_t = 0; k < mLength; ++k) {
+			n[k] = mArr[(mRear+k) % $];
+		}
+		mArr = n;
+		mRear = 0;
 	}
 }
