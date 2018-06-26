@@ -18,7 +18,9 @@ version (Windows) {
 	import core.c.posix.unistd;
 }
 
+import watt.process.sink;
 import watt.process.environment;
+
 import watt.text.string: split;
 import watt.text.format : format;
 import watt.text.sink : StringSink;
@@ -265,15 +267,21 @@ version (Posix) {
 	                     stderrFD: i32,
 	                     env: Environment) i32
 	{
-		argStack := new char[](16384);
-		envStack := new char[](16384);
-		argz := new char*[](4096);
-		envz := new char*[](4096);
+		argz: CStrSink;
+		envz: CStrSink;
+
 		if (env !is null) {
-			toEnvz(envStack, envz, env);
+			// Fill out the envz to be given to execve.
+			foreach (k, v; env.store) {
+				envz.addEnvz(k, v);
+			}
 		}
 
-		toArgz(argStack, argz, name, args);
+		// Setup the argz to be given to execv[e].
+		argz.addArgz(name);
+		foreach (arg; args) {
+			argz.addArgz(arg);
+		}
 
 		pid := fork();
 		if (pid != 0) {
@@ -306,57 +314,12 @@ version (Posix) {
 		}
 
 		if (env is null) {
-			execv(argz[0], argz.ptr);
+			execv(argz.ptrStorage[0], argz.ptrStorage.ptr);
 		} else {
-			execve(argz[0], argz.ptr, envz.ptr);
+			execve(argz.ptrStorage[0], argz.ptrStorage.ptr, envz.ptrStorage.ptr);
 		}
 		exit(-1);
 		assert(false);
-	}
-
-	private fn toArgz(stack: char[], result: char*[], name: string, args: string[]) void
-	{
-		resultPos: size_t;
-
-		result[resultPos++] = stack.ptr;
-		stack[0 .. name.length] = name;
-		stack[name.length] = cast(char)0;
-
-		stack = stack[name.length + 1u .. stack.length];
-
-		foreach (arg; args) {
-			result[resultPos++] = stack.ptr;
-
-			stack[0 .. arg.length] = arg;
-			stack[arg.length] = cast(char)0;
-
-			stack = stack[arg.length + 1u .. stack.length];
-		}
-
-		// Zero the last argument.
-		result[resultPos] = null;
-	}
-
-	private fn toEnvz(stack: char[], result: char*[], env: Environment) void
-	{
-		start, end, resultPos: size_t;
-
-		foreach (k, v; env.store) {
-			start = end;
-			end = start + k.length;
-			stack[start .. end] = k;
-			stack[end++] = '=';
-
-			result[resultPos++] = &stack[start];
-
-			if (v.length) {
-				start = end;
-				end = start + v.length;
-				stack[start .. end] = v;
-			}
-			stack[end++] = '\0';
-		}
-		result[resultPos] = null;
 	}
 
 	//! Wait for a specific process.
