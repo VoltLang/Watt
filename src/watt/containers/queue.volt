@@ -52,7 +52,9 @@ public:
 	 */
 	fn dequeue() T
 	{
-		assert(mArr.length > 0, "dequeue()ed an empty queue");
+		if (mArr.length == 0) {
+			throw new Exception("dequeue()ed an empty queue");
+		}
 		T val = mArr[mRear];
 		mRear = (mRear + 1) % mArr.length;
 		mLength--;
@@ -64,7 +66,9 @@ public:
 	 */
 	fn peek() T
 	{
-		assert(mArr.length > 0, "peek()ed an empty queue");
+		if (mArr.length == 0) {
+			throw new Exception("peek()ed an empty queue");
+		}
 		return mArr[mRear];
 	}
 

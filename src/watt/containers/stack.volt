@@ -62,7 +62,9 @@ public:
 	 */
 	fn pop() T
 	{
-		assert(mArr.length > 0, "pop()ed an empty stack");
+		if (mArr.length == 0) {
+			throw new Exception("pop()ed an empty stack");
+		}
 		T val = mArr[mLength-1];
 		mLength--;
 		return val;
@@ -73,7 +75,9 @@ public:
 	 */
 	fn peek() T
 	{
-		assert(mArr.length > 0, "peek()ed an empty stack");
+		if (mArr.length == 0) {
+			throw new Exception("peek()ed an empty stack");
+		}
 		return mArr[mLength-1];
 	}
 
