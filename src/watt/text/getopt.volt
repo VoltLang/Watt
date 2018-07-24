@@ -191,6 +191,24 @@ fn getopt(ref args: string[], description: string, ref _string: string) bool
 }
 
 /*!
+ * Parse a flag taking multiple string argument from an array of strings.
+ *
+ * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
+ * and put into `strings`. Both the flag and argument are then removed from `args`.
+ *
+ * @Param args The array of strings to remove applicable flags and arguments from.
+ * @Param description The description of the flag -- see `getopt`'s module documentation for details.
+ * @Param strings This argument will be filled with the arguments of the flag value parsed out of `args`.
+ * @Returns `true` if an argument was removed from `args`.
+ */
+fn getopt(ref args: string[], description: string, ref strings: string[]) bool
+{
+	strings = null;
+	fn dgt(param: string) { strings ~= param; }
+	return getoptImpl(ref args, description, dgt);
+}
+
+/*!
  * Parse a flag that takes an integer argument from an array of strings.
  *
  * @Param args The array of strings to remove flags and arguments from.
