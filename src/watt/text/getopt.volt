@@ -178,6 +178,14 @@ private fn getoptImpl(ref args: string[], description: string, dgt: scope dg (st
  * If there are multiple instances of the flag, `_string` will have the value of the last
  * instance.
  *
+ * Example:
+ * ```volt
+ * args := ["--fruit", "apple", "--fruit", "banana", "--fruit", "pear"]
+ * fruit: string;
+ * getopt(ref args, "fruit", ref fruit);
+ * assert(fruit == "pear");
+ * ```
+ *
  * @Param args The array of strings to remove applicable flags and arguments from.
  * @Param description The description of the flag -- see `getopt`'s module documentation for details.
  * @Param _string This argument will be filled with the last value parsed out of `args`.
@@ -194,7 +202,16 @@ fn getopt(ref args: string[], description: string, ref _string: string) bool
  * Parse a flag taking multiple string argument from an array of strings.
  *
  * If a flag (described in `description`, separated by | characters) shows up in `args`[1 .. $], an argument is parsed
- * and put into `strings`. Both the flag and argument are then removed from `args`.
+ * and put into `strings`. Both the flag and argument are then removed from `args`. If there are multiple instances
+ * of the flag, then `strings` will contain all given arguments, in the order they appeared.
+ *
+ * Example:
+ * ```volt
+ * args := ["--fruit", "apple", "--fruit", "banana", "--fruit", "pear"]
+ * fruits: string[];
+ * getopt(ref args, "fruit", ref fruit);
+ * assert(fruits == ["apple", "banana", "pear"]);
+ * ```
  *
  * @Param args The array of strings to remove applicable flags and arguments from.
  * @Param description The description of the flag -- see `getopt`'s module documentation for details.
