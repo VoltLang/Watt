@@ -270,17 +270,14 @@ version (Posix) {
 		argz: CStrSink;
 		envz: CStrSink;
 
-		if (env !is null) {
-			// Fill out the envz to be given to execve.
-			foreach (k, v; env.store) {
-				envz.addEnvz(k, v);
-			}
+		// Fill out the envz to be given to execve, null safe.
+		if (!envz.toEnvz(env)) {
+			throw new ProcessException("Environment to large");
 		}
 
 		// Setup the argz to be given to execv[e].
-		argz.addArgz(name);
-		foreach (arg; args) {
-			argz.addArgz(arg);
+		if (!argz.toArgz(name, args)) {
+			throw new ProcessException("Out of argument memory");
 		}
 
 		pid := fork();
@@ -366,6 +363,37 @@ version (Posix) {
 		}
 	}
 
+	private fn toArgz(ref argz: CStrSink, name: string, args: string[]) bool
+	{
+		if (!argz.addArgz(name)) {
+			return false;
+		}
+
+		foreach (arg; args) {
+			if (!argz.addArgz(arg)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private fn toEnvz(ref envz: CStrSink, env: Environment) bool
+	{
+		if (env is null) {
+			return true;
+		}
+
+		// Fill out the envz to be given to execve.
+		foreach (k, v; env.store) {
+			if (!envz.addEnvz(k, v)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private fn stopped(status: i32) bool { return (status & 0xff) == 0x7f; }
 	private fn signaled(status: i32) bool { return ((((status & 0x7f) + 1) & 0xff) >> 1) > 0; }
 	private fn exited(status: i32) bool { return (status & 0x7f) == 0; }
@@ -374,6 +402,7 @@ version (Posix) {
 	private fn exitstatus(status: i32) i32 { return (status & 0xff00) >> 8; }
 
 } else version (Windows) {
+
 	private fn toArgz(moduleName: string, args: string[]) LPSTR
 	{
 		buffer: StringSink;

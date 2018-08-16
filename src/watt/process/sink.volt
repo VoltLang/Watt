@@ -9,34 +9,38 @@ import io = watt.io;
 struct CStrSink
 {
 public:
-	strStorage: char[16*1024];
+	strStorage: char[256*1024];
 	ptrStorage: char*[4*1024];
 	strLoc: size_t;
 	ptrLoc: size_t;
 
 
 public:
-	fn addArgz(str: SinkArg)
+	fn addArgz(str: SinkArg) bool
 	{
 		len := str.length + 1;
 		if (!checkStorage(len)) {
-			return;
+			return false;
 		}
 
 		ptrStorage[ptrLoc++] = &strStorage.ptr[strLoc];
 		add(str, '\0');
+
+		return true;
 	}
 
-	fn addEnvz(key: SinkArg, value: SinkArg)
+	fn addEnvz(key: SinkArg, value: SinkArg) bool
 	{
 		len := key.length + 1 + value.length + 1;
 		if (!checkStorage(len)) {
-			return;
+			return false;
 		}
 
 		ptrStorage[ptrLoc++] = &strStorage.ptr[strLoc];
 		add(key, '=');
 		add(value, '\0');
+
+		return true;
 	}
 
 
