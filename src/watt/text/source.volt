@@ -50,7 +50,7 @@ public:
 	}
 
 	/*!
-	 * Have we reached EOF, if we have current = dchar.init.
+	 * Have we reached EOF, if we have current = dchar.default.
 	 */
 	final @property fn empty() dchar
 	{
@@ -154,7 +154,7 @@ public:
 	 *
 	 * @SideEffects None.
 	 *
-	 * @Returns Unicode char at @p n or @p dchar.init at EOF.
+	 * @Returns Unicode char at @p n or @p dchar.default at EOF.
 	 */
 	final fn lookahead(n: size_t, out lookaheadEOF: bool) dchar
 	{
@@ -213,7 +213,7 @@ public:
 	//! @see empty.
 	alias eof = empty;
 
-	//! Have we reached EOF, if we have front = dchar.init.
+	//! Have we reached EOF, if we have front = dchar.default.
 	empty: bool;
 
 
@@ -270,7 +270,7 @@ public:
 	{
 		mLastIndex = mNextIndex;
 		mChar = decodeChar(ref mNextIndex);
-		if (mChar == dchar.init) {
+		if (mChar == dchar.default) {
 			empty = true;
 			mNextIndex = source.length;
 			mLastIndex = source.length;
@@ -301,7 +301,7 @@ public:
 	 *
 	 * If `n` is `0`, this is the same as calling `front`.
 	 *
-	 * @Returns Unicode char at @p n or @p dchar.init at empty.
+	 * @Returns Unicode char at @p n or @p dchar.default at empty.
 	 *
 	 * @Throws UtfException if the source is not valid utf8.
 	 *
@@ -318,9 +318,9 @@ public:
 		index := mNextIndex;
 		for (i: size_t; i < n; i++) {
 			c = decodeChar(ref index);
-			if (c == dchar.init) {
+			if (c == dchar.default) {
 				lookaheadEmpty = true;
-				return dchar.init;
+				return dchar.default;
 			}
 		}
 		return c;
@@ -381,12 +381,12 @@ public:
 	 *
 	 * @SideEffects None.
 	 *
-	 * @Returns Unicode char at @p index or @p dchar.init if out of bound.
+	 * @Returns Unicode char at @p index or @p dchar.default if out of bound.
 	 */
 	fn decodeChar(ref index: size_t) dchar
 	{
 		if (index >= source.length) {
-			return dchar.init;
+			return dchar.default;
 		}
 
 		return decode(source, ref index);
