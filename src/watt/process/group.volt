@@ -197,7 +197,7 @@ public:
 				}
 			}
 
-			// If no cmds running just return.
+			// If no cmds are running just return.
 			if (hCount == 0) {
 				return;
 			}
@@ -205,7 +205,7 @@ public:
 			ptr := processHandles.ptr;
 			uRet := WaitForMultipleObjects(hCount, ptr, FALSE, cast(uint)-1);
 			if (uRet == cast(DWORD)-1 || uRet >= hCount) {
-				throw new Exception(new "Wait failed with error code  ${GetLastError()}");
+				throw new Exception(new "Wait failed with error code ${GetLastError()}");
 			}
 
 			hProcess := processHandles[uRet];
@@ -232,38 +232,28 @@ public:
 			}
 
 		} else version(Posix) {
-
 			result : int;
 			pid : pid_t;
 
+			// If no cmds are running just return.
 			if (waiting == 0) {
 				return;
 			}
 
+			result = waitManyPosix(out pid);
+
 			c: Cmd;
-			// Because stopped processes doesn't count.
-			while(true) {
-				result = waitManyPosix(out pid);
-
-				foundPid : bool;
-				foreach (cmd; cmdStore) {
-					if (cmd.handle != pid) {
-						continue;
-					}
-
-					c = cmd;
-					foundPid = true;
-					break;
+			foreach (cmd; cmdStore) {
+				if (cmd.handle != pid) {
+					continue;
 				}
 
-				if (foundPid) {
-					break;
-				}
+				c = cmd;
+				break;
+			}
 
-				if (pid > 0) {
-					throw new Exception("PID waited on but not cleared!");
-				}
-				continue;
+			if (c is null) {
+				throw new Exception("PID waited on but not cleared!");
 			}
 		} else {
 			static assert(false);
