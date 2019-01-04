@@ -102,7 +102,7 @@ public:
 		}
 	}
 
-	fn run(name: string, args: string[], done: DoneDg)
+	fn run(name: string, args: string[], done: DoneDg) Pid
 	{
 		// Wait until we have a free slot.
 		while (waiting >= maxWaiting) {
@@ -111,6 +111,7 @@ public:
 
 		pid := spawnProcess(name, args, io.input, null, null, null);
 		newCmd(done, pid);
+		return pid;
 	}
 
 	version (CRuntime_All) fn run(
@@ -119,7 +120,7 @@ public:
 		outputStream: OutputStdcStream,
 		errorStream: OutputStdcStream,
 		env: Environment,
-		done: DoneDg)
+		done: DoneDg) Pid
 	{
 		// Wait until we have a free slot.
 		while (waiting >= maxWaiting) {
@@ -128,6 +129,7 @@ public:
 
 		pid := spawnProcess(name, args, inputStream, outputStream, errorStream, env);
 		newCmd(done, pid);
+		return pid;
 	}
 
 	version (CRuntime_All) fn run(
@@ -136,7 +138,7 @@ public:
 		outputStream: FILE*,
 		errorStream: FILE*,
 		env: Environment,
-		done: DoneDg)
+		done: DoneDg) Pid
 	{
 		// Wait until we have a free slot.
 		while (waiting >= maxWaiting) {
@@ -145,6 +147,7 @@ public:
 
 		pid := spawnProcess(name, args, inputStream, outputStream, errorStream, env);
 		newCmd(done, pid);
+		return pid;
 	}
 
 	version (Posix) fn run(
@@ -153,7 +156,7 @@ public:
 		outputStream: OutputFDStream,
 		errorStream: OutputFDStream,
 		env: Environment,
-		done: DoneDg)
+		done: DoneDg) Pid
 	{
 		// Wait until we have a free slot.
 		while (waiting >= maxWaiting) {
@@ -162,6 +165,7 @@ public:
 
 		pid := spawnProcess(name, args, inputStream, outputStream, errorStream, env);
 		newCmd(done, pid);
+		return pid;
 	}
 
 	version (Posix) fn run(
@@ -170,15 +174,17 @@ public:
 		outputFD: i32,
 		errorFD: i32,
 		env: Environment,
-		done: DoneDg)
+		done: DoneDg) Pid
 	{
 		// Wait until we have a free slot.
 		while (waiting >= maxWaiting) {
 			waitOne();
 		}
 
-		pid := spawnProcessPosix(name, args, inputFD, outputFD, errorFD, env);
-		newCmd(done, new Pid(pid));
+		posixPid := spawnProcessPosix(name, args, inputFD, outputFD, errorFD, env);
+		pid := new Pid(posixPid);
+		newCmd(done, pid);
+		return pid;
 	}
 
 	fn waitOne()
