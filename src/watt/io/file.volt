@@ -272,6 +272,12 @@ private version (Windows) fn searchDirImpl(dirName: string, glob: string, dgt: s
 		if (GetLastError() == ERROR_FILE_NOT_FOUND) {
 			return;
 		}
+		if (GetLastError() == ERROR_PATH_NOT_FOUND) {
+			throw new FileException(new "Path is not found! '${dirName}");
+		}
+		if (GetLastError() == ERROR_INVALID_NAME) {
+			throw new FileException(new "Invalid path! '${dirName}");
+		}
 		throw new FileException(format("FindFirstFile failure: %s", GetLastError()));
 	}
 
