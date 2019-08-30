@@ -45,6 +45,7 @@ private:
 	enum size_t minSize = 16;
 	enum size_t maxSize = 2048;
 
+
 public:
 	//! Add @p str to this sink.
 	fn sink(str: SinkArg) void
@@ -103,6 +104,11 @@ public:
 	{
 		mArr = null;
 		mLength = 0;
+	}
+
+	@property fn length() size_t
+	{
+		return mLength;
 	}
 }
 
