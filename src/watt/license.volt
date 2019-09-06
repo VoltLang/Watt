@@ -1,5 +1,7 @@
-// See copyright just below.
-//! Ensures the license is embedded in binaries.
+// SPDX-License-Identifier: BSL-1.0
+/*!
+ * Ensures the license is embedded in binaries.
+ */
 module watt.license;
 
 /*!
@@ -11,9 +13,10 @@ enum string ident = "Watt";
  * This is the license for the watt library.
  */
 enum string license = `
-Copyright © 2005-2009, Sean Kelly.
-Copyright © 2013-2017, Jakob Bornecrantz.
-Copyright © 2013-2017, Bernard Helyer.
+Copyright 2005-2009, Sean Kelly.
+Copyright 2013-2018, Bernard Helyer.
+Copyright 2013-2018, Jakob Bornecrantz.
+Copyright 2018-2019, Collabora, Ltd.
 
 Boost Software License - Version 1.0 - August 17th, 2003
 
