@@ -7,7 +7,7 @@ module watt.license;
 /*!
  * Identifier for this version of Watt.
  */
-enum string ident = "Watt 0.1.3-dev";
+enum string ident = "Watt 0.1.3";
 
 /*!
  * This is the license for the watt library.
