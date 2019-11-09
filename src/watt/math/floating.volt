@@ -22,6 +22,15 @@ alias sin = sinf;
 //! @}
 
 /*!
+ * Calculate the arc sine function of a number.
+ * @{
+ */
+extern(C) fn asin(f64) f64;
+extern(C) fn asinf(f32) f32;
+alias asin = asinf;
+//! @}
+
+/*!
  * Calculate the cosine function of a number.
  * @{
  */
@@ -31,12 +40,30 @@ alias cos = cosf;
 //! @}
 
 /*!
+ * Calculate the arc cosine function of a number.
+ * @{
+ */
+extern(C) fn acos(f64) f64;
+extern(C) fn acosf(f32) f32;
+alias acos = acosf;
+//! @}
+
+/*!
  * Calculate the tangent function of a number.
  * @{
  */
 extern(C) fn tan(f64) f64;
 extern(C) fn tanf(f32) f32;
 alias tan = tanf;
+//! @}
+
+/*!
+ * Calculate the arc tangent function of a number.
+ * @{
+ */
+extern(C) fn atan(f64) f64;
+extern(C) fn atanf(f32) f32;
+alias atan = atanf;
 //! @}
 
 /*!
