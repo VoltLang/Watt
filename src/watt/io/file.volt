@@ -420,11 +420,17 @@ fn getcwd() string
 		}
 
 		ret := new char[](len);
-		if (GetCurrentDirectoryA(len, ret.ptr) == 0) {
+		ret_len := GetCurrentDirectoryA(len, ret.ptr);
+		if (ret_len == 0) {
 			throw new FileException("couldn't get working directory");
 		}
 
-		return cast(string) ret;
+		// len includes zero terminator.
+		if (ret_len >= len) {
+			throw new FileException("unexpected return");
+		}
+
+		return cast(string) ret[0 .. ret_len];
 	} else {
 		buf: char[1024];
 		ret := unix.getcwd(buf.ptr, 1024);
