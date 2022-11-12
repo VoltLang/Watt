@@ -1,4 +1,5 @@
 // Copyright 2015-2018, Jakob Bornecrantz.
+// Copyright 2018-2022, Collabora, Ltd.
 // SPDX-License-Identifier: BSL-1.0
 /*!
  * Construct long strings of text efficiently.
@@ -97,6 +98,14 @@ public:
 	fn toSink(sink: Sink) void
 	{
 		return sink(mArr[0 .. mLength]);
+	}
+
+	/*!
+	 * Unsafely get a reference to the array.
+	 */
+	fn borrowUnsafe() char[]
+	{
+		return mArr[0 .. mLength];
 	}
 
 	//! Clear this sink.
