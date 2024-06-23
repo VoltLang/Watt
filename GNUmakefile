@@ -14,29 +14,27 @@ MACHINE ?= $(HOST_MACHINE)
 
 VFLAGS ?= --no-stdlib -I %@execdir%/rt/src
 TARGETS = \
-	bin/libwatt-x86-mingw.bc \
-	bin/libwatt-x86_64-mingw.bc \
 	bin/libwatt-x86_64-msvc.bc \
 	bin/libwatt-x86-linux.bc \
 	bin/libwatt-x86_64-linux.bc \
 	bin/libwatt-x86-osx.bc \
-	bin/libwatt-x86_64-osx.bc
+	bin/libwatt-x86_64-osx.bc \
+	bin/libwatt-aarch64-osx.bc
 
 BIN_TARGETS = \
-	bin/libwatt-x86-mingw.o \
-	bin/libwatt-x86_64-mingw.o \
 	bin/libwatt-x86_64-msvc.o \
 	bin/libwatt-x86-linux.o \
 	bin/libwatt-x86_64-linux.o \
 	bin/libwatt-x86-osx.o \
-	bin/libwatt-x86_64-osx.o
+	bin/libwatt-x86_64-osx.o \
+	bin/libwatt-aarch64-osx.o
 
 
 ########################################
 # Setting up the source.
 #
 
-SRC = $(shell find src -name "*.volt")
+SRC = $(shell find src toml/src json/src -name "*.volt")
 OBJ = $(patsubst src/%.v, $(OBJ_DIR)/%.bc, $(SRC))
 
 
